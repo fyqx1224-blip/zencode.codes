@@ -1,46 +1,65 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
+  // 1. 只允許 POST 請求
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
   try {
-    // 1. 檢查是否漏填了 API Key
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error("Vercel 保險箱裡找不到 GEMINI_API_KEY！請檢查環境變量設置。");
+    // 2. 檢查 Vercel 設置裡的 API Key 是否存在
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("Vercel 保險箱中找不到 GEMINI_API_KEY，請檢查 Environment Variables 設置。");
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // 3. 使用目前最穩定且免費的 1.5 Flash 模型
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // 2. 接收前端傳來的資料
+    // 4. 接收前端傳來的用戶資料
     const { name, gender, birthday, birthplace } = req.body;
 
-    // 3. AI 提示詞
-    const prompt = `你是一位精通《子平真詮》與《窮通寶鑒》的頂級命理大師。
-    客戶資料：
-    姓名：${name}，性別：${gender}
-    出生時間：${birthday}
-    出生地點：${birthplace}
-    
-    【核心要求】：
-    1. 根據出生地點與平太陽時差，校準真太陽時。
-    2. 根據真太陽時排盤，分析格局用神與 2026 丙午流年運勢。
-    3. 輸出純 HTML 片段（不要 html 或 body 標籤），背景透明，文字使用金色(#C9A84C)、白色和紅色。`;
+    // 5. 設定給 AI 的大師指令 (Prompt)
+    const prompt = `你是一位精通東方命理與西洋占星的頂級大師。
+    請為以下用戶進行 2026 丙午年運勢深度觀測：
+    姓名：${name}
+    性別：${gender}
+    生辰：${birthday}
+    出生地：${birthplace}
 
+    要求：
+    1. 輸出格式必須是純 HTML 片段（不要包含 <html> 或 <body> 標籤）。
+    2. 風格：神祕、優雅、專業。
+    3. 配色：文字主要使用金色 (#C9A84C) 與白色。
+    4. 內容包含：五行能量解析、2026 關鍵運勢提醒、大師寄語。`;
+
+    // 6. 執行 AI 生成
     const result = await model.generateContent(prompt);
-    const text = await result.response.text();
+    const response = await result.response;
+    const text = response.text();
 
-    // 4. 成功回傳結果
+    // 7. 將結果傳回給前端
     res.status(200).send(text);
-    
+
   } catch (error) {
-    // 🚨 終極排錯機制：把真正的死因直接印在你的黑金網頁上！
-    console.error("後台嚴重錯誤:", error);
+    console.error("後端報錯:", error);
+
+    // 8. 報錯處理：如果失敗，直接把原因顯示在網頁的紅框裡
+    let errorMessage = error.message;
+    
+    // 針對 404 錯誤的特別提醒（通常是工具包版本太舊）
+    if (errorMessage.includes("404") || errorMessage.includes("not found")) {
+      errorMessage = "Google 伺服器找不到模型。請確保你的 package.json 裡使用的是最新版 @google/generative-ai";
+    }
+
     res.status(500).send(`
-      <div style="color: #ff573d; border: 1px solid #ff573d; padding: 20px; background: rgba(50,0,0,0.8); border-radius: 8px; margin-top: 20px; text-align: left;">
-        <h3 style="margin-bottom: 10px; font-family: 'Noto Serif TC', serif;">⚠️ 星象觀測中斷 (系統日誌)</h3>
-        <p style="font-family: monospace; font-size: 1rem; line-height: 1.5;">錯誤詳情：${error.message}</p>
-        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7;">👉 請將這個紅色框框截圖發給管理員</p>
+      <div style="color: #ff573d; border: 1px solid #ff573d; padding: 20px; background: rgba(0,0,0,0.8); border-radius: 8px; margin-top: 20px;">
+        <h3 style="margin-top:0;">⚠️ 星象觀測失敗</h3>
+        <p style="font-size: 0.9rem;">原因：${errorMessage}</p>
+        <p style="font-size: 0.8rem; opacity: 0.7;">提示：請檢查 Vercel 裡的 API Key 設置或重新部署。</p>
       </div>
     `);
   }
 }
-// 強制 Vercel 讀取全新的 API KEY 緩存
