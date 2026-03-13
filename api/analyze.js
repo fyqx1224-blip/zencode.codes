@@ -1,19 +1,26 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') return res.status(405).send('只接受 POST 請求');
+    // 設置跨域與編碼
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    
+    if (req.method !== 'POST') {
+        return res.status(405).send('<div class="card">能量場錯誤：只接受 POST 請求</div>');
+    }
 
     try {
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error("環境變量中找不到 GEMINI_API_KEY");
+        if (!apiKey) throw new Error("環境變量中找不到 GEMINI_API_KEY，請檢查 Vercel 設置");
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        // 核心修正：強制指定 v1 版本，解決 404/v1beta 問題
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: 'v1' });
 
-        const { name, gender, birthday, birthplace } = req.body;
+        const { name, gender, birthday, birthplace } = req.body || {};
+        if (!name) throw new Error("缺少觀測對象資料");
 
         const prompt = `
-你是一位精通东西方命理的命理师，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》做深度解讀且具備極高審美的前端命理大師。
+你是一位精通東西方命理的命理師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》做深度解讀且具備極高審美的前端命理大師。
 【解讀框架·請逐項分析】
 壹、格局鑑定
 ・正格（正官/正印/食神/財格）vs 特殊格局（從格/化氣格/雙清格）
@@ -45,7 +52,7 @@ export default async function handler(req, res) {
 ・當前大運干支的五行意義與身份
 ・流年與本命盤的引動：伏吟（疊加）/反吟（對沖）/合化（結盟）
 ・2025乙巳年：乙木對日主的作用、巳火引動宮位
-・2026丙午年：丙火格局意義、午火對大運與本命的影響  注意现在是2026年，当前大运不要排错
+・2026丙午年：丙火格局意義、午火對大運與本命的影響，注意現在是2026年。
 
 六、神煞解讀（選主要神煞）
 ・天乙貴人（最大外力援助）、文昌貴人（考試學習）
@@ -60,72 +67,40 @@ export default async function handler(req, res) {
 
 【參考書目 · 解讀時請交叉引用】
 ▍東方傳統命理經典
-· 梁湘潤《子平基礎概要》（增訂版）《子平秘要》《女命總論》《實務論命》《八字講堂》
-  → 格局判斷、用神鑑定、大運流年斷事的學術標準版本
+· 梁湘潤《子平基礎概要》《子平秘要》《女命總論》《實務論命》《八字講堂》
 · 《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》
-  → 傳統古籍，調候與格局的根基文獻
-· 《李虛中命書》（梁湘潤考證版）→ 十神原型心理對應的最早文字記載
 ▍現代心理對接
-· 張盛舒《閱人有術》造命系列｜十神對接大五人格/MBTI，命理轉化為性格語言
-· 了無居士《現代紫微》破框系列｜踢爆宿命論，命盤是座標不是判決書請為 [${name}] 生成一份深度命理觀測報告。
+· 張盛舒造命系列｜十神對接大五人格/MBTI
+· 了無居士《現代紫微》
+
+請為 [${name}] 生成一份深度命理觀測報告。
 
 【量產排版標準：必須嚴格遵守以下 HTML 結構】
-
-1. **HERO 區塊**：
-   - 使用 <div class="hero"> 封裝。
-   - 包含 <div class="hero-emblem"> (填入日主天干文字)。
-   - 包含 <div class="hero-subtitle"> (顯示完整八字與解析標題)。
-   - 包含 <div class="four-pillars"> 結構，內含四個 <div class="pillar"> (分別為年、月、日、時柱，標註天干、地支、十神)。
-   - 包含 <div class="hero-desc"> (顯示納音、地勢、骨重、起運時間)。
-
-2. **標準章節 (壹至捌)**：
-   每一章必須嚴格使用以下格式：
-   <section class="section">
-     <div class="section-header">
-       <div class="section-num">【繁體序號】</div>
-       <div>
-         <div class="section-title">【中文標題】</div>
-         <div class="section-subtitle">【英文副標】</div>
-       </div>
-     </div>
-     <div class="card">...內容...</div>
-   </section>
-
-   章節清單與英文副標：
-   - 壹：格局鑑定 (FORMAT · STRENGTH · YONGSHENG)
-   - 貳：十神心理原型 (ARCHETYPE · PSYCHOLOGY · PERSONALITY)
-   - 叁：宮位生活映射 (PILLARS · LIFE STAGES · ENVIRONMENT)
-   - 肆：天干地支互動 (STEMS · BRANCHES · INTERACTION)
-   - 伍：大運流年交叉分析 (LUCK PILLARS · ANNUAL STARS · CURRENT)
-   - 陸：神煞解讀 (DIVINE STARS · AUSPICIOUS · INAUSPICIOUS)
-   - 柒：稱骨訣 (BONE WEIGHT · INNATE CAPACITY)
-   - 捌：機會與地雷 (NOW · OPPORTUNITY · WARNING)
-
-3. **視覺細節**：
-   - 關鍵術語用 <strong style="color:#7AB860"> 加亮。
-   - 每段專業分析後必須有 <div class="analogy">白話翻譯</div>。
-   - 使用 <div class="highlight-gold"> 或 <div class="highlight-warn"> 標記重點。
-   - 使用 <table class="interaction-table"> 展示刑沖合害。
-
-4. **結尾 VERDICT**：
-   - 必須包含 <div class="verdict"> 區塊，內含 <div class="verdict-main">、<div class="verdict-text"> 和 <div class="verdict-seal">。
+1. **HERO 區塊**：使用 <div class="hero"> 封裝...
+2. **標準章節 (壹至捌)**：每章使用 <section class="section"> 封裝...
+3. **視覺細節**：術語用 <strong style="color:#7AB860"> 加亮， एनालॉजी使用 <div class="analogy">。
+4. **結尾 VERDICT**：使用 <div class="verdict">。
 
 【觀測對象資料】
 姓名：${name}，性別：${gender}，生辰：${birthday}，出生地：${birthplace}。
+請開始觀測，確保內容豐富、口吻專業神祕，HTML 結構完整。`;
 
-請開始觀測，確保內容豐富、口吻專業神祕，字數不少於 2500 字，HTML 結構完整。`;
-
-       const result = await model.generateContent(prompt);
-        let text = result.response.text();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        let text = response.text();
         
-        // 清理任何可能的 Markdown 格式
+        // 徹底清理可能的 Markdown 標籤
         text = text.replace(/```html/g, '').replace(/```/g, '').trim();
 
         res.status(200).send(text);
 
     } catch (error) {
+        console.error(error);
         res.status(500).send(`
-            <div class="card" style="border: 1px solid #7AB860;">
-                <p style="color:#7AB860;">觀測異常：${error.message}</p>
+            <div class="card" style="border: 1px solid #7AB860; background: rgba(0,0,0,0.5); padding: 20px;">
+                <p style="color:#7AB860; margin:0;">觀測中斷（系統日誌）：${error.message}</p>
+                <small style="color:gray;">請檢查 API Key 或稍後重試</small>
             </div>
-
+        `);
+    }
+}
