@@ -606,7 +606,7 @@ async function generateReport() {
     startPhrases();
 
     try {
-        const r = await fetch('/api/generate', {
+        const r = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: n, gender: g, birthday: b, birthplace: p })
@@ -627,3 +627,4 @@ async function generateReport() {
 </body>
 
 </html>
+
