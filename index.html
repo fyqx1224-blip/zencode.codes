@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenCode 命運檔案 | 深度流年推演</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8D399;
+            --gold-dim: rgba(201, 168, 76, 0.15);
+            --red: #8B1A1A;
+            --red-glow: rgba(232, 68, 42, 0.4);
+            --bg: #030303;
+        }
+
+        html, body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Noto Serif TC', serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ── 星場背景 ── */
+        #stars-canvas {
+            position: fixed; inset: 0; z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── 頂部放射光 ── */
+        .radial-top {
+            position: fixed; top: -30vh; left: 50%; transform: translateX(-50%);
+            width: 120vw; height: 80vh;
+            background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
+            pointer-events: none; z-index: 1;
+        }
+
+        /* ── 陣法紋路 SVG ── */
+        .sigil-bg {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(90vw, 700px); height: min(90vw, 700px);
+            opacity: 0.04; pointer-events: none; z-index: 1;
+            animation: sigil-rotate 120s linear infinite;
+        }
+        @keyframes sigil-rotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* ── 主容器 ── */
+        .container {
+            position: relative; z-index: 10;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 60px 20px;
+        }
+
+        /* ── 標題區 ── */
+        .title-group {
+            text-align: center; margin-bottom: 48px;
+            animation: fade-down 1s ease both;
+        }
+        .title-eyebrow {
+            font-size: 0.7rem; letter-spacing: 0.4em;
+            color: rgba(201,168,76,0.5);
+            text-transform: uppercase; margin-bottom: 16px;
+        }
+        .title-main {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(2.8rem, 8vw, 4.5rem);
+            background: linear-gradient(180deg, #E8D399 0%, #C9A84C 50%, #8a6a20 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(201,168,76,0.4));
+            line-height: 1.1; margin-bottom: 10px;
+        }
+        .title-sub {
+            font-size: 0.8rem; letter-spacing: 0.25em;
+            color: rgba(255,255,255,0.25);
+        }
+
+        /* 分割線 */
+        .divider {
+            width: 200px; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+            margin: 0 auto 48px;
+            animation: fade-in 1.2s ease both 0.3s;
+        }
+
+        /* ── 卡片 ── */
+        .form-card {
+            width: 100%; max-width: 440px;
+            background: rgba(8, 6, 4, 0.75);
+            border: 1px solid rgba(201,168,76,0.15);
+            border-radius: 2px;
+            padding: 42px 36px;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 0 0 1px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(201,168,76,0.08),
+                0 40px 80px rgba(0,0,0,0.6),
+                0 0 60px rgba(201,168,76,0.04);
+            animation: fade-up 1s ease both 0.2s;
+        }
+
+        /* 卡片四角裝飾 */
+        .form-card::before, .form-card::after,
+        .corner-tl, .corner-tr, .corner-bl, .corner-br {
+            position: absolute; content: '';
+            width: 12px; height: 12px;
+            border-color: rgba(201,168,76,0.5);
+            border-style: solid;
+        }
+        .corner-tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+        .corner-tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+        .corner-bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+        .corner-br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+        .form-card::before, .form-card::after { display: none; }
+
+        /* ── 表單欄位組 ── */
+        .field-group {
+            display: flex; flex-direction: column; gap: 6px;
+            margin-bottom: 20px;
+        }
+        .field-label {
+            font-size: 0.65rem; letter-spacing: 0.3em;
+            color: rgba(201,168,76,0.45);
+            text-transform: uppercase;
+            padding-left: 2px;
+        }
+
+        /* ── 輸入框容器（用於光效） ── */
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap::after {
+            content: '';
+            position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0; transform: scaleX(0);
+            transition: opacity 0.4s, transform 0.4s;
+            pointer-events: none;
+        }
+        .input-wrap:focus-within::after {
+            opacity: 1; transform: scaleX(1);
+        }
+
+        /* 輸入框聚焦時的外部光暈層 */
+        .input-wrap .glow-ring {
+            position: absolute; inset: -1px;
+            border-radius: 3px;
+            border: 1px solid transparent;
+            background: linear-gradient(#030303, #030303) padding-box,
+                        linear-gradient(135deg, rgba(201,168,76,0), rgba(201,168,76,0.6), rgba(201,168,76,0)) border-box;
+            opacity: 0; transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .input-wrap:focus-within .glow-ring { opacity: 1; }
+
+        /* ── 輸入框本體 ── */
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(201,168,76,0.12);
+            border-radius: 2px;
+            color: #E8D399;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            outline: none;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+            -webkit-appearance: none; appearance: none;
+            position: relative; z-index: 1;
+        }
+        .input-field::placeholder {
+            color: rgba(255,255,255,0.15);
+            font-size: 0.85rem;
+        }
+        .input-field:focus {
+            background: rgba(201,168,76,0.04);
+            border-color: rgba(201,168,76,0.35);
+            box-shadow: 0 0 20px rgba(201,168,76,0.08), inset 0 1px 0 rgba(201,168,76,0.05);
+        }
+
+        select.input-field {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23C9A84C' fill-opacity='0.5' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 10px auto;
+            cursor: pointer;
+            padding-right: 40px;
+        }
+        select.input-field option { background: #0d0c0a; color: #E8D399; }
+
+        /* ── 按鈕 ── */
+        .btn-wrap {
+            margin-top: 32px;
+            position: relative;
+        }
+        .submit-btn {
+            width: 100%; padding: 17px;
+            background: linear-gradient(135deg, #6B0E0E 0%, #C43A1F 60%, #E85A30 100%);
+            color: rgba(255,255,255,0.95);
+            border: none; border-radius: 2px;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.35rem; letter-spacing: 4px;
+            cursor: pointer;
+            position: relative; overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 6px 30px rgba(180, 40, 20, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .submit-btn::before {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            transition: left 0.6s ease;
+        }
+        .submit-btn:hover::before { left: 100%; }
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 40px rgba(200, 50, 20, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .submit-btn:active { transform: translateY(0); }
+
+        /* 按鈕粒子容器 */
+        .btn-particles {
+            position: absolute; inset: 0; pointer-events: none; overflow: visible;
+        }
+
+        /* ── 底部符文 ── */
+        .rune-row {
+            display: flex; gap: 18px; justify-content: center;
+            margin-top: 32px;
+            animation: fade-in 1.5s ease both 0.8s;
+        }
+        .rune {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 0.85rem;
+            color: rgba(201,168,76,0.2);
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+        }
+        .rune:hover { color: rgba(201,168,76,0.5); }
+
+        /* ── Loading 狀態 ── */
+        #loading-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(3,3,3,0.92);
+            backdrop-filter: blur(8px);
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 24px;
+        }
+        .loading-sigil {
+            width: 80px; height: 80px;
+            position: relative;
+        }
+        .loading-sigil svg {
+            animation: sigil-rotate 4s linear infinite;
+        }
+        .loading-text {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.1rem; letter-spacing: 0.25em;
+            color: rgba(201,168,76,0.7);
+            animation: pulse-text 2s ease infinite;
+        }
+        .loading-sub {
+            font-size: 0.7rem; letter-spacing: 0.2em;
+            color: rgba(255,255,255,0.2);
+        }
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ── 浮動粒子 ── */
+        .float-particle {
+            position: fixed; pointer-events: none; z-index: 2;
+            border-radius: 50%;
+            animation: float-up linear both;
+        }
+        @keyframes float-up {
+            0%   { transform: translateY(0) scale(1); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 0.6; }
+            100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
+        }
+
+        /* ── 過場動畫 ── */
+        @keyframes fade-down {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        /* ── 輸入時粒子光點 ── */
+        .spark {
+            position: absolute; pointer-events: none; z-index: 20;
+            width: 3px; height: 3px; border-radius: 50%;
+            background: var(--gold-light);
+            animation: spark-fade 0.6s ease both;
+        }
+        @keyframes spark-fade {
+            0%   { transform: scale(1) translate(0,0); opacity: 1; }
+            100% { transform: scale(0) translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 星空畫布 -->
+<canvas id="stars-canvas"></canvas>
+<div class="radial-top"></div>
+
+<!-- 背景陣法紋路 -->
+<svg class="sigil-bg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <circle cx="200" cy="200" r="190" stroke="#C9A84C" stroke-width="0.5"/>
+    <circle cx="200" cy="200" r="150" stroke="#C9A84C" stroke-width="0.3"/>
+    <circle cx="200" cy="200" r="100" stroke="#C9A84C" stroke-width="0.5"/>
+    <polygon points="200,20 371,110 371,290 200,380 29,290 29,110" stroke="#C9A84C" stroke-width="0.4"/>
+    <polygon points="200,50 345,125 345,275 200,350 55,275 55,125" stroke="#C9A84C" stroke-width="0.25"/>
+    <line x1="200" y1="20" x2="200" y2="380" stroke="#C9A84C" stroke-width="0.2"/>
+    <line x1="20" y1="200" x2="380" y2="200" stroke="#C9A84C" stroke-width="0.2"/>
+    <line x1="60" y1="60" x2="340" y2="340" stroke="#C9A84C" stroke-width="0.2"/>
+    <line x1="340" y1="60" x2="60" y2="340" stroke="#C9A84C" stroke-width="0.2"/>
+    <circle cx="200" cy="200" r="8" stroke="#C9A84C" stroke-width="0.8"/>
+    <circle cx="200" cy="20" r="3" fill="#C9A84C"/>
+    <circle cx="371" cy="110" r="3" fill="#C9A84C"/>
+    <circle cx="371" cy="290" r="3" fill="#C9A84C"/>
+    <circle cx="200" cy="380" r="3" fill="#C9A84C"/>
+    <circle cx="29" cy="290" r="3" fill="#C9A84C"/>
+    <circle cx="29" cy="110" r="3" fill="#C9A84C"/>
+</svg>
+
+<!-- Loading 遮罩 -->
+<div id="loading-overlay">
+    <div class="loading-sigil">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="36" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+            <circle cx="40" cy="40" r="36" stroke="url(#lg1)" stroke-width="1.5"
+                stroke-dasharray="50 176" stroke-linecap="round"/>
+            <circle cx="40" cy="40" r="24" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+            <circle cx="40" cy="4" r="3" fill="#C9A84C"/>
+            <defs>
+                <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#C9A84C"/>
+                    <stop offset="1" stop-color="transparent"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="loading-text" id="loading-phrase">正在校對真太陽時</div>
+    <div class="loading-sub">觀測星象能量 · 排布四柱格局</div>
+</div>
+
+<!-- 主體表單 -->
+<div id="input-form-container" class="container">
+    <div class="title-group">
+        <div class="title-eyebrow">ZenCode · 命理推演系統</div>
+        <h1 class="title-main">開啟命運檔案</h1>
+        <div class="title-sub">深度流年 · 八字鑑定 · 大運解讀</div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="form-card">
+        <div class="corner-tl"></div>
+        <div class="corner-tr"></div>
+        <div class="corner-bl"></div>
+        <div class="corner-br"></div>
+
+        <div class="field-group">
+            <label class="field-label">命主姓名</label>
+            <div class="input-wrap">
+                <div class="glow-ring"></div>
+                <input type="text" id="user-name" class="input-field" placeholder="請輸入姓名" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">命主性別</label>
+            <div class="input-wrap">
+                <div class="glow-ring"></div>
+                <select id="user-gender" class="input-field">
+                    <option value="" disabled selected>請選擇性別</option>
+                    <option value="女">女命</option>
+                    <option value="男">男命</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">出生生辰</label>
+            <div class="input-wrap">
+                <div class="glow-ring"></div>
+                <input type="text" id="user-birthday" class="input-field" placeholder="如：1995年8月15日 13:15" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">出生地點</label>
+            <div class="input-wrap">
+                <div class="glow-ring"></div>
+                <input type="text" id="user-birthplace" class="input-field" placeholder="如：陝西省安康市" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="btn-wrap">
+            <button onclick="generateReport()" class="submit-btn" id="submit-button">
+                <span class="btn-particles" id="btn-particles"></span>
+                觀測星象能量
+            </button>
+        </div>
+    </div>
+
+    <div class="rune-row">
+        <span class="rune">甲乙丙丁</span>
+        <span class="rune">·</span>
+        <span class="rune">子丑寅卯</span>
+        <span class="rune">·</span>
+        <span class="rune">陰陽五行</span>
+    </div>
+</div>
+
+<div id="report-output-container" class="container" style="display:none;"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   星空背景
+═══════════════════════════════════════ */
+(function initStars() {
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); buildStars(); });
+
+    function buildStars() {
+        stars = [];
+        const count = Math.floor((W * H) / 3000);
+        for (let i = 0; i < count; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: Math.random() * 0.8 + 0.1,
+                a: Math.random(),
+                speed: Math.random() * 0.003 + 0.001,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+    }
+    buildStars();
+
+    let t = 0;
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.01;
+        stars.forEach(s => {
+            const alpha = s.a * (0.4 + 0.6 * Math.sin(t * s.speed * 60 + s.phase));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(232, 211, 153, ${alpha})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+/* ═══════════════════════════════════════
+   浮動金色粒子
+═══════════════════════════════════════ */
+(function spawnParticles() {
+    function spawn() {
+        const el = document.createElement('div');
+        el.className = 'float-particle';
+        const size = Math.random() * 2 + 0.5;
+        el.style.cssText = `
+            width:${size}px; height:${size}px;
+            left:${Math.random()*100}vw;
+            bottom:${Math.random()*20-5}vh;
+            background: rgba(201,168,76,${Math.random()*0.4+0.1});
+            animation-duration: ${Math.random()*20+15}s;
+            animation-delay: ${Math.random()*5}s;
+            box-shadow: 0 0 ${size*2}px rgba(201,168,76,0.5);
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 26000);
+    }
+    setInterval(spawn, 800);
+    for (let i = 0; i < 8; i++) spawn();
+})();
+
+/* ═══════════════════════════════════════
+   輸入框 → 打字時產生火花
+═══════════════════════════════════════ */
+document.querySelectorAll('.input-field').forEach(input => {
+    input.addEventListener('input', function(e) {
+        const wrap = this.closest('.input-wrap');
+        const rect = wrap.getBoundingClientRect();
+        const cx = rect.left + rect.width * (0.2 + Math.random() * 0.6);
+        const cy = rect.bottom - 2;
+        for (let i = 0; i < 3; i++) spawnSpark(cx, cy);
+    });
+});
+
+function spawnSpark(x, y) {
+    const el = document.createElement('div');
+    el.className = 'spark';
+    const angle = (Math.random() * 180 - 90) * Math.PI / 180;
+    const dist = Math.random() * 20 + 6;
+    el.style.cssText = `
+        left:${x}px; top:${y}px;
+        --tx:${Math.cos(angle)*dist}px;
+        --ty:${-Math.sin(angle)*dist - 8}px;
+        width:${Math.random()*2+1}px; height:${Math.random()*2+1}px;
+        animation-duration:${Math.random()*0.4+0.4}s;
+        animation-delay:${Math.random()*0.1}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 800);
+}
+
+/* ═══════════════════════════════════════
+   按鈕懸停 → 圓形光暈粒子
+═══════════════════════════════════════ */
+const btn = document.getElementById('submit-button');
+btn.addEventListener('mousemove', function(e) {
+    if (Math.random() > 0.5) return;
+    const rect = btn.getBoundingClientRect();
+    spawnSpark(e.clientX, rect.top + 2);
+});
+
+/* ═══════════════════════════════════════
+   Loading 詞語輪播
+═══════════════════════════════════════ */
+const loadingPhrases = [
+    '正在校對真太陽時',
+    '排布四柱八字',
+    '推演大運流年',
+    '鑑定格局強弱',
+    '觀測五行流通',
+    '解析天干地支'
+];
+let phraseIdx = 0;
+let phraseTimer = null;
+
+function startPhrases() {
+    const el = document.getElementById('loading-phrase');
+    phraseTimer = setInterval(() => {
+        el.style.opacity = '0';
+        setTimeout(() => {
+            phraseIdx = (phraseIdx + 1) % loadingPhrases.length;
+            el.textContent = loadingPhrases[phraseIdx];
+            el.style.opacity = '';
+        }, 300);
+    }, 2000);
+}
+function stopPhrases() { clearInterval(phraseTimer); }
+
+/* ═══════════════════════════════════════
+   主函數
+═══════════════════════════════════════ */
+async function generateReport() {
+    const n = document.getElementById('user-name').value.trim();
+    const g = document.getElementById('user-gender').value;
+    const b = document.getElementById('user-birthday').value.trim();
+    const p = document.getElementById('user-birthplace').value.trim();
+    if (!n || !g || !b || !p) {
+        // 抖動提示
+        document.querySelectorAll('.input-field').forEach(f => {
+            if (!f.value.trim()) {
+                f.style.borderColor = 'rgba(200,60,30,0.7)';
+                f.style.boxShadow = '0 0 12px rgba(200,60,30,0.2)';
+                setTimeout(() => {
+                    f.style.borderColor = '';
+                    f.style.boxShadow = '';
+                }, 1000);
+            }
+        });
+        return;
+    }
+
+    // 顯示 loading
+    const overlay = document.getElementById('loading-overlay');
+    overlay.style.display = 'flex';
+    startPhrases();
+
+    try {
+        const r = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: n, gender: g, birthday: b, birthplace: p })
+        });
+        const html = await r.text();
+        stopPhrases();
+        overlay.style.display = 'none';
+        document.getElementById('input-form-container').style.display = 'none';
+        document.getElementById('report-output-container').innerHTML = html;
+        document.getElementById('report-output-container').style.display = 'block';
+    } catch(e) {
+        stopPhrases();
+        overlay.style.display = 'none';
+        alert('觀測失敗，請稍後重試');
+    }
+}
+</script>
+</body>
+</html>
