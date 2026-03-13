@@ -38,8 +38,9 @@ export default async function handler(req, res) {
       <div style="color: #ff573d; border: 1px solid #ff573d; padding: 20px; background: rgba(50,0,0,0.8); border-radius: 8px; margin-top: 20px; text-align: left;">
         <h3 style="margin-bottom: 10px; font-family: 'Noto Serif TC', serif;">⚠️ 星象觀測中斷 (系統日誌)</h3>
         <p style="font-family: monospace; font-size: 1rem; line-height: 1.5;">錯誤詳情：${error.message}</p>
-        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7;">👉 請將這個紅色框框截圖發給你的 AI 助手</p>
+        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7;">👉 請將這個紅色框框截圖發給管理員</p>
       </div>
     `);
   }
 }
+// 強制 Vercel 讀取全新的 API KEY 緩存
