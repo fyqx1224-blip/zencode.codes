@@ -12,29 +12,27 @@ module.exports = async function handler(req, res) {
         const { name, gender, birthday, birthplace } = req.body || {};
         if (!name) throw new Error("缺少觀測對象資料");
 
-        // ══════════════════════════════════════════════
-        // STEP 1：讓 AI 只返回 JSON 數據，不碰任何 HTML/CSS
-        // ══════════════════════════════════════════════
         const prompt = `你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
 
-【觀測對象】姓名：${name}，性別：${gender}，生辰：${birthday}，出生地：${birthplace}
+【絕對禁止】不得使用任何範例數據。所有字段必須根據以下觀測對象的實際生辰八字重新計算：
+姓名：${name}，性別：${gender}，生辰：${birthday}，出生地：${birthplace}
 
 請嚴格按照以下 JSON 格式輸出，不要輸出任何其他內容，不要有任何 markdown 標記：
 
 {
   "hero": {
-    "emblem": "（日主天干，單字，例：甲）",
-    "subtitle": "（四柱干支 如：甲申 丁卯 甲午 辛未｜甲木女命深度解讀）",
+    "emblem": "（日主天干，單字）",
+    "subtitle": "（四柱干支全稱｜日主五行性別命深度解讀）",
     "pillars": [
-      { "label": "年柱", "tg": "甲", "tgClass": "wood-c", "dz": "申", "dzClass": "metal-c", "tenGod": "比肩" },
-      { "label": "月柱", "tg": "丁", "tgClass": "fire-c", "dz": "卯", "dzClass": "wood-c", "tenGod": "傷官" },
-      { "label": "日柱", "tg": "甲", "tgClass": "wood-c", "dz": "午", "dzClass": "fire-c", "tenGod": "日主" },
-      { "label": "時柱", "tg": "辛", "tgClass": "metal-c", "dz": "未", "dzClass": "earth-c", "tenGod": "正官" }
+      { "label": "年柱", "tg": "（年干）", "tgClass": "（wood-c/fire-c/earth-c/metal-c/water-c）", "dz": "（年支）", "dzClass": "（wood-c/fire-c/earth-c/metal-c/water-c）", "tenGod": "（相對日主的十神）" },
+      { "label": "月柱", "tg": "（月干）", "tgClass": "（五行class）", "dz": "（月支）", "dzClass": "（五行class）", "tenGod": "（十神）" },
+      { "label": "日柱", "tg": "（日干）", "tgClass": "（五行class）", "dz": "（日支）", "dzClass": "（五行class）", "tenGod": "日主" },
+      { "label": "時柱", "tg": "（時干）", "tgClass": "（五行class）", "dz": "（時支）", "dzClass": "（五行class）", "tenGod": "（十神）" }
     ],
-    "nayin": "（納音描述）",
-    "dizhi_state": "（地勢：各柱旺衰狀態）",
-    "bone_weight": "（骨重，如：3兩8錢）",
-    "qiyun": "（起運，如：3年8月）"
+    "nayin": "（四柱納音）",
+    "dizhi_state": "（四柱地支旺衰狀態）",
+    "bone_weight": "（稱骨骨重，如：X兩X錢）",
+    "qiyun": "（起運時間，如：X歲X月）"
   },
   "sections": [
     {
@@ -44,25 +42,25 @@ module.exports = async function handler(req, res) {
       "cards": [
         {
           "title": "格局判定：（格局名稱）",
-          "paragraphs": ["（詳細分析段落1，200字以上，引用古籍）", "（段落2）"],
+          "paragraphs": ["（深度分析，200字以上，引用古籍）", "（段落2）"],
           "highlight_type": "special",
-          "highlight_content": "（highlight框內的HTML內容，可包含<strong>標籤）",
-          "analogy": "（白話翻譯，生活化比喻）"
+          "highlight_content": "（核心格局結論，可含<strong>標籤）",
+          "analogy": "（生活化白話比喻）"
         },
         {
           "title": "身強身弱判斷：（結論）",
-          "paragraphs": ["（分析）"],
+          "paragraphs": ["（助旺分析）", "（泄耗分析）"],
           "highlight_type": "normal",
-          "highlight_content": "（綜合判斷）",
+          "highlight_content": "（綜合判斷與用神序列）",
           "analogy": "（比喻）"
         },
         {
           "title": "調候用神 vs 扶抑用神",
-          "paragraphs": ["（分析）"],
+          "paragraphs": ["（調候分析，引用窮通寶鑒）", "（扶抑分析）"],
           "highlight_type": "gold",
-          "highlight_content": "（用神序列）",
+          "highlight_content": "（用神序列與忌神序列）",
           "analogy": "（比喻）",
-          "quote_text": "（引用古籍原文）",
+          "quote_text": "（滴天髓或相關古籍原文）",
           "quote_cite": "（書名）"
         }
       ]
@@ -73,12 +71,12 @@ module.exports = async function handler(req, res) {
       "subtitle": "ARCHETYPE · PSYCHOLOGY · PERSONALITY",
       "cards": [
         {
-          "title": "（最主要十神）——命盤主旋律：（心理描述）",
-          "paragraphs": ["（詳細分析）", "（段落2）"],
+          "title": "（命盤最核心十神）——命盤主旋律：（心理特質描述）",
+          "paragraphs": ["（深度心理分析）", "（在人際職場的具體表現）"],
           "analogy": "（比喻）"
         },
         {
-          "title": "（第二十神）——（心理描述）",
+          "title": "（第二重要十神）——（心理描述）",
           "paragraphs": ["（分析）"],
           "analogy": "（比喻）"
         },
@@ -99,32 +97,33 @@ module.exports = async function handler(req, res) {
       "subtitle": "PILLARS · LIFE STAGES · ENVIRONMENT",
       "cards": [
         {
-          "title": "年柱 （干支）｜0–15歲·（主題）",
-          "paragraphs": ["（分析）"],
+          "title": "年柱 （年柱干支）｜0–15歲·（人生主題）",
+          "paragraphs": ["（家族業力、原生環境分析）"],
           "analogy": "（比喻）"
         },
         {
-          "title": "月柱 （干支）｜16–30歲·（主題）",
-          "paragraphs": ["（分析）"],
+          "title": "月柱 （月柱干支）｜16–30歲·（人生主題）",
+          "paragraphs": ["（社會化、職業志向分析）"],
           "analogy": "（比喻）"
         },
         {
-          "title": "日柱 （干支）｜31–45歲·（主題）",
-          "paragraphs": ["（分析）"],
+          "title": "日柱 （日柱干支）｜31–45歲·（人生主題）",
+          "paragraphs": ["（伴侶關係、私密情感需求分析）"],
           "highlight_type": "gold",
           "highlight_content": "（日柱感情格言）",
           "analogy": "（比喻）"
         },
         {
-          "title": "時柱 （干支）｜46歲後·（主題）",
-          "paragraphs": ["（分析）"],
+          "title": "時柱 （時柱干支）｜46歲後·（人生主題）",
+          "paragraphs": ["（晚年格局、子息緣份分析）"],
           "analogy": "（比喻）"
         }
       ],
       "interaction_table": [
-        { "tag": "（互動名稱）", "tagClass": "（顏色class）", "position": "（宮位）", "desc": "（具象化說明）" },
-        { "tag": "（互動名稱）", "tagClass": "（顏色class）", "position": "（宮位）", "desc": "（具象化說明）" },
-        { "tag": "（互動名稱）", "tagClass": "（顏色class）", "position": "（宮位）", "desc": "（具象化說明）" }
+        { "tag": "（互動類型名稱）", "tagClass": "（fire/earth/metal/wood/water）", "position": "（涉及宮位）", "desc": "（生活具象化說明，100字以上）" },
+        { "tag": "（互動類型名稱）", "tagClass": "（五行）", "position": "（宮位）", "desc": "（說明）" },
+        { "tag": "（互動類型名稱）", "tagClass": "（五行）", "position": "（宮位）", "desc": "（說明）" },
+        { "tag": "（互動類型名稱）", "tagClass": "（五行）", "position": "（宮位）", "desc": "（說明）" }
       ]
     },
     {
@@ -133,13 +132,13 @@ module.exports = async function handler(req, res) {
       "subtitle": "STEMS · BRANCHES · INTERACTION",
       "cards_grid": [
         {
-          "title": "天干：（互動描述）",
-          "paragraphs": ["（分析）"],
+          "title": "天干：（天干互動描述）",
+          "paragraphs": ["（分析）", "（段落2）"],
           "analogy": "（比喻）"
         },
         {
-          "title": "地支：（互動描述）",
-          "paragraphs": ["（分析）"],
+          "title": "地支：（地支互動描述）",
+          "paragraphs": ["（分析）", "（段落2）"],
           "analogy": "（比喻）"
         }
       ]
@@ -149,34 +148,34 @@ module.exports = async function handler(req, res) {
       "title": "大運流年交叉分析",
       "subtitle": "LUCK PILLARS · ANNUAL STARS · CURRENT",
       "yunliu": [
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": true },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false },
-        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（顏色class）", "desc": "（簡要描述）", "active": false }
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行主色class）", "desc": "（大運簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false },
+        { "age": "（X歲起）", "stem": "（大運干支）", "stemClass": "（五行class）", "desc": "（簡析）", "active": false }
       ],
       "yunliu_cards": [
         {
-          "title": "當前大運深度解析：（大運干支）",
-          "paragraphs": ["（詳細分析）", "（段落2）"],
+          "title": "當前大運深度解析：（當前大運干支）",
+          "paragraphs": ["（詳細分析）", "（核心衝擊說明）"],
           "highlight_type": "warn",
-          "highlight_content": "（核心提示）",
+          "highlight_content": "（當前大運核心提示）",
           "analogy": "（比喻）"
         },
         {
           "title": "2025 乙巳年｜流年解析",
-          "paragraphs": ["（分析）"],
+          "paragraphs": ["（乙木對日主的作用分析）", "（巳火引動宮位分析）"],
           "highlight_type": "gold",
-          "highlight_content": "（最適合做的事）"
+          "highlight_content": "（2025年最適合做的事）"
         },
         {
           "title": "2026 丙午年｜流年解析",
-          "paragraphs": ["（分析）"],
+          "paragraphs": ["（丙火格局意義）", "（午火對大運與本命的影響，注意現在是2026年）"],
           "highlight_type": "warn",
-          "highlight_content": "（注意事項）",
+          "highlight_content": "（2026年壓力與機會提示，分條列出）",
           "analogy": "（比喻）"
         }
       ]
@@ -186,25 +185,25 @@ module.exports = async function handler(req, res) {
       "title": "神煞解讀",
       "subtitle": "DIVINE STARS · AUSPICIOUS · INAUSPICIOUS",
       "shensha": [
-        { "name": "（神煞名稱）", "nameColor": "（顏色）", "desc": "（詳細描述）" },
+        { "name": "（神煞名稱）", "nameColor": "（顏色，如#C9A84C）", "desc": "（詳細描述，說明落在哪個宮位及其意義）" },
         { "name": "（神煞名稱）", "nameColor": "（顏色）", "desc": "（詳細描述）" },
         { "name": "（神煞名稱）", "nameColor": "（顏色）", "desc": "（詳細描述）" },
         { "name": "（神煞名稱）", "nameColor": "（顏色）", "desc": "（詳細描述）" }
       ],
-      "shensha_analogy": "（整體神煞白話總結）"
+      "shensha_analogy": "（所有神煞的整體白話總結）"
     },
     {
       "num": "柒",
       "title": "稱骨訣·先天能量解讀",
       "subtitle": "BONE WEIGHT · INNATE CAPACITY · SOFTWARE UPGRADE",
       "bone": {
-        "value": "（骨重值，如：3兩8錢）",
-        "desc1": "（稱骨歌原文及解釋）",
-        "desc2": "（與八字結構的呼應分析）"
+        "value": "（X兩X錢）",
+        "desc1": "（袁天罡稱骨歌原文及對應解釋）",
+        "desc2": "（骨重斷語與八字結構的呼應分析）"
       },
       "bone_card": {
-        "title": "骨重 （X兩X錢） × （格局）的人生質地",
-        "paragraphs": ["（分析）"],
+        "title": "骨重 （X兩X錢） × （格局名）的人生質地",
+        "paragraphs": ["（此命盤的人生底色與努力方向分析）"],
         "analogy": "（比喻）"
       }
     },
@@ -213,40 +212,40 @@ module.exports = async function handler(req, res) {
       "title": "當前最值得把握的機會＋最需警惕的地雷",
       "subtitle": "NOW · OPPORTUNITY · WARNING",
       "opportunities": [
-        "（機會1標題：詳細說明）",
-        "（機會2標題：詳細說明）",
-        "（機會3標題：詳細說明）"
+        "（機會1標題）：（詳細說明）",
+        "（機會2標題）：（詳細說明）",
+        "（機會3標題）：（詳細說明）"
       ],
       "warnings": [
-        "（地雷1標題：詳細說明）",
-        "（地雷2標題：詳細說明）",
-        "（地雷3標題：詳細說明）"
+        "（地雷1標題）：（詳細說明）",
+        "（地雷2標題）：（詳細說明）",
+        "（地雷3標題）：（詳細說明）"
       ]
     }
   ],
   "verdict": {
-    "main": "（四字結語，如：甲木向陽）",
-    "text": "（詩意總結，換行用\\n，共8-12行）",
+    "main": "（四字結語，概括此人命盤精髓）",
+    "text": "（詩意總結，用\\n換行，8-12行）",
     "footer": "（尾注金句，關於命運與自由意志）"
   }
 }
 
-【顏色class說明】天干地支五行對應：wood-c=木(綠)、fire-c=火(橙)、earth-c=土(金)、metal-c=金(銀)、water-c=水(藍)
-【highlight_type說明】normal=藍框、gold=綠框、warn=紅框、special=紫框
-【重要】必須根據 ${name} 的實際八字準確計算四柱、大運、神煞，不得使用範例數據。輸出純 JSON，無任何其他文字。`;
+【重要規則】
+1. 所有括號內容必須替換為根據 ${name}（生辰：${birthday}，出生地：${birthplace}）實際計算的真實數據
+2. active=true 只能有一個，標記當前所處大運（現在是2026年，請根據生辰推算）
+3. 五行class只能用：wood-c、fire-c、earth-c、metal-c、water-c
+4. tagClass只能用：fire、earth、metal、wood、water
+5. highlight_type只能用：normal、gold、warn、special
+6. 輸出純JSON，無任何markdown、無任何前後說明文字`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { 
-                        temperature: 0.7, 
-                        maxOutputTokens: 8192,
-                        responseMimeType: "application/json"
-                    }
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
                 })
             }
         );
@@ -261,12 +260,8 @@ module.exports = async function handler(req, res) {
         try {
             d = JSON.parse(raw);
         } catch(e) {
-            throw new Error('JSON解析失敗：' + e.message + '\n原始內容前200字：' + raw.substring(0, 200));
+            throw new Error('JSON解析失敗：' + e.message + ' | 原始內容前300字：' + raw.substring(0, 300));
         }
-
-        // ══════════════════════════════════════════════
-        // STEP 2：把 JSON 數據填入固定 HTML 模板
-        // ══════════════════════════════════════════════
 
         function highlightClass(type) {
             const map = { normal: 'highlight', gold: 'highlight-gold', warn: 'highlight-warn', special: 'highlight-special' };
@@ -310,19 +305,16 @@ module.exports = async function handler(req, res) {
                     </div>
                 </div>`;
 
-            // 普通 cards
             if (sec.cards) {
                 sec.cards.forEach(card => { sectionsHTML += renderCard(card); });
             }
 
-            // grid-2 cards（肆）
             if (sec.cards_grid) {
                 sectionsHTML += `<div class="grid-2">`;
                 sec.cards_grid.forEach(card => { sectionsHTML += renderCard(card); });
                 sectionsHTML += `</div>`;
             }
 
-            // 宮位互動表格（叁）
             if (sec.interaction_table) {
                 sectionsHTML += `<div class="divider"><span>刑沖合害</span></div>
                 <div class="card"><div class="card-title">宮位間互動——刑沖合害具象化</div>
@@ -338,7 +330,6 @@ module.exports = async function handler(req, res) {
                 sectionsHTML += `</table></div>`;
             }
 
-            // 大運格（伍）
             if (sec.yunliu) {
                 sectionsHTML += `<div class="yunliu-grid">`;
                 sec.yunliu.forEach(y => {
@@ -354,7 +345,6 @@ module.exports = async function handler(req, res) {
                 sec.yunliu_cards.forEach(card => { sectionsHTML += renderCard(card); });
             }
 
-            // 神煞（陸）
             if (sec.shensha) {
                 sectionsHTML += `<div class="shensha-grid">`;
                 sec.shensha.forEach(s => {
@@ -369,7 +359,6 @@ module.exports = async function handler(req, res) {
                 }
             }
 
-            // 稱骨（柒）
             if (sec.bone) {
                 const b = sec.bone;
                 sectionsHTML += `<div class="bone-display">
@@ -382,13 +371,12 @@ module.exports = async function handler(req, res) {
             }
             if (sec.bone_card) { sectionsHTML += renderCard(sec.bone_card); }
 
-            // 機會地雷（🔴）
             if (sec.opportunities) {
                 sectionsHTML += `<div class="oppo-box"><h3>🌱 當前最值得把握的機會（2025–2026）</h3><ul>`;
                 sec.opportunities.forEach(o => { sectionsHTML += `<li>${o}</li>`; });
                 sectionsHTML += `</ul></div>`;
                 sectionsHTML += `<div class="warning-box"><h3>⚡ 最需警惕的地雷</h3><ul>`;
-                sec.warnings.forEach(w => { sectionsHTML += `<li>${w}</li>`; });
+                (sec.warnings || []).forEach(w => { sectionsHTML += `<li>${w}</li>`; });
                 sectionsHTML += `</ul></div>`;
             }
 
@@ -398,9 +386,6 @@ module.exports = async function handler(req, res) {
         const verdict = d.verdict || {};
         const verdictLines = (verdict.text || '').split('\\n').join('<br>');
 
-        // ══════════════════════════════════════════════
-        // STEP 3：組裝完整 HTML（樣式固定不變）
-        // ══════════════════════════════════════════════
         const html = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
