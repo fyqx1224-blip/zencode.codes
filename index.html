@@ -319,6 +319,96 @@
             0%   { transform: scale(1) translate(0,0); opacity: 1; }
             100% { transform: scale(0) translate(var(--tx), var(--ty)); opacity: 0; }
         }
+
+        /* ── 日期選擇器網格 ── */
+        .date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .date-grid-time {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .date-label-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .date-label-row-time {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .date-sublabel {
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            color: rgba(201,168,76,0.3);
+            text-align: center;
+            font-family: 'Noto Serif TC', serif;
+        }
+        .input-field.compact {
+            padding: 12px 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        /* 隱藏數字輸入的上下箭頭 */
+        .input-field::-webkit-outer-spin-button,
+        .input-field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-field[type=number] { -moz-appearance: textfield; }
+
+        /* ── 八字預覽卡 ── */
+        .bazi-preview {
+            display: none;
+            margin-top: 16px;
+            background: rgba(201,168,76,0.04);
+            border: 1px solid rgba(201,168,76,0.15);
+            border-radius: 2px;
+            padding: 16px;
+            animation: fade-up 0.5s ease both;
+        }
+        .bazi-preview.show { display: block; }
+        .bazi-preview-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.35em;
+            color: rgba(201,168,76,0.4);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .bazi-pillars-mini {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+        }
+        .bazi-pillar-mini {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(201,168,76,0.12);
+            padding: 10px 12px;
+            min-width: 56px;
+        }
+        .bp-label { font-size: 0.55rem; color: #888; letter-spacing: 0.2em; margin-bottom: 6px; }
+        .bp-tg { font-family: 'Ma Shan Zheng', cursive; font-size: 1.5rem; line-height: 1; }
+        .bp-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 1.5rem; line-height: 1; margin-top: 2px; }
+        .bp-god { font-size: 0.55rem; color: #888; margin-top: 6px; letter-spacing: 0.1em; }
+        .bazi-extra {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.65rem;
+            color: rgba(201,168,76,0.5);
+            letter-spacing: 0.15em;
+        }
+        .c-wood  { color: #7AB860; }
+        .c-fire  { color: #F07840; }
+        .c-earth { color: #C9A84C; }
+        .c-metal { color: #C8C8D8; }
+        .c-water { color: #63B3ED; }
     </style>
 </head>
 <body>
@@ -354,8 +444,7 @@
             <circle cx="40" cy="40" r="36" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
             <circle cx="40" cy="40" r="36" stroke="url(#lg1)" stroke-width="1.5"
                 stroke-dasharray="50 176" stroke-linecap="round"/>
-            <circle cx="40" cy="40" r="24" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
-            <circle cx="40" cy="4" r="3" fill="#C9A84C"/>
+            <circle cx="40" cy="24" r="3" fill="#C9A84C"/>
             <defs>
                 <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
                     <stop stop-color="#C9A84C"/>
@@ -383,6 +472,7 @@
         <div class="corner-bl"></div>
         <div class="corner-br"></div>
 
+        <!-- 姓名 -->
         <div class="field-group">
             <label class="field-label">命主姓名</label>
             <div class="input-wrap">
@@ -391,6 +481,7 @@
             </div>
         </div>
 
+        <!-- 性別 -->
         <div class="field-group">
             <label class="field-label">命主性別</label>
             <div class="input-wrap">
@@ -403,15 +494,53 @@
             </div>
         </div>
 
+        <!-- 出生日期（精確選擇） -->
         <div class="field-group">
-            <label class="field-label">出生生辰</label>
-            <div class="input-wrap">
-                <div class="glow-ring"></div>
-                <input type="text" id="user-birthday" class="input-field" placeholder="如：1995年8月15日 13:15" autocomplete="off">
+            <label class="field-label">出生年月日</label>
+            <div class="date-label-row">
+                <div class="date-sublabel">年</div>
+                <div class="date-sublabel">月</div>
+                <div class="date-sublabel">日</div>
+            </div>
+            <div class="date-grid">
+                <div class="input-wrap">
+                    <div class="glow-ring"></div>
+                    <input type="number" id="birth-year" class="input-field compact" placeholder="1995" min="1900" max="2099" oninput="onDateChange()">
+                </div>
+                <div class="input-wrap">
+                    <div class="glow-ring"></div>
+                    <input type="number" id="birth-month" class="input-field compact" placeholder="8" min="1" max="12" oninput="onDateChange()">
+                </div>
+                <div class="input-wrap">
+                    <div class="glow-ring"></div>
+                    <input type="number" id="birth-day" class="input-field compact" placeholder="15" min="1" max="31" oninput="onDateChange()">
+                </div>
+            </div>
+            <div class="date-label-row-time" style="margin-top:10px;">
+                <div class="date-sublabel">時</div>
+                <div class="date-sublabel">分（可選）</div>
+            </div>
+            <div class="date-grid-time">
+                <div class="input-wrap">
+                    <div class="glow-ring"></div>
+                    <input type="number" id="birth-hour" class="input-field compact" placeholder="13" min="0" max="23" oninput="onDateChange()">
+                </div>
+                <div class="input-wrap">
+                    <div class="glow-ring"></div>
+                    <input type="number" id="birth-minute" class="input-field compact" placeholder="30" min="0" max="59" oninput="onDateChange()">
+                </div>
             </div>
         </div>
 
-        <div class="field-group">
+        <!-- 八字即時預覽 -->
+        <div class="bazi-preview" id="bazi-preview">
+            <div class="bazi-preview-label">✦ 推算結果預覽 ✦</div>
+            <div class="bazi-pillars-mini" id="bazi-pillars-mini"></div>
+            <div class="bazi-extra" id="bazi-extra"></div>
+        </div>
+
+        <!-- 出生地點 -->
+        <div class="field-group" style="margin-top:20px;">
             <label class="field-label">出生地點</label>
             <div class="input-wrap">
                 <div class="glow-ring"></div>
@@ -440,46 +569,315 @@
 
 <script>
 /* ═══════════════════════════════════════
+   八字計算引擎
+═══════════════════════════════════════ */
+const TIANGAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DIZHI   = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const WUXING_TG = ['木','木','火','火','土','土','金','金','水','水'];
+const WUXING_DZ = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+
+// 天干五行對應 CSS class
+const TG_CLASS = ['wood-c','wood-c','fire-c','fire-c','earth-c','earth-c','metal-c','metal-c','water-c','water-c'];
+const DZ_CLASS = ['water-c','earth-c','wood-c','wood-c','earth-c','fire-c','fire-c','earth-c','metal-c','metal-c','earth-c','water-c'];
+
+// 二十四節氣（每年月份對應的節氣，用於月柱換月）
+// 各月份對應的「節」（非氣）的大致日期，以下為標準值（實際需考慮真太陽時）
+const JIEQI_MONTH = [
+// 月份 1  2  3  4  5  6  7  8  9  10 11 12
+// 節   小寒 立春 驚蟄 清明 立夏 芒種 小暑 立秋 白露 寒露 立冬 大雪
+    [6, 4, 6, 5, 6, 6, 7, 7, 8, 8, 7, 7]
+];
+
+// 精確節氣換月日期表（1900-2100），此處用簡化演算法
+function getSolarTermDay(year, termIndex) {
+    // termIndex: 0=小寒,1=大寒,2=立春,...（每月兩個節氣）
+    // 使用壽星萬年曆演算法簡化版
+    const C = termIndex < 2 ? (year < 2000 ? 20.1 : 20.084) :
+              termIndex < 4 ? (year < 2000 ? 4.6295 : 3.87) :
+              termIndex < 6 ? (year < 2000 ? 19.4599 : 18.73) :
+              termIndex < 8 ? (year < 2000 ? 5.1 : 5.63) :
+              termIndex < 10 ? (year < 2000 ? 20.888 : 20.646) :
+              termIndex < 12 ? (year < 2000 ? 6.318 : 6.318) :
+              termIndex < 14 ? (year < 2000 ? 22.747 : 22.747) :
+              termIndex < 16 ? (year < 2000 ? 7.928 : 8.008) :
+              termIndex < 18 ? (year < 2000 ? 23.247 : 23.013) :
+              termIndex < 20 ? (year < 2000 ? 8.378 : 7.9) :
+              termIndex < 22 ? (year < 2000 ? 23.08 : 22.825) :
+              (year < 2000 ? 7.45 : 7.18);
+    return Math.floor(C + 0.2422 * (year % 100) - Math.floor((year % 100 - 1) / 4));
+}
+
+// 獲取換月節氣（各月份對應的「節」）
+// 1月=小寒(0), 2月=立春(2), 3月=驚蟄(4), 4月=清明(6), 5月=立夏(8),
+// 6月=芒種(10), 7月=小暑(12), 8月=立秋(14), 9月=白露(16),
+// 10月=寒露(18), 11月=立冬(20), 12月=大雪(22)
+const TERM_INDEX = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+
+function getMonthGanzhi(year, month, day) {
+    // 判斷是否已過該月的「節」
+    const termDay = getSolarTermDay(year, TERM_INDEX[month - 1]);
+    let lunarMonth = month; // 命理月份（以節為分界）
+    if (day < termDay) {
+        lunarMonth = month - 1;
+        if (lunarMonth === 0) { lunarMonth = 12; year -= 1; }
+    }
+    // 月柱天干：年干為基準，甲己年從丙寅起
+    // 規律：(年干index % 5) * 2 + 月份偏移
+    const yearTgIdx = getYearGanzhi(year).tgIdx;
+    const monthTgBase = [2, 4, 6, 8, 0][yearTgIdx % 5]; // 甲己→丙,乙庚→戊,丙辛→庚,丁壬→壬,戊癸→甲
+    const monthTgIdx = (monthTgBase + (lunarMonth - 1)) % 10;
+    const monthDzIdx = (lunarMonth + 1) % 12; // 寅月=2,卯月=3...
+    return { tgIdx: monthTgIdx, dzIdx: monthDzIdx, tg: TIANGAN[monthTgIdx], dz: DIZHI[monthDzIdx] };
+}
+
+function getYearGanzhi(year) {
+    // 以立春換年（此處簡化：以1月1日近似，精確版需判斷立春日）
+    const tgIdx = (year - 4) % 10;
+    const dzIdx = (year - 4) % 12;
+    return { tgIdx: (tgIdx + 10) % 10, dzIdx: (dzIdx + 12) % 12,
+             tg: TIANGAN[(tgIdx + 10) % 10], dz: DIZHI[(dzIdx + 12) % 12] };
+}
+
+function getDayGanzhi(year, month, day) {
+    // 甲子日計算：以1900年1月31日為甲子日（index=0）
+    const base = new Date(1900, 0, 31);
+    const target = new Date(year, month - 1, day);
+    const diff = Math.round((target - base) / 86400000);
+    const tgIdx = ((diff % 10) + 10) % 10;
+    const dzIdx = ((diff % 12) + 12) % 12;
+    return { tgIdx, dzIdx, tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx] };
+}
+
+function getHourGanzhi(hour, dayTgIdx) {
+    // 時支：子時=0, 丑時=1...（每2小時一個地支）
+    const dzIdx = Math.floor((hour + 1) / 2) % 12;
+    // 時干：日干為基準
+    const tgBase = [0, 2, 4, 6, 8][dayTgIdx % 5];
+    const tgIdx = (tgBase + dzIdx) % 10;
+    return { tgIdx, dzIdx, tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx] };
+}
+
+// 十神對照表 [日主天干index][各天干index] → 十神名稱
+const SHISHEN_TABLE = [
+    // 甲日主
+    ['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'],
+    // 乙日主
+    ['劫財','比肩','傷官','食神','正財','偏財','正官','七殺','正印','偏印'],
+    // 丙日主
+    ['偏印','正印','比肩','劫財','食神','傷官','偏財','正財','七殺','正官'],
+    // 丁日主
+    ['正印','偏印','劫財','比肩','傷官','食神','正財','偏財','正官','七殺'],
+    // 戊日主
+    ['七殺','正官','偏印','正印','比肩','劫財','食神','傷官','偏財','正財'],
+    // 己日主
+    ['正官','七殺','正印','偏印','劫財','比肩','傷官','食神','正財','偏財'],
+    // 庚日主
+    ['偏財','正財','七殺','正官','偏印','正印','比肩','劫財','食神','傷官'],
+    // 辛日主
+    ['正財','偏財','正官','七殺','正印','偏印','劫財','比肩','傷官','食神'],
+    // 壬日主
+    ['食神','傷官','偏財','正財','七殺','正官','偏印','正印','比肩','劫財'],
+    // 癸日主
+    ['傷官','食神','正財','偏財','正官','七殺','正印','偏印','劫財','比肩'],
+];
+
+function getShishen(riZhuTgIdx, targetTgIdx) {
+    return SHISHEN_TABLE[riZhuTgIdx][targetTgIdx];
+}
+
+// 大運計算
+function getDayun(gender, yearTgIdx, month, day, year, birthMonth, birthDay) {
+    // 陽男陰女順排，陰男陽女逆排
+    const isYangTg = yearTgIdx % 2 === 0;
+    const isForward = (gender === '男' && isYangTg) || (gender === '女' && !isYangTg);
+
+    // 計算起運歲數：找下一個（或上一個）節氣距生日的天數 / 3
+    const birthDate = new Date(year, birthMonth - 1, birthDay);
+    let daysDiff = 0;
+    if (isForward) {
+        // 找下一個節氣
+        for (let i = 1; i <= 60; i++) {
+            const d = new Date(birthDate.getTime() + i * 86400000);
+            const termDay = getSolarTermDay(d.getFullYear(), TERM_INDEX[d.getMonth()]);
+            if (d.getDate() === termDay) { daysDiff = i; break; }
+            if (d.getDate() > termDay && i === 1) { daysDiff = 1; break; }
+        }
+    } else {
+        for (let i = 1; i <= 60; i++) {
+            const d = new Date(birthDate.getTime() - i * 86400000);
+            const termDay = getSolarTermDay(d.getFullYear(), TERM_INDEX[d.getMonth()]);
+            if (d.getDate() === termDay) { daysDiff = i; break; }
+        }
+    }
+    const startAge = Math.round(daysDiff / 3);
+
+    // 生成8個大運
+    const { tgIdx: mTg, dzIdx: mDz } = getMonthGanzhi(year, birthMonth, birthDay);
+    const dayuns = [];
+    for (let i = 0; i < 8; i++) {
+        const step = isForward ? i + 1 : -(i + 1);
+        const tgIdx = ((mTg + step) % 10 + 10) % 10;
+        const dzIdx = ((mDz + step) % 12 + 12) % 12;
+        dayuns.push({
+            tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx],
+            tgIdx, dzIdx,
+            tgClass: TG_CLASS[tgIdx], dzClass: DZ_CLASS[dzIdx],
+            age: startAge + i * 10
+        });
+    }
+    return { startAge, dayuns };
+}
+
+// 稱骨訣
+const BONE_TG = [1.0, 0.8, 1.0, 0.6, 0.8, 0.6, 0.8, 0.6, 1.0, 0.6];
+const BONE_DZ = [0.8, 0.4, 0.8, 0.6, 0.4, 0.6, 0.8, 0.4, 0.6, 0.6, 0.4, 0.8];
+function calcBoneWeight(year, month, day, hour) {
+    const y = getYearGanzhi(year);
+    const m = getMonthGanzhi(year, month, day);
+    const d = getDayGanzhi(year, month, day);
+    const h = getHourGanzhi(hour, d.tgIdx);
+    const total = BONE_TG[y.tgIdx] + BONE_DZ[y.dzIdx]
+                + BONE_TG[m.tgIdx] + BONE_DZ[m.dzIdx]
+                + BONE_TG[d.tgIdx] + BONE_DZ[d.dzIdx]
+                + BONE_TG[h.tgIdx] + BONE_DZ[h.dzIdx];
+    const liang = Math.floor(total);
+    const qian = Math.round((total - liang) * 10);
+    return `${liang}兩${qian}錢`;
+}
+
+// 旺衰簡判
+const WANGSHUAN = {
+    // 日主天干 → 各地支的旺衰 (0=絕,1=胎,2=養,3=長生,4=沐浴,5=冠帶,6=臨官,7=帝旺,8=衰,9=病,10=死,11=墓)
+    0:  [10,11,3,7,8,9,10,11,0,1,2,3],  // 甲：亥長生，卯帝旺
+    1:  [9,10,2,6,7,8,11,0,1,2,3,4],    // 乙
+    2:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 丙：寅長生，午帝旺
+    3:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 丁
+    4:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 戊（同丙）
+    5:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 己（同丁）
+    6:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 庚：巳長生，酉帝旺（簡化）
+    7:  [11,0,1,2,3,4,5,6,7,7,8,9],     // 辛
+    8:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 壬：申長生，子帝旺（簡化）
+    9:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 癸
+};
+const WANGSHUAN_NAME = ['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰','病','死','墓'];
+
+function getWangShuan(riTgIdx, dzIdx) {
+    const arr = WANGSHUAN[riTgIdx];
+    return WANGSHUAN_NAME[arr[dzIdx]];
+}
+
+// 主計算函數
+function calcBazi(year, month, day, hour, minute, gender) {
+    // 時辰調整：23:00-00:59 屬隔日子時
+    if (hour === 23) { day += 1; hour = 23; }
+
+    const yearGZ  = getYearGanzhi(year);
+    const monthGZ = getMonthGanzhi(year, month, day);
+    const dayGZ   = getDayGanzhi(year, month, day);
+    const hourGZ  = getHourGanzhi(hour, dayGZ.tgIdx);
+
+    const riTg = dayGZ.tgIdx;
+
+    const pillars = [
+        { label:'年柱', ...yearGZ,  tenGod: getShishen(riTg, yearGZ.tgIdx),  ws: getWangShuan(riTg, yearGZ.dzIdx) },
+        { label:'月柱', ...monthGZ, tenGod: getShishen(riTg, monthGZ.tgIdx), ws: getWangShuan(riTg, monthGZ.dzIdx) },
+        { label:'日柱', ...dayGZ,   tenGod: '日主', ws: getWangShuan(riTg, dayGZ.dzIdx) },
+        { label:'時柱', ...hourGZ,  tenGod: getShishen(riTg, hourGZ.tgIdx),  ws: getWangShuan(riTg, hourGZ.dzIdx) },
+    ];
+
+    const dayunData = getDayun(gender, yearGZ.tgIdx, month, day, year, month, day);
+    const boneWeight = calcBoneWeight(year, month, day, hour);
+
+    // 納音簡表（60甲子納音）
+    const NAYIN = ['海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木',
+                   '泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金',
+                   '覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水',
+                   '海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木',
+                   '泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金',
+                   '覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水'];
+    function getNayin(tgIdx, dzIdx) {
+        const idx = tgIdx * 6 + Math.floor(dzIdx / 2);
+        return NAYIN[idx % 60];
+    }
+
+    const nayin = [
+        getNayin(yearGZ.tgIdx, yearGZ.dzIdx),
+        getNayin(monthGZ.tgIdx, monthGZ.dzIdx),
+        getNayin(dayGZ.tgIdx, dayGZ.dzIdx),
+        getNayin(hourGZ.tgIdx, hourGZ.dzIdx),
+    ];
+
+    return { pillars, dayunData, boneWeight, nayin };
+}
+
+/* ═══════════════════════════════════════
+   即時預覽
+═══════════════════════════════════════ */
+function onDateChange() {
+    const year  = parseInt(document.getElementById('birth-year').value);
+    const month = parseInt(document.getElementById('birth-month').value);
+    const day   = parseInt(document.getElementById('birth-day').value);
+    const hour  = parseInt(document.getElementById('birth-hour').value) || 12;
+    const minute= parseInt(document.getElementById('birth-minute').value) || 0;
+    const gender= document.getElementById('user-gender').value || '女';
+
+    if (!year || !month || !day || year < 1900 || year > 2099 || month < 1 || month > 12 || day < 1 || day > 31) {
+        document.getElementById('bazi-preview').classList.remove('show');
+        return;
+    }
+
+    try {
+        const result = calcBazi(year, month, day, hour, minute, gender);
+        renderPreview(result);
+        document.getElementById('bazi-preview').classList.add('show');
+    } catch(e) {
+        document.getElementById('bazi-preview').classList.remove('show');
+    }
+}
+
+function renderPreview(result) {
+    const { pillars, boneWeight, nayin } = result;
+    const mini = document.getElementById('bazi-pillars-mini');
+    mini.innerHTML = pillars.map(p => `
+        <div class="bazi-pillar-mini">
+            <div class="bp-label">${p.label}</div>
+            <div class="bp-tg ${TG_CLASS[p.tgIdx]}">${p.tg}</div>
+            <div class="bp-dz ${DZ_CLASS[p.dzIdx]}">${p.dz}</div>
+            <div class="bp-god">${p.tenGod}</div>
+        </div>
+    `).join('');
+
+    const extra = document.getElementById('bazi-extra');
+    const ganzhiStr = pillars.map(p => p.tg + p.dz).join(' ');
+    extra.textContent = `${ganzhiStr}｜骨重 ${boneWeight}`;
+}
+
+/* ═══════════════════════════════════════
    星空背景
 ═══════════════════════════════════════ */
 (function initStars() {
     const canvas = document.getElementById('stars-canvas');
     const ctx = canvas.getContext('2d');
     let W, H, stars = [];
-
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
     resize();
     window.addEventListener('resize', () => { resize(); buildStars(); });
-
     function buildStars() {
         stars = [];
         const count = Math.floor((W * H) / 3000);
         for (let i = 0; i < count; i++) {
-            stars.push({
-                x: Math.random() * W,
-                y: Math.random() * H,
-                r: Math.random() * 0.8 + 0.1,
-                a: Math.random(),
-                speed: Math.random() * 0.003 + 0.001,
-                phase: Math.random() * Math.PI * 2
-            });
+            stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*0.8+0.1,
+                a: Math.random(), speed: Math.random()*0.003+0.001, phase: Math.random()*Math.PI*2 });
         }
     }
     buildStars();
-
     let t = 0;
     function draw() {
-        ctx.clearRect(0, 0, W, H);
-        t += 0.01;
+        ctx.clearRect(0, 0, W, H); t += 0.01;
         stars.forEach(s => {
             const alpha = s.a * (0.4 + 0.6 * Math.sin(t * s.speed * 60 + s.phase));
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(232, 211, 153, ${alpha})`;
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(232,211,153,${alpha})`; ctx.fill();
         });
         requestAnimationFrame(draw);
     }
@@ -487,22 +885,14 @@
 })();
 
 /* ═══════════════════════════════════════
-   浮動金色粒子
+   浮動粒子 & 火花
 ═══════════════════════════════════════ */
 (function spawnParticles() {
     function spawn() {
         const el = document.createElement('div');
         el.className = 'float-particle';
         const size = Math.random() * 2 + 0.5;
-        el.style.cssText = `
-            width:${size}px; height:${size}px;
-            left:${Math.random()*100}vw;
-            bottom:${Math.random()*20-5}vh;
-            background: rgba(201,168,76,${Math.random()*0.4+0.1});
-            animation-duration: ${Math.random()*20+15}s;
-            animation-delay: ${Math.random()*5}s;
-            box-shadow: 0 0 ${size*2}px rgba(201,168,76,0.5);
-        `;
+        el.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}vw;bottom:${Math.random()*20-5}vh;background:rgba(201,168,76,${Math.random()*0.4+0.1});animation-duration:${Math.random()*20+15}s;animation-delay:${Math.random()*5}s;box-shadow:0 0 ${size*2}px rgba(201,168,76,0.5);`;
         document.body.appendChild(el);
         setTimeout(() => el.remove(), 26000);
     }
@@ -510,16 +900,13 @@
     for (let i = 0; i < 8; i++) spawn();
 })();
 
-/* ═══════════════════════════════════════
-   輸入框 → 打字時產生火花
-═══════════════════════════════════════ */
 document.querySelectorAll('.input-field').forEach(input => {
-    input.addEventListener('input', function(e) {
+    input.addEventListener('input', function() {
         const wrap = this.closest('.input-wrap');
+        if (!wrap) return;
         const rect = wrap.getBoundingClientRect();
         const cx = rect.left + rect.width * (0.2 + Math.random() * 0.6);
-        const cy = rect.bottom - 2;
-        for (let i = 0; i < 3; i++) spawnSpark(cx, cy);
+        for (let i = 0; i < 3; i++) spawnSpark(cx, rect.bottom - 2);
     });
 });
 
@@ -528,103 +915,121 @@ function spawnSpark(x, y) {
     el.className = 'spark';
     const angle = (Math.random() * 180 - 90) * Math.PI / 180;
     const dist = Math.random() * 20 + 6;
-    el.style.cssText = `
-        left:${x}px; top:${y}px;
-        --tx:${Math.cos(angle)*dist}px;
-        --ty:${-Math.sin(angle)*dist - 8}px;
-        width:${Math.random()*2+1}px; height:${Math.random()*2+1}px;
-        animation-duration:${Math.random()*0.4+0.4}s;
-        animation-delay:${Math.random()*0.1}s;
-    `;
+    el.style.cssText = `left:${x}px;top:${y}px;--tx:${Math.cos(angle)*dist}px;--ty:${-Math.sin(angle)*dist-8}px;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;animation-duration:${Math.random()*0.4+0.4}s;animation-delay:${Math.random()*0.1}s;`;
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 800);
 }
 
-/* ═══════════════════════════════════════
-   按鈕懸停 → 圓形光暈粒子
-═══════════════════════════════════════ */
 const btn = document.getElementById('submit-button');
 btn.addEventListener('mousemove', function(e) {
     if (Math.random() > 0.5) return;
-    const rect = btn.getBoundingClientRect();
-    spawnSpark(e.clientX, rect.top + 2);
+    spawnSpark(e.clientX, btn.getBoundingClientRect().top + 2);
 });
 
 /* ═══════════════════════════════════════
-   Loading 詞語輪播
+   Loading 輪播
 ═══════════════════════════════════════ */
-const loadingPhrases = [
-    '正在校對真太陽時',
-    '排布四柱八字',
-    '推演大運流年',
-    '鑑定格局強弱',
-    '觀測五行流通',
-    '解析天干地支'
-];
-let phraseIdx = 0;
-let phraseTimer = null;
-
+const loadingPhrases = ['正在校對真太陽時','排布四柱八字','推演大運流年','鑑定格局強弱','觀測五行流通','解析天干地支'];
+let phraseIdx = 0, phraseTimer = null;
 function startPhrases() {
     const el = document.getElementById('loading-phrase');
     phraseTimer = setInterval(() => {
         el.style.opacity = '0';
-        setTimeout(() => {
-            phraseIdx = (phraseIdx + 1) % loadingPhrases.length;
-            el.textContent = loadingPhrases[phraseIdx];
-            el.style.opacity = '';
-        }, 300);
+        setTimeout(() => { phraseIdx = (phraseIdx+1) % loadingPhrases.length; el.textContent = loadingPhrases[phraseIdx]; el.style.opacity = ''; }, 300);
     }, 2000);
 }
 function stopPhrases() { clearInterval(phraseTimer); }
 
 /* ═══════════════════════════════════════
-   主函數
+   主函數：計算後傳送給後端
 ═══════════════════════════════════════ */
 async function generateReport() {
-    const n = document.getElementById('user-name').value.trim();
-    const g = document.getElementById('user-gender').value;
-    const b = document.getElementById('user-birthday').value.trim();
-    const p = document.getElementById('user-birthplace').value.trim();
-    if (!n || !g || !b || !p) {
-        // 抖動提示
-        document.querySelectorAll('.input-field').forEach(f => {
-            if (!f.value.trim()) {
-                f.style.borderColor = 'rgba(200,60,30,0.7)';
-                f.style.boxShadow = '0 0 12px rgba(200,60,30,0.2)';
-                setTimeout(() => {
-                    f.style.borderColor = '';
-                    f.style.boxShadow = '';
-                }, 1000);
-            }
-        });
-        return;
-    }
+    const name  = document.getElementById('user-name').value.trim();
+    const gender= document.getElementById('user-gender').value;
+    const year  = parseInt(document.getElementById('birth-year').value);
+    const month = parseInt(document.getElementById('birth-month').value);
+    const day   = parseInt(document.getElementById('birth-day').value);
+    const hour  = parseInt(document.getElementById('birth-hour').value) || 12;
+    const minute= parseInt(document.getElementById('birth-minute').value) || 0;
+    const birthplace = document.getElementById('user-birthplace').value.trim();
 
-    // 顯示 loading
-    const overlay = document.getElementById('loading-overlay');
-    overlay.style.display = 'flex';
+    // 驗證
+    const fields = [
+        { el: document.getElementById('user-name'), ok: !!name },
+        { el: document.getElementById('user-gender'), ok: !!gender },
+        { el: document.getElementById('birth-year'), ok: !!year },
+        { el: document.getElementById('birth-month'), ok: !!month },
+        { el: document.getElementById('birth-day'), ok: !!day },
+        { el: document.getElementById('user-birthplace'), ok: !!birthplace },
+    ];
+    let hasError = false;
+    fields.forEach(f => {
+        if (!f.ok) {
+            f.el.style.borderColor = 'rgba(200,60,30,0.7)';
+            f.el.style.boxShadow = '0 0 12px rgba(200,60,30,0.2)';
+            setTimeout(() => { f.el.style.borderColor = ''; f.el.style.boxShadow = ''; }, 1200);
+            hasError = true;
+        }
+    });
+    if (hasError) return;
+
+    // 前端計算八字
+    const baziResult = calcBazi(year, month, day, hour, minute, gender);
+    const { pillars, dayunData, boneWeight, nayin } = baziResult;
+
+    // 組成傳給後端的結構化資料
+    const baziData = {
+        name, gender, birthplace,
+        birthday: `${year}年${month}月${day}日 ${hour}時${minute}分`,
+        // 精確計算結果
+        pillars: pillars.map(p => ({
+            label: p.label,
+            tg: p.tg, dz: p.dz,
+            tgClass: TG_CLASS[p.tgIdx],
+            dzClass: DZ_CLASS[p.dzIdx],
+            tenGod: p.tenGod,
+            wangshuan: p.ws,
+            tgWuxing: WUXING_TG[p.tgIdx],
+            dzWuxing: WUXING_DZ[p.dzIdx]
+        })),
+        ganzhiString: pillars.map(p => p.tg + p.dz).join(' '),
+        riZhu: pillars[2].tg + pillars[2].dz,
+        riZhuTg: pillars[2].tg,
+        nayin: nayin.join('·'),
+        boneWeight,
+        dayun: {
+            startAge: dayunData.startAge,
+            list: dayunData.dayuns.map((d, i) => ({
+                age: `${d.age}歲起`,
+                stem: d.tg + d.dz,
+                tgClass: d.tgClass,
+                active: false // 後端根據年齡判斷
+            }))
+        }
+    };
+
+    // Loading
+    document.getElementById('loading-overlay').style.display = 'flex';
     startPhrases();
 
     try {
         const r = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: n, gender: g, birthday: b, birthplace: p })
+            body: JSON.stringify(baziData)
         });
         const html = await r.text();
         stopPhrases();
-        overlay.style.display = 'none';
+        document.getElementById('loading-overlay').style.display = 'none';
         document.getElementById('input-form-container').style.display = 'none';
         document.getElementById('report-output-container').innerHTML = html;
         document.getElementById('report-output-container').style.display = 'block';
     } catch(e) {
         stopPhrases();
-        overlay.style.display = 'none';
+        document.getElementById('loading-overlay').style.display = 'none';
         alert('觀測失敗，請稍後重試');
     }
 }
 </script>
 </body>
-
 </html>
-
