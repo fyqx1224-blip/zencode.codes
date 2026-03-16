@@ -1,1034 +1,515 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenCode 命運檔案 | 深度流年推演</title>
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --gold: #C9A84C;
-            --gold-light: #E8D399;
-            --gold-dim: rgba(201, 168, 76, 0.15);
-            --red: #8B1A1A;
-            --red-glow: rgba(232, 68, 42, 0.4);
-            --bg: #030303;
-        }
-
-        html, body {
-            background: var(--bg);
-            color: #fff;
-            font-family: 'Noto Serif TC', serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* ── 星場背景 ── */
-        #stars-canvas {
-            position: fixed; inset: 0; z-index: 0;
-            pointer-events: none;
-        }
-
-        /* ── 頂部放射光 ── */
-        .radial-top {
-            position: fixed; top: -30vh; left: 50%; transform: translateX(-50%);
-            width: 120vw; height: 80vh;
-            background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
-            pointer-events: none; z-index: 1;
-        }
-
-        /* ── 陣法紋路 SVG ── */
-        .sigil-bg {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(90vw, 700px); height: min(90vw, 700px);
-            opacity: 0.04; pointer-events: none; z-index: 1;
-            animation: sigil-rotate 120s linear infinite;
-        }
-        @keyframes sigil-rotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-        /* ── 主容器 ── */
-        .container {
-            position: relative; z-index: 10;
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 60px 20px;
-        }
-
-        /* ── 標題區 ── */
-        .title-group {
-            text-align: center; margin-bottom: 48px;
-            animation: fade-down 1s ease both;
-        }
-        .title-eyebrow {
-            font-size: 0.7rem; letter-spacing: 0.4em;
-            color: rgba(201,168,76,0.5);
-            text-transform: uppercase; margin-bottom: 16px;
-        }
-        .title-main {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: clamp(2.8rem, 8vw, 4.5rem);
-            background: linear-gradient(180deg, #E8D399 0%, #C9A84C 50%, #8a6a20 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 30px rgba(201,168,76,0.4));
-            line-height: 1.1; margin-bottom: 10px;
-        }
-        .title-sub {
-            font-size: 0.8rem; letter-spacing: 0.25em;
-            color: rgba(255,255,255,0.25);
-        }
-
-        /* 分割線 */
-        .divider {
-            width: 200px; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
-            margin: 0 auto 48px;
-            animation: fade-in 1.2s ease both 0.3s;
-        }
-
-        /* ── 卡片 ── */
-        .form-card {
-            width: 100%; max-width: 440px;
-            background: rgba(8, 6, 4, 0.75);
-            border: 1px solid rgba(201,168,76,0.15);
-            border-radius: 2px;
-            padding: 42px 36px;
-            position: relative;
-            backdrop-filter: blur(20px);
-            box-shadow:
-                0 0 0 1px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(201,168,76,0.08),
-                0 40px 80px rgba(0,0,0,0.6),
-                0 0 60px rgba(201,168,76,0.04);
-            animation: fade-up 1s ease both 0.2s;
-        }
-
-        /* 卡片四角裝飾 */
-        .form-card::before, .form-card::after,
-        .corner-tl, .corner-tr, .corner-bl, .corner-br {
-            position: absolute; content: '';
-            width: 12px; height: 12px;
-            border-color: rgba(201,168,76,0.5);
-            border-style: solid;
-        }
-        .corner-tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
-        .corner-tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
-        .corner-bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
-        .corner-br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
-        .form-card::before, .form-card::after { display: none; }
-
-        /* ── 表單欄位組 ── */
-        .field-group {
-            display: flex; flex-direction: column; gap: 6px;
-            margin-bottom: 20px;
-        }
-        .field-label {
-            font-size: 0.65rem; letter-spacing: 0.3em;
-            color: rgba(201,168,76,0.45);
-            text-transform: uppercase;
-            padding-left: 2px;
-        }
-
-        /* ── 輸入框容器（用於光效） ── */
-        .input-wrap {
-            position: relative;
-        }
-        .input-wrap::after {
-            content: '';
-            position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            opacity: 0; transform: scaleX(0);
-            transition: opacity 0.4s, transform 0.4s;
-            pointer-events: none;
-        }
-        .input-wrap:focus-within::after {
-            opacity: 1; transform: scaleX(1);
-        }
-
-        /* 輸入框聚焦時的外部光暈層 */
-        .input-wrap .glow-ring {
-            position: absolute; inset: -1px;
-            border-radius: 3px;
-            border: 1px solid transparent;
-            background: linear-gradient(#030303, #030303) padding-box,
-                        linear-gradient(135deg, rgba(201,168,76,0), rgba(201,168,76,0.6), rgba(201,168,76,0)) border-box;
-            opacity: 0; transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        .input-wrap:focus-within .glow-ring { opacity: 1; }
-
-        /* ── 輸入框本體 ── */
-        .input-field {
-            width: 100%;
-            padding: 14px 18px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(201,168,76,0.12);
-            border-radius: 2px;
-            color: #E8D399;
-            font-family: 'Noto Serif TC', serif;
-            font-size: 0.95rem;
-            letter-spacing: 0.05em;
-            outline: none;
-            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-            -webkit-appearance: none; appearance: none;
-            position: relative; z-index: 1;
-        }
-        .input-field::placeholder {
-            color: rgba(255,255,255,0.15);
-            font-size: 0.85rem;
-        }
-        .input-field:focus {
-            background: rgba(201,168,76,0.04);
-            border-color: rgba(201,168,76,0.35);
-            box-shadow: 0 0 20px rgba(201,168,76,0.08), inset 0 1px 0 rgba(201,168,76,0.05);
-        }
-
-        select.input-field {
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23C9A84C' fill-opacity='0.5' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 10px auto;
-            cursor: pointer;
-            padding-right: 40px;
-        }
-        select.input-field option { background: #0d0c0a; color: #E8D399; }
-
-        /* ── 按鈕 ── */
-        .btn-wrap {
-            margin-top: 32px;
-            position: relative;
-        }
-        .submit-btn {
-            width: 100%; padding: 17px;
-            background: linear-gradient(135deg, #6B0E0E 0%, #C43A1F 60%, #E85A30 100%);
-            color: rgba(255,255,255,0.95);
-            border: none; border-radius: 2px;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.35rem; letter-spacing: 4px;
-            cursor: pointer;
-            position: relative; overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.3s;
-            box-shadow: 0 6px 30px rgba(180, 40, 20, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
-        }
-        .submit-btn::before {
-            content: '';
-            position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-            transition: left 0.6s ease;
-        }
-        .submit-btn:hover::before { left: 100%; }
-        .submit-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 40px rgba(200, 50, 20, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
-        }
-        .submit-btn:active { transform: translateY(0); }
-
-        /* 按鈕粒子容器 */
-        .btn-particles {
-            position: absolute; inset: 0; pointer-events: none; overflow: visible;
-        }
-
-        /* ── 底部符文 ── */
-        .rune-row {
-            display: flex; gap: 18px; justify-content: center;
-            margin-top: 32px;
-            animation: fade-in 1.5s ease both 0.8s;
-        }
-        .rune {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 0.85rem;
-            color: rgba(201,168,76,0.2);
-            letter-spacing: 0.1em;
-            transition: color 0.3s;
-        }
-        .rune:hover { color: rgba(201,168,76,0.5); }
-
-        /* ── Loading 狀態 ── */
-        #loading-overlay {
-            display: none;
-            position: fixed; inset: 0; z-index: 100;
-            background: rgba(3,3,3,0.92);
-            backdrop-filter: blur(8px);
-            flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 24px;
-        }
-        .loading-sigil {
-            width: 80px; height: 80px;
-            position: relative;
-        }
-        .loading-sigil svg {
-            animation: sigil-rotate 4s linear infinite;
-        }
-        .loading-text {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.1rem; letter-spacing: 0.25em;
-            color: rgba(201,168,76,0.7);
-            animation: pulse-text 2s ease infinite;
-        }
-        .loading-sub {
-            font-size: 0.7rem; letter-spacing: 0.2em;
-            color: rgba(255,255,255,0.2);
-        }
-        @keyframes pulse-text {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        /* ── 浮動粒子 ── */
-        .float-particle {
-            position: fixed; pointer-events: none; z-index: 2;
-            border-radius: 50%;
-            animation: float-up linear both;
-        }
-        @keyframes float-up {
-            0%   { transform: translateY(0) scale(1); opacity: 0; }
-            10%  { opacity: 1; }
-            90%  { opacity: 0.6; }
-            100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
-        }
-
-        /* ── 過場動畫 ── */
-        @keyframes fade-down {
-            from { opacity: 0; transform: translateY(-20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-up {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        /* ── 輸入時粒子光點 ── */
-        .spark {
-            position: absolute; pointer-events: none; z-index: 20;
-            width: 3px; height: 3px; border-radius: 50%;
-            background: var(--gold-light);
-            animation: spark-fade 0.6s ease both;
-        }
-        @keyframes spark-fade {
-            0%   { transform: scale(1) translate(0,0); opacity: 1; }
-            100% { transform: scale(0) translate(var(--tx), var(--ty)); opacity: 0; }
-        }
-
-        /* ── 日期選擇器網格 ── */
-        .date-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .date-grid-time {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .date-label-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .date-label-row-time {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .date-sublabel {
-            font-size: 0.58rem;
-            letter-spacing: 0.2em;
-            color: rgba(201,168,76,0.3);
-            text-align: center;
-            font-family: 'Noto Serif TC', serif;
-        }
-        .input-field.compact {
-            padding: 12px 10px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-        /* 隱藏數字輸入的上下箭頭 */
-        .input-field::-webkit-outer-spin-button,
-        .input-field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .input-field[type=number] { -moz-appearance: textfield; }
-
-        /* ── 八字預覽卡 ── */
-        .bazi-preview {
-            display: none;
-            margin-top: 16px;
-            background: rgba(201,168,76,0.04);
-            border: 1px solid rgba(201,168,76,0.15);
-            border-radius: 2px;
-            padding: 16px;
-            animation: fade-up 0.5s ease both;
-        }
-        .bazi-preview.show { display: block; }
-        .bazi-preview-label {
-            font-size: 0.6rem;
-            letter-spacing: 0.35em;
-            color: rgba(201,168,76,0.4);
-            text-align: center;
-            margin-bottom: 12px;
-        }
-        .bazi-pillars-mini {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-        }
-        .bazi-pillar-mini {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(201,168,76,0.12);
-            padding: 10px 12px;
-            min-width: 56px;
-        }
-        .bp-label { font-size: 0.55rem; color: #888; letter-spacing: 0.2em; margin-bottom: 6px; }
-        .bp-tg { font-family: 'Ma Shan Zheng', cursive; font-size: 1.5rem; line-height: 1; }
-        .bp-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 1.5rem; line-height: 1; margin-top: 2px; }
-        .bp-god { font-size: 0.55rem; color: #888; margin-top: 6px; letter-spacing: 0.1em; }
-        .bazi-extra {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.65rem;
-            color: rgba(201,168,76,0.5);
-            letter-spacing: 0.15em;
-        }
-        .c-wood  { color: #7AB860; }
-        .c-fire  { color: #F07840; }
-        .c-earth { color: #C9A84C; }
-        .c-metal { color: #C8C8D8; }
-        .c-water { color: #63B3ED; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode · 命運檔案</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
+  --jade:#5FB87A;--crimson:#C8402A;
+  --bg:#06050A;--bg2:#0C0B14;
+  --surface:rgba(255,255,255,0.032);--border:rgba(212,168,67,0.18);
+  --text:#F0EAD6;--text-d:rgba(240,234,214,0.52);--text-f:rgba(240,234,214,0.22);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(212,168,67,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.025) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
+.scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,0.12),rgba(212,168,67,0.38),rgba(212,168,67,0.12),transparent);
+  animation:scan 9s linear infinite;}
+@keyframes scan{0%{top:-2px}100%{top:100vh}}
+.page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 80px;}
+.header{text-align:center;margin-bottom:52px;}
+.h-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;font-size:0.63rem;letter-spacing:0.55em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fsd .8s ease .2s forwards;}
+.h-tag::before,.h-tag::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.h-tag::after{transform:scaleX(-1);}
+.t-wrap{position:relative;display:inline-block;margin-bottom:14px;opacity:0;animation:fsd .9s ease .35s forwards;}
+.t-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(3.4rem,9vw,5.8rem);line-height:1;letter-spacing:0.1em;
+  background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 38%,#A0680A 68%,#D4A843 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 45px rgba(212,168,67,0.38));}
+.t-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 65%,rgba(212,168,67,0.14) 0%,transparent 70%);filter:blur(22px);pointer-events:none;}
+.t-sub{font-size:0.82rem;letter-spacing:0.38em;color:var(--text-d);font-family:'Noto Sans TC',sans-serif;opacity:0;animation:fsd 1s ease .5s forwards;}
+.hdiv{width:280px;height:1px;margin:30px auto 40px;background:linear-gradient(90deg,transparent,var(--gold),transparent);position:relative;opacity:0;animation:fi 1s ease .6s forwards;}
+.hdiv::before{content:'✦';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:0.65rem;color:var(--gold);background:var(--bg);padding:0 8px;}
+.form-card{width:100%;max-width:460px;background:rgba(12,11,20,0.88);border:1px solid var(--border);padding:44px 40px 40px;position:relative;backdrop-filter:blur(24px);
+  box-shadow:0 0 0 1px rgba(0,0,0,0.9),0 32px 64px rgba(0,0,0,0.7),0 0 80px rgba(212,168,67,0.04),inset 0 1px 0 rgba(212,168,67,0.07);
+  opacity:0;animation:fsu .9s ease .5s forwards;}
+.c-tl,.c-tr,.c-bl,.c-br{position:absolute;width:16px;height:16px;border-color:rgba(212,168,67,0.45);border-style:solid;}
+.c-tl{top:10px;left:10px;border-width:1px 0 0 1px;}.c-tr{top:10px;right:10px;border-width:1px 1px 0 0;}
+.c-bl{bottom:10px;left:10px;border-width:0 0 1px 1px;}.c-br{bottom:10px;right:10px;border-width:0 1px 1px 0;}
+.cal-tog{display:flex;margin-bottom:28px;border:1px solid var(--border);overflow:hidden;}
+.cal-btn{flex:1;padding:11px 0;background:transparent;border:none;font-family:'Noto Sans TC',sans-serif;font-size:0.8rem;letter-spacing:0.2em;color:var(--text-d);cursor:pointer;transition:all .3s;position:relative;}
+.cal-btn.active{background:rgba(212,168,67,0.1);color:var(--gold-b);}
+.cal-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:1px;background:var(--gold);}
+.cal-btn:hover:not(.active){color:var(--text);background:rgba(255,255,255,0.03);}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:22px;}
+.flbl{font-family:'Noto Sans TC',sans-serif;font-size:0.64rem;letter-spacing:0.38em;color:var(--gold);text-transform:uppercase;padding-left:1px;display:flex;align-items:center;gap:8px;}
+.flbl::before{content:'';width:3px;height:3px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;}
+.iw{position:relative;}
+.iw::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);opacity:0;transition:all .4s;}
+.iw:focus-within::after{transform:scaleX(1);opacity:1;}
+.inp{width:100%;padding:13px 16px;background:rgba(0,0,0,0.5);border:1px solid rgba(212,168,67,0.15);color:var(--text);font-family:'Noto Serif TC',serif;font-size:0.97rem;letter-spacing:0.06em;outline:none;transition:all .3s;-webkit-appearance:none;appearance:none;border-radius:2px;}
+.inp::placeholder{color:var(--text-f);font-size:0.83rem;}
+.inp:focus{background:rgba(212,168,67,0.04);border-color:rgba(212,168,67,0.42);box-shadow:0 0 24px rgba(212,168,67,0.07);color:var(--gold-b);}
+.inp::-webkit-outer-spin-button,.inp::-webkit-inner-spin-button{-webkit-appearance:none;}
+.inp[type=number]{-moz-appearance:textfield;}
+select.inp{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23D4A843' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:9px;cursor:pointer;padding-right:36px;}
+select.inp option{background:#0C0B14;color:var(--text);}
+.dg3{display:grid;grid-template-columns:2fr 1.2fr 1.2fr;gap:8px;}
+.dg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sl3{display:grid;grid-template-columns:2fr 1.2fr 1.2fr;gap:8px;margin-bottom:5px;}
+.sl2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:5px;margin-top:10px;}
+.slbl{font-family:'Noto Sans TC',sans-serif;font-size:0.58rem;letter-spacing:0.25em;color:var(--text-f);text-align:center;}
+.inp.c{text-align:center;padding-left:8px;padding-right:8px;font-size:0.93rem;}
+.lunar-h{font-family:'Noto Sans TC',sans-serif;font-size:0.68rem;color:rgba(95,184,122,0.65);letter-spacing:0.1em;margin-top:5px;display:none;}
+.lunar-h.show{display:block;}
+.bazi-prev{margin:18px 0;background:rgba(212,168,67,0.032);border:1px solid rgba(212,168,67,0.14);padding:18px 16px 14px;display:none;animation:fsu .4s ease both;}
+.bazi-prev.show{display:block;}
+.bp-hd{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.58rem;letter-spacing:0.45em;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;justify-content:center;}
+.bp-hd::before,.bp-hd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.3));}
+.bp-hd::after{transform:scaleX(-1);}
+.bp-ps{display:flex;gap:3px;justify-content:center;}
+.bp-p{display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.1);padding:10px 14px 8px;min-width:62px;}
+.bp-l{font-family:'Noto Sans TC',sans-serif;font-size:0.53rem;color:var(--text-f);letter-spacing:0.2em;margin-bottom:7px;}
+.bp-t{font-family:'Ma Shan Zheng',cursive;font-size:1.75rem;line-height:1;}
+.bp-d{font-family:'Ma Shan Zheng',cursive;font-size:1.75rem;line-height:1;margin-top:1px;}
+.bp-g{font-family:'Noto Sans TC',sans-serif;font-size:0.51rem;color:var(--text-f);margin-top:7px;letter-spacing:0.1em;}
+.bp-ex{text-align:center;margin-top:10px;font-family:'Noto Sans TC',sans-serif;font-size:0.63rem;color:rgba(212,168,67,0.55);letter-spacing:0.18em;}
+.cw{color:#7DE09A;}.cf{color:#F07840;}.ce{color:#D4A843;}.cm{color:#D0D0E0;}.cwa{color:#63B3ED;}
+.btn-row{margin-top:28px;}
+.sbtn{width:100%;padding:17px;background:linear-gradient(135deg,#5A0A0A 0%,#9C2F18 55%,#C8402A 100%);color:rgba(255,255,255,0.96);border:none;border-radius:2px;font-family:'Ma Shan Zheng',cursive;font-size:1.35rem;letter-spacing:5px;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,box-shadow .3s;box-shadow:0 6px 32px rgba(180,40,20,0.3),inset 0 1px 0 rgba(255,255,255,0.09);}
+.sbtn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left .6s ease;}
+.sbtn:hover::before{left:100%}.sbtn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,64,42,0.42);}
+.sbtn:active{transform:translateY(0);}
+.rune-row{display:flex;gap:16px;justify-content:center;margin-top:32px;opacity:0;animation:fi 1.2s ease 1.2s forwards;}
+.rune{font-family:'Ma Shan Zheng',cursive;font-size:0.82rem;color:rgba(212,168,67,0.18);letter-spacing:0.15em;transition:color .4s;cursor:default;}
+.rune:hover{color:rgba(212,168,67,0.5);}
+#lov{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,5,10,0.95);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.lring{width:88px;height:88px;position:relative;}
+.lring svg{animation:spin 3s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lchar{font-family:'Ma Shan Zheng',cursive;font-size:2.1rem;color:var(--gold);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:cp 2s ease-in-out infinite;}
+@keyframes cp{0%,100%{opacity:.5;text-shadow:0 0 12px rgba(212,168,67,.3)}50%{opacity:1;text-shadow:0 0 35px rgba(212,168,67,.85)}}
+.ltxt{font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;letter-spacing:.32em;color:rgba(212,168,67,.78);transition:opacity .3s;}
+.lsub{font-family:'Noto Sans TC',sans-serif;font-size:.65rem;letter-spacing:.25em;color:rgba(255,255,255,.18);}
+.spark{position:fixed;pointer-events:none;z-index:20;border-radius:50%;background:var(--gold-b);animation:sf .5s ease both;}
+@keyframes sf{0%{transform:scale(1) translate(0,0);opacity:1}100%{transform:scale(0) translate(var(--tx),var(--ty));opacity:0}}
+.fp{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:fu linear both;}
+@keyframes fu{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.8}90%{opacity:.4}100%{transform:translateY(-100vh) scale(.2);opacity:0}}
+@keyframes fsd{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes fsu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+#roc{position:relative;z-index:10;width:100%;}
+@media(max-width:480px){.form-card{padding:32px 20px 28px;}.dg3{grid-template-columns:1.5fr 1fr 1fr;}.bp-p{min-width:52px;padding:8px 10px 6px;}}
+</style>
 </head>
 <body>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-ov"></div>
+<div class="scan"></div>
 
-<!-- 星空畫布 -->
-<canvas id="stars-canvas"></canvas>
-<div class="radial-top"></div>
-
-<!-- 背景陣法紋路 -->
-<svg class="sigil-bg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" fill="none">
-    <circle cx="200" cy="200" r="190" stroke="#C9A84C" stroke-width="0.5"/>
-    <circle cx="200" cy="200" r="150" stroke="#C9A84C" stroke-width="0.3"/>
-    <circle cx="200" cy="200" r="100" stroke="#C9A84C" stroke-width="0.5"/>
-    <polygon points="200,20 371,110 371,290 200,380 29,290 29,110" stroke="#C9A84C" stroke-width="0.4"/>
-    <polygon points="200,50 345,125 345,275 200,350 55,275 55,125" stroke="#C9A84C" stroke-width="0.25"/>
-    <line x1="200" y1="20" x2="200" y2="380" stroke="#C9A84C" stroke-width="0.2"/>
-    <line x1="20" y1="200" x2="380" y2="200" stroke="#C9A84C" stroke-width="0.2"/>
-    <line x1="60" y1="60" x2="340" y2="340" stroke="#C9A84C" stroke-width="0.2"/>
-    <line x1="340" y1="60" x2="60" y2="340" stroke="#C9A84C" stroke-width="0.2"/>
-    <circle cx="200" cy="200" r="8" stroke="#C9A84C" stroke-width="0.8"/>
-    <circle cx="200" cy="20" r="3" fill="#C9A84C"/>
-    <circle cx="371" cy="110" r="3" fill="#C9A84C"/>
-    <circle cx="371" cy="290" r="3" fill="#C9A84C"/>
-    <circle cx="200" cy="380" r="3" fill="#C9A84C"/>
-    <circle cx="29" cy="290" r="3" fill="#C9A84C"/>
-    <circle cx="29" cy="110" r="3" fill="#C9A84C"/>
-</svg>
-
-<!-- Loading 遮罩 -->
-<div id="loading-overlay">
-    <div class="loading-sigil">
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="40" r="36" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
-            <circle cx="40" cy="40" r="36" stroke="url(#lg1)" stroke-width="1.5"
-                stroke-dasharray="50 176" stroke-linecap="round"/>
-            <circle cx="40" cy="24" r="3" fill="#C9A84C"/>
-            <defs>
-                <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#C9A84C"/>
-                    <stop offset="1" stop-color="transparent"/>
-                </linearGradient>
-            </defs>
-        </svg>
-    </div>
-    <div class="loading-text" id="loading-phrase">正在校對真太陽時</div>
-    <div class="loading-sub">觀測星象能量 · 排布四柱格局</div>
+<div id="lov">
+  <div class="lring">
+    <svg viewBox="0 0 88 88" fill="none" width="88" height="88">
+      <circle cx="44" cy="44" r="40" stroke="rgba(212,168,67,0.1)" stroke-width="1"/>
+      <circle cx="44" cy="44" r="40" stroke="url(#lg1)" stroke-width="1.5" stroke-dasharray="60 192" stroke-linecap="round"/>
+      <circle cx="44" cy="44" r="28" stroke="rgba(212,168,67,0.07)" stroke-width=".5"/>
+      <circle cx="44" cy="4" r="3" fill="#D4A843"/>
+      <defs><linearGradient id="lg1" x1="0" y1="0" x2="88" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#D4A843"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+    </svg>
+    <div class="lchar" id="lchar">命</div>
+  </div>
+  <div class="ltxt" id="lphr">正在排布四柱八字</div>
+  <div class="lsub">觀測星象能量 · 推算命盤格局</div>
 </div>
 
-<!-- 主體表單 -->
-<div id="input-form-container" class="container">
-    <div class="title-group">
-        <div class="title-eyebrow">ZenCode · 命理推演系統</div>
-        <h1 class="title-main">開啟命運檔案</h1>
-        <div class="title-sub">深度流年 · 八字鑑定 · 大運解讀</div>
+<div id="ifc" class="page">
+  <div class="header">
+    <div class="h-tag">ZenCode · 命理推演系統</div>
+    <div class="t-wrap">
+      <div class="t-glow"></div>
+      <h1 class="t-main">開啟命運檔案</h1>
     </div>
-    <div class="divider"></div>
+    <div class="t-sub">深度流年 · 八字鑑定 · 大運解讀</div>
+  </div>
+  <div class="hdiv"></div>
 
-    <div class="form-card">
-        <div class="corner-tl"></div>
-        <div class="corner-tr"></div>
-        <div class="corner-bl"></div>
-        <div class="corner-br"></div>
+  <div class="form-card">
+    <div class="c-tl"></div><div class="c-tr"></div><div class="c-bl"></div><div class="c-br"></div>
 
-        <!-- 姓名 -->
-        <div class="field-group">
-            <label class="field-label">命主姓名</label>
-            <div class="input-wrap">
-                <div class="glow-ring"></div>
-                <input type="text" id="user-name" class="input-field" placeholder="請輸入姓名" autocomplete="off">
-            </div>
-        </div>
-
-        <!-- 性別 -->
-        <div class="field-group">
-            <label class="field-label">命主性別</label>
-            <div class="input-wrap">
-                <div class="glow-ring"></div>
-                <select id="user-gender" class="input-field">
-                    <option value="" disabled selected>請選擇性別</option>
-                    <option value="女">女命</option>
-                    <option value="男">男命</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- 出生日期（精確選擇） -->
-        <div class="field-group">
-            <label class="field-label">出生年月日</label>
-            <div class="date-label-row">
-                <div class="date-sublabel">年</div>
-                <div class="date-sublabel">月</div>
-                <div class="date-sublabel">日</div>
-            </div>
-            <div class="date-grid">
-                <div class="input-wrap">
-                    <div class="glow-ring"></div>
-                    <input type="number" id="birth-year" class="input-field compact" placeholder="1995" min="1900" max="2099" oninput="onDateChange()">
-                </div>
-                <div class="input-wrap">
-                    <div class="glow-ring"></div>
-                    <input type="number" id="birth-month" class="input-field compact" placeholder="8" min="1" max="12" oninput="onDateChange()">
-                </div>
-                <div class="input-wrap">
-                    <div class="glow-ring"></div>
-                    <input type="number" id="birth-day" class="input-field compact" placeholder="15" min="1" max="31" oninput="onDateChange()">
-                </div>
-            </div>
-            <div class="date-label-row-time" style="margin-top:10px;">
-                <div class="date-sublabel">時</div>
-                <div class="date-sublabel">分（可選）</div>
-            </div>
-            <div class="date-grid-time">
-                <div class="input-wrap">
-                    <div class="glow-ring"></div>
-                    <input type="number" id="birth-hour" class="input-field compact" placeholder="13" min="0" max="23" oninput="onDateChange()">
-                </div>
-                <div class="input-wrap">
-                    <div class="glow-ring"></div>
-                    <input type="number" id="birth-minute" class="input-field compact" placeholder="30" min="0" max="59" oninput="onDateChange()">
-                </div>
-            </div>
-        </div>
-
-        <!-- 八字即時預覽 -->
-        <div class="bazi-preview" id="bazi-preview">
-            <div class="bazi-preview-label">✦ 推算結果預覽 ✦</div>
-            <div class="bazi-pillars-mini" id="bazi-pillars-mini"></div>
-            <div class="bazi-extra" id="bazi-extra"></div>
-        </div>
-
-        <!-- 出生地點 -->
-        <div class="field-group" style="margin-top:20px;">
-            <label class="field-label">出生地點</label>
-            <div class="input-wrap">
-                <div class="glow-ring"></div>
-                <input type="text" id="user-birthplace" class="input-field" placeholder="如：四川省成都市" autocomplete="off">
-            </div>
-        </div>
-
-        <div class="btn-wrap">
-            <button onclick="generateReport()" class="submit-btn" id="submit-button">
-                <span class="btn-particles" id="btn-particles"></span>
-                觀測星象能量
-            </button>
-        </div>
+    <div class="cal-tog">
+      <button class="cal-btn active" id="bsol" onclick="setCalType('solar')">公曆（西曆）</button>
+      <button class="cal-btn" id="blun" onclick="setCalType('lunar')">農曆（陰曆）</button>
     </div>
 
-    <div class="rune-row">
-        <span class="rune">甲乙丙丁</span>
-        <span class="rune">·</span>
-        <span class="rune">子丑寅卯</span>
-        <span class="rune">·</span>
-        <span class="rune">陰陽五行</span>
+    <div class="field">
+      <div class="flbl">命主姓名</div>
+      <div class="iw"><input type="text" id="un" class="inp" placeholder="請輸入姓名" autocomplete="off"></div>
     </div>
+    <div class="field">
+      <div class="flbl">命主性別</div>
+      <div class="iw">
+        <select id="ug" class="inp">
+          <option value="" disabled selected>請選擇性別</option>
+          <option value="女">女命</option>
+          <option value="男">男命</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <div class="flbl">出生日期</div>
+      <div class="lunar-h" id="lh">✦ 請輸入農曆年月日，系統自動換算公曆</div>
+      <div class="sl3">
+        <div class="slbl" id="lby">年</div>
+        <div class="slbl" id="lbm">月</div>
+        <div class="slbl" id="lbd">日</div>
+      </div>
+      <div class="dg3">
+        <div class="iw"><input type="number" id="by" class="inp c" placeholder="1995" min="1900" max="2099" oninput="odc()"></div>
+        <div class="iw"><input type="number" id="bm" class="inp c" placeholder="8" min="1" max="13" oninput="odc()"></div>
+        <div class="iw"><input type="number" id="bd" class="inp c" placeholder="15" min="1" max="31" oninput="odc()"></div>
+      </div>
+      <div id="leap-wrap" style="display:none;margin-top:8px;">
+        <label style="display:flex;align-items:center;gap:8px;font-family:'Noto Sans TC',sans-serif;font-size:0.73rem;color:var(--text-d);cursor:pointer;">
+          <input type="checkbox" id="ilp" onchange="odc()" style="accent-color:var(--gold);width:14px;height:14px;"> 閏月
+        </label>
+      </div>
+      <div class="sl2">
+        <div class="slbl">時（24小時制）</div>
+        <div class="slbl">分（可選）</div>
+      </div>
+      <div class="dg2">
+        <div class="iw"><input type="number" id="bh" class="inp c" placeholder="13" min="0" max="23" oninput="odc()"></div>
+        <div class="iw"><input type="number" id="bmin" class="inp c" placeholder="30" min="0" max="59" oninput="odc()"></div>
+      </div>
+    </div>
+
+    <div class="bazi-prev" id="bprev">
+      <div class="bp-hd">命盤預覽</div>
+      <div class="bp-ps" id="bpps"></div>
+      <div class="bp-ex" id="bpex"></div>
+    </div>
+
+    <div class="field" style="margin-top:4px;">
+      <div class="flbl">出生地點</div>
+      <div class="iw"><input type="text" id="ubp" class="inp" placeholder="如：四川省成都市" autocomplete="off"></div>
+    </div>
+    <div class="btn-row">
+      <button class="sbtn" id="sbtn" onclick="genReport()">觀測星象能量</button>
+    </div>
+  </div>
+
+  <div class="rune-row">
+    <span class="rune">甲乙丙丁戊</span><span class="rune">·</span>
+    <span class="rune">子丑寅卯辰</span><span class="rune">·</span>
+    <span class="rune">陰陽五行八卦</span>
+  </div>
 </div>
 
-<div id="report-output-container" class="container" style="display:none;"></div>
+<div id="roc" style="display:none;"></div>
 
 <script>
-/* ═══════════════════════════════════════
-   八字計算引擎
-═══════════════════════════════════════ */
-const TIANGAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const DIZHI   = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const WUXING_TG = ['木','木','火','火','土','土','金','金','水','水'];
-const WUXING_DZ = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+/* NEBULA BG */
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,stars=[],nebs=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  resize();addEventListener('resize',()=>{resize();init();});
+  function init(){
+    stars=[];
+    for(let i=0,n=Math.floor(W*H/2000);i<n;i++)
+      stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.1,a:Math.random()*.7+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2,col:Math.random()>.85?'200,200,240':'232,211,153'});
+    nebs=[{x:W*.2,y:H*.3,r:W*.35,c:'rgba(95,184,122,0.022)'},{x:W*.8,y:H*.6,r:W*.3,c:'rgba(212,168,67,0.028)'},{x:W*.5,y:H*.85,r:W*.25,c:'rgba(100,80,200,0.018)'}];
+  }
+  init();let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nebs.forEach(n=>{const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);g.addColorStop(0,n.c);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fill();});
+    t+=.008;
+    stars.forEach(s=>{const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(${s.col},${a})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+/* PARTICLES */
+(function(){
+  function sp(){const el=document.createElement('div');el.className='fp';const z=Math.random()*1.8+.4;el.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}vw;bottom:${Math.random()*10-4}vh;background:rgba(212,168,67,${Math.random()*.35+.08});animation-duration:${Math.random()*18+12}s;animation-delay:${Math.random()*4}s;box-shadow:0 0 ${z*3}px rgba(212,168,67,.4);`;document.body.appendChild(el);setTimeout(()=>el.remove(),24000);}
+  setInterval(sp,900);for(let i=0;i<6;i++)sp();
+})();
+function spk(x,y){const el=document.createElement('div');el.className='spark';const a=(Math.random()*160-80)*Math.PI/180,d=Math.random()*18+5;el.style.cssText=`left:${x}px;top:${y}px;--tx:${Math.cos(a)*d}px;--ty:${-Math.sin(a)*d-7}px;width:${Math.random()*2+.8}px;height:${Math.random()*2+.8}px;animation-duration:${Math.random()*.35+.35}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),700);}
+document.addEventListener('input',e=>{const w=e.target.closest('.iw');if(!w)return;const r=w.getBoundingClientRect();for(let i=0;i<3;i++)spk(r.left+r.width*(.2+Math.random()*.6),r.bottom-1);});
+document.getElementById('sbtn').addEventListener('mousemove',function(e){if(Math.random()>.45)return;const r=this.getBoundingClientRect();spk(e.clientX,r.top+2);});
 
-// 天干五行對應 CSS class
-const TG_CLASS = ['wood-c','wood-c','fire-c','fire-c','earth-c','earth-c','metal-c','metal-c','water-c','water-c'];
-const DZ_CLASS = ['water-c','earth-c','wood-c','wood-c','earth-c','fire-c','fire-c','earth-c','metal-c','metal-c','earth-c','water-c'];
+/* CALENDAR TOGGLE */
+let calType='solar';
+function setCalType(t){
+  calType=t;
+  document.getElementById('bsol').classList.toggle('active',t==='solar');
+  document.getElementById('blun').classList.toggle('active',t==='lunar');
+  document.getElementById('lh').classList.toggle('show',t==='lunar');
+  document.getElementById('leap-wrap').style.display=t==='lunar'?'block':'none';
+  document.getElementById('lby').textContent=t==='lunar'?'年（農）':'年';
+  document.getElementById('lbm').textContent=t==='lunar'?'月（農）':'月';
+  document.getElementById('lbd').textContent=t==='lunar'?'日（農）':'日';
+  odc();
+}
 
-// 二十四節氣（每年月份對應的節氣，用於月柱換月）
-// 各月份對應的「節」（非氣）的大致日期，以下為標準值（實際需考慮真太陽時）
-const JIEQI_MONTH = [
-// 月份 1  2  3  4  5  6  7  8  9  10 11 12
-// 節   小寒 立春 驚蟄 清明 立夏 芒種 小暑 立秋 白露 寒露 立冬 大雪
-    [6, 4, 6, 5, 6, 6, 7, 7, 8, 8, 7, 7]
+/* LUNAR→SOLAR (精確資料表 1900-2030) */
+const LD=(function(){
+  const raw=[
+    [131,0x04AE,5],[220,0x0A57,4],[209,0x054D,2],[129,0x0D26,6],[218,0x0A56,5],
+    [207,0x052B,4],[126,0x0AAB,2],[213,0x0AB5,7],[202,0x04AE,5],[122,0x0A4D,4],
+    [210,0x0D15,3],[130,0x0D93,8],[218,0x0A95,6],[206,0x052D,5],[126,0x0AAB,4],
+    [214,0x0AB6,9],[203,0x0AD5,6],[123,0x05B5,5],[211,0x056A,4],[131,0x0A6B,9],
+    [220,0x0AAB,7],[208,0x054B,5],[128,0x0AAB,4],[216,0x0ABB,8],[204,0x0AE6,6],
+    [124,0x0AB5,4],[213,0x04AD,8],[202,0x0A4D,7],[123,0x0D25,5],[210,0x0D93,4],
+    [130,0x0B55,9],[217,0x056D,6],[206,0x055B,5],[126,0x04BA,3],[214,0x0A5B,8],
+    [204,0x052B,7],[124,0x0AAB,5],[211,0x0AB5,4],[131,0x0ABA,9],[221,0x0AAD,7],
+    [208,0x052B,5],[127,0x0AB3,4],[215,0x0AD5,8],[205,0x0B69,7],[125,0x04BE,5],
+    [213,0x0A6D,4],[203,0x0A56,9],[122,0x0D2A,7],[210,0x0D15,5],[129,0x0D93,4],
+    [217,0x0A95,8],[206,0x052D,7],[127,0x0AB5,5],[214,0x0AB6,4],[203,0x0A6E,9],
+    [124,0x0A56,8],[212,0x0D26,6],[131,0x0D25,4],[220,0x0B55,9],[208,0x056A,8],
+    [128,0x0A5B,6],[215,0x052B,4],[205,0x0AAB,8],[125,0x0AB5,7],[213,0x04AE,5],
+    [202,0x0A4D,4],[121,0x0D25,9],[209,0x0D53,7],[130,0x0DA5,5],[217,0x0A96,4],
+    [206,0x0D4B,9],[127,0x0AB5,8],[215,0x04AE,6],[203,0x0A4E,4],[123,0x0D25,10],
+    [211,0x0D53,8],[131,0x0DA5,7],[218,0x0A96,5],[207,0x096D,4],[128,0x04BD,9],
+    [216,0x04AE,8],[205,0x0A4D,7],[125,0x0EA5,5],[213,0x06AA,4],[202,0x0AB5,9],
+    [120,0x04AE,7],[209,0x0A4E,6],[129,0x0D15,5],[217,0x0D35,4],[206,0x0D55,10],
+    [127,0x056A,8],[215,0x096D,7],[204,0x04DD,5],[123,0x04AE,3],[211,0x0A56,8],
+    [131,0x0D2A,7],[219,0x0D95,5],[207,0x0B55,4],[128,0x056D,9],[216,0x055B,8],
+    [205,0x04AE,7],[124,0x0A5B,5],[212,0x052B,4],[201,0x0A2B,8],[122,0x0AB5,7],
+    [209,0x04AE,6],[129,0x0A56,5],[218,0x0D2A,9],[207,0x0D55,7],[126,0x056A,5],
+    [214,0x096D,4],[203,0x04AE,9],[123,0x0A4E,7],[210,0x0D26,6],[131,0x0EA6,5],
+    [219,0x0AB5,4],[208,0x04AE,9],[128,0x0A4D,6],[216,0x0EA5,5],[205,0x06D4,4],
+    [125,0x0AB6,9],[212,0x04AE,7],[201,0x0A57,5],[122,0x0526,3],[210,0x0D26,8],
+    [129,0x0EA6,7],[217,0x0AB5,5],[206,0x04AE,4],[126,0x0A4E,9],[213,0x0D25,7],
+  ];
+  const m={};raw.forEach((d,i)=>{m[1900+i]=d;});return m;
+})();
+
+function lunarToSolar(ly,lm,ld,isLeap){
+  const d=LD[ly];if(!d)return null;
+  const[smmd,bits,leapM]=d;
+  const sm=Math.floor(smmd/100),sd=smmd%100;
+  const months=[];
+  for(let m=1;m<=12;m++){
+    const big=(bits>>(12-m))&1;
+    months.push({m,days:big?30:29,leap:false});
+    if(m===leapM&&leapM>0)months.push({m,days:29,leap:true});
+  }
+  let off=0,found=false;
+  for(const mi of months){
+    const tm=isLeap?leapM:lm,tl=isLeap?mi.leap:!mi.leap;
+    if(mi.m===tm&&tl){off+=ld-1;found=true;break;}
+    off+=mi.days;
+  }
+  if(!found)return null;
+  const base=new Date(ly,sm-1,sd);base.setDate(base.getDate()+off);
+  return{year:base.getFullYear(),month:base.getMonth()+1,day:base.getDate()};
+}
+
+/* ═══ BAZI ENGINE（精確版）══ */
+const TG=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const WXT=['木','木','火','火','土','土','金','金','水','水'];
+const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
+const TGC=['cw','cw','cf','cf','ce','ce','cm','cm','cwa','cwa'];
+const DZC=['cwa','ce','cw','cw','ce','cf','cf','ce','cm','cm','ce','cwa'];
+
+/* 節氣係數（壽星萬年曆） */
+const JC=[
+  [5.4055,4.9341],[20.12,20.84],[3.87,4.6295],[19.4,18.73],
+  [6.09,5.63],[21.4,20.888],[4.75,5.59],[20.1,21.008],
+  [5.52,6.318],[21.04,21.86],[5.678,6.5],[21.86,22.747],
+  [6.5,7.108],[22.83,23.247],[7.928,8.108],[23.65,23.65],
+  [8.35,7.9],[23.42,23.013],[8.44,7.18],[23.822,23.438],
+  [7.15,7.738],[22.83,22.46],[6.9,6.9],[22.3,22.3],
 ];
+const MT=[0,2,4,6,8,10,12,14,16,18,20,22];
 
-// 精確節氣換月日期表（1900-2100），此處用簡化演算法
-function getSolarTermDay(year, termIndex) {
-    // termIndex: 0=小寒,1=大寒,2=立春,...（每月兩個節氣）
-    // 使用壽星萬年曆演算法簡化版
-    const C = termIndex < 2 ? (year < 2000 ? 20.1 : 20.084) :
-              termIndex < 4 ? (year < 2000 ? 4.6295 : 3.87) :
-              termIndex < 6 ? (year < 2000 ? 19.4599 : 18.73) :
-              termIndex < 8 ? (year < 2000 ? 5.1 : 5.63) :
-              termIndex < 10 ? (year < 2000 ? 20.888 : 20.646) :
-              termIndex < 12 ? (year < 2000 ? 6.318 : 6.318) :
-              termIndex < 14 ? (year < 2000 ? 22.747 : 22.747) :
-              termIndex < 16 ? (year < 2000 ? 7.928 : 8.008) :
-              termIndex < 18 ? (year < 2000 ? 23.247 : 23.013) :
-              termIndex < 20 ? (year < 2000 ? 8.378 : 7.9) :
-              termIndex < 22 ? (year < 2000 ? 23.08 : 22.825) :
-              (year < 2000 ? 7.45 : 7.18);
-    return Math.floor(C + 0.2422 * (year % 100) - Math.floor((year % 100 - 1) / 4));
+function jqDay(year,ti){
+  const is20=year<2000,yy=year%100;
+  const C=is20?JC[ti][0]:JC[ti][1];
+  return Math.floor(C+0.2422*yy-Math.floor((yy-1)/4));
+}
+function jdn(y,m,d){const a=Math.floor((14-m)/12),yr=y+4800-a,mo=m+12*a-3;return d+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)-Math.floor(yr/100)+Math.floor(yr/400)-32045;}
+
+function getYrGZ(year,month,day){
+  const lc=jqDay(year,2);
+  let y=year;if(month<2||(month===2&&day<lc))y=year-1;
+  return{tg:((y-4)%10+10)%10,dz:((y-4)%12+12)%12};
+}
+function getMoGZ(year,month,day){
+  const td=jqDay(year,MT[month-1]);
+  let m=month,y=year;
+  if(day<td){m--;if(m===0){m=12;y--;}}
+  const yt=getYrGZ(year,month,day).tg;
+  const base=[2,4,6,8,0][yt%5];
+  const tg=(base+(m-1))%10;
+  const dz=(m+1)%12;
+  return{tg,dz};
+}
+function getDayGZ(year,month,day){
+  /* 基準：2000-01-07 = 甲子日 (JDN驗證) */
+  const diff=jdn(year,month,day)-jdn(2000,1,7);
+  return{tg:((diff%10)+10)%10,dz:((diff%12)+12)%12};
+}
+function getHrGZ(hour,dayTg){
+  const dz=Math.floor((hour+1)/2)%12;
+  const base=[0,2,4,6,8][dayTg%5];
+  return{tg:(base+dz)%10,dz};
 }
 
-// 獲取換月節氣（各月份對應的「節」）
-// 1月=小寒(0), 2月=立春(2), 3月=驚蟄(4), 4月=清明(6), 5月=立夏(8),
-// 6月=芒種(10), 7月=小暑(12), 8月=立秋(14), 9月=白露(16),
-// 10月=寒露(18), 11月=立冬(20), 12月=大雪(22)
-const TERM_INDEX = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
-
-function getMonthGanzhi(year, month, day) {
-    // 判斷是否已過該月的「節」
-    const termDay = getSolarTermDay(year, TERM_INDEX[month - 1]);
-    let lunarMonth = month; // 命理月份（以節為分界）
-    if (day < termDay) {
-        lunarMonth = month - 1;
-        if (lunarMonth === 0) { lunarMonth = 12; year -= 1; }
-    }
-    // 月柱天干：年干為基準，甲己年從丙寅起
-    // 規律：(年干index % 5) * 2 + 月份偏移
-    const yearTgIdx = getYearGanzhi(year).tgIdx;
-    const monthTgBase = [2, 4, 6, 8, 0][yearTgIdx % 5]; // 甲己→丙,乙庚→戊,丙辛→庚,丁壬→壬,戊癸→甲
-    const monthTgIdx = (monthTgBase + (lunarMonth - 1)) % 10;
-    const monthDzIdx = (lunarMonth + 1) % 12; // 寅月=2,卯月=3...
-    return { tgIdx: monthTgIdx, dzIdx: monthDzIdx, tg: TIANGAN[monthTgIdx], dz: DIZHI[monthDzIdx] };
-}
-
-function getYearGanzhi(year) {
-    // 以立春換年（此處簡化：以1月1日近似，精確版需判斷立春日）
-    const tgIdx = (year - 4) % 10;
-    const dzIdx = (year - 4) % 12;
-    return { tgIdx: (tgIdx + 10) % 10, dzIdx: (dzIdx + 12) % 12,
-             tg: TIANGAN[(tgIdx + 10) % 10], dz: DIZHI[(dzIdx + 12) % 12] };
-}
-
-function getDayGanzhi(year, month, day) {
-    // 甲子日計算：以1900年1月31日為甲子日（index=0）
-    const base = new Date(1900, 0, 31);
-    const target = new Date(year, month - 1, day);
-    const diff = Math.round((target - base) / 86400000);
-    const tgIdx = ((diff % 10) + 10) % 10;
-    const dzIdx = ((diff % 12) + 12) % 12;
-    return { tgIdx, dzIdx, tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx] };
-}
-
-function getHourGanzhi(hour, dayTgIdx) {
-    // 時支：子時=0, 丑時=1...（每2小時一個地支）
-    const dzIdx = Math.floor((hour + 1) / 2) % 12;
-    // 時干：日干為基準
-    const tgBase = [0, 2, 4, 6, 8][dayTgIdx % 5];
-    const tgIdx = (tgBase + dzIdx) % 10;
-    return { tgIdx, dzIdx, tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx] };
-}
-
-// 十神對照表 [日主天干index][各天干index] → 十神名稱
-const SHISHEN_TABLE = [
-    // 甲日主
-    ['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'],
-    // 乙日主
-    ['劫財','比肩','傷官','食神','正財','偏財','正官','七殺','正印','偏印'],
-    // 丙日主
-    ['偏印','正印','比肩','劫財','食神','傷官','偏財','正財','七殺','正官'],
-    // 丁日主
-    ['正印','偏印','劫財','比肩','傷官','食神','正財','偏財','正官','七殺'],
-    // 戊日主
-    ['七殺','正官','偏印','正印','比肩','劫財','食神','傷官','偏財','正財'],
-    // 己日主
-    ['正官','七殺','正印','偏印','劫財','比肩','傷官','食神','正財','偏財'],
-    // 庚日主
-    ['偏財','正財','七殺','正官','偏印','正印','比肩','劫財','食神','傷官'],
-    // 辛日主
-    ['正財','偏財','正官','七殺','正印','偏印','劫財','比肩','傷官','食神'],
-    // 壬日主
-    ['食神','傷官','偏財','正財','七殺','正官','偏印','正印','比肩','劫財'],
-    // 癸日主
-    ['傷官','食神','正財','偏財','正官','七殺','正印','偏印','劫財','比肩'],
+const SS=[
+  ['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'],
+  ['劫財','比肩','傷官','食神','正財','偏財','正官','七殺','正印','偏印'],
+  ['偏印','正印','比肩','劫財','食神','傷官','偏財','正財','七殺','正官'],
+  ['正印','偏印','劫財','比肩','傷官','食神','正財','偏財','正官','七殺'],
+  ['七殺','正官','偏印','正印','比肩','劫財','食神','傷官','偏財','正財'],
+  ['正官','七殺','正印','偏印','劫財','比肩','傷官','食神','正財','偏財'],
+  ['偏財','正財','七殺','正官','偏印','正印','比肩','劫財','食神','傷官'],
+  ['正財','偏財','正官','七殺','正印','偏印','劫財','比肩','傷官','食神'],
+  ['食神','傷官','偏財','正財','七殺','正官','偏印','正印','比肩','劫財'],
+  ['傷官','食神','正財','偏財','正官','七殺','正印','偏印','劫財','比肩'],
 ];
-
-function getShishen(riZhuTgIdx, targetTgIdx) {
-    return SHISHEN_TABLE[riZhuTgIdx][targetTgIdx];
-}
-
-// 大運計算
-function getDayun(gender, yearTgIdx, month, day, year, birthMonth, birthDay) {
-    // 陽男陰女順排，陰男陽女逆排
-    const isYangTg = yearTgIdx % 2 === 0;
-    const isForward = (gender === '男' && isYangTg) || (gender === '女' && !isYangTg);
-
-    // 計算起運歲數：找下一個（或上一個）節氣距生日的天數 / 3
-    const birthDate = new Date(year, birthMonth - 1, birthDay);
-    let daysDiff = 0;
-    if (isForward) {
-        // 找下一個節氣
-        for (let i = 1; i <= 60; i++) {
-            const d = new Date(birthDate.getTime() + i * 86400000);
-            const termDay = getSolarTermDay(d.getFullYear(), TERM_INDEX[d.getMonth()]);
-            if (d.getDate() === termDay) { daysDiff = i; break; }
-            if (d.getDate() > termDay && i === 1) { daysDiff = 1; break; }
-        }
-    } else {
-        for (let i = 1; i <= 60; i++) {
-            const d = new Date(birthDate.getTime() - i * 86400000);
-            const termDay = getSolarTermDay(d.getFullYear(), TERM_INDEX[d.getMonth()]);
-            if (d.getDate() === termDay) { daysDiff = i; break; }
-        }
-    }
-    const startAge = Math.round(daysDiff / 3);
-
-    // 生成8個大運
-    const { tgIdx: mTg, dzIdx: mDz } = getMonthGanzhi(year, birthMonth, birthDay);
-    const dayuns = [];
-    for (let i = 0; i < 8; i++) {
-        const step = isForward ? i + 1 : -(i + 1);
-        const tgIdx = ((mTg + step) % 10 + 10) % 10;
-        const dzIdx = ((mDz + step) % 12 + 12) % 12;
-        dayuns.push({
-            tg: TIANGAN[tgIdx], dz: DIZHI[dzIdx],
-            tgIdx, dzIdx,
-            tgClass: TG_CLASS[tgIdx], dzClass: DZ_CLASS[dzIdx],
-            age: startAge + i * 10
-        });
-    }
-    return { startAge, dayuns };
-}
-
-// 稱骨訣
-const BONE_TG = [1.0, 0.8, 1.0, 0.6, 0.8, 0.6, 0.8, 0.6, 1.0, 0.6];
-const BONE_DZ = [0.8, 0.4, 0.8, 0.6, 0.4, 0.6, 0.8, 0.4, 0.6, 0.6, 0.4, 0.8];
-function calcBoneWeight(year, month, day, hour) {
-    const y = getYearGanzhi(year);
-    const m = getMonthGanzhi(year, month, day);
-    const d = getDayGanzhi(year, month, day);
-    const h = getHourGanzhi(hour, d.tgIdx);
-    const total = BONE_TG[y.tgIdx] + BONE_DZ[y.dzIdx]
-                + BONE_TG[m.tgIdx] + BONE_DZ[m.dzIdx]
-                + BONE_TG[d.tgIdx] + BONE_DZ[d.dzIdx]
-                + BONE_TG[h.tgIdx] + BONE_DZ[h.dzIdx];
-    const liang = Math.floor(total);
-    const qian = Math.round((total - liang) * 10);
-    return `${liang}兩${qian}錢`;
-}
-
-// 旺衰簡判
-const WANGSHUAN = {
-    // 日主天干 → 各地支的旺衰 (0=絕,1=胎,2=養,3=長生,4=沐浴,5=冠帶,6=臨官,7=帝旺,8=衰,9=病,10=死,11=墓)
-    0:  [10,11,3,7,8,9,10,11,0,1,2,3],  // 甲：亥長生，卯帝旺
-    1:  [9,10,2,6,7,8,11,0,1,2,3,4],    // 乙
-    2:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 丙：寅長生，午帝旺
-    3:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 丁
-    4:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 戊（同丙）
-    5:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 己（同丁）
-    6:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 庚：巳長生，酉帝旺（簡化）
-    7:  [11,0,1,2,3,4,5,6,7,7,8,9],     // 辛
-    8:  [3,4,5,6,7,7,7,8,0,1,2,11],     // 壬：申長生，子帝旺（簡化）
-    9:  [2,3,4,5,6,7,8,7,11,0,1,10],    // 癸
+const WSM={
+  0:[10,11,3,7,8,9,10,11,0,1,2,3],1:[9,10,2,6,7,8,11,0,1,2,3,4],
+  2:[11,0,1,2,3,4,5,6,7,8,9,10],3:[10,11,0,1,2,3,4,5,6,7,8,9],
+  4:[11,0,1,2,3,4,5,6,7,8,9,10],5:[10,11,0,1,2,3,4,5,6,7,8,9],
+  6:[3,4,5,6,7,8,9,10,11,0,1,2],7:[2,3,4,5,6,7,8,9,10,11,0,1],
+  8:[6,7,8,9,10,11,0,1,2,3,4,5],9:[5,6,7,8,9,10,11,0,1,2,3,4],
 };
-const WANGSHUAN_NAME = ['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰','病','死','墓'];
+const WSN=['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰','病','死','墓'];
+function getWS(ri,dz){return WSN[WSM[ri][dz]];}
 
-function getWangShuan(riTgIdx, dzIdx) {
-    const arr = WANGSHUAN[riTgIdx];
-    return WANGSHUAN_NAME[arr[dzIdx]];
+const NY=['海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木','泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金','覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水'];
+function nayin(tg,dz){return NY[(tg*6+Math.floor(dz/2))%30];}
+
+const BT=[1.0,0.8,1.0,0.6,0.8,0.6,0.8,0.6,1.0,0.6];
+const BD=[0.8,0.4,0.8,0.6,0.4,0.6,0.8,0.4,0.6,0.6,0.4,0.8];
+
+function getDayun(gender,year,month,day,yrTg){
+  const isYang=yrTg%2===0;
+  const fwd=(gender==='男'&&isYang)||(gender==='女'&&!isYang);
+  const bj=jdn(year,month,day);
+  let diff=0;
+  if(fwd){
+    for(let i=1;i<=90;i++){const j=bj+i;const l=j+68569,n=Math.floor(4*l/146097),lv=l-Math.floor((146097*n+3)/4),ii=Math.floor(4000*(lv+1)/1461001),lv2=lv-Math.floor(1461*ii/4)+31,mo=Math.floor(80*lv2/2447),dy=lv2-Math.floor(2447*mo/80),mo2=mo+2-12*Math.floor(mo/14),yr=100*(n-49)+ii+Math.floor(mo2/13);if(dy===jqDay(yr,MT[mo2-1])){diff=i;break;}}
+  }else{
+    for(let i=1;i<=90;i++){const j=bj-i;const l=j+68569,n=Math.floor(4*l/146097),lv=l-Math.floor((146097*n+3)/4),ii=Math.floor(4000*(lv+1)/1461001),lv2=lv-Math.floor(1461*ii/4)+31,mo=Math.floor(80*lv2/2447),dy=lv2-Math.floor(2447*mo/80),mo2=mo+2-12*Math.floor(mo/14),yr=100*(n-49)+ii+Math.floor(mo2/13);if(dy===jqDay(yr,MT[mo2-1])){diff=i;break;}}
+  }
+  if(!diff)diff=30;
+  const startAge=Math.round(diff/3);
+  const moGZ=getMoGZ(year,month,day);
+  const list=[];
+  for(let i=0;i<8;i++){
+    const s=fwd?i+1:-(i+1);
+    const tg=((moGZ.tg+s)%10+10)%10,dz=((moGZ.dz+s)%12+12)%12;
+    list.push({tg:TG[tg],dz:DZ[dz],tgIdx:tg,dzIdx:dz,tgClass:TGC[tg],age:startAge+i*10});
+  }
+  return{startAge,list};
 }
 
-// 主計算函數
-function calcBazi(year, month, day, hour, minute, gender) {
-    // 時辰調整：23:00-00:59 屬隔日子時
-    if (hour === 23) { day += 1; hour = 23; }
-
-    const yearGZ  = getYearGanzhi(year);
-    const monthGZ = getMonthGanzhi(year, month, day);
-    const dayGZ   = getDayGanzhi(year, month, day);
-    const hourGZ  = getHourGanzhi(hour, dayGZ.tgIdx);
-
-    const riTg = dayGZ.tgIdx;
-
-    const pillars = [
-        { label:'年柱', ...yearGZ,  tenGod: getShishen(riTg, yearGZ.tgIdx),  ws: getWangShuan(riTg, yearGZ.dzIdx) },
-        { label:'月柱', ...monthGZ, tenGod: getShishen(riTg, monthGZ.tgIdx), ws: getWangShuan(riTg, monthGZ.dzIdx) },
-        { label:'日柱', ...dayGZ,   tenGod: '日主', ws: getWangShuan(riTg, dayGZ.dzIdx) },
-        { label:'時柱', ...hourGZ,  tenGod: getShishen(riTg, hourGZ.tgIdx),  ws: getWangShuan(riTg, hourGZ.dzIdx) },
-    ];
-
-    const dayunData = getDayun(gender, yearGZ.tgIdx, month, day, year, month, day);
-    const boneWeight = calcBoneWeight(year, month, day, hour);
-
-    // 納音簡表（60甲子納音）
-    const NAYIN = ['海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木',
-                   '泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金',
-                   '覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水',
-                   '海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木',
-                   '泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金',
-                   '覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水'];
-    function getNayin(tgIdx, dzIdx) {
-        const idx = tgIdx * 6 + Math.floor(dzIdx / 2);
-        return NAYIN[idx % 60];
-    }
-
-    const nayin = [
-        getNayin(yearGZ.tgIdx, yearGZ.dzIdx),
-        getNayin(monthGZ.tgIdx, monthGZ.dzIdx),
-        getNayin(dayGZ.tgIdx, dayGZ.dzIdx),
-        getNayin(hourGZ.tgIdx, hourGZ.dzIdx),
-    ];
-
-    return { pillars, dayunData, boneWeight, nayin };
+function calcBazi(year,month,day,hour,minute,gender){
+  let dy=day,hr=hour;
+  if(hr===23)dy++;
+  const yGZ=getYrGZ(year,month,dy),mGZ=getMoGZ(year,month,dy),dGZ=getDayGZ(year,month,dy),hGZ=getHrGZ(hr,dGZ.tg);
+  const ri=dGZ.tg;
+  const pillars=[
+    {label:'年柱',tgIdx:yGZ.tg,dzIdx:yGZ.dz,tg:TG[yGZ.tg],dz:DZ[yGZ.dz],tenGod:SS[ri][yGZ.tg],ws:getWS(ri,yGZ.dz)},
+    {label:'月柱',tgIdx:mGZ.tg,dzIdx:mGZ.dz,tg:TG[mGZ.tg],dz:DZ[mGZ.dz],tenGod:SS[ri][mGZ.tg],ws:getWS(ri,mGZ.dz)},
+    {label:'日柱',tgIdx:dGZ.tg,dzIdx:dGZ.dz,tg:TG[dGZ.tg],dz:DZ[dGZ.dz],tenGod:'日主',ws:getWS(ri,dGZ.dz)},
+    {label:'時柱',tgIdx:hGZ.tg,dzIdx:hGZ.dz,tg:TG[hGZ.tg],dz:DZ[hGZ.dz],tenGod:SS[ri][hGZ.tg],ws:getWS(ri,hGZ.dz)},
+  ];
+  const dy2=getDayun(gender,year,month,dy,yGZ.tg);
+  const ny=[nayin(yGZ.tg,yGZ.dz),nayin(mGZ.tg,mGZ.dz),nayin(dGZ.tg,dGZ.dz),nayin(hGZ.tg,hGZ.dz)];
+  const bt=BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz];
+  const bl=Math.floor(bt),bq=Math.round((bt-bl)*10);
+  return{pillars,dayunData:dy2,nayin:ny,boneWeight:`${bl}兩${bq}錢`};
 }
 
-/* ═══════════════════════════════════════
-   即時預覽
-═══════════════════════════════════════ */
-function onDateChange() {
-    const year  = parseInt(document.getElementById('birth-year').value);
-    const month = parseInt(document.getElementById('birth-month').value);
-    const day   = parseInt(document.getElementById('birth-day').value);
-    const hour  = parseInt(document.getElementById('birth-hour').value) || 12;
-    const minute= parseInt(document.getElementById('birth-minute').value) || 0;
-    const gender= document.getElementById('user-gender').value || '女';
-
-    if (!year || !month || !day || year < 1900 || year > 2099 || month < 1 || month > 12 || day < 1 || day > 31) {
-        document.getElementById('bazi-preview').classList.remove('show');
-        return;
-    }
-
-    try {
-        const result = calcBazi(year, month, day, hour, minute, gender);
-        renderPreview(result);
-        document.getElementById('bazi-preview').classList.add('show');
-    } catch(e) {
-        document.getElementById('bazi-preview').classList.remove('show');
-    }
+/* PREVIEW */
+function odc(){
+  let y=parseInt(document.getElementById('by').value)||0;
+  let m=parseInt(document.getElementById('bm').value)||0;
+  let d=parseInt(document.getElementById('bd').value)||0;
+  const h=parseInt(document.getElementById('bh').value)||12;
+  const mn=parseInt(document.getElementById('bmin').value)||0;
+  const g=document.getElementById('ug').value||'女';
+  if(!y||!m||!d){document.getElementById('bprev').classList.remove('show');return;}
+  if(calType==='lunar'){const s=lunarToSolar(y,m,d,document.getElementById('ilp').checked);if(!s){document.getElementById('bprev').classList.remove('show');return;}y=s.year;m=s.month;d=s.day;}
+  if(y<1900||y>2099||m<1||m>12||d<1||d>31){document.getElementById('bprev').classList.remove('show');return;}
+  try{
+    const r=calcBazi(y,m,d,h,mn,g);
+    document.getElementById('bpps').innerHTML=r.pillars.map(p=>`<div class="bp-p"><div class="bp-l">${p.label}</div><div class="bp-t ${TGC[p.tgIdx]}">${p.tg}</div><div class="bp-d ${DZC[p.dzIdx]}">${p.dz}</div><div class="bp-g">${p.tenGod}</div></div>`).join('');
+    document.getElementById('bpex').textContent=`${r.pillars.map(p=>p.tg+p.dz).join(' ')}｜骨重 ${r.boneWeight}`;
+    document.getElementById('bprev').classList.add('show');
+  }catch(e){document.getElementById('bprev').classList.remove('show');}
 }
 
-function renderPreview(result) {
-    const { pillars, boneWeight, nayin } = result;
-    const mini = document.getElementById('bazi-pillars-mini');
-    mini.innerHTML = pillars.map(p => `
-        <div class="bazi-pillar-mini">
-            <div class="bp-label">${p.label}</div>
-            <div class="bp-tg ${TG_CLASS[p.tgIdx]}">${p.tg}</div>
-            <div class="bp-dz ${DZ_CLASS[p.dzIdx]}">${p.dz}</div>
-            <div class="bp-god">${p.tenGod}</div>
-        </div>
-    `).join('');
-
-    const extra = document.getElementById('bazi-extra');
-    const ganzhiStr = pillars.map(p => p.tg + p.dz).join(' ');
-    extra.textContent = `${ganzhiStr}｜骨重 ${boneWeight}`;
+/* LOADING */
+const phs=['正在校對真太陽時','排布四柱八字','推演大運流年','鑑定格局強弱','觀測五行流通','解析天干地支','計算神煞吉凶'];
+const chs=['命','運','玄','機','易','卦','象'];
+let pi=0,pt=null,ci=0,ct=null;
+function startL(){
+  const p=document.getElementById('lphr'),c=document.getElementById('lchar');
+  pt=setInterval(()=>{p.style.opacity='0';setTimeout(()=>{pi=(pi+1)%phs.length;p.textContent=phs[pi];p.style.opacity='';},300);},2200);
+  ct=setInterval(()=>{ci=(ci+1)%chs.length;c.textContent=chs[ci];},1500);
 }
+function stopL(){clearInterval(pt);clearInterval(ct);}
 
-/* ═══════════════════════════════════════
-   星空背景
-═══════════════════════════════════════ */
-(function initStars() {
-    const canvas = document.getElementById('stars-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H, stars = [];
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', () => { resize(); buildStars(); });
-    function buildStars() {
-        stars = [];
-        const count = Math.floor((W * H) / 3000);
-        for (let i = 0; i < count; i++) {
-            stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*0.8+0.1,
-                a: Math.random(), speed: Math.random()*0.003+0.001, phase: Math.random()*Math.PI*2 });
-        }
-    }
-    buildStars();
-    let t = 0;
-    function draw() {
-        ctx.clearRect(0, 0, W, H); t += 0.01;
-        stars.forEach(s => {
-            const alpha = s.a * (0.4 + 0.6 * Math.sin(t * s.speed * 60 + s.phase));
-            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(232,211,153,${alpha})`; ctx.fill();
-        });
-        requestAnimationFrame(draw);
-    }
-    draw();
-})();
+/* MAIN */
+async function genReport(){
+  const name=document.getElementById('un').value.trim();
+  const gender=document.getElementById('ug').value;
+  let year=parseInt(document.getElementById('by').value)||0;
+  let month=parseInt(document.getElementById('bm').value)||0;
+  let day=parseInt(document.getElementById('bd').value)||0;
+  const hour=parseInt(document.getElementById('bh').value)||12;
+  const minute=parseInt(document.getElementById('bmin').value)||0;
+  const birthplace=document.getElementById('ubp').value.trim();
 
-/* ═══════════════════════════════════════
-   浮動粒子 & 火花
-═══════════════════════════════════════ */
-(function spawnParticles() {
-    function spawn() {
-        const el = document.createElement('div');
-        el.className = 'float-particle';
-        const size = Math.random() * 2 + 0.5;
-        el.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}vw;bottom:${Math.random()*20-5}vh;background:rgba(201,168,76,${Math.random()*0.4+0.1});animation-duration:${Math.random()*20+15}s;animation-delay:${Math.random()*5}s;box-shadow:0 0 ${size*2}px rgba(201,168,76,0.5);`;
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 26000);
-    }
-    setInterval(spawn, 800);
-    for (let i = 0; i < 8; i++) spawn();
-})();
+  const chks=[{id:'un',ok:!!name},{id:'ug',ok:!!gender},{id:'by',ok:!!year},{id:'bm',ok:!!month},{id:'bd',ok:!!day},{id:'ubp',ok:!!birthplace}];
+  let err=false;
+  chks.forEach(c=>{const el=document.getElementById(c.id);if(!c.ok){el.style.borderColor='rgba(200,50,30,.7)';el.style.boxShadow='0 0 14px rgba(200,50,30,.2)';setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},1400);err=true;}});
+  if(err)return;
 
-document.querySelectorAll('.input-field').forEach(input => {
-    input.addEventListener('input', function() {
-        const wrap = this.closest('.input-wrap');
-        if (!wrap) return;
-        const rect = wrap.getBoundingClientRect();
-        const cx = rect.left + rect.width * (0.2 + Math.random() * 0.6);
-        for (let i = 0; i < 3; i++) spawnSpark(cx, rect.bottom - 2);
-    });
-});
+  let sy=year,sm=month,sd=day,cNote='';
+  if(calType==='lunar'){
+    const s=lunarToSolar(year,month,day,document.getElementById('ilp').checked);
+    if(!s){alert('農曆換算失敗，請檢查日期');return;}
+    sy=s.year;sm=s.month;sd=s.day;
+    cNote=`（農曆${year}年${document.getElementById('ilp').checked?'閏':''}${month}月${day}日）`;
+  }
 
-function spawnSpark(x, y) {
-    const el = document.createElement('div');
-    el.className = 'spark';
-    const angle = (Math.random() * 180 - 90) * Math.PI / 180;
-    const dist = Math.random() * 20 + 6;
-    el.style.cssText = `left:${x}px;top:${y}px;--tx:${Math.cos(angle)*dist}px;--ty:${-Math.sin(angle)*dist-8}px;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;animation-duration:${Math.random()*0.4+0.4}s;animation-delay:${Math.random()*0.1}s;`;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 800);
-}
+  const res=calcBazi(sy,sm,sd,hour,minute,gender);
+  const{pillars,dayunData,nayin,boneWeight}=res;
 
-const btn = document.getElementById('submit-button');
-btn.addEventListener('mousemove', function(e) {
-    if (Math.random() > 0.5) return;
-    spawnSpark(e.clientX, btn.getBoundingClientRect().top + 2);
-});
+  const bd={
+    name,gender,birthplace,
+    birthday:`${sy}年${sm}月${sd}日 ${hour}時${minute>0?minute+'分':''}${cNote}`,
+    pillars:pillars.map(p=>({label:p.label,tg:p.tg,dz:p.dz,tgClass:TGC[p.tgIdx],dzClass:DZC[p.dzIdx],tenGod:p.tenGod,wangshuan:p.ws,tgWuxing:WXT[p.tgIdx],dzWuxing:WXD[p.dzIdx]})),
+    ganzhiString:pillars.map(p=>p.tg+p.dz).join(' '),
+    riZhu:pillars[2].tg+pillars[2].dz,riZhuTg:pillars[2].tg,
+    nayin:nayin.join('·'),boneWeight,
+    dayun:{startAge:dayunData.startAge,list:dayunData.list.map(d=>({age:`${d.age}歲起`,stem:d.tg+d.dz,tgClass:d.tgClass,active:false}))}
+  };
 
-/* ═══════════════════════════════════════
-   Loading 輪播
-═══════════════════════════════════════ */
-const loadingPhrases = ['正在校對真太陽時','排布四柱八字','推演大運流年','鑑定格局強弱','觀測五行流通','解析天干地支'];
-let phraseIdx = 0, phraseTimer = null;
-function startPhrases() {
-    const el = document.getElementById('loading-phrase');
-    phraseTimer = setInterval(() => {
-        el.style.opacity = '0';
-        setTimeout(() => { phraseIdx = (phraseIdx+1) % loadingPhrases.length; el.textContent = loadingPhrases[phraseIdx]; el.style.opacity = ''; }, 300);
-    }, 2000);
-}
-function stopPhrases() { clearInterval(phraseTimer); }
-
-/* ═══════════════════════════════════════
-   主函數：計算後傳送給後端
-═══════════════════════════════════════ */
-async function generateReport() {
-    const name  = document.getElementById('user-name').value.trim();
-    const gender= document.getElementById('user-gender').value;
-    const year  = parseInt(document.getElementById('birth-year').value);
-    const month = parseInt(document.getElementById('birth-month').value);
-    const day   = parseInt(document.getElementById('birth-day').value);
-    const hour  = parseInt(document.getElementById('birth-hour').value) || 12;
-    const minute= parseInt(document.getElementById('birth-minute').value) || 0;
-    const birthplace = document.getElementById('user-birthplace').value.trim();
-
-    // 驗證
-    const fields = [
-        { el: document.getElementById('user-name'), ok: !!name },
-        { el: document.getElementById('user-gender'), ok: !!gender },
-        { el: document.getElementById('birth-year'), ok: !!year },
-        { el: document.getElementById('birth-month'), ok: !!month },
-        { el: document.getElementById('birth-day'), ok: !!day },
-        { el: document.getElementById('user-birthplace'), ok: !!birthplace },
-    ];
-    let hasError = false;
-    fields.forEach(f => {
-        if (!f.ok) {
-            f.el.style.borderColor = 'rgba(200,60,30,0.7)';
-            f.el.style.boxShadow = '0 0 12px rgba(200,60,30,0.2)';
-            setTimeout(() => { f.el.style.borderColor = ''; f.el.style.boxShadow = ''; }, 1200);
-            hasError = true;
-        }
-    });
-    if (hasError) return;
-
-    // 前端計算八字
-    const baziResult = calcBazi(year, month, day, hour, minute, gender);
-    const { pillars, dayunData, boneWeight, nayin } = baziResult;
-
-    // 組成傳給後端的結構化資料
-    const baziData = {
-        name, gender, birthplace,
-        birthday: `${year}年${month}月${day}日 ${hour}時${minute}分`,
-        // 精確計算結果
-        pillars: pillars.map(p => ({
-            label: p.label,
-            tg: p.tg, dz: p.dz,
-            tgClass: TG_CLASS[p.tgIdx],
-            dzClass: DZ_CLASS[p.dzIdx],
-            tenGod: p.tenGod,
-            wangshuan: p.ws,
-            tgWuxing: WUXING_TG[p.tgIdx],
-            dzWuxing: WUXING_DZ[p.dzIdx]
-        })),
-        ganzhiString: pillars.map(p => p.tg + p.dz).join(' '),
-        riZhu: pillars[2].tg + pillars[2].dz,
-        riZhuTg: pillars[2].tg,
-        nayin: nayin.join('·'),
-        boneWeight,
-        dayun: {
-            startAge: dayunData.startAge,
-            list: dayunData.dayuns.map((d, i) => ({
-                age: `${d.age}歲起`,
-                stem: d.tg + d.dz,
-                tgClass: d.tgClass,
-                active: false // 後端根據年齡判斷
-            }))
-        }
-    };
-
-    // Loading
-    document.getElementById('loading-overlay').style.display = 'flex';
-    startPhrases();
-
-    try {
-        const r = await fetch('/api/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(baziData)
-        });
-        const html = await r.text();
-        stopPhrases();
-        document.getElementById('loading-overlay').style.display = 'none';
-        document.getElementById('input-form-container').style.display = 'none';
-        document.getElementById('report-output-container').innerHTML = html;
-        document.getElementById('report-output-container').style.display = 'block';
-    } catch(e) {
-        stopPhrases();
-        document.getElementById('loading-overlay').style.display = 'none';
-        alert('觀測失敗，請稍後重試');
-    }
+  document.getElementById('lov').style.display='flex';startL();
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});
+    const html=await r.text();
+    stopL();document.getElementById('lov').style.display='none';
+    document.getElementById('ifc').style.display='none';
+    const oc=document.getElementById('roc');oc.innerHTML=html;oc.style.display='block';
+    window.scrollTo(0,0);
+  }catch(e){stopL();document.getElementById('lov').style.display='none';alert('觀測失敗，請稍後重試');}
 }
 </script>
 </body>
