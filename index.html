@@ -440,12 +440,28 @@ const SS=[
   ['食神','傷官','偏財','正財','七殺','正官','偏印','正印','比肩','劫財'],
   ['傷官','食神','正財','偏財','正官','七殺','正印','偏印','劫財','比肩'],
 ];
+// 十二長生（地勢）正確對照表
+// 索引對應DZ：子(0)丑(1)寅(2)卯(3)辰(4)巳(5)午(6)未(7)申(8)酉(9)戌(10)亥(11)
+// 值對應WSN：絕(0)胎(1)養(2)長生(3)沐浴(4)冠帶(5)臨官(6)帝旺(7)衰(8)病(9)死(10)墓(11)
 const WSM={
-  0:[10,11,3,7,8,9,10,11,0,1,2,3],1:[9,10,2,6,7,8,11,0,1,2,3,4],
-  2:[11,0,1,2,3,4,5,6,7,8,9,10],3:[10,11,0,1,2,3,4,5,6,7,8,9],
-  4:[11,0,1,2,3,4,5,6,7,8,9,10],5:[10,11,0,1,2,3,4,5,6,7,8,9],
-  6:[3,4,5,6,7,8,9,10,11,0,1,2],7:[2,3,4,5,6,7,8,9,10,11,0,1],
-  8:[6,7,8,9,10,11,0,1,2,3,4,5],9:[5,6,7,8,9,10,11,0,1,2,3,4],
+  // 甲：亥長生→子沐浴→丑冠帶→寅臨官→卯帝旺→辰衰→巳病→午死→未墓→申絕→酉胎→戌養
+  0:[4,5,6,7,8,9,10,11,0,1,2,3],
+  // 乙（陰逆）：午長生→巳沐浴→辰冠帶→卯臨官→寅帝旺→丑衰→子病→亥死→戌墓→酉絕→申胎→未養
+  1:[9,8,7,6,5,4,3,2,1,0,11,10],
+  // 丙/戊：寅長生→卯沐浴→辰冠帶→巳臨官→午帝旺→未衰→申病→酉死→戌墓→亥絕→子胎→丑養
+  2:[1,2,3,4,5,6,7,8,9,10,11,0],
+  // 丁/己（陰逆）：酉長生→申沐浴→未冠帶→午臨官→巳帝旺→辰衰→卯病→寅死→丑墓→子絕→亥胎→戌養
+  3:[0,11,10,9,8,7,6,5,4,3,2,1],
+  4:[1,2,3,4,5,6,7,8,9,10,11,0], // 戊同丙
+  5:[0,11,10,9,8,7,6,5,4,3,2,1], // 己同丁
+  // 庚：巳長生→午沐浴→未冠帶→申臨官→酉帝旺→戌衰→亥病→子死→丑墓→寅絕→卯胎→辰養
+  6:[10,11,0,1,2,3,4,5,6,7,8,9],
+  // 辛（陰逆）：子長生→亥沐浴→戌冠帶→酉臨官→申帝旺→未衰→午病→巳死→辰墓→卯絕→寅胎→丑養
+  7:[3,2,1,0,11,10,9,8,7,6,5,4],
+  // 壬：申長生→酉沐浴→戌冠帶→亥臨官→子帝旺→丑衰→寅病→卯死→辰墓→巳絕→午胎→未養
+  8:[7,8,9,10,11,0,1,2,3,4,5,6],
+  // 癸（陰逆）：卯長生→寅沐浴→丑冠帶→子臨官→亥帝旺→戌衰→酉病→申死→未墓→午絕→巳胎→辰養
+  9:[6,5,4,3,2,1,0,11,10,9,8,7],
 };
 const WSN=['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰','病','死','墓'];
 function getWS(ri,dz){return WSN[WSM[ri][dz]];}
@@ -457,15 +473,17 @@ const BD=[0.8,0.4,0.8,0.6,0.4,0.6,0.8,0.4,0.6,0.6,0.4,0.8];
 function getDayun(gender,year,month,day,yrTg){
   const isYang=yrTg%2===0;
   const fwd=(gender==='男'&&isYang)||(gender==='女'&&!isYang);
-  const bj=jdn(year,month,day);
+  // ★ 修復：用 Date 物件做日期加減，避免 JDN 逆推月份溢出 bug
+  function addDays(y,m,d,delta){
+    const dt=new Date(Date.UTC(y,m-1,d));
+    dt.setUTCDate(dt.getUTCDate()+delta);
+    return{y:dt.getUTCFullYear(),m:dt.getUTCMonth()+1,d:dt.getUTCDate()};
+  }
   let diff=0;
   for(let i=1;i<=90;i++){
-    const j=fwd?bj+i:bj-i;
-    const l=j+68569,n=Math.floor(4*l/146097),lv=l-Math.floor((146097*n+3)/4),
-      ii=Math.floor(4000*(lv+1)/1461001),lv2=lv-Math.floor(1461*ii/4)+31,
-      mo=Math.floor(80*lv2/2447),dy=lv2-Math.floor(2447*mo/80),
-      mo2=mo+2-12*Math.floor(mo/14),yr=100*(n-49)+ii+Math.floor(mo2/13);
-    if(dy===getJQDay(yr,mo2-1)){diff=i;break;}
+    const dt=addDays(year,month,day,fwd?i:-i);
+    const termDay=getJQDay(dt.y,dt.m-1);
+    if(dt.d===termDay){diff=i;break;}
   }
   if(!diff)diff=30;
   const startAge=Math.round(diff/3);
@@ -495,8 +513,9 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace){
   ];
   const dy2=getDayun(gender,year,month,dy,yGZ.tg);
   const ny=[nayin(yGZ.tg,yGZ.dz),nayin(mGZ.tg,mGZ.dz),nayin(dGZ.tg,dGZ.dz),nayin(hGZ.tg,hGZ.dz)];
-  const bt=BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz];
-  const bl=Math.floor(bt),bq=Math.round((bt-bl)*10);
+  // ★ 修復骨重浮點精度：先乘10取整再除，避免 0.6+0.6=1.1999... 問題
+  const bt10=Math.round((BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz])*10);
+  const bl=Math.floor(bt10/10),bq=bt10%10;
   return{pillars,dayunData:dy2,nayin:ny,boneWeight:`${bl}兩${bq}錢`,solarTime:st};
 }
 
