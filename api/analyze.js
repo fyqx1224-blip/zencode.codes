@@ -7,7 +7,17 @@ module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).send('<div>只接受 POST 請求</div>');
     }
-
+} catch (error) {
+    console.error("完整错误:", JSON.stringify(error, null, 2));
+    console.error("错误消息:", error.message);
+    res.status(500).send(`
+        <div style="color:#7AB860; padding:20px; font-family:monospace;">
+            <p>错误类型: ${error.constructor.name}</p>
+            <p>错误消息: ${error.message}</p>
+            <pre>${JSON.stringify(error, null, 2)}</pre>
+        </div>
+    `);
+}
     try {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("找不到 GEMINI_API_KEY");
