@@ -1,3 +1,117 @@
+// ═══════════════════════════════════════════════════
+// 五行主題色系（根據日主天干自動切換）
+// ═══════════════════════════════════════════════════
+const WUXING_THEMES = {
+  木: {
+    // 甲、乙 — 蒼翠森綠
+    bg:         '#04080A',
+    bg2:        '#060E0A',
+    primary:    '#5AB86C',
+    bright:     '#7AE08E',
+    dim:        'rgba(90,184,108,0.16)',
+    glow:       'rgba(90,184,108,0.32)',
+    accent:     '#A8D890',
+    bodyBefore: 'radial-gradient(ellipse at 22% 48%,rgba(90,184,108,.09) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(168,216,144,.05) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(40,120,60,.05) 0%,transparent 50%)',
+    heroGrad:   'linear-gradient(160deg,#C8F0D8 0%,#5AB86C 38%,#2A7040 68%,#5AB86C 100%)',
+    verdictGrad:'linear-gradient(135deg,#5AB86C 0%,#A8D890 50%,#2A9050 100%)',
+    cardBefore: '#5AB86C',
+    analogyBorder: '#3A8C50',
+    analogyBg:  'rgba(58,140,80,.08)',
+    analogyColor:'#3A8C50',
+    emblemAnim: 'pulse-theme',
+    scrollHint: 'linear-gradient(180deg,#aaa,transparent)',
+    sectionBorder:'rgba(90,184,108,.1)',
+    label:      '木',
+  },
+  火: {
+    // 丙、丁 — 烈焰朱紅
+    bg:         '#090503',
+    bg2:        '#120806',
+    primary:    '#D85030',
+    bright:     '#F07848',
+    dim:        'rgba(216,80,48,0.16)',
+    glow:       'rgba(216,80,48,0.32)',
+    accent:     '#F0A878',
+    bodyBefore: 'radial-gradient(ellipse at 22% 48%,rgba(216,80,48,.09) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(240,120,64,.06) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(180,60,30,.05) 0%,transparent 50%)',
+    heroGrad:   'linear-gradient(160deg,#F8D8C0 0%,#D85030 38%,#902010 68%,#D85030 100%)',
+    verdictGrad:'linear-gradient(135deg,#D85030 0%,#F0A878 50%,#B03018 100%)',
+    cardBefore: '#D85030',
+    analogyBorder: '#B04020',
+    analogyBg:  'rgba(176,64,32,.08)',
+    analogyColor:'#D06040',
+    emblemAnim: 'pulse-theme',
+    scrollHint: 'linear-gradient(180deg,#aaa,transparent)',
+    sectionBorder:'rgba(216,80,48,.1)',
+    label:      '火',
+  },
+  土: {
+    // 戊、己 — 沉穩黃土
+    bg:         '#090807',
+    bg2:        '#100E08',
+    primary:    '#C8A040',
+    bright:     '#E0C060',
+    dim:        'rgba(200,160,64,0.16)',
+    glow:       'rgba(200,160,64,0.32)',
+    accent:     '#D8B870',
+    bodyBefore: 'radial-gradient(ellipse at 22% 48%,rgba(200,160,64,.08) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(216,184,112,.05) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(160,120,40,.05) 0%,transparent 50%)',
+    heroGrad:   'linear-gradient(160deg,#F0E0B0 0%,#C8A040 38%,#806010 68%,#C8A040 100%)',
+    verdictGrad:'linear-gradient(135deg,#C8A040 0%,#E0C060 50%,#A07820 100%)',
+    cardBefore: '#C8A040',
+    analogyBorder: '#907020',
+    analogyBg:  'rgba(144,112,32,.08)',
+    analogyColor:'#B09030',
+    emblemAnim: 'pulse-theme',
+    scrollHint: 'linear-gradient(180deg,#aaa,transparent)',
+    sectionBorder:'rgba(200,160,64,.1)',
+    label:      '土',
+  },
+  金: {
+    // 庚、辛 — 清冷白金
+    bg:         '#07080A',
+    bg2:        '#0A0C10',
+    primary:    '#A0B0C8',
+    bright:     '#C0D0E8',
+    dim:        'rgba(160,176,200,0.16)',
+    glow:       'rgba(160,176,200,0.30)',
+    accent:     '#D8E4F4',
+    bodyBefore: 'radial-gradient(ellipse at 22% 48%,rgba(160,176,200,.07) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(200,216,240,.05) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(100,120,160,.05) 0%,transparent 50%)',
+    heroGrad:   'linear-gradient(160deg,#EEF2F8 0%,#A0B0C8 38%,#607090 68%,#A0B0C8 100%)',
+    verdictGrad:'linear-gradient(135deg,#A0B0C8 0%,#C0D0E8 50%,#7080A0 100%)',
+    cardBefore: '#A0B0C8',
+    analogyBorder: '#708090',
+    analogyBg:  'rgba(112,128,144,.07)',
+    analogyColor:'#8090A8',
+    emblemAnim: 'pulse-theme',
+    scrollHint: 'linear-gradient(180deg,#aaa,transparent)',
+    sectionBorder:'rgba(160,176,200,.1)',
+    label:      '金',
+  },
+  水: {
+    // 壬、癸 — 深邃玄水
+    bg:         '#040609',
+    bg2:        '#060A12',
+    primary:    '#4080C8',
+    bright:     '#60A8F0',
+    dim:        'rgba(64,128,200,0.16)',
+    glow:       'rgba(64,128,200,0.32)',
+    accent:     '#80C0F8',
+    bodyBefore: 'radial-gradient(ellipse at 22% 48%,rgba(64,128,200,.09) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(96,168,240,.05) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(30,80,160,.06) 0%,transparent 50%)',
+    heroGrad:   'linear-gradient(160deg,#C0D8F8 0%,#4080C8 38%,#184878 68%,#4080C8 100%)',
+    verdictGrad:'linear-gradient(135deg,#4080C8 0%,#80C0F8 50%,#1858A0 100%)',
+    cardBefore: '#4080C8',
+    analogyBorder: '#2858A0',
+    analogyBg:  'rgba(40,88,160,.08)',
+    analogyColor:'#3870B8',
+    emblemAnim: 'pulse-theme',
+    scrollHint: 'linear-gradient(180deg,#aaa,transparent)',
+    sectionBorder:'rgba(64,128,200,.1)',
+    label:      '水',
+  },
+};
+
+const TG_LIST   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const TG_WUXING = ['木','木','火','火','土','土','金','金','水','水'];
+
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
 
@@ -15,14 +129,17 @@ module.exports = async function handler(req, res) {
 
         if (!name || !pillars) throw new Error("缺少必要資料");
 
-        // 組裝精確的八字資訊描述給 AI
+        // ── 根據日主天干決定五行主題 ──
+        const riTgIdx = TG_LIST.indexOf(riZhuTg || '甲');
+        const riWuxing = TG_WUXING[Math.max(0, riTgIdx)] || '木';
+        const T = WUXING_THEMES[riWuxing];
+
+        // ── 組裝 AI Prompt ──
         const pillarDesc = pillars.map(p =>
             `${p.label}【${p.tg}${p.dz}】天干${p.tg}(${p.tgWuxing})十神:${p.tenGod} 地支${p.dz}(${p.dzWuxing})旺衰:${p.wangshuan}`
         ).join('\n');
 
-        const dayunDesc = dayun.list.map(d =>
-            `${d.age} ${d.stem}`
-        ).join('、');
+        const dayunDesc = dayun.list.map(d => `${d.age} ${d.stem}`).join('、');
 
         const prompt = `你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
 
@@ -38,7 +155,7 @@ module.exports = async function handler(req, res) {
 ${pillarDesc}
 
 八字組合：${ganzhiString}
-日主：${riZhuTg}（${riZhu}）
+日主：${riZhuTg}（${riZhu}）五行屬${riWuxing}
 納音：${nayin}
 稱骨：${boneWeight}
 大運起運：${dayun.startAge}歲
@@ -293,7 +410,9 @@ ${pillarDesc}
         try { d = JSON.parse(raw); }
         catch(e) { throw new Error('JSON解析失敗：' + e.message + ' | 原始內容前300字：' + raw.substring(0, 300)); }
 
-        // ══ 渲染 HTML ══
+        // ══════════════════════════════════════════
+        // 渲染函數
+        // ══════════════════════════════════════════
         function hClass(type) {
             return { normal:'highlight', gold:'highlight-gold', warn:'highlight-warn', special:'highlight-special' }[type] || 'highlight';
         }
@@ -385,95 +504,172 @@ ${pillarDesc}
         const verdict = d.verdict || {};
         const verdictLines = (verdict.text||'').split('\\n').join('<br>');
 
+        // ══════════════════════════════════════════
+        // HTML 模板 — 所有主色全部使用 CSS var(--p) 等變量
+        // ══════════════════════════════════════════
         const html = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>八字深度解讀｜${name}</title>
+<title>八字深度解讀｜${name}｜${riZhuTg}${riWuxing}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 <style>
+/* ── 五行主題變量（${riWuxing}命：${riZhuTg}） ── */
+:root {
+  --p:   ${T.primary};
+  --pb:  ${T.bright};
+  --pd:  ${T.dim};
+  --pg:  ${T.glow};
+  --ac:  ${T.accent};
+  --bg:  ${T.bg};
+  --bg2: ${T.bg2};
+  --cb:  ${T.cardBefore};
+  --ab:  ${T.analogyBorder};
+  --abg: ${T.analogyBg};
+  --ac2: ${T.analogyColor};
+}
+
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:#000!important;color:#fff;font-family:'Noto Serif TC',serif;overflow-x:hidden;position:relative;}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse at 22% 48%,rgba(122,184,96,.08) 0%,transparent 60%),radial-gradient(ellipse at 76% 22%,rgba(240,120,64,.05) 0%,transparent 55%),radial-gradient(ellipse at 52% 80%,rgba(200,200,216,.05) 0%,transparent 50%);pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:-200%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;pointer-events:none;z-index:1;animation:grain .5s steps(1) infinite;}
+html,body{background:var(--bg)!important;color:#F0EAD6;font-family:'Noto Serif TC',serif;overflow-x:hidden;position:relative;}
+
+/* 五行氛圍背景光暈 */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:${T.bodyBefore};
+}
+/* 膠片噪點 */
+body::after{
+  content:'';position:fixed;inset:-200%;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.3;animation:grain .5s steps(1) infinite;
+}
 @keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-3%)}20%{transform:translate(3%,2%)}30%{transform:translate(-1%,4%)}40%{transform:translate(2%,-1%)}50%{transform:translate(-3%,2%)}60%{transform:translate(1%,-2%)}70%{transform:translate(3%,3%)}80%{transform:translate(-2%,1%)}90%{transform:translate(1%,-3%)}}
+
 .container{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 24px 80px;}
+
+/* ── HERO ── */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;padding:60px 0;}
-.hero-emblem{font-family:'Ma Shan Zheng',cursive;font-size:clamp(6rem,15vw,12rem);color:#7AB860;line-height:1;text-shadow:0 0 60px rgba(122,184,96,.6),0 0 120px rgba(122,184,96,.28);animation:pulse-wood 4s ease-in-out infinite;margin-bottom:16px;}
-@keyframes pulse-wood{0%,100%{text-shadow:0 0 60px rgba(122,184,96,.6),0 0 120px rgba(122,184,96,.28)}50%{text-shadow:0 0 95px rgba(122,184,96,.8),0 0 190px rgba(155,196,106,.36)}}
-.hero-subtitle{font-family:'Noto Sans TC',sans-serif;font-size:.75rem;letter-spacing:.5em;color:#7AB860;margin-bottom:32px;}
+.hero-emblem{
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:clamp(6rem,15vw,12rem);
+  color:var(--p);line-height:1;margin-bottom:16px;
+  text-shadow:0 0 60px var(--pg),0 0 120px var(--pd);
+  animation:pulse-theme 4s ease-in-out infinite;
+}
+@keyframes pulse-theme{
+  0%,100%{text-shadow:0 0 60px var(--pg),0 0 120px var(--pd)}
+  50%{text-shadow:0 0 100px var(--pb),0 0 200px var(--pg)}
+}
+.hero-subtitle{font-family:'Noto Sans TC',sans-serif;font-size:.75rem;letter-spacing:.5em;color:var(--p);margin-bottom:32px;}
 .four-pillars{display:flex;gap:2px;margin:32px 0;}
-.pillar{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(122,184,96,.22);padding:20px 16px;transition:all .4s ease;min-width:80px;cursor:default;}
-.pillar:hover{border-color:rgba(122,184,96,.55);transform:translateY(-4px);}
-.pillar-label{font-size:.6rem;letter-spacing:.3em;color:#aaa;margin-bottom:12px;font-family:'Noto Sans TC',sans-serif;}
+.pillar{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.03);border:1px solid var(--pd);padding:20px 16px;transition:all .4s ease;min-width:80px;cursor:default;}
+.pillar:hover{border-color:var(--p);transform:translateY(-4px);box-shadow:0 8px 24px var(--pd);}
+.pillar-label{font-size:.6rem;letter-spacing:.3em;color:rgba(240,234,214,0.5);margin-bottom:12px;font-family:'Noto Sans TC',sans-serif;}
 .pillar-tg{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;line-height:1;margin-bottom:4px;}
 .pillar-dz{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;line-height:1;}
-.pillar-ten-god{font-size:.65rem;color:#aaa;margin-top:10px;font-family:'Noto Sans TC',sans-serif;}
+.pillar-ten-god{font-size:.65rem;color:rgba(240,234,214,0.45);margin-top:10px;font-family:'Noto Sans TC',sans-serif;}
+
+/* 五行顏色保持不變（用於非日主的干支顯示） */
 .fire-c{color:#F07840;}.earth-c{color:#C9A84C;}.metal-c{color:#C8C8D8;}.wood-c{color:#7AB860;}.water-c{color:#63B3ED;}
-.hero-desc{font-size:.95rem;color:rgba(255,255,255,.6);line-height:2;max-width:520px;font-weight:300;}
-.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:#aaa;font-size:.65rem;letter-spacing:.3em;font-family:'Noto Sans TC',sans-serif;animation:bounce 2s ease-in-out infinite;}
+/* 日主顏色使用主題色 */
+.cw{color:#7DE09A;}.cf{color:#F07840;}.ce{color:#D4A843;}.cm{color:#D0D0E0;}.cwa{color:#63B3ED;}
+
+.hero-desc{font-size:.95rem;color:rgba(240,234,214,.65);line-height:2;max-width:520px;font-weight:300;}
+.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(240,234,214,.4);font-size:.65rem;letter-spacing:.3em;font-family:'Noto Sans TC',sans-serif;animation:bounce 2s ease-in-out infinite;}
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
-.scroll-hint::after{content:'';width:1px;height:40px;background:linear-gradient(180deg,#aaa,transparent);}
-.section{padding:80px 0;border-top:1px solid rgba(122,184,96,.1);}
+.scroll-hint::after{content:'';width:1px;height:40px;background:${T.scrollHint};}
+
+/* ── SECTIONS ── */
+.section{padding:80px 0;border-top:1px solid ${T.sectionBorder};}
 .section-header{display:flex;align-items:baseline;gap:20px;margin-bottom:48px;}
-.section-num{font-family:'Ma Shan Zheng',cursive;font-size:3rem;color:#7AB860;opacity:.45;line-height:1;}
-.section-title{font-size:1.5rem;font-weight:600;color:#7AB860;letter-spacing:.1em;}
-.section-subtitle{font-size:.75rem;color:#aaa;letter-spacing:.3em;font-family:'Noto Sans TC',sans-serif;margin-top:4px;}
-.card{background:rgba(255,255,255,.02);border:1px solid rgba(122,184,96,.15);padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden;}
-.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#7AB860;}
-.card-title{font-size:1rem;color:#7AB860;font-weight:600;margin-bottom:14px;letter-spacing:.05em;display:flex;align-items:center;gap:10px;}
+.section-num{font-family:'Ma Shan Zheng',cursive;font-size:3rem;color:var(--p);opacity:.45;line-height:1;}
+.section-title{font-size:1.5rem;font-weight:600;color:var(--p);letter-spacing:.1em;}
+.section-subtitle{font-size:.75rem;color:rgba(240,234,214,.4);letter-spacing:.3em;font-family:'Noto Sans TC',sans-serif;margin-top:4px;}
+
+/* ── CARDS ── */
+.card{background:rgba(255,255,255,.025);border:1px solid var(--pd);padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cb);}
+.card-title{font-size:1rem;color:var(--pb);font-weight:600;margin-bottom:14px;letter-spacing:.05em;display:flex;align-items:center;gap:10px;}
 .card-title::before{content:'◆';font-size:.5rem;color:#F07840;}
-.card p{font-size:.9rem;line-height:2;color:#fff;font-weight:300;}
+.card p{font-size:.9rem;line-height:2;color:#E8E0D0;font-weight:300;}
 .card p+p{margin-top:12px;}
-.highlight{background:rgba(99,179,237,.08);border:1px solid rgba(99,179,237,.32);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#fff;}
-.highlight-gold{background:rgba(122,184,96,.08);border:1px solid rgba(122,184,96,.3);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#fff;}
-.highlight-warn{background:rgba(212,98,42,.09);border:1px solid rgba(212,98,42,.35);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#fff;}
-.highlight-special{background:rgba(80,100,200,.09);border:1px solid rgba(120,140,240,.35);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#fff;}
-.analogy{background:rgba(74,140,110,.08);border-left:3px solid #4A8C6E;padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#eee;font-style:italic;}
-.analogy::before{content:'🌿 白話翻譯｜';font-style:normal;color:#4A8C6E;font-size:.8rem;letter-spacing:.1em;}
+
+/* highlight 框 — 保持語意色，不改變 */
+.highlight{background:rgba(99,179,237,.08);border:1px solid rgba(99,179,237,.32);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#E8E0D0;}
+.highlight-gold{background:var(--pd);border:1px solid var(--p);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#E8E0D0;}
+.highlight-warn{background:rgba(212,98,42,.09);border:1px solid rgba(212,98,42,.35);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#E8E0D0;}
+.highlight-special{background:rgba(80,100,200,.09);border:1px solid rgba(120,140,240,.35);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#E8E0D0;}
+
+/* analogy — 使用五行主題色 */
+.analogy{background:var(--abg);border-left:3px solid var(--ab);padding:16px 20px;margin:16px 0;font-size:.88rem;line-height:1.9;color:#DDD8C8;font-style:italic;}
+.analogy::before{content:'🌿 白話翻譯｜';font-style:normal;color:var(--ac2);font-size:.8rem;letter-spacing:.1em;}
+
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* ── 大運 ── */
 .yunliu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-top:24px;}
-.yun-card{background:rgba(255,255,255,.02);border:1px solid rgba(122,184,96,.12);padding:18px 16px;position:relative;transition:all .3s;}
-.yun-card:hover{border-color:rgba(122,184,96,.38);background:rgba(255,255,255,.05);transform:translateY(-2px);}
-.yun-card.active{border-color:#7AB860;background:rgba(122,184,96,.07);}
-.yun-card.active::after{content:'▶ 當前';position:absolute;top:8px;right:10px;font-size:.6rem;color:#7AB860;font-family:'Noto Sans TC',sans-serif;}
-.yun-age{font-size:.65rem;color:#aaa;margin-bottom:6px;font-family:'Noto Sans TC',sans-serif;letter-spacing:.15em;}
-.yun-stem{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;line-height:1;color:#fff;}
-.yun-desc{font-size:.72rem;color:#bbb;margin-top:8px;line-height:1.6;font-family:'Noto Sans TC',sans-serif;}
+.yun-card{background:rgba(255,255,255,.02);border:1px solid var(--pd);padding:18px 16px;position:relative;transition:all .3s;}
+.yun-card:hover{border-color:var(--p);background:rgba(255,255,255,.04);transform:translateY(-2px);}
+.yun-card.active{border-color:var(--p);background:var(--pd);}
+.yun-card.active::after{content:'▶ 當前';position:absolute;top:8px;right:10px;font-size:.6rem;color:var(--p);font-family:'Noto Sans TC',sans-serif;}
+.yun-age{font-size:.65rem;color:rgba(240,234,214,.4);margin-bottom:6px;font-family:'Noto Sans TC',sans-serif;letter-spacing:.15em;}
+.yun-stem{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;line-height:1;color:#F0EAD6;}
+.yun-desc{font-size:.72rem;color:rgba(240,234,214,.6);margin-top:8px;line-height:1.6;font-family:'Noto Sans TC',sans-serif;}
+
+/* ── 神煞 ── */
 .shensha-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-.shensha-item{border:1px solid rgba(122,184,96,.15);padding:18px 20px;background:rgba(255,255,255,.02);}
+.shensha-item{border:1px solid var(--pd);padding:18px 20px;background:rgba(255,255,255,.02);}
 .shensha-name{font-size:1.1rem;font-weight:600;margin-bottom:8px;}
-.shensha-desc{font-size:.82rem;color:#ddd;line-height:1.8;font-family:'Noto Sans TC',sans-serif;font-weight:300;}
-.bone-display{display:flex;align-items:center;gap:40px;padding:40px;background:rgba(122,184,96,.04);border:1px solid rgba(122,184,96,.2);margin:24px 0;}
-.bone-num{font-family:'Ma Shan Zheng',cursive;font-size:5rem;color:#7AB860;line-height:1;text-shadow:0 0 30px rgba(122,184,96,.3);}
-.bone-unit{font-size:1.2rem;color:#aaa;}
+.shensha-desc{font-size:.82rem;color:#D0CAB8;line-height:1.8;font-family:'Noto Sans TC',sans-serif;font-weight:300;}
+
+/* ── 稱骨 ── */
+.bone-display{display:flex;align-items:center;gap:40px;padding:40px;background:var(--pd);border:1px solid var(--p);margin:24px 0;opacity:.9;}
+.bone-num{font-family:'Ma Shan Zheng',cursive;font-size:5rem;color:var(--p);line-height:1;text-shadow:0 0 30px var(--pg);}
+.bone-unit{font-size:1.2rem;color:rgba(240,234,214,.5);}
 .bone-text{flex:1;}
-.bone-text p{font-size:.88rem;line-height:2;color:#ddd;font-weight:300;}
+.bone-text p{font-size:.88rem;line-height:2;color:#D8D0C0;font-weight:300;}
 .bone-text p+p{margin-top:12px;}
+
+/* ── 機會地雷（固定語意色）── */
 .warning-box{background:rgba(212,98,42,.07);border:1px solid rgba(212,98,42,.38);padding:28px 32px;margin:16px 0;}
 .warning-box h3{color:#F07840;font-size:1.1rem;margin-bottom:14px;letter-spacing:.1em;}
 .warning-box ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.warning-box ul li{font-size:.88rem;line-height:1.8;color:#fff;font-weight:300;padding-left:20px;position:relative;}
+.warning-box ul li{font-size:.88rem;line-height:1.8;color:#E8E0D0;font-weight:300;padding-left:20px;position:relative;}
 .warning-box ul li::before{content:'▸';position:absolute;left:0;color:#D4622A;}
 .oppo-box{background:rgba(74,140,110,.07);border:1px solid rgba(74,140,110,.38);padding:28px 32px;margin:16px 0;}
 .oppo-box h3{color:#6EC49A;font-size:1.1rem;margin-bottom:14px;letter-spacing:.1em;}
 .oppo-box ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.oppo-box ul li{font-size:.88rem;line-height:1.8;color:#fff;font-weight:300;padding-left:20px;position:relative;}
+.oppo-box ul li{font-size:.88rem;line-height:1.8;color:#E8E0D0;font-weight:300;padding-left:20px;position:relative;}
 .oppo-box ul li::before{content:'▸';position:absolute;left:0;color:#6EC49A;}
-.verdict{text-align:center;padding:80px 40px;border-top:1px solid rgba(122,184,96,.2);}
-.verdict-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(4rem,10vw,7rem);color:transparent;background:linear-gradient(135deg,#7AB860 0%,#C9A84C 50%,#F07840 100%);-webkit-background-clip:text;background-clip:text;line-height:1;margin-bottom:24px;animation:shimmer 3s ease-in-out infinite;}
-@keyframes shimmer{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}
-.verdict-text{font-size:1rem;line-height:2.2;color:rgba(255,255,255,.8);max-width:640px;margin:0 auto 32px;font-weight:300;}
-.verdict-seal{display:inline-block;border:2px solid #7AB860;padding:10px 28px;font-family:'Ma Shan Zheng',cursive;font-size:1.2rem;color:#7AB860;letter-spacing:.3em;text-shadow:0 0 20px rgba(122,184,96,.4);}
+
+/* ── VERDICT ── */
+.verdict{text-align:center;padding:80px 40px;border-top:1px solid var(--pd);}
+.verdict-main{
+  font-family:'Ma Shan Zheng',cursive;font-size:clamp(4rem,10vw,7rem);
+  color:transparent;
+  background:${T.verdictGrad};
+  -webkit-background-clip:text;background-clip:text;
+  line-height:1;margin-bottom:24px;
+  animation:shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
+.verdict-text{font-size:1rem;line-height:2.2;color:rgba(240,234,214,.82);max-width:640px;margin:0 auto 32px;font-weight:300;}
+.verdict-seal{
+  display:inline-block;border:2px solid var(--p);padding:10px 28px;
+  font-family:'Ma Shan Zheng',cursive;font-size:1.2rem;color:var(--p);
+  letter-spacing:.3em;text-shadow:0 0 20px var(--pg);
+}
+
+/* ── 其他通用 ── */
 .divider{display:flex;align-items:center;gap:20px;margin:40px 0;opacity:.3;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#7AB860;}
-.divider span{font-family:'Ma Shan Zheng',cursive;font-size:1.2rem;color:#7AB860;}
-.quote{border-left:2px solid #7AB860;padding:12px 20px;margin:20px 0;font-size:.85rem;color:#bbb;font-style:italic;line-height:1.8;}
-.quote cite{display:block;margin-top:8px;font-size:.75rem;color:#aaa;font-style:normal;letter-spacing:.1em;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--p);}
+.divider span{font-family:'Ma Shan Zheng',cursive;font-size:1.2rem;color:var(--p);}
+.quote{border-left:2px solid var(--p);padding:12px 20px;margin:20px 0;font-size:.85rem;color:rgba(240,234,214,.6);font-style:italic;line-height:1.8;}
+.quote cite{display:block;margin-top:8px;font-size:.75rem;color:rgba(240,234,214,.4);font-style:normal;letter-spacing:.1em;}
 .interaction-table{width:100%;border-collapse:collapse;font-size:.82rem;font-family:'Noto Sans TC',sans-serif;}
-.interaction-table th{padding:10px 16px;text-align:left;background:rgba(122,184,96,.08);color:#7AB860;font-weight:500;letter-spacing:.1em;border-bottom:1px solid rgba(122,184,96,.2);}
-.interaction-table td{padding:12px 16px;border-bottom:1px solid rgba(122,184,96,.06);color:#ddd;line-height:1.7;vertical-align:top;}
+.interaction-table th{padding:10px 16px;text-align:left;background:var(--pd);color:var(--pb);font-weight:500;letter-spacing:.1em;border-bottom:1px solid var(--p);}
+.interaction-table td{padding:12px 16px;border-bottom:1px solid var(--pd);color:#D8D0C0;line-height:1.7;vertical-align:top;}
 .interaction-table tr:hover td{background:rgba(255,255,255,.02);}
 .tag{display:inline-block;padding:3px 10px;font-size:.7rem;border-radius:2px;font-family:'Noto Sans TC',sans-serif;margin:2px;}
 .tag-fire{background:rgba(212,98,42,.2);color:#F07840;border:1px solid rgba(212,98,42,.4);}
@@ -481,7 +677,16 @@ body::after{content:'';position:fixed;inset:-200%;background-image:url("data:ima
 .tag-metal{background:rgba(180,165,130,.2);color:#D4C5A0;border:1px solid rgba(180,165,130,.4);}
 .tag-wood{background:rgba(92,140,62,.2);color:#9BC46A;border:1px solid rgba(92,140,62,.4);}
 .tag-water{background:rgba(43,95,140,.2);color:#7BB8E8;border:1px solid rgba(43,95,140,.4);}
-@media(max-width:640px){.grid-2{grid-template-columns:1fr;}.four-pillars{gap:1px;}.pillar{padding:14px 10px;min-width:60px;}.pillar-tg,.pillar-dz{font-size:1.8rem;}.shensha-grid{grid-template-columns:1fr;}.bone-display{flex-direction:column;gap:16px;text-align:center;}.section-num{font-size:2rem;}.section-title{font-size:1.2rem;}}
+@media(max-width:640px){
+  .grid-2{grid-template-columns:1fr;}
+  .four-pillars{gap:1px;}
+  .pillar{padding:14px 10px;min-width:60px;}
+  .pillar-tg,.pillar-dz{font-size:1.8rem;}
+  .shensha-grid{grid-template-columns:1fr;}
+  .bone-display{flex-direction:column;gap:16px;text-align:center;}
+  .section-num{font-size:2rem;}
+  .section-title{font-size:1.2rem;}
+}
 </style>
 </head>
 <body>
@@ -490,19 +695,32 @@ body::after{content:'';position:fixed;inset:-200%;background-image:url("data:ima
   <div class="hero-emblem">${hero.emblem||''}</div>
   <div class="hero-subtitle">${hero.subtitle||''}</div>
   <div class="four-pillars">${pillarsHTML}</div>
-  <div class="hero-desc">納音：${hero.nayin||''}<br>地勢：${hero.dizhi_state||''}<br>骨重 <strong style="color:#7AB860">${hero.bone_weight||''}</strong>｜起運 <strong style="color:#7AB860">${hero.qiyun||''}</strong></div>
+  <div class="hero-desc">
+    納音：${hero.nayin||''}<br>
+    地勢：${hero.dizhi_state||''}<br>
+    骨重 <strong style="color:var(--pb)">${hero.bone_weight||''}</strong>｜起運 <strong style="color:var(--pb)">${hero.qiyun||''}</strong>
+  </div>
   <div class="scroll-hint">向下探索</div>
 </section>
 ${sectionsHTML}
 <div class="verdict">
   <div class="verdict-main">${verdict.main||''}</div>
-  <div class="verdict-text">${verdictLines}<br><br><em style="color:#7AB860;font-size:.9rem;">${verdict.footer||''}</em></div>
+  <div class="verdict-text">
+    ${verdictLines}<br><br>
+    <em style="color:var(--p);font-size:.9rem;">${verdict.footer||''}</em>
+  </div>
   <div class="verdict-seal">命盤深度解讀</div>
 </div>
 </div>
 <script>
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.08});
-document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,.bone-display').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(16px)';el.style.transition='opacity .7s ease,transform .7s ease';observer.observe(el);});
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+},{threshold:0.08});
+document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,.bone-display').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(16px)';
+  el.style.transition='opacity .7s ease,transform .7s ease';
+  observer.observe(el);
+});
 <\/script>
 </body></html>`;
 
