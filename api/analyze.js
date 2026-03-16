@@ -79,7 +79,7 @@ module.exports = async function handler(req, res) {
 請開始觀測，確保內容豐富、口吻專業神祕，HTML 結構完整。`;
 
       const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
