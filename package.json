@@ -5,3 +5,13 @@
     "@google/generative-ai": "^0.21.0"
   }
 }
+{
+  "name": "zencode-web",
+  "version": "2.0.0",
+  "scripts": {
+    "build": "echo build"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
+  }
+}
