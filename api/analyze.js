@@ -1,24 +1,26 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-    // 設置跨域與編碼
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     
     if (req.method !== 'POST') {
-        return res.status(405).send('<div class="card">能量場錯誤：只接受 POST 請求</div>');
+        return res.status(405).send('<div>只接受 POST 請求</div>');
     }
 
     try {
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error("環境變量中找不到 GEMINI_API_KEY，請檢查 Vercel 設置");
+        if (!apiKey) throw new Error("找不到 GEMINI_API_KEY");
 
+        // ✅ 正确写法：apiVersion 在这里指定
         const genAI = new GoogleGenerativeAI(apiKey);
-        // 核心修正：強制指定 v1 版本，解決 404/v1beta 問題
-        const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" }, { apiVersion: 'v1beta' });
+        const model = genAI.getGenerativeModel(
+            { model: "gemini-1.5-flash" }  // 不需要 "models/" 前缀
+        );
 
         const { name, gender, birthday, birthplace } = req.body || {};
         if (!name) throw new Error("缺少觀測對象資料");
-
+        
         const prompt = `
 你是一位精通東西方命理的命理師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》做深度解讀且具備極高審美的前端命理大師。
 【解讀框架·請逐項分析】
@@ -85,22 +87,17 @@ export default async function handler(req, res) {
 姓名：${name}，性別：${gender}，生辰：${birthday}，出生地：${birthplace}。
 請開始觀測，確保內容豐富、口吻專業神祕，HTML 結構完整。`;
 
-        const result = await model.generateContent(prompt);
+       const result = await model.generateContent(prompt);
         const response = await result.response;
         let text = response.text();
-        
-        // 徹底清理可能的 Markdown 標籤
         text = text.replace(/```html/g, '').replace(/```/g, '').trim();
 
         res.status(200).send(text);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send(`
-            <div class="card" style="border: 1px solid #7AB860; background: rgba(0,0,0,0.5); padding: 20px;">
-                <p style="color:#7AB860; margin:0;">觀測中斷（系統日誌）：${error.message}</p>
-                <small style="color:gray;">請檢查 API Key 或稍後重試</small>
-            </div>
+        res.status(500).send(`<div style="color:#7AB860">${error.message}</div>`);
+    }
         `);
     }
 }
