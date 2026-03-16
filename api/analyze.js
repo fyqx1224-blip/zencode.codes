@@ -236,7 +236,7 @@ module.exports = async function handler(req, res) {
 【重要】必須根據 ${name} 的實際八字準確計算四柱、大運、神煞，不得使用範例數據。輸出純 JSON，無任何其他文字。`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
