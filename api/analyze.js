@@ -1,32 +1,13 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    
+
     if (req.method !== 'POST') {
         return res.status(405).send('<div>只接受 POST 請求</div>');
     }
-} catch (error) {
-    console.error("完整错误:", JSON.stringify(error, null, 2));
-    console.error("错误消息:", error.message);
-    res.status(500).send(`
-        <div style="color:#7AB860; padding:20px; font-family:monospace;">
-            <p>错误类型: ${error.constructor.name}</p>
-            <p>错误消息: ${error.message}</p>
-            <pre>${JSON.stringify(error, null, 2)}</pre>
-        </div>
-    `);
-}
+
     try {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("找不到 GEMINI_API_KEY");
-
-        // ✅ 正确写法：apiVersion 在这里指定
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel(
-            { model: "gemini-1.5-flash" }  // 不需要 "models/" 前缀
-        );
 
         const { name, gender, birthday, birthplace } = req.body || {};
         if (!name) throw new Error("缺少觀測對象資料");
@@ -97,17 +78,29 @@ module.exports = async function handler(req, res) {
 姓名：${name}，性別：${gender}，生辰：${birthday}，出生地：${birthplace}。
 請開始觀測，確保內容豐富、口吻專業神祕，HTML 結構完整。`;
 
-       const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
+      const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
+        }
+
+        let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         text = text.replace(/```html/g, '').replace(/```/g, '').trim();
 
         res.status(200).send(text);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send(`<div style="color:#7AB860">${error.message}</div>`);
+        res.status(500).send(`<div style="color:#7AB860;padding:20px">${error.message}</div>`);
     }
-        `);
-    }
-}
+};
