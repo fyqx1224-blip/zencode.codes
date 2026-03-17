@@ -486,7 +486,8 @@ function getDayun(gender,year,month,day,yrTg){
     if(dt.d===termDay){diff=i;break;}
   }
   if(!diff)diff=30;
-  const startAge=Math.round(diff/3);
+  // ★ 修復：傳統命理「每3天為1歲」用 floor 向下取整，最小顯示1歲
+  const startAge=Math.max(1,Math.floor(diff/3));
   const mGZ=getMoGZ(year,month,day);
   const list=[];
   for(let i=0;i<8;i++){
