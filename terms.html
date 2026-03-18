@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使用條款 · ZenCode 命理推演系統</title>
+<meta name="description" content="ZenCode 使用條款 — 使用本平台前請詳閱以下條款與條件。">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
+  --bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(212,168,67,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.022) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
+.scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,0.1),rgba(212,168,67,0.32),rgba(212,168,67,0.1),transparent);
+  animation:scan 12s linear infinite;}
+@keyframes scan{0%{top:-2px}100%{top:100vh}}
+
+.wrap{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:80px 24px 100px;}
+
+.pg-hero{text-align:center;padding:60px 0 70px;border-bottom:1px solid rgba(212,168,67,0.1);}
+.pg-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;
+  font-size:0.6rem;letter-spacing:0.55em;color:var(--gold);margin-bottom:24px;}
+.pg-tag::before,.pg-tag::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.pg-tag::after{transform:scaleX(-1);}
+.pg-title{font-family:'Ma Shan Zheng',cursive;font-size:clamp(2.6rem,7vw,4.2rem);line-height:1;
+  background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 35px rgba(212,168,67,0.28));}
+.pg-sub{font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.3em;color:var(--text-d);margin-top:14px;}
+.pg-date{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(212,168,67,0.4);letter-spacing:0.2em;margin-top:10px;}
+
+.toc{background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.13);padding:28px 32px;margin:48px 0 0;font-family:'Noto Sans TC',sans-serif;}
+.toc-title{font-size:0.68rem;letter-spacing:0.4em;color:var(--gold);margin-bottom:16px;}
+.toc ol{list-style:none;counter-reset:toc-c;display:flex;flex-direction:column;gap:8px;}
+.toc li{counter-increment:toc-c;display:flex;align-items:baseline;gap:10px;}
+.toc li::before{content:counter(toc-c, cjk-ideographic);font-family:'Ma Shan Zheng',cursive;font-size:0.9rem;color:rgba(212,168,67,0.4);flex-shrink:0;width:18px;}
+.toc a{font-size:0.78rem;color:var(--text-d);text-decoration:none;transition:color .2s;letter-spacing:0.05em;}
+.toc a:hover{color:var(--gold);}
+
+.doc-section{padding:56px 0;border-bottom:1px solid rgba(212,168,67,0.07);}
+.doc-section:last-of-type{border-bottom:none;}
+.doc-num{font-family:'Ma Shan Zheng',cursive;font-size:2rem;color:rgba(212,168,67,0.18);line-height:1;margin-bottom:4px;}
+.doc-title{font-size:1.1rem;font-weight:500;color:var(--gold-b);letter-spacing:0.1em;margin-bottom:22px;display:flex;align-items:center;gap:12px;}
+.doc-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,168,67,0.25),transparent);}
+.doc-body{font-size:0.88rem;line-height:2.1;color:var(--text-d);font-weight:300;}
+.doc-body p+p{margin-top:14px;}
+.doc-body strong{color:var(--text);font-weight:500;}
+.doc-body ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:8px;}
+.doc-body ul li{padding-left:18px;position:relative;}
+.doc-body ul li::before{content:'▸';position:absolute;left:0;color:rgba(212,168,67,0.45);font-size:0.75rem;}
+
+.warn-box{background:rgba(212,98,42,0.06);border:1px solid rgba(212,98,42,0.22);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
+.warn-box strong{color:#F07840;}
+.info-box{background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
+
+.contact-bar{margin-top:60px;text-align:center;padding:36px;border:1px solid rgba(212,168,67,0.14);background:rgba(212,168,67,0.03);}
+.contact-bar p{font-family:'Noto Sans TC',sans-serif;font-size:0.78rem;color:var(--text-d);letter-spacing:0.12em;line-height:2;}
+.contact-bar a{color:var(--gold);text-decoration:none;}
+.contact-bar a:hover{color:var(--gold-b);}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-ov"></div>
+<div class="scan"></div>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+
+  <div class="pg-hero">
+    <div class="pg-tag">Terms of Service · 使用條款</div>
+    <h1 class="pg-title">使用條款</h1>
+    <p class="pg-sub">使用本平台即表示您同意以下條款</p>
+    <p class="pg-date">最後更新：2026年3月</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">目　錄</div>
+    <ol>
+      <li><a href="#t1">服務說明</a></li>
+      <li><a href="#t2">使用資格</a></li>
+      <li><a href="#t3">使用規範</a></li>
+      <li><a href="#t4">服務模式與廣告解鎖</a></li>
+      <li><a href="#t5">免責聲明</a></li>
+      <li><a href="#t6">知識產權</a></li>
+      <li><a href="#t7">服務中斷與變更</a></li>
+      <li><a href="#t8">責任限制</a></li>
+      <li><a href="#t9">條款修改</a></li>
+      <li><a href="#t10">聯絡方式</a></li>
+    </ol>
+  </div>
+
+  <section class="doc-section" id="t1">
+    <div class="doc-num">一</div>
+    <h2 class="doc-title">服務說明</h2>
+    <div class="doc-body">
+      <p>ZenCode（網址：zencode.codes，以下簡稱「本平台」）提供基於傳統命理學的八字推算與 AI 解讀服務。本平台透過演算法計算四柱八字、納音、十二長生地勢等命理數據，並調用 AI 語言模型生成個性化解讀報告。</p>
+      <p>本服務完全基於娛樂與自我探索目的提供，<strong>不構成任何形式的占卜、預測、醫療、法律、財務或人生建議。</strong></p>
+      <div class="warn-box"><strong>重要提示：</strong>命理解讀是對傳統文化的詮釋，並非對未來事件的確定性預測。請勿將本平台的解讀結果作為任何重大人生決定的唯一依據。</div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t2">
+    <div class="doc-num">二</div>
+    <h2 class="doc-title">使用資格</h2>
+    <div class="doc-body">
+      <p>使用本平台，您聲明並保證：</p>
+      <ul>
+        <li>您年滿 <strong>18 歲</strong>，或在監護人陪同下使用</li>
+        <li>您具備完全民事行為能力</li>
+        <li>您所在地區的法律不禁止您使用本類型服務</li>
+        <li>您輸入的資料不侵犯任何第三方的隱私權利</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t3">
+    <div class="doc-num">三</div>
+    <h2 class="doc-title">使用規範</h2>
+    <div class="doc-body">
+      <p>使用本平台時，您同意<strong>不得</strong>進行以下行為：</p>
+      <ul>
+        <li>以自動化方式大量抓取、爬取或濫用本平台的 API 接口</li>
+        <li>以不正當手段（如惡意腳本、廣告攔截器、破解工具）繞過本平台的內容遮罩與廣告解鎖機制</li>
+        <li>嘗試破解、繞過或攻擊本平台的安全措施</li>
+        <li>輸入虛假、有害或侵犯他人隱私的資料</li>
+        <li>利用本平台提供的解讀結果欺騙、詐騙或傷害他人</li>
+        <li>商業性轉售本平台生成的解讀報告而不注明來源</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t4">
+    <div class="doc-num">四</div>
+    <h2 class="doc-title">服務模式與廣告解鎖</h2>
+    <div class="doc-body">
+      <p>為了維持平台的免費營運，ZenCode 採用廣告贊助模式：</p>
+      <ul>
+        <li><strong>內容解鎖：</strong> 本平台部分進階命理解讀內容可能處於隱藏或模糊狀態，您需要透過點擊或觀看第三方廣告來解鎖完整內容。</li>
+        <li><strong>第三方廣告：</strong> 本平台展示的廣告（如 Google AdSense）由第三方供應商提供。ZenCode 不對這些第三方廣告的真實性、合法性或其導向的外部網站內容負責。</li>
+        <li><strong>免責聲明：</strong> 您經由本平台點擊廣告而與第三方廣告商或網站產生的任何交易、糾紛或損害，均與 ZenCode 無涉。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t5">
+    <div class="doc-num">五</div>
+    <h2 class="doc-title">免責聲明</h2>
+    <div class="doc-body">
+      <p>本平台提供的命理解讀內容<strong>僅供娛樂與參考</strong>，具體包括：</p>
+      <ul>
+        <li><strong>AI 隨機性：</strong> 本平台的解讀內容由 AI 即時生成。由於 AI 模型的特性，即便輸入相同的出生資料，重新整理頁面或重新生成也可能得出不同的遣詞用字或解析角度。本平台不保證生成結果的絕對一致性。</li>
+        <li><strong>流派差異：</strong> 八字推算結果因不同命理流派而存在合理差異，本平台採用特定演算法標準，不保證與所有命理師的計算結果一致。</li>
+        <li><strong>非專業建議：</strong> 命理學不是科學，其分析結論不應替代專業醫療、心理、法律或財務諮詢。</li>
+      </ul>
+      <div class="info-box">本平台的服務以「現狀」提供，不附帶任何明示或暗示的保證，包括但不限於適銷性、特定用途適用性或不侵權的保證。</div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t6">
+    <div class="doc-num">六</div>
+    <h2 class="doc-title">知識產權</h2>
+    <div class="doc-body">
+      <p>本平台的網站設計、代碼、文字內容、Logo 及品牌元素均受著作權法保護，歸 ZenCode 所有。</p>
+      <p>AI 為您生成的個人命理解讀報告，您可以<strong>自由保存、分享及非商業性使用</strong>，但不得以商業目的大量轉售，且在公開分享時建議注明「由 ZenCode 生成」。</p>
+      <p>本平台引用的《滴天髓》《淵海子平》等傳統命理古籍均為公共領域文本。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t7">
+    <div class="doc-num">七</div>
+    <h2 class="doc-title">服務中斷與變更</h2>
+    <div class="doc-body">
+      <p>本平台保留在不事先通知的情況下：</p>
+      <ul>
+        <li>暫停、中斷或終止部分或全部服務</li>
+        <li>修改、更新或刪除任何服務功能（包含調整廣告解鎖的觸發條件）</li>
+        <li>限制特定地區或用戶的訪問</li>
+      </ul>
+      <p>我們將盡力保持服務的連續性，但不對服務中斷造成的任何損失承擔責任。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t8">
+    <div class="doc-num">八</div>
+    <h2 class="doc-title">責任限制</h2>
+    <div class="doc-body">
+      <p>在適用法律允許的最大範圍內，ZenCode 對以下情況不承擔任何直接、間接、附帶、特殊或懲罰性損害賠償責任：</p>
+      <ul>
+        <li>您使用或無法使用本服務</li>
+        <li>您依賴本平台命理解讀做出的任何決定</li>
+        <li>第三方未經授權訪問您的資料</li>
+        <li>服務中斷、錯誤或遺漏</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t9">
+    <div class="doc-num">九</div>
+    <h2 class="doc-title">條款修改</h2>
+    <div class="doc-body">
+      <p>我們保留隨時修改本使用條款的權利。修改後的條款將在本頁更新「最後更新」日期，重大變更將在平台顯著位置進行公告。</p>
+      <p>您在條款修改後繼續使用本平台，即視為接受修改後的條款。若您不同意修改後的條款，請停止使用本平台。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="t10">
+    <div class="doc-num">十</div>
+    <h2 class="doc-title">聯絡方式</h2>
+    <div class="doc-body">
+      <p>如您對本使用條款有任何疑問，請通過以下方式聯繫我們：</p>
+      <p style="margin-top:12px;">電子郵件：<strong><a href="mailto:fyqx1224@gmail.com">fyqx1224@gmail.com</a></strong></p>
+    </div>
+  </section>
+
+  <div class="contact-bar">
+    <p>感謝您選擇 ZenCode</p>
+    <p style="margin-top:6px;">法律疑問請聯繫 <a href="mailto:fyqx1224@gmail.com">fyqx1224@gmail.com</a></p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  resize();addEventListener('resize',()=>{resize();init();});
+  function init(){stars=[];for(let i=0,n=Math.floor(W*H/2800);i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.1,a:Math.random()*.5+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2});}
+  init();let t=0;
+  function draw(){ctx.clearRect(0,0,W,H);t+=.006;stars.forEach(s=>{const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(232,211,153,${a})`;ctx.fill();});requestAnimationFrame(draw);}
+  draw();
+})();
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
+});
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.08});
+document.querySelectorAll('.doc-section,.toc').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(16px)';el.style.transition='opacity .7s ease,transform .7s ease';io.observe(el);});
+</script>
+</body>
+</html>
