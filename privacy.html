@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隱私政策 · ZenCode 命理推演系統</title>
+<meta name="description" content="ZenCode 隱私政策 — 我們如何收集、使用及保護您的個人資料。">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
+  --bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(212,168,67,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.022) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
+.scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,0.1),rgba(212,168,67,0.32),rgba(212,168,67,0.1),transparent);
+  animation:scan 12s linear infinite;}
+@keyframes scan{0%{top:-2px}100%{top:100vh}}
+
+.wrap{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:80px 24px 100px;}
+
+.pg-hero{text-align:center;padding:60px 0 70px;border-bottom:1px solid rgba(212,168,67,0.1);}
+.pg-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;
+  font-size:0.6rem;letter-spacing:0.55em;color:var(--gold);margin-bottom:24px;}
+.pg-tag::before,.pg-tag::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.pg-tag::after{transform:scaleX(-1);}
+.pg-title{font-family:'Ma Shan Zheng',cursive;font-size:clamp(2.6rem,7vw,4.2rem);line-height:1;
+  background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 35px rgba(212,168,67,0.28));}
+.pg-sub{font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.3em;color:var(--text-d);margin-top:14px;}
+.pg-date{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(212,168,67,0.4);letter-spacing:0.2em;margin-top:10px;}
+
+/* 文档目录 */
+.toc{background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.13);padding:28px 32px;margin:48px 0 0;font-family:'Noto Sans TC',sans-serif;}
+.toc-title{font-size:0.68rem;letter-spacing:0.4em;color:var(--gold);margin-bottom:16px;}
+.toc ol{list-style:none;counter-reset:toc-c;display:flex;flex-direction:column;gap:8px;}
+.toc li{counter-increment:toc-c;display:flex;align-items:baseline;gap:10px;}
+.toc li::before{content:counter(toc-c, cjk-ideographic);font-family:'Ma Shan Zheng',cursive;font-size:0.9rem;color:rgba(212,168,67,0.4);flex-shrink:0;width:18px;}
+.toc a{font-size:0.78rem;color:var(--text-d);text-decoration:none;transition:color .2s;letter-spacing:0.05em;}
+.toc a:hover{color:var(--gold);}
+
+/* 正文 */
+.doc-section{padding:56px 0;border-bottom:1px solid rgba(212,168,67,0.07);}
+.doc-section:last-of-type{border-bottom:none;}
+.doc-num{font-family:'Ma Shan Zheng',cursive;font-size:2rem;color:rgba(212,168,67,0.18);line-height:1;margin-bottom:4px;}
+.doc-title{font-size:1.1rem;font-weight:500;color:var(--gold-b);letter-spacing:0.1em;margin-bottom:22px;display:flex;align-items:center;gap:12px;}
+.doc-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,168,67,0.25),transparent);}
+.doc-body{font-size:0.88rem;line-height:2.1;color:var(--text-d);font-weight:300;}
+.doc-body p+p{margin-top:14px;}
+.doc-body strong{color:var(--text);font-weight:500;}
+.doc-body ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:8px;}
+.doc-body ul li{padding-left:18px;position:relative;}
+.doc-body ul li::before{content:'▸';position:absolute;left:0;color:rgba(212,168,67,0.45);font-size:0.75rem;}
+
+/* 高亮盒 */
+.info-box{background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
+.warn-box{background:rgba(212,98,42,0.06);border:1px solid rgba(212,98,42,0.22);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
+.warn-box strong{color:#F07840;}
+
+/* 联系区 */
+.contact-bar{margin-top:60px;text-align:center;padding:36px;border:1px solid rgba(212,168,67,0.14);background:rgba(212,168,67,0.03);}
+.contact-bar p{font-family:'Noto Sans TC',sans-serif;font-size:0.78rem;color:var(--text-d);letter-spacing:0.12em;line-height:2;}
+.contact-bar a{color:var(--gold);text-decoration:none;}
+.contact-bar a:hover{color:var(--gold-b);}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-ov"></div>
+<div class="scan"></div>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+
+  <div class="pg-hero">
+    <div class="pg-tag">Privacy Policy · 隱私政策</div>
+    <h1 class="pg-title">隱私政策</h1>
+    <p class="pg-sub">我們如何收集、使用及保護您的資料</p>
+    <p class="pg-date">最後更新：2026年3月</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">目　錄</div>
+    <ol>
+      <li><a href="#s1">我們收集哪些資料</a></li>
+      <li><a href="#s2">我們如何使用您的資料</a></li>
+      <li><a href="#s3">資料儲存與安全</a></li>
+      <li><a href="#s4">第三方服務</a></li>
+      <li><a href="#s5">Cookie 政策</a></li>
+      <li><a href="#s6">您的權利</a></li>
+      <li><a href="#s7">未成年人保護</a></li>
+      <li><a href="#s8">政策變更</a></li>
+      <li><a href="#s9">聯絡我們</a></li>
+    </ol>
+  </div>
+
+  <section class="doc-section" id="s1">
+    <div class="doc-num">一</div>
+    <h2 class="doc-title">我們收集哪些資料</h2>
+    <div class="doc-body">
+      <p>使用 ZenCode 命理推演服務時，您需要輸入以下資料以進行八字計算：</p>
+      <ul>
+        <li>姓名（用於個人化解讀報告，不用於身份驗證）</li>
+        <li>性別（影響大運推算方向）</li>
+        <li>出生日期與時間（八字計算的核心輸入）</li>
+        <li>出生地點（用於真太陽時校正）</li>
+      </ul>
+      <p>我們<strong>不要求</strong>您提供電子郵件地址、電話號碼、身份證號碼或任何可直接識別您真實身份的資料。</p>
+      <div class="info-box">以上資料僅在您主動提交時收集，並僅用於本次推算。我們不會在不同使用者之間關聯或比對您的出生資料。</div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s2">
+    <div class="doc-num">二</div>
+    <h2 class="doc-title">我們如何使用您的資料</h2>
+    <div class="doc-body">
+      <p>您提交的資料用於以下目的：</p>
+      <ul>
+        <li><strong>命盤計算</strong>：在您的瀏覽器端進行四柱八字、納音、地勢、骨重的即時計算</li>
+        <li><strong>AI 解讀</strong>：將計算結果傳送至我們的後端 API，調用 AI 模型生成個性化命理解讀報告</li>
+        <li><strong>服務改進</strong>：匿名化的使用統計（如頁面訪問次數），用於改進產品體驗</li>
+      </ul>
+      <p>我們<strong>不會</strong>將您的出生資料用於廣告定向、銷售給第三方，或建立使用者畫像。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s3">
+    <div class="doc-num">三</div>
+    <h2 class="doc-title">資料儲存與安全</h2>
+    <div class="doc-body">
+      <p>ZenCode <strong>不持久化儲存</strong>您輸入的個人出生資料。每次推算完成後，相關資料不會被保存至我們的資料庫。</p>
+      <p>我們的 API 請求通過 HTTPS 加密傳輸。AI 解讀請求在完成後不會在我們的服務器上留存您的個人資料。</p>
+      <div class="warn-box"><strong>注意：</strong>您的瀏覽器本地（Local Storage / Session Storage）可能會暫存部分表單資料以提升使用體驗。您可以隨時清除瀏覽器緩存來刪除這些資料。</div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s4">
+    <div class="doc-num">四</div>
+    <h2 class="doc-title">第三方服務</h2>
+    <div class="doc-body">
+      <p>ZenCode 使用以下第三方服務，這些服務可能會按其各自的隱私政策收集資料：</p>
+      <ul>
+        <li><strong>Google AdSense</strong>：本站使用 Google AdSense 投放廣告。Google 作為第三方供應商，會使用 Cookie 在本站上根據使用者對本站及其他網站的訪問情況投放廣告。</li>
+        <li><strong>Google Fonts & Google Gemini API</strong>：用於字體加載與 AI 命理解讀分析。您的八字計算數據（不含可識別身份資料）將以 API 請求形式傳送至 Google 服務器。</li>
+        <li><strong>Vercel</strong>：網站託管平台，可能收集標準的 Web 訪問日誌。</li>
+      </ul>
+      <p>我們建議您查閱上述服務商的官方隱私政策以了解詳情。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s5">
+    <div class="doc-num">五</div>
+    <h2 class="doc-title">Cookie 政策</h2>
+    <div class="doc-body">
+      <p>ZenCode 使用 Cookie 來協助投放廣告。Google 使用 <strong>DoubleClick Cookie</strong>，讓 Google 及其合作夥伴能根據您在本站及其他網站的瀏覽記錄，向您投放感興趣的廣告。您可以在 Google 的「廣告設定」中選擇停用個性化廣告。</p>
+      <p>部分第三方服務（如 Google Fonts）也可能會在您的設備上設置其服務所需的 Cookie，這些行為受其各自的 Cookie 政策管轄。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s6">
+    <div class="doc-num">六</div>
+    <h2 class="doc-title">您的權利</h2>
+    <div class="doc-body">
+      <p>由於我們不持久化儲存您的個人資料，以下權利的行使方式如下：</p>
+      <ul>
+        <li><strong>查閱與更正</strong>：您輸入的資料僅在當次會話中使用，您可直接修改表單內容</li>
+        <li><strong>刪除</strong>：關閉或刷新頁面即可清除當次會話中的所有輸入資料</li>
+        <li><strong>可攜性</strong>：您可以自行保存頁面上顯示的命盤解讀報告</li>
+      </ul>
+      <p>如您對我們的資料處理方式有任何疑問，請通過下方聯絡方式與我們聯繫。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s7">
+    <div class="doc-num">七</div>
+    <h2 class="doc-title">未成年人保護</h2>
+    <div class="doc-body">
+      <p>ZenCode 的服務面向<strong>18歲及以上</strong>的成年用戶。我們不會故意收集未成年人的個人資料。若您是未成年人，請在家長或監護人的陪同下使用本服務。</p>
+      <p>如我們發現無意中收集了未成年人的個人資料，我們將立即採取措施予以刪除。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s8">
+    <div class="doc-num">八</div>
+    <h2 class="doc-title">政策變更</h2>
+    <div class="doc-body">
+      <p>我們可能會不定期更新本隱私政策。重大變更將在本頁頂部更新「最後更新」日期，並在可能的情況下通過網站公告提醒您。</p>
+      <p>繼續使用本服務即表示您接受更新後的隱私政策。</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="s9">
+    <div class="doc-num">九</div>
+    <h2 class="doc-title">聯絡我們</h2>
+    <div class="doc-body">
+      <p>如您對本隱私政策有任何疑問、建議或隱私相關投訴，請通過以下方式聯繫我們：</p>
+      <p style="margin-top:12px;">電子郵件：<strong><a href="mailto:fyqx1224@gmail.com">fyqx1224@gmail.com</a></strong></p>
+    </div>
+  </section>
+
+  <div class="contact-bar">
+    <p>感謝您信任 ZenCode</p>
+    <p style="margin-top:6px;">如有任何隱私疑慮，請聯繫 <a href="mailto:fyqx1224@gmail.com">fyqx1224@gmail.com</a></p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  resize();addEventListener('resize',()=>{resize();init();});
+  function init(){stars=[];for(let i=0,n=Math.floor(W*H/2800);i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.1,a:Math.random()*.5+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2});}
+  init();let t=0;
+  function draw(){ctx.clearRect(0,0,W,H);t+=.006;stars.forEach(s=>{const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(232,211,153,${a})`;ctx.fill();});requestAnimationFrame(draw);}
+  draw();
+})();
+// 平滑滚动
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
+});
+</script>
+</body>
+</html>
