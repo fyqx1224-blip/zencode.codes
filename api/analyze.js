@@ -499,9 +499,9 @@ ${pillarDesc}
             }
             if (sec.bone_card) sectionsHTML += renderCard(sec.bone_card);
             if (sec.opportunities) {
-                sectionsHTML += `<div class="oppo-box"><h3>🌱 當前最值得把握的機會（2025–2026）</h3><ul>`;
+                sectionsHTML += `<div class="oppo-box"><h3>🌱 當前機會（2025–2026）</h3><ul>`;
                 sec.opportunities.forEach(o => { sectionsHTML += `<li>${o}</li>`; });
-                sectionsHTML += `</ul></div><div class="warning-box"><h3>⚡ 最需警惕的地雷</h3><ul>`;
+                sectionsHTML += `</ul></div><div class="warning-box"><h3>⚡ 當前雷點</h3><ul>`;
                 sec.warnings.forEach(w => { sectionsHTML += `<li>${w}</li>`; });
                 sectionsHTML += `</ul></div>`;
             }
@@ -638,7 +638,7 @@ body::after{
 .bone-text p{font-size:.88rem;line-height:2;color:#D8D0C0;font-weight:300;}
 .bone-text p+p{margin-top:12px;}
 
-/* ── 機會地雷（固定語意色）── */
+/* ── 機會雷點（固定語意色）── */
 .warning-box{background:rgba(212,98,42,.07);border:1px solid rgba(212,98,42,.38);padding:28px 32px;margin:16px 0;}
 .warning-box h3{color:#F07840;font-size:1.1rem;margin-bottom:14px;letter-spacing:.1em;}
 .warning-box ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
