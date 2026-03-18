@@ -125,7 +125,7 @@ module.exports = async function handler(req, res) {
 
         const body = req.body || {};
         const { name, gender, birthday, birthplace, pillars, ganzhiString,
-                riZhu, riZhuTg, nayin, boneWeight, dayun } = body;
+                riZhu, riZhuTg, nayin, dizhi_state, boneWeight, dayun } = body;
 
         if (!name || !pillars) throw new Error("缺少必要資料");
 
@@ -134,20 +134,26 @@ module.exports = async function handler(req, res) {
         const riWuxing = TG_WUXING[Math.max(0, riTgIdx)] || '木';
         const T = WUXING_THEMES[riWuxing];
 
-        // ── 組裝 AI Prompt ──
+        // ── 把所有前端已算好的值整理成文字，直接填進 prompt ──
         const pillarDesc = pillars.map(p =>
-            `${p.label}【${p.tg}${p.dz}】天干${p.tg}(${p.tgWuxing})十神:${p.tenGod} 地支${p.dz}(${p.dzWuxing})十二長生地勢:${p.wangshuan}`
+            `${p.label}【${p.tg}${p.dz}】天干:${p.tg}(${p.tgWuxing},十神:${p.tenGod}) 地支:${p.dz}(${p.dzWuxing},地勢:${p.wangshuan})`
         ).join('\n');
 
         const dayunDesc = dayun.list.map(d => `${d.age} ${d.stem}`).join('、');
 
-        // 預先計算好納音和地勢字串，直接硬填進去，AI不得更改
-        const nayin_str = nayin; // 已是前端算好的字串，如「海中金·爐中火·大林木·路旁土」
-        const dizhi_state_str = pillars.map(p => p.wangshuan).join('·');
+        // ── 把大運列表直接構建為 JSON（不讓 AI 填）──
+        const yunliuJSON = dayun.list.map(d =>
+            `{ "age": "${d.age}", "stem": "${d.stem}", "stemClass": "${d.tgClass}", "desc": "（此大運對${riZhuTg}日主的影響，結合本命格局分析）", "active": false }`
+        ).join(',\n        ');
+
+        // ── 把四柱 pillars 直接構建為 JSON（不讓 AI 填）──
+        const pillarsJSON = pillars.map(p =>
+            `{ "label": "${p.label}", "tg": "${p.tg}", "tgClass": "${p.tgClass}", "dz": "${p.dz}", "dzClass": "${p.dzClass}", "tenGod": "${p.tenGod}" }`
+        ).join(',\n      ');
 
         const prompt = `你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
 
-【⚠️ 以下所有數據由精確演算法計算，請直接使用，不得自行重新推算或更改任何干支、納音、地勢數值】
+【⚠️ 重要：以下所有八字數據由精確演算法計算完畢，請直接使用這些數值進行分析，絕對不得自行重新推算或修改任何干支、納音、地勢、骨重數字】
 
 命主資料：
 姓名：${name}
@@ -160,39 +166,26 @@ ${pillarDesc}
 
 八字組合：${ganzhiString}
 日主：${riZhuTg}（${riZhu}）五行屬${riWuxing}
-納音（已算定，勿更改）：${nayin_str}
-十二長生地勢（已算定，勿更改）：${dizhi_state_str}
-稱骨：${boneWeight}
-大運起運：${dayun.startAge}歲
-大運排列：${dayunDesc}
+納音（已算定）：${nayin}
+十二長生地勢（已算定）：${dizhi_state}
+稱骨骨重（已算定）：${boneWeight}
+大運起運年齡（已算定）：${dayun.startAge}歲
+大運排列（已算定）：${dayunDesc}
 
+【你的任務：只撰寫文字解讀內容，所有數字欄位已由系統填入，請勿修改】
 【解讀框架·請逐項完整分析】
 壹、格局鑑定（正格vs特殊格局、身強身弱、調候用神vs扶抑用神）
 貳、十神心理原型對照（每個主要十神的心理分析，每個至少200字）
 叁、宮位生活映射（四柱各階段人生，含刑沖合害具象化表格）
 肆、天干地支互動分析（天干合化、地支三合六合六衝三刑六害）
-伍、大運流年交叉分析（列出全部8個大運、2025乙巳年、2026丙午年詳析）
+伍、大運流年交叉分析（全部8個大運的逐一簡析、2025乙巳年、2026丙午年詳析）
 陸、神煞解讀（天乙貴人、文昌、驛馬、桃花、羊刃、魁罡等）
 柒、稱骨訣白話詮釋（${boneWeight}的命格解析）
 捌、當前機會與地雷（最值得把握的3個機會、最需警惕的3個地雷）
 
-請嚴格按照以下 JSON 格式輸出，不要輸出任何其他內容：
+請嚴格按照以下 JSON 格式輸出，只填寫「文字分析內容」的部分（即帶有「請填寫」標記的欄位），帶有【已填入】標記的欄位值不得修改：
 
 {
-  "hero": {
-    "emblem": "${riZhuTg}",
-    "subtitle": "${ganzhiString}｜${riZhuTg}${gender === '女' ? '女' : '男'}命深度解讀",
-    "pillars": [
-      { "label": "${pillars[0].label}", "tg": "${pillars[0].tg}", "tgClass": "${pillars[0].tgClass}", "dz": "${pillars[0].dz}", "dzClass": "${pillars[0].dzClass}", "tenGod": "${pillars[0].tenGod}" },
-      { "label": "${pillars[1].label}", "tg": "${pillars[1].tg}", "tgClass": "${pillars[1].tgClass}", "dz": "${pillars[1].dz}", "dzClass": "${pillars[1].dzClass}", "tenGod": "${pillars[1].tenGod}" },
-      { "label": "${pillars[2].label}", "tg": "${pillars[2].tg}", "tgClass": "${pillars[2].tgClass}", "dz": "${pillars[2].dz}", "dzClass": "${pillars[2].dzClass}", "tenGod": "日主" },
-      { "label": "${pillars[3].label}", "tg": "${pillars[3].tg}", "tgClass": "${pillars[3].tgClass}", "dz": "${pillars[3].dz}", "dzClass": "${pillars[3].dzClass}", "tenGod": "${pillars[3].tenGod}" }
-    ],
-    "nayin": "${nayin_str}",
-    "dizhi_state": "${dizhi_state_str}",
-    "bone_weight": "${boneWeight}",
-    "qiyun": "${dayun.startAge}歲起運"
-  },
   "sections": [
     {
       "num": "壹",
@@ -307,14 +300,14 @@ ${pillarDesc}
       "title": "大運流年交叉分析",
       "subtitle": "LUCK PILLARS · ANNUAL STARS · CURRENT",
       "yunliu": [
-        { "age": "${dayun.list[0] ? dayun.list[0].age : ''}", "stem": "${dayun.list[0] ? dayun.list[0].stem : ''}", "stemClass": "${dayun.list[0] ? dayun.list[0].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[1] ? dayun.list[1].age : ''}", "stem": "${dayun.list[1] ? dayun.list[1].stem : ''}", "stemClass": "${dayun.list[1] ? dayun.list[1].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[2] ? dayun.list[2].age : ''}", "stem": "${dayun.list[2] ? dayun.list[2].stem : ''}", "stemClass": "${dayun.list[2] ? dayun.list[2].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[3] ? dayun.list[3].age : ''}", "stem": "${dayun.list[3] ? dayun.list[3].stem : ''}", "stemClass": "${dayun.list[3] ? dayun.list[3].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[4] ? dayun.list[4].age : ''}", "stem": "${dayun.list[4] ? dayun.list[4].stem : ''}", "stemClass": "${dayun.list[4] ? dayun.list[4].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[5] ? dayun.list[5].age : ''}", "stem": "${dayun.list[5] ? dayun.list[5].stem : ''}", "stemClass": "${dayun.list[5] ? dayun.list[5].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[6] ? dayun.list[6].age : ''}", "stem": "${dayun.list[6] ? dayun.list[6].stem : ''}", "stemClass": "${dayun.list[6] ? dayun.list[6].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false },
-        { "age": "${dayun.list[7] ? dayun.list[7].age : ''}", "stem": "${dayun.list[7] ? dayun.list[7].stem : ''}", "stemClass": "${dayun.list[7] ? dayun.list[7].tgClass : 'wood-c'}", "desc": "（大運簡析）", "active": false }
+        { "age": "${dayun.list[0]?.age||''}", "stem": "${dayun.list[0]?.stem||''}", "stemClass": "${dayun.list[0]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[1]?.age||''}", "stem": "${dayun.list[1]?.stem||''}", "stemClass": "${dayun.list[1]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[2]?.age||''}", "stem": "${dayun.list[2]?.stem||''}", "stemClass": "${dayun.list[2]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[3]?.age||''}", "stem": "${dayun.list[3]?.stem||''}", "stemClass": "${dayun.list[3]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[4]?.age||''}", "stem": "${dayun.list[4]?.stem||''}", "stemClass": "${dayun.list[4]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[5]?.age||''}", "stem": "${dayun.list[5]?.stem||''}", "stemClass": "${dayun.list[5]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[6]?.age||''}", "stem": "${dayun.list[6]?.stem||''}", "stemClass": "${dayun.list[6]?.tgClass||''}", "desc": "（此大運簡析）", "active": false },
+        { "age": "${dayun.list[7]?.age||''}", "stem": "${dayun.list[7]?.stem||''}", "stemClass": "${dayun.list[7]?.tgClass||''}", "desc": "（此大運簡析）", "active": false }
       ],
       "yunliu_cards": [
         {
@@ -433,7 +426,16 @@ ${pillarDesc}
         }
 
         const hero = d.hero || {};
-        const pillarsHTML = (hero.pillars||[]).map(p => `
+        // hero 區塊的固定數字欄位：全部用後端從前端收到的已算定值覆蓋，不用AI輸出的值
+        const heroNayin      = nayin;         // 前端算好的納音字串
+        const heroDizhiState = dizhi_state;   // 前端算好的地勢字串
+        const heroBoneWeight = boneWeight;    // 前端算好的骨重
+        const heroQiyun      = `${dayun.startAge}歲起運`;
+        const heroEmblem     = riZhuTg;
+        const heroSubtitle   = `${ganzhiString}｜${riZhuTg}${gender === '女' ? '女' : '男'}命深度解讀`;
+
+        // 四柱直接用前端傳來的數據渲染，不用AI輸出的pillars
+        const pillarsHTML = pillars.map(p => `
             <div class="pillar">
                 <div class="pillar-label">${p.label}</div>
                 <div class="pillar-tg ${p.tgClass}">${p.tg}</div>
@@ -697,13 +699,13 @@ body::after{
 <body>
 <div class="container">
 <section class="hero">
-  <div class="hero-emblem">${hero.emblem||''}</div>
-  <div class="hero-subtitle">${hero.subtitle||''}</div>
+  <div class="hero-emblem">${heroEmblem}</div>
+  <div class="hero-subtitle">${heroSubtitle}</div>
   <div class="four-pillars">${pillarsHTML}</div>
   <div class="hero-desc">
-    納音：${hero.nayin||''}<br>
-    地勢：${hero.dizhi_state||''}<br>
-    骨重 <strong style="color:var(--pb)">${hero.bone_weight||''}</strong>｜起運 <strong style="color:var(--pb)">${hero.qiyun||''}</strong>
+    納音：${heroNayin}<br>
+    地勢：${heroDizhiState}<br>
+    骨重 <strong style="color:var(--pb)">${heroBoneWeight}</strong>｜起運 <strong style="color:var(--pb)">${heroQiyun}</strong>
   </div>
   <div class="scroll-hint">向下探索</div>
 </section>
