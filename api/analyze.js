@@ -125,7 +125,8 @@ module.exports = async function handler(req, res) {
 
         const body = req.body || {};
         const { name, gender, birthday, birthplace, pillars, ganzhiString,
-                riZhu, riZhuTg, nayin, dizhi_state, boneWeight, dayun } = body;
+                riZhu, riZhuTg, nayin, dizhi_state, boneWeight, dayun,
+                lang, langInstruction } = body;
 
         if (!name || !pillars) throw new Error("缺少必要資料");
 
@@ -151,7 +152,12 @@ module.exports = async function handler(req, res) {
             `{ "label": "${p.label}", "tg": "${p.tg}", "tgClass": "${p.tgClass}", "dz": "${p.dz}", "dzClass": "${p.dzClass}", "tenGod": "${p.tenGod}" }`
         ).join(',\n      ');
 
-        const prompt = `你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
+        // ── 語言指令：英韓版在 prompt 最前面注入，中文版不變 ──
+        const langBlock = langInstruction
+            ? `${langInstruction}\n\n`
+            : '';
+
+        const prompt = `${langBlock}你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
 
 【⚠️ 重要：以下所有八字數據由精確演算法計算完畢，請直接使用這些數值進行分析，絕對不得自行重新推算或修改任何干支、納音、地勢、骨重數字】
 
