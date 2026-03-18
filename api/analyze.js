@@ -136,14 +136,18 @@ module.exports = async function handler(req, res) {
 
         // ── 組裝 AI Prompt ──
         const pillarDesc = pillars.map(p =>
-            `${p.label}【${p.tg}${p.dz}】天干${p.tg}(${p.tgWuxing})十神:${p.tenGod} 地支${p.dz}(${p.dzWuxing})旺衰:${p.wangshuan}`
+            `${p.label}【${p.tg}${p.dz}】天干${p.tg}(${p.tgWuxing})十神:${p.tenGod} 地支${p.dz}(${p.dzWuxing})十二長生地勢:${p.wangshuan}`
         ).join('\n');
 
         const dayunDesc = dayun.list.map(d => `${d.age} ${d.stem}`).join('、');
 
+        // 預先計算好納音和地勢字串，直接硬填進去，AI不得更改
+        const nayin_str = nayin; // 已是前端算好的字串，如「海中金·爐中火·大林木·路旁土」
+        const dizhi_state_str = pillars.map(p => p.wangshuan).join('·');
+
         const prompt = `你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
 
-【⚠️ 以下四柱八字由精確演算法計算，請直接使用，不得自行重新推算或更改任何干支】
+【⚠️ 以下所有數據由精確演算法計算，請直接使用，不得自行重新推算或更改任何干支、納音、地勢數值】
 
 命主資料：
 姓名：${name}
@@ -156,7 +160,8 @@ ${pillarDesc}
 
 八字組合：${ganzhiString}
 日主：${riZhuTg}（${riZhu}）五行屬${riWuxing}
-納音：${nayin}
+納音（已算定，勿更改）：${nayin_str}
+十二長生地勢（已算定，勿更改）：${dizhi_state_str}
 稱骨：${boneWeight}
 大運起運：${dayun.startAge}歲
 大運排列：${dayunDesc}
@@ -183,8 +188,8 @@ ${pillarDesc}
       { "label": "${pillars[2].label}", "tg": "${pillars[2].tg}", "tgClass": "${pillars[2].tgClass}", "dz": "${pillars[2].dz}", "dzClass": "${pillars[2].dzClass}", "tenGod": "日主" },
       { "label": "${pillars[3].label}", "tg": "${pillars[3].tg}", "tgClass": "${pillars[3].tgClass}", "dz": "${pillars[3].dz}", "dzClass": "${pillars[3].dzClass}", "tenGod": "${pillars[3].tenGod}" }
     ],
-    "nayin": "${nayin}",
-    "dizhi_state": "${pillars.map(p => p.wangshuan).join('·')}",
+    "nayin": "${nayin_str}",
+    "dizhi_state": "${dizhi_state_str}",
     "bone_weight": "${boneWeight}",
     "qiyun": "${dayun.startAge}歲起運"
   },
