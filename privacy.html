@@ -3,73 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>隱私政策 · ZenCode 命理推演系統</title>
+<title>隱私政策 · ZenCode</title>
 <meta name="description" content="ZenCode 隱私政策 — 我們如何收集、使用及保護您的個人資料。">
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
-  --bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
-}
+:root{--gold:#D4A843;--gold-b:#F0C96A;--bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
+html,body{background:var(--bg);color:var(--text);font-family:"Noto Serif TC",serif;overflow-x:hidden;min-height:100vh;}
 #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;
-  background-image:linear-gradient(rgba(212,168,67,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.022) 1px,transparent 1px);
-  background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
-.scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(212,168,67,0.1),rgba(212,168,67,0.32),rgba(212,168,67,0.1),transparent);
-  animation:scan 12s linear infinite;}
+.grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(212,168,67,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.022) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
+.scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.1),rgba(212,168,67,0.32),rgba(212,168,67,0.1),transparent);animation:scan 12s linear infinite;}
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
-
 .wrap{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:80px 24px 100px;}
-
 .pg-hero{text-align:center;padding:60px 0 70px;border-bottom:1px solid rgba(212,168,67,0.1);}
-.pg-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;
-  font-size:0.6rem;letter-spacing:0.55em;color:var(--gold);margin-bottom:24px;}
-.pg-tag::before,.pg-tag::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.pg-tag{display:inline-flex;align-items:center;gap:12px;font-family:"Noto Sans TC",sans-serif;font-size:0.6rem;letter-spacing:0.55em;color:var(--gold);margin-bottom:24px;}
+.pg-tag::before,.pg-tag::after{content:"";width:24px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
 .pg-tag::after{transform:scaleX(-1);}
-.pg-title{font-family:'Ma Shan Zheng',cursive;font-size:clamp(2.6rem,7vw,4.2rem);line-height:1;
-  background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 35px rgba(212,168,67,0.28));}
-.pg-sub{font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.3em;color:var(--text-d);margin-top:14px;}
-.pg-date{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(212,168,67,0.4);letter-spacing:0.2em;margin-top:10px;}
-
-/* 文档目录 */
-.toc{background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.13);padding:28px 32px;margin:48px 0 0;font-family:'Noto Sans TC',sans-serif;}
+.pg-title{font-family:"Ma Shan Zheng",cursive;font-size:clamp(2.6rem,7vw,4.2rem);line-height:1;background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 35px rgba(212,168,67,0.28));}
+.pg-sub{font-family:"Noto Sans TC",sans-serif;font-size:0.75rem;letter-spacing:0.3em;color:var(--text-d);margin-top:14px;}
+.pg-date{font-family:"Noto Sans TC",sans-serif;font-size:0.65rem;color:rgba(212,168,67,0.4);letter-spacing:0.2em;margin-top:10px;}
+.toc{background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.13);padding:28px 32px;margin:48px 0 0;font-family:"Noto Sans TC",sans-serif;}
 .toc-title{font-size:0.68rem;letter-spacing:0.4em;color:var(--gold);margin-bottom:16px;}
-.toc ol{list-style:none;counter-reset:toc-c;display:flex;flex-direction:column;gap:8px;}
-.toc li{counter-increment:toc-c;display:flex;align-items:baseline;gap:10px;}
-.toc li::before{content:counter(toc-c, cjk-ideographic);font-family:'Ma Shan Zheng',cursive;font-size:0.9rem;color:rgba(212,168,67,0.4);flex-shrink:0;width:18px;}
+.toc ol{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.toc li{display:flex;align-items:baseline;gap:10px;}
+.toc li span.toc-n{font-family:"Ma Shan Zheng",cursive;font-size:0.9rem;color:rgba(212,168,67,0.4);flex-shrink:0;width:18px;}
 .toc a{font-size:0.78rem;color:var(--text-d);text-decoration:none;transition:color .2s;letter-spacing:0.05em;}
 .toc a:hover{color:var(--gold);}
-
-/* 正文 */
 .doc-section{padding:56px 0;border-bottom:1px solid rgba(212,168,67,0.07);}
 .doc-section:last-of-type{border-bottom:none;}
-.doc-num{font-family:'Ma Shan Zheng',cursive;font-size:2rem;color:rgba(212,168,67,0.18);line-height:1;margin-bottom:4px;}
+.doc-num{font-family:"Ma Shan Zheng",cursive;font-size:2rem;color:rgba(212,168,67,0.18);line-height:1;margin-bottom:4px;}
 .doc-title{font-size:1.1rem;font-weight:500;color:var(--gold-b);letter-spacing:0.1em;margin-bottom:22px;display:flex;align-items:center;gap:12px;}
-.doc-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,168,67,0.25),transparent);}
+.doc-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(212,168,67,0.25),transparent);}
 .doc-body{font-size:0.88rem;line-height:2.1;color:var(--text-d);font-weight:300;}
 .doc-body p+p{margin-top:14px;}
 .doc-body strong{color:var(--text);font-weight:500;}
 .doc-body ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:8px;}
 .doc-body ul li{padding-left:18px;position:relative;}
-.doc-body ul li::before{content:'▸';position:absolute;left:0;color:rgba(212,168,67,0.45);font-size:0.75rem;}
-
-/* 高亮盒 */
+.doc-body ul li::before{content:"▸";position:absolute;left:0;color:rgba(212,168,67,0.45);font-size:0.75rem;}
 .info-box{background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
 .warn-box{background:rgba(212,98,42,0.06);border:1px solid rgba(212,98,42,0.22);padding:18px 22px;margin:18px 0;font-size:0.83rem;line-height:1.9;color:rgba(240,234,214,0.75);}
 .warn-box strong{color:#F07840;}
-
-/* 联系区 */
 .contact-bar{margin-top:60px;text-align:center;padding:36px;border:1px solid rgba(212,168,67,0.14);background:rgba(212,168,67,0.03);}
-.contact-bar p{font-family:'Noto Sans TC',sans-serif;font-size:0.78rem;color:var(--text-d);letter-spacing:0.12em;line-height:2;}
+.contact-bar p{font-family:"Noto Sans TC",sans-serif;font-size:0.78rem;color:var(--text-d);letter-spacing:0.12em;line-height:2;}
 .contact-bar a{color:var(--gold);text-decoration:none;}
 .contact-bar a:hover{color:var(--gold-b);}
+.lang-block{display:none;}
+.lang-block.active{display:block;}
 </style>
-
 <script src="/i18n.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
 </head>
@@ -78,148 +58,125 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 <div class="grid-ov"></div>
 <div class="scan"></div>
 <script src="/nav.js"></script>
-
 <div class="wrap">
-
-  <div class="pg-hero">
-    <div class="pg-tag">Privacy Policy · 隱私政策</div>
-    <h1 class="pg-title" data-i18n="privacy.title">隱私政策</h1>
-    <p class="pg-sub" data-i18n="privacy.sub">我們如何收集、使用及保護您的資料</p>
-    <p class="pg-date">最後更新：2026年3月</p>
-  </div>
-
-  <div class="toc">
-    <div class="toc-title">目　錄</div>
-    <ol>
-      <li><a href="#s1">我們收集哪些資料</a></li>
-      <li><a href="#s2">我們如何使用您的資料</a></li>
-      <li><a href="#s3">資料儲存與安全</a></li>
-      <li><a href="#s4">第三方服務</a></li>
-      <li><a href="#s5">Cookie 政策</a></li>
-      <li><a href="#s6">您的權利</a></li>
-      <li><a href="#s7">未成年人保護</a></li>
-      <li><a href="#s8">政策變更</a></li>
-      <li><a href="#s9">聯絡我們</a></li>
-    </ol>
-  </div>
-
-  <section class="doc-section" id="s1">
-    <div class="doc-num">一</div>
-    <h2 class="doc-title">我們收集哪些資料</h2>
-    <div class="doc-body">
-      <p>使用 ZenCode 命理推演服務時，您需要輸入以下資料以進行八字計算：</p>
-      <ul>
-        <li>姓名（用於個人化解讀報告，不用於身份驗證）</li>
-        <li>性別（影響大運推算方向）</li>
-        <li>出生日期與時間（八字計算的核心輸入）</li>
-        <li>出生地點（用於真太陽時校正）</li>
-      </ul>
-      <p>我們<strong>不要求</strong>您提供電子郵件地址、電話號碼、身份證號碼或任何可直接識別您真實身份的資料。</p>
-      <div class="info-box">以上資料僅在您主動提交時收集，並僅用於本次推算。我們不會在不同使用者之間關聯或比對您的出生資料。</div>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s2">
-    <div class="doc-num">二</div>
-    <h2 class="doc-title">我們如何使用您的資料</h2>
-    <div class="doc-body">
-      <p>您提交的資料用於以下目的：</p>
-      <ul>
-        <li><strong>命盤計算</strong>：在您的瀏覽器端進行四柱八字、納音、地勢、骨重的即時計算</li>
-        <li><strong>AI 解讀</strong>：將計算結果傳送至我們的後端 API，調用 AI 模型生成個性化命理解讀報告</li>
-        <li><strong>服務改進</strong>：匿名化的使用統計（如頁面訪問次數），用於改進產品體驗</li>
-      </ul>
-      <p>我們<strong>不會</strong>將您的出生資料用於廣告定向、銷售給第三方，或建立使用者畫像。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s3">
-    <div class="doc-num">三</div>
-    <h2 class="doc-title">資料儲存與安全</h2>
-    <div class="doc-body">
-      <p>ZenCode <strong>不持久化儲存</strong>您輸入的個人出生資料。每次推算完成後，相關資料不會被保存至我們的資料庫。</p>
-      <p>我們的 API 請求通過 HTTPS 加密傳輸。AI 解讀請求在完成後不會在我們的服務器上留存您的個人資料。</p>
-      <div class="warn-box"><strong>注意：</strong>您的瀏覽器本地（Local Storage / Session Storage）可能會暫存部分表單資料以提升使用體驗。您可以隨時清除瀏覽器緩存來刪除這些資料。</div>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s4">
-    <div class="doc-num">四</div>
-    <h2 class="doc-title">第三方服務</h2>
-    <div class="doc-body">
-      <p>ZenCode 使用以下第三方服務，這些服務可能會按其各自的隱私政策收集資料：</p>
-      <ul>
-        <li><strong>Google AdSense</strong>：本站使用 Google AdSense 投放廣告。Google 作為第三方供應商，會使用 Cookie 在本站上根據使用者對本站及其他網站的訪問情況投放廣告。</li>
-        <li><strong>Google Fonts & Google Gemini API</strong>：用於字體加載與 AI 命理解讀分析。您的八字計算數據（不含可識別身份資料）將以 API 請求形式傳送至 Google 服務器。</li>
-        <li><strong>Vercel</strong>：網站託管平台，可能收集標準的 Web 訪問日誌。</li>
-      </ul>
-      <p>我們建議您查閱上述服務商的官方隱私政策以了解詳情。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s5">
-    <div class="doc-num">五</div>
-    <h2 class="doc-title">Cookie 政策</h2>
-    <div class="doc-body">
-      <p>ZenCode 使用 Cookie 來協助投放廣告。Google 使用 <strong>DoubleClick Cookie</strong>，讓 Google 及其合作夥伴能根據您在本站及其他網站的瀏覽記錄，向您投放感興趣的廣告。您可以在 Google 的「廣告設定」中選擇停用個性化廣告。</p>
-      <p>部分第三方服務（如 Google Fonts）也可能會在您的設備上設置其服務所需的 Cookie，這些行為受其各自的 Cookie 政策管轄。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s6">
-    <div class="doc-num">六</div>
-    <h2 class="doc-title">您的權利</h2>
-    <div class="doc-body">
-      <p>由於我們不持久化儲存您的個人資料，以下權利的行使方式如下：</p>
-      <ul>
-        <li><strong>查閱與更正</strong>：您輸入的資料僅在當次會話中使用，您可直接修改表單內容</li>
-        <li><strong>刪除</strong>：關閉或刷新頁面即可清除當次會話中的所有輸入資料</li>
-        <li><strong>可攜性</strong>：您可以自行保存頁面上顯示的命盤解讀報告</li>
-      </ul>
-      <p>如您對我們的資料處理方式有任何疑問，請通過下方聯絡方式與我們聯繫。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s7">
-    <div class="doc-num">七</div>
-    <h2 class="doc-title">未成年人保護</h2>
-    <div class="doc-body">
-      <p>ZenCode 的服務面向<strong>18歲及以上</strong>的成年用戶。我們不會故意收集未成年人的個人資料。若您是未成年人，請在家長或監護人的陪同下使用本服務。</p>
-      <p>如我們發現無意中收集了未成年人的個人資料，我們將立即採取措施予以刪除。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s8">
-    <div class="doc-num">八</div>
-    <h2 class="doc-title">政策變更</h2>
-    <div class="doc-body">
-      <p>我們可能會不定期更新本隱私政策。重大變更將在本頁頂部更新「最後更新」日期，並在可能的情況下通過網站公告提醒您。</p>
-      <p>繼續使用本服務即表示您接受更新後的隱私政策。</p>
-    </div>
-  </section>
-
-  <section class="doc-section" id="s9">
-    <div class="doc-num">九</div>
-    <h2 class="doc-title">聯絡我們</h2>
-    <div class="doc-body">
-      <p>如您對本隱私政策有任何疑問、建議或隱私相關投訴，請通過以下方式聯繫我們：</p>
-      <p style="margin-top:12px;">電子郵件：<strong><a href="/cdn-cgi/l/email-protection#9cf4f9f0f0f3dce6f9f2fff3f8f9b2fff3f8f9ef"><span class="__cf_email__" data-cfemail="a1c9c4cdcdcee1dbc4cfc2cec5c48fc2cec5c4d2">[email&#160;protected]</span></a></strong></p>
-    </div>
-  </section>
-
-  <div class="contact-bar">
-    <p>感謝您信任 ZenCode</p>
-    <p style="margin-top:6px;">如有任何隱私疑慮，請聯繫 <a href="/cdn-cgi/l/email-protection#c0a8a5acacaf80baa5aea3afa4a5eea3afa4a5b3"><span class="__cf_email__" data-cfemail="95fdf0f9f9fad5eff0fbf6faf1f0bbf6faf1f0e6">[email&#160;protected]</span></a></p>
-  </div>
-
+<div class="pg-hero">
+  <div class="pg-tag" data-i18n="privacy.tag">Privacy Policy · 隱私政策</div>
+  <h1 class="pg-title" data-i18n="privacy.title">隱私政策</h1>
+  <p class="pg-sub" data-i18n="privacy.sub">我們如何收集、使用及保護您的資料</p>
+  <p class="pg-date" id="priv-date">最後更新：2026年3月</p>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-(function(){
-  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
-  let W,H,stars=[];
-  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
-  resize();addEventListener('resize',()=>{resize();init();});
-  function init(){stars=[];for(let i=0,n=Math.floor(W*H/2800);i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.1,a:Math.random()*.5+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2});}
-  init();let t=0;
-  function draw(){ctx.clearRect(0,0,W,H);t+=.006;stars.forEach(s=>{const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,M
+<!-- 繁體中文 -->
+<div class="lang-block" data-lang="zh-TW">
+<div class="toc"><div class="toc-title">目　錄</div><ol>
+<li><span class="toc-n">一</span><a href="#p-tw-1">我們收集哪些資料</a></li>
+<li><span class="toc-n">二</span><a href="#p-tw-2">我們如何使用您的資料</a></li>
+<li><span class="toc-n">三</span><a href="#p-tw-3">資料儲存與安全</a></li>
+<li><span class="toc-n">四</span><a href="#p-tw-4">第三方服務</a></li>
+<li><span class="toc-n">五</span><a href="#p-tw-5">Cookie 政策</a></li>
+<li><span class="toc-n">六</span><a href="#p-tw-6">您的權利</a></li>
+<li><span class="toc-n">七</span><a href="#p-tw-7">未成年人保護</a></li>
+<li><span class="toc-n">八</span><a href="#p-tw-8">政策變更</a></li>
+<li><span class="toc-n">九</span><a href="#p-tw-9">聯絡我們</a></li>
+</ol></div>
+<section class="doc-section" id="p-tw-1"><div class="doc-num">一</div><h2 class="doc-title">我們收集哪些資料</h2><div class="doc-body"><p>使用 ZenCode 命理推演服務時，您需要輸入以下資料以進行八字計算：</p><ul><li>姓名（用於個人化解讀報告，不用於身份驗證）</li><li>性別（影響大運推算方向）</li><li>出生日期與時間（八字計算的核心輸入）</li><li>出生地點（用於真太陽時校正）</li></ul><p>我們<strong>不要求</strong>您提供電子郵件地址、電話號碼、身份證號碼或任何可直接識別您真實身份的資料。</p><div class="info-box">以上資料僅在您主動提交時收集，並僅用於本次推算。我們不會在不同使用者之間關聯或比對您的出生資料。</div></div></section>
+<section class="doc-section" id="p-tw-2"><div class="doc-num">二</div><h2 class="doc-title">我們如何使用您的資料</h2><div class="doc-body"><p>您提交的資料用於以下目的：</p><ul><li><strong>命盤計算</strong>：在您的瀏覽器端進行四柱八字、納音、地勢、骨重的即時計算</li><li><strong>AI 解讀</strong>：將計算結果傳送至我們的後端 API，調用 AI 模型生成個性化命理解讀報告</li><li><strong>廣告服務</strong>：本站使用 Google AdSense 投放廣告，Google 可能根據您的瀏覽記錄進行廣告定向</li></ul><p>我們<strong>不會</strong>將您的出生資料出售給第三方，或建立可識別個人身份的使用者畫像。</p></div></section>
+<section class="doc-section" id="p-tw-3"><div class="doc-num">三</div><h2 class="doc-title">資料儲存與安全</h2><div class="doc-body"><p>ZenCode <strong>不持久化儲存</strong>您輸入的個人出生資料。每次推算完成後，相關資料不會被保存至我們的資料庫。</p><p>我們的 API 請求通過 HTTPS 加密傳輸。AI 解讀請求完成後不會在我們的服務器上留存您的個人資料。</p><div class="warn-box"><strong>注意：</strong>您的瀏覽器本地快取可能會暫存部分表單資料。您可以隨時清除瀏覽器快取來刪除這些資料。</div></div></section>
+<section class="doc-section" id="p-tw-4"><div class="doc-num">四</div><h2 class="doc-title">第三方服務</h2><div class="doc-body"><p>ZenCode 使用以下第三方服務：</p><ul><li><strong>Google AdSense</strong>：廣告投放服務。Google 作為第三方供應商，會使用 Cookie 根據您的訪問記錄投放廣告。</li><li><strong>Google Fonts</strong>：字體加載服務，可能記錄字體請求的 IP 地址。</li><li><strong>Google Gemini API</strong>：AI 語言模型，用於生成命理解讀文本。您的八字計算數據（不含可識別身份資料）將以 API 請求形式傳送至 Google 服務器。</li><li><strong>Vercel</strong>：網站託管平台，可能收集標準的 Web 訪問日誌。</li></ul></div></section>
+<section class="doc-section" id="p-tw-5"><div class="doc-num">五</div><h2 class="doc-title">Cookie 政策</h2><div class="doc-body"><p>ZenCode 使用 Cookie 協助投放廣告。Google 使用 <strong>DoubleClick Cookie</strong>，讓 Google 及其合作夥伴能根據您在本站及其他網站的瀏覽記錄投放廣告。您可以在 Google 的「廣告設定」中選擇停用個性化廣告。</p></div></section>
+<section class="doc-section" id="p-tw-6"><div class="doc-num">六</div><h2 class="doc-title">您的權利</h2><div class="doc-body"><ul><li><strong>查閱與更正</strong>：您輸入的資料僅在當次會話中使用，您可直接修改表單內容</li><li><strong>刪除</strong>：關閉或刷新頁面即可清除當次會話中的所有輸入資料</li><li><strong>可攜性</strong>：您可以自行保存頁面上顯示的命盤解讀報告</li></ul></div></section>
+<section class="doc-section" id="p-tw-7"><div class="doc-num">七</div><h2 class="doc-title">未成年人保護</h2><div class="doc-body"><p>ZenCode 的服務面向 <strong>18歲及以上</strong>的成年用戶。我們不會故意收集未成年人的個人資料。若您是未成年人，請在家長或監護人的陪同下使用本服務。</p></div></section>
+<section class="doc-section" id="p-tw-8"><div class="doc-num">八</div><h2 class="doc-title">政策變更</h2><div class="doc-body"><p>我們可能會不定期更新本隱私政策。重大變更將在本頁頂部更新「最後更新」日期。繼續使用本服務即表示您接受更新後的隱私政策。</p></div></section>
+<section class="doc-section" id="p-tw-9"><div class="doc-num">九</div><h2 class="doc-title">聯絡我們</h2><div class="doc-body"><p>如您對本隱私政策有任何疑問，請聯繫：<strong><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></strong></p></div></section>
+<div class="contact-bar"><p>感謝您信任 ZenCode</p><p style="margin-top:6px;"><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></p></div>
+</div>
+
+<!-- 简体中文 -->
+<div class="lang-block" data-lang="zh-CN">
+<div class="toc"><div class="toc-title">目　录</div><ol>
+<li><span class="toc-n">一</span><a href="#p-cn-1">我们收集哪些资料</a></li>
+<li><span class="toc-n">二</span><a href="#p-cn-2">我们如何使用您的资料</a></li>
+<li><span class="toc-n">三</span><a href="#p-cn-3">资料存储与安全</a></li>
+<li><span class="toc-n">四</span><a href="#p-cn-4">第三方服务</a></li>
+<li><span class="toc-n">五</span><a href="#p-cn-5">Cookie 政策</a></li>
+<li><span class="toc-n">六</span><a href="#p-cn-6">您的权利</a></li>
+<li><span class="toc-n">七</span><a href="#p-cn-7">未成年人保护</a></li>
+<li><span class="toc-n">八</span><a href="#p-cn-8">政策变更</a></li>
+<li><span class="toc-n">九</span><a href="#p-cn-9">联系我们</a></li>
+</ol></div>
+<section class="doc-section" id="p-cn-1"><div class="doc-num">一</div><h2 class="doc-title">我们收集哪些资料</h2><div class="doc-body"><p>使用 ZenCode 命理推演服务时，您需要输入以下资料以进行八字计算：</p><ul><li>姓名（用于个性化解读报告，不用于身份验证）</li><li>性别（影响大运推算方向）</li><li>出生日期与时间（八字计算的核心输入）</li><li>出生地点（用于真太阳时校正）</li></ul><p>我们<strong>不要求</strong>您提供电子邮件地址、电话号码、身份证号码或任何可直接识别您真实身份的资料。</p><div class="info-box">以上资料仅在您主动提交时收集，并仅用于本次推算。我们不会在不同用户之间关联或比对您的出生资料。</div></div></section>
+<section class="doc-section" id="p-cn-2"><div class="doc-num">二</div><h2 class="doc-title">我们如何使用您的资料</h2><div class="doc-body"><p>您提交的资料用于以下目的：</p><ul><li><strong>命盘计算</strong>：在您的浏览器端进行四柱八字、纳音、地势、骨重的即时计算</li><li><strong>AI 解读</strong>：将计算结果传送至我们的后端 API，调用 AI 模型生成个性化命理解读报告</li><li><strong>广告服务</strong>：本站使用 Google AdSense 投放广告，Google 可能根据您的浏览记录进行广告定向</li></ul><p>我们<strong>不会</strong>将您的出生资料出售给第三方，或建立可识别个人身份的用户画像。</p></div></section>
+<section class="doc-section" id="p-cn-3"><div class="doc-num">三</div><h2 class="doc-title">资料存储与安全</h2><div class="doc-body"><p>ZenCode <strong>不持久化存储</strong>您输入的个人出生资料。每次推算完成后，相关资料不会被保存至我们的数据库。所有 API 请求通过 HTTPS 加密传输。</p><div class="warn-box"><strong>注意：</strong>您的浏览器本地缓存可能会暂存部分表单资料。您可以随时清除浏览器缓存来删除这些资料。</div></div></section>
+<section class="doc-section" id="p-cn-4"><div class="doc-num">四</div><h2 class="doc-title">第三方服务</h2><div class="doc-body"><p>ZenCode 使用以下第三方服务：</p><ul><li><strong>Google AdSense</strong>：广告投放服务，可能根据您的访问记录投放个性化广告。</li><li><strong>Google Fonts</strong>：字体加载服务，可能记录字体请求的 IP 地址。</li><li><strong>Google Gemini API</strong>：AI 语言模型，用于生成命理解读文本。您的八字计算数据将以 API 请求形式传送至 Google 服务器。</li><li><strong>Vercel</strong>：网站托管平台，可能收集标准的 Web 访问日志。</li></ul></div></section>
+<section class="doc-section" id="p-cn-5"><div class="doc-num">五</div><h2 class="doc-title">Cookie 政策</h2><div class="doc-body"><p>ZenCode 使用 Cookie 协助投放广告。Google 使用 <strong>DoubleClick Cookie</strong>，让 Google 及其合作伙伴能根据您的浏览记录投放广告。您可以在 Google 的「广告设置」中选择停用个性化广告。</p></div></section>
+<section class="doc-section" id="p-cn-6"><div class="doc-num">六</div><h2 class="doc-title">您的权利</h2><div class="doc-body"><ul><li><strong>查阅与更正</strong>：您输入的资料仅在当次会话中使用，您可直接修改表单内容</li><li><strong>删除</strong>：关闭或刷新页面即可清除当次会话中的所有输入资料</li><li><strong>可携性</strong>：您可以自行保存页面上显示的命盘解读报告</li></ul></div></section>
+<section class="doc-section" id="p-cn-7"><div class="doc-num">七</div><h2 class="doc-title">未成年人保护</h2><div class="doc-body"><p>ZenCode 的服务面向 <strong>18岁及以上</strong>的成年用户。我们不会故意收集未成年人的个人资料。若您是未成年人，请在家长或监护人的陪同下使用本服务。</p></div></section>
+<section class="doc-section" id="p-cn-8"><div class="doc-num">八</div><h2 class="doc-title">政策变更</h2><div class="doc-body"><p>我们可能会不定期更新本隐私政策。重大变更将在本页顶部更新「最后更新」日期。继续使用本服务即表示您接受更新后的隐私政策。</p></div></section>
+<section class="doc-section" id="p-cn-9"><div class="doc-num">九</div><h2 class="doc-title">联系我们</h2><div class="doc-body"><p>如您对本隐私政策有任何疑问，请联系：<strong><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></strong></p></div></section>
+<div class="contact-bar"><p>感谢您信任 ZenCode</p><p style="margin-top:6px;"><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></p></div>
+</div>
+
+<!-- English -->
+<div class="lang-block" data-lang="en">
+<div class="toc"><div class="toc-title">Contents</div><ol>
+<li><span class="toc-n">1</span><a href="#p-en-1">What Data We Collect</a></li>
+<li><span class="toc-n">2</span><a href="#p-en-2">How We Use Your Data</a></li>
+<li><span class="toc-n">3</span><a href="#p-en-3">Data Storage &amp; Security</a></li>
+<li><span class="toc-n">4</span><a href="#p-en-4">Third-Party Services</a></li>
+<li><span class="toc-n">5</span><a href="#p-en-5">Cookie Policy</a></li>
+<li><span class="toc-n">6</span><a href="#p-en-6">Your Rights</a></li>
+<li><span class="toc-n">7</span><a href="#p-en-7">Minors</a></li>
+<li><span class="toc-n">8</span><a href="#p-en-8">Policy Changes</a></li>
+<li><span class="toc-n">9</span><a href="#p-en-9">Contact Us</a></li>
+</ol></div>
+<section class="doc-section" id="p-en-1"><div class="doc-num">1</div><h2 class="doc-title">What Data We Collect</h2><div class="doc-body"><p>To perform a BaZi 八字 chart reading, ZenCode asks you to provide:</p><ul><li>Name (used to personalise the reading report; not used for identity verification)</li><li>Gender (determines the direction of Luck Cycle 大運 calculation)</li><li>Date and time of birth (the core input for Four-Pillar 四柱 calculation)</li><li>Place of birth (used for True Solar Time 真太陽時 correction)</li></ul><p>We do <strong>not</strong> ask for your email address, phone number, national ID, or any data that directly identifies you by name and contact details.</p><div class="info-box">The above data is collected only when you voluntarily submit the form and is used solely for that reading session. We do not cross-reference birth data between different users.</div></div></section>
+<section class="doc-section" id="p-en-2"><div class="doc-num">2</div><h2 class="doc-title">How We Use Your Data</h2><div class="doc-body"><p>Your submitted data is used for:</p><ul><li><strong>Chart Calculation</strong>: Real-time computation of Four Pillars 四柱, Nà Yīn 納音, Twelve-Phase State 地勢, and Bone Weight 稱骨 directly in your browser</li><li><strong>AI Reading</strong>: Sending the computed results to our backend API to generate your personalised reading via an AI language model</li><li><strong>Advertising</strong>: This site uses Google AdSense. Google may use your browsing behaviour to serve personalised ads</li></ul><p>We will <strong>never</strong> sell your birth data to third parties or build individually identifiable user profiles from it.</p></div></section>
+<section class="doc-section" id="p-en-3"><div class="doc-num">3</div><h2 class="doc-title">Data Storage &amp; Security</h2><div class="doc-body"><p>ZenCode does <strong>not persistently store</strong> your personal birth data. Once a reading is complete, that data is not saved to any database on our end. All API requests are transmitted over HTTPS.</p><div class="warn-box"><strong>Note:</strong> Your browser may locally cache form data temporarily. You can clear your browser cache at any time to remove this.</div></div></section>
+<section class="doc-section" id="p-en-4"><div class="doc-num">4</div><h2 class="doc-title">Third-Party Services</h2><div class="doc-body"><p>ZenCode uses the following third-party services, each governed by their own privacy policies:</p><ul><li><strong>Google AdSense</strong>: Advertising platform. Google may use cookies to serve ads based on your visit to this and other sites.</li><li><strong>Google Fonts</strong>: Font delivery service; may log IP addresses for font requests.</li><li><strong>Google Gemini API</strong>: AI language model used to generate the reading text. Your computed chart data (no personally identifiable information) is transmitted to Google servers via API call.</li><li><strong>Vercel</strong>: Hosting platform; may collect standard web access logs.</li></ul><p>We recommend reviewing the privacy policies of these providers directly.</p></div></section>
+<section class="doc-section" id="p-en-5"><div class="doc-num">5</div><h2 class="doc-title">Cookie Policy</h2><div class="doc-body"><p>ZenCode uses cookies to support ad delivery. Google uses the <strong>DoubleClick Cookie</strong> to serve ads based on your browsing history across this and other websites. You can opt out of personalised advertising via Google's <a href="https://adssettings.google.com" target="_blank" style="color:var(--gold);">Ad Settings</a>.</p></div></section>
+<section class="doc-section" id="p-en-6"><div class="doc-num">6</div><h2 class="doc-title">Your Rights</h2><div class="doc-body"><p>Since we do not persistently store your personal data:</p><ul><li><strong>Access &amp; Correction</strong>: Your data is only used during the current session — you can edit the form at any time</li><li><strong>Deletion</strong>: Closing or refreshing the page clears all input data from the session</li><li><strong>Portability</strong>: You may save or screenshot the reading report displayed on your screen</li></ul><p>For any questions about our data practices, please contact us using the details below.</p></div></section>
+<section class="doc-section" id="p-en-7"><div class="doc-num">7</div><h2 class="doc-title">Minors</h2><div class="doc-body"><p>ZenCode's services are intended for users aged <strong>18 and over</strong>. We do not knowingly collect personal data from minors. If you are under 18, please use this service with parental or guardian supervision.</p></div></section>
+<section class="doc-section" id="p-en-8"><div class="doc-num">8</div><h2 class="doc-title">Policy Changes</h2><div class="doc-body"><p>We may update this Privacy Policy from time to time. Significant changes will be reflected in an updated "Last Updated" date at the top of this page. Continued use of the service constitutes acceptance of the revised policy.</p></div></section>
+<section class="doc-section" id="p-en-9"><div class="doc-num">9</div><h2 class="doc-title">Contact Us</h2><div class="doc-body"><p>For any questions, suggestions or privacy-related complaints: <strong><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></strong></p></div></section>
+<div class="contact-bar"><p>Thank you for trusting ZenCode.</p><p style="margin-top:6px;"><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></p></div>
+</div>
+
+<!-- 한국어 -->
+<div class="lang-block" data-lang="ko">
+<div class="toc"><div class="toc-title">목　차</div><ol>
+<li><span class="toc-n">1</span><a href="#p-ko-1">수집하는 정보</a></li>
+<li><span class="toc-n">2</span><a href="#p-ko-2">정보 이용 방법</a></li>
+<li><span class="toc-n">3</span><a href="#p-ko-3">정보 저장 및 보안</a></li>
+<li><span class="toc-n">4</span><a href="#p-ko-4">제3자 서비스</a></li>
+<li><span class="toc-n">5</span><a href="#p-ko-5">쿠키 정책</a></li>
+<li><span class="toc-n">6</span><a href="#p-ko-6">귀하의 권리</a></li>
+<li><span class="toc-n">7</span><a href="#p-ko-7">미성년자 보호</a></li>
+<li><span class="toc-n">8</span><a href="#p-ko-8">정책 변경</a></li>
+<li><span class="toc-n">9</span><a href="#p-ko-9">문의하기</a></li>
+</ol></div>
+<section class="doc-section" id="p-ko-1"><div class="doc-num">1</div><h2 class="doc-title">수집하는 정보</h2><div class="doc-body"><p>ZenCode 사주팔자(四柱八字) 서비스를 이용하기 위해 다음 정보를 입력하셔야 합니다：</p><ul><li>이름（개인화된 해석 보고서에 사용，신원 확인에 사용되지 않음）</li><li>성별（대운大運 추산 방향에 영향）</li><li>생년월일 및 시간（사주 계산의 핵심 입력값）</li><li>출생지（진태양시真太陽時 보정에 사용）</li></ul><p>이메일 주소，전화번호，주민등록번호 등 신원을 직접 확인할 수 있는 정보는 <strong>요구하지 않습니다</strong>。</p><div class="info-box">위 정보는 귀하가 직접 제출할 때만 수집되며，해당 추산 세션에만 사용됩니다. 다른 사용자의 출생 정보와 연계하거나 비교하지 않습니다.</div></div></section>
+<section class="doc-section" id="p-ko-2"><div class="doc-num">2</div><h2 class="doc-title">정보 이용 방법</h2><div class="doc-body"><p>제출하신 정보는 다음 목적으로 사용됩니다：</p><ul><li><strong>명반 계산</strong>：브라우저에서 사주四柱，납음納音，지세地勢，칭골骨重을 실시간으로 계산</li><li><strong>AI 해석</strong>：계산 결과를 백엔드 API로 전송하여 AI 언어 모델이 개인화된 명리 해석 보고서 생성</li><li><strong>광고 서비스</strong>：본 사이트는 Google AdSense를 사용하며，Google이 귀하의 브라우징 기록을 기반으로 맞춤 광고를 게재할 수 있습니다</li></ul><p>귀하의 출생 정보를 제3자에게 <strong>판매하거나</strong> 개인 식별 가능한 사용자 프로필을 구축하지 않습니다.</p></div></section>
+<section class="doc-section" id="p-ko-3"><div class="doc-num">3</div><h2 class="doc-title">정보 저장 및 보안</h2><div class="doc-body"><p>ZenCode는 귀하가 입력한 개인 출생 정보를 <strong>영구적으로 저장하지 않습니다</strong>. 추산이 완료된 후 해당 정보는 당사 데이터베이스에 저장되지 않으며，모든 API 요청은 HTTPS로 암호화 전송됩니다.</p><div class="warn-box"><strong>참고：</strong>브라우저가 일시적으로 양식 데이터를 캐시할 수 있습니다. 언제든지 브라우저 캐시를 지워 이 데이터를 삭제할 수 있습니다.</div></div></section>
+<section class="doc-section" id="p-ko-4"><div class="doc-num">4</div><h2 class="doc-title">제3자 서비스</h2><div class="doc-body"><p>ZenCode는 다음 제3자 서비스를 사용하며，각 서비스는 자체 개인정보처리방침에 따라 운영됩니다：</p><ul><li><strong>Google AdSense</strong>：광고 게재 서비스. Google이 쿠키를 사용하여 귀하의 방문 기록을 기반으로 광고를 게재할 수 있습니다.</li><li><strong>Google Fonts</strong>：폰트 로딩 서비스로，폰트 요청 IP 주소를 기록할 수 있습니다.</li><li><strong>Google Gemini API</strong>：명리 해석 텍스트 생성에 사용되는 AI 언어 모델. 계산된 사주 데이터（개인 식별 정보 제외）가 API 요청으로 Google 서버에 전송됩니다.</li><li><strong>Vercel</strong>：웹 호스팅 플랫폼으로，표준 웹 접근 로그를 수집할 수 있습니다.</li></ul></div></section>
+<section class="doc-section" id="p-ko-5"><div class="doc-num">5</div><h2 class="doc-title">쿠키 정책</h2><div class="doc-body"><p>ZenCode는 광고 게재를 지원하기 위해 쿠키를 사용합니다. Google은 <strong>DoubleClick 쿠키</strong>를 사용하여 귀하의 브라우징 기록을 기반으로 광고를 게재합니다. Google의 <a href="https://adssettings.google.com" target="_blank" style="color:var(--gold);">광고 설정</a>에서 맞춤형 광고를 비활성화할 수 있습니다.</p></div></section>
+<section class="doc-section" id="p-ko-6"><div class="doc-num">6</div><h2 class="doc-title">귀하의 권리</h2><div class="doc-body"><ul><li><strong>열람 및 수정</strong>：입력하신 정보는 현재 세션에서만 사용되며，언제든지 양식을 직접 수정할 수 있습니다</li><li><strong>삭제</strong>：페이지를 닫거나 새로고침하면 해당 세션의 모든 입력 정보가 삭제됩니다</li><li><strong>이동성</strong>：화면에 표시된 명리 해석 보고서를 직접 저장하거나 스크린샷을 찍을 수 있습니다</li></ul></div></section>
+<section class="doc-section" id="p-ko-7"><div class="doc-num">7</div><h2 class="doc-title">미성년자 보호</h2><div class="doc-body"><p>ZenCode의 서비스는 <strong>만 18세 이상</strong>의 성인 사용자를 대상으로 합니다. 미성년자의 개인 정보를 의도적으로 수집하지 않습니다. 미성년자이신 경우 부모 또는 보호자의 지도 하에 서비스를 이용해 주세요.</p></div></section>
+<section class="doc-section" id="p-ko-8"><div class="doc-num">8</div><h2 class="doc-title">정책 변경</h2><div class="doc-body"><p>본 개인정보처리방침은 수시로 업데이트될 수 있습니다. 중요한 변경 사항은 이 페이지 상단의 「최종 업데이트」 날짜에 반영됩니다. 서비스를 계속 이용하시면 업데이트된 정책에 동의하는 것으로 간주됩니다.</p></div></section>
+<section class="doc-section" id="p-ko-9"><div class="doc-num">9</div><h2 class="doc-title">문의하기</h2><div class="doc-body"><p>본 개인정보처리방침에 대한 질문이 있으시면 연락해 주세요：<strong><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></strong></p></div></section>
+<div class="contact-bar"><p>ZenCode를 신뢰해 주셔서 감사합니다</p><p style="margin-top:6px;"><a href="mailto:hello@zencode.codes">hello@zencode.codes</a></p></div>
+</div>
+
+</div><!-- /.wrap -->
+<script>
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,stars=[];function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',()=>{resize();init();});function init(){stars=[];for(let i=0,n=Math.floor(W*H/2800);i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.1,a:Math.random()*.5+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2});}init();let t=0;function draw(){ctx.clearRect(0,0,W,H);t+=.006;stars.forEach(s=>{const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(232,211,153,${a})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+const DATES={'zh-TW':'最後更新：2026年3月','zh-CN':'最后更新：2026年3月','en':'Last updated: March 2026','ko':'최종 업데이트: 2026년 3월'};
+function applyLangBlocks(lang){document.querySelectorAll('.lang-block').forEach(el=>el.classList.toggle('active',el.dataset.lang===lang));const d=document.getElementById('priv-date');if(d)d.textContent=DATES[lang]||DATES['zh-TW'];}
+const initLang=typeof ZCI18n!=='undefined'?ZCI18n.lang():'zh-TW';
+applyLangBlocks(initLang);
+document.addEventListener('zc:langchange',e=>applyLangBlocks(e.detail.lang));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.08});
+document.querySelectorAll('.doc-section,.toc').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(16px)';el.style.transition='opacity .7s ease,transform .7s ease';io.observe(el);});
+</script>
+</body>
+</html>
