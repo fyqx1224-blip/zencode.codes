@@ -108,6 +108,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
 #roc{position:relative;z-index:10;width:100%;}
 @media(max-width:480px){.form-card{padding:32px 20px 28px;}.dg3{grid-template-columns:1.5fr 1fr 1fr;}.bp-p{min-width:52px;padding:8px 10px 6px;}}
 </style>
+<script src="/i18n.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -128,17 +129,17 @@ select.inp option{background:#0C0B14;color:var(--text);}
     <div class="lchar" id="lchar">命</div>
   </div>
   <div class="ltxt" id="lphr">正在排布四柱八字</div>
-  <div class="lsub">觀測星象能量 · 推算命盤格局</div>
+  <div class="lsub" data-i18n="load.sub">觀測星象能量 · 推算命盤格局</div>
 </div>
 
 <div id="ifc" class="page">
   <div class="header">
-    <div class="h-tag">ZenCode · 命理推演系統</div>
+    <div class="h-tag" data-i18n="hero.tag">ZenCode · 命理推演系統</div>
     <div class="t-wrap">
       <div class="t-glow"></div>
-      <h1 class="t-main">開啟命運檔案</h1>
+      <h1 class="t-main" data-i18n="hero.title">開啟命運檔案</h1>
     </div>
-    <div class="t-sub">深度流年 · 八字鑑定 · 大運解讀</div>
+    <div class="t-sub" data-i18n="hero.sub">深度流年 · 八字鑑定 · 大運解讀</div>
   </div>
   <div class="hdiv"></div>
 
@@ -146,31 +147,31 @@ select.inp option{background:#0C0B14;color:var(--text);}
     <div class="c-tl"></div><div class="c-tr"></div><div class="c-bl"></div><div class="c-br"></div>
 
     <div class="cal-tog">
-      <button class="cal-btn active" id="bsol" onclick="setCalType('solar')">公曆（西曆）</button>
-      <button class="cal-btn" id="blun" onclick="setCalType('lunar')">農曆（陰曆）</button>
+      <button class="cal-btn active" id="bsol" onclick="setCalType('solar')" data-i18n="cal.solar">公曆（西曆）</button>
+      <button class="cal-btn" id="blun" onclick="setCalType('lunar')" data-i18n="cal.lunar">農曆（陰曆）</button>
     </div>
 
     <div class="field">
-      <div class="flbl">命主姓名</div>
-      <div class="iw"><input type="text" id="un" class="inp" placeholder="請輸入姓名" autocomplete="off"></div>
+      <div class="flbl" data-i18n="form.name">命主姓名</div>
+      <div class="iw"><input type="text" id="un" class="inp" placeholder="請輸入姓名" data-i18n-ph="form.name.ph" autocomplete="off"></div>
     </div>
     <div class="field">
-      <div class="flbl">命主性別</div>
+      <div class="flbl" data-i18n="form.gender">命主性別</div>
       <div class="iw">
         <select id="ug" class="inp">
-          <option value="" disabled selected>請選擇性別</option>
-          <option value="女">女命</option>
-          <option value="男">男命</option>
+          <option value="" disabled selected data-i18n="form.gender.ph">請選擇性別</option>
+          <option value="女" data-i18n="form.gender.f">女命</option>
+          <option value="男" data-i18n="form.gender.m">男命</option>
         </select>
       </div>
     </div>
     <div class="field">
-      <div class="flbl">出生日期</div>
-      <div class="lunar-h" id="lh">✦ 請輸入農曆年月日，系統自動換算公曆</div>
+      <div class="flbl" data-i18n="form.date">出生日期</div>
+      <div class="lunar-h" id="lh" data-i18n="form.lunar.hint">✦ 請輸入農曆年月日，系統自動換算公曆</div>
       <div class="sl3">
-        <div class="slbl" id="lby">年</div>
-        <div class="slbl" id="lbm">月</div>
-        <div class="slbl" id="lbd">日</div>
+        <div class="slbl" id="lby" data-i18n="form.year">年</div>
+        <div class="slbl" id="lbm" data-i18n="form.month">月</div>
+        <div class="slbl" id="lbd" data-i18n="form.day">日</div>
       </div>
       <div class="dg3">
         <div class="iw"><input type="number" id="by" class="inp c" placeholder="1995" min="1900" max="2030" oninput="odc()"></div>
@@ -179,12 +180,12 @@ select.inp option{background:#0C0B14;color:var(--text);}
       </div>
       <div id="leap-wrap" style="display:none;margin-top:8px;">
         <label style="display:flex;align-items:center;gap:8px;font-family:'Noto Sans TC',sans-serif;font-size:0.73rem;color:var(--text-d);cursor:pointer;">
-          <input type="checkbox" id="ilp" onchange="odc()" style="accent-color:var(--gold);width:14px;height:14px;"> 閏月
+          <input type="checkbox" id="ilp" onchange="odc()" style="accent-color:var(--gold);width:14px;height:14px;"> <span data-i18n="form.leap">閏月</span>
         </label>
       </div>
       <div class="sl2">
-        <div class="slbl">時（24小時制）</div>
-        <div class="slbl">分（可選）</div>
+        <div class="slbl" data-i18n="form.hour">時（24小時制）</div>
+        <div class="slbl" data-i18n="form.min">分（可選）</div>
       </div>
       <div class="dg2">
         <div class="iw"><input type="number" id="bh" class="inp c" placeholder="13" min="0" max="23" oninput="odc()"></div>
@@ -193,20 +194,19 @@ select.inp option{background:#0C0B14;color:var(--text);}
     </div>
 
     <div class="field" style="margin-top:4px;">
-      <div class="flbl">出生地點</div>
-      <div class="iw"><input type="text" id="ubp" class="inp" placeholder="如：四川省成都市" autocomplete="off" oninput="odc()"></div>
-      <!-- 真太陽時提示 -->
+      <div class="flbl" data-i18n="form.place">出生地點</div>
+      <div class="iw"><input type="text" id="ubp" class="inp" placeholder="如：四川省成都市" data-i18n-ph="form.place.ph" autocomplete="off" oninput="odc()"></div>
       <div class="solar-hint" id="solar-hint"></div>
     </div>
 
     <div class="bazi-prev" id="bprev">
-      <div class="bp-hd">命盤預覽（已校正真太陽時）</div>
+      <div class="bp-hd" data-i18n="prev.title">命盤預覽（已校正真太陽時）</div>
       <div class="bp-ps" id="bpps"></div>
       <div class="bp-ex" id="bpex"></div>
     </div>
 
     <div class="btn-row">
-      <button class="sbtn" id="sbtn" onclick="genReport()">觀測星象能量</button>
+      <button class="sbtn" id="sbtn" onclick="genReport()" data-i18n="btn.submit">觀測星象能量</button>
     </div>
   </div>
 
@@ -262,9 +262,10 @@ function setCalType(t){
   document.getElementById('blun').classList.toggle('active',t==='lunar');
   document.getElementById('lh').classList.toggle('show',t==='lunar');
   document.getElementById('leap-wrap').style.display=t==='lunar'?'block':'none';
-  document.getElementById('lby').textContent=t==='lunar'?'年（農）':'年';
-  document.getElementById('lbm').textContent=t==='lunar'?'月（農）':'月';
-  document.getElementById('lbd').textContent=t==='lunar'?'日（農）':'日';
+  const L=typeof ZCI18n!=='undefined'?ZCI18n:null;
+  document.getElementById('lby').textContent=t==='lunar'?(L?L.t('form.year.l'):'年（農）'):(L?L.t('form.year'):'年');
+  document.getElementById('lbm').textContent=t==='lunar'?(L?L.t('form.month.l'):'月（農）'):(L?L.t('form.month'):'月');
+  document.getElementById('lbd').textContent=t==='lunar'?(L?L.t('form.day.l'):'日（農）'):(L?L.t('form.day'):'日');
   odc();
 }
 
@@ -590,9 +591,12 @@ const phs=['正在校對真太陽時','排布四柱八字','推演大運流年',
 const chs=['命','運','玄','機','易','卦','象'];
 let pi=0,pt=null,ci=0,ct=null;
 function startL(){
+  // 每次啟動時從 i18n 取最新語言的 phases
+  const phases = (typeof ZCI18n!=='undefined') ? ZCI18n.phases() : phs;
   const p=document.getElementById('lphr'),c=document.getElementById('lchar');
-  pt=setInterval(()=>{p.style.opacity='0';setTimeout(()=>{pi=(pi+1)%phs.length;p.textContent=phs[pi];p.style.opacity='';},300);},2200);
+  pt=setInterval(()=>{p.style.opacity='0';setTimeout(()=>{pi=(pi+1)%phases.length;p.textContent=phases[pi];p.style.opacity='';},300);},2200);
   ct=setInterval(()=>{ci=(ci+1)%chs.length;c.textContent=chs[ci];},1500);
+  p.textContent=phases[0];
 }
 function stopL(){clearInterval(pt);clearInterval(ct);}
 
@@ -617,7 +621,7 @@ async function genReport(){
   let sy=year,sm=month,sd=day,cNote='';
   if(calType==='lunar'){
     const s=lunarToSolar(year,month,day,document.getElementById('ilp').checked);
-    if(!s){alert('農曆換算失敗，請檢查日期');return;}
+    if(!s){alert(typeof ZCI18n!=='undefined'?ZCI18n.t('err.lunar'):'農曆換算失敗，請檢查日期');return;}
     sy=s.year;sm=s.month;sd=s.day;
     cNote=`（農曆${year}年${document.getElementById('ilp').checked?'閏':''}${month}月${day}日）`;
   }
@@ -639,6 +643,9 @@ async function genReport(){
     tenGod:p.tenGod, wangshuan:p.ws,
     tgWuxing:WXT[p.tgIdx], dzWuxing:WXD[p.dzIdx]
   }));
+  // 把當前語言傳給後端，後端據此選擇 prompt 語言指令
+  const curLang = typeof ZCI18n!=='undefined' ? ZCI18n.lang() : 'zh-TW';
+  const langInstruction = typeof ZCI18n!=='undefined' ? ZCI18n.promptLang() : null;
   const bd={
     name, gender, birthplace,
     birthday:`${sy}年${sm}月${sd}日 ${hour}時${minute>0?minute+'分':''}${cNote}${stNote}`,
@@ -649,6 +656,8 @@ async function genReport(){
     nayin: nayin.join('·'),
     dizhi_state: pillars.map(p=>p.ws).join('·'),
     boneWeight,
+    lang: curLang,
+    langInstruction: langInstruction,
     dayun:{
       startAge: dayunData.startAge,
       list: dayunData.list.map(d=>({age:`${d.age}歲起`, stem:d.tg+d.dz, tgClass:d.tgClass, active:false}))
@@ -699,24 +708,37 @@ async function genReport(){
     const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});
     const html=await r.text();
     stopL(); document.getElementById('lov').style.display='none';
-    // AI 回傳的解讀內容接在 header 後面
     oc.innerHTML = headerHTML + html;
     window.scrollTo(0,0);
   }catch(e){
     stopL(); document.getElementById('lov').style.display='none';
-    oc.innerHTML += '<div style="color:#F07840;padding:32px;text-align:center;font-family:Noto Sans TC,sans-serif;font-size:0.9rem;">觀測失敗，請稍後重試</div>';
+    const errMsg = typeof ZCI18n!=='undefined' ? ZCI18n.t('err.fail') : '觀測失敗，請稍後重試';
+    oc.innerHTML += `<div style="color:#F07840;padding:32px;text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.9rem;">${errMsg}</div>`;
   }
 }
+
+// ── 語言切換時同步重繪農曆標籤 ──
+document.addEventListener('zc:langchange', ()=>{
+  // 重新套用農曆模式的年月日標籤
+  setCalType(calType);
+  // select option 文字需手動更新（data-i18n 對 option 無效）
+  const L = typeof ZCI18n!=='undefined' ? ZCI18n : null;
+  if(!L) return;
+  const sel = document.getElementById('ug');
+  sel.options[0].text = L.t('form.gender.ph');
+  sel.options[1].text = L.t('form.gender.f');
+  sel.options[2].text = L.t('form.gender.m');
+});
 </script>
 <footer style="position:relative;z-index:10;text-align:center;padding:32px 24px;border-top:1px solid rgba(212,168,67,0.08);font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.22);letter-spacing:0.15em;line-height:2.2;">
   <div style="margin-bottom:10px;">
-    <a href="/about" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">關於我們</a>
+    <a href="/about" data-i18n="footer.about" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">關於我們</a>
     <span style="color:rgba(212,168,67,0.15)">·</span>
-    <a href="/privacy" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">隱私政策</a>
+    <a href="/privacy" data-i18n="footer.privacy" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">隱私政策</a>
     <span style="color:rgba(212,168,67,0.15)">·</span>
-    <a href="/terms" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">使用條款</a>
+    <a href="/terms" data-i18n="footer.terms" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">使用條款</a>
   </div>
-  <div>© 2025 ZenCode · 命運檔案 · 僅供娛樂參考</div>
+  <div data-i18n="footer.copy">© 2025 ZenCode · 命運檔案 · 僅供娛樂參考</div>
 </footer>
 </body>
 </html>
