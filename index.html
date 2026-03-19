@@ -787,12 +787,30 @@ async function genReport(){
   oc.style.display='block';
   window.scrollTo(0,0);
 
+  // ── 存入 sessionStorage 供反饋頁讀取 ──
+  try{
+    sessionStorage.setItem('zc_last_bazi', JSON.stringify({
+      ganzhi: pillars.map(p=>p.tg+p.dz).join(' '),
+      riZhu:  pillars[2].tg+pillars[2].dz,
+      name,
+    }));
+  }catch(e){}
+
   document.getElementById('lov').style.display='flex'; startL();
   try{
     const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});
     const html=await r.text();
     stopL(); document.getElementById('lov').style.display='none';
-    oc.innerHTML = headerHTML + html;
+    // 在報告末尾追加「提交反饋」入口
+    const feedbackBar=`<div style="text-align:center;padding:48px 24px 64px;border-top:1px solid rgba(212,168,67,0.08);">
+      <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;letter-spacing:0.4em;color:rgba(212,168,67,0.4);margin-bottom:20px;">✦ 命盤準確嗎？您的反饋幫助系統持續進化 ✦</div>
+      <a href="/feedback" style="display:inline-block;padding:12px 36px;border:1px solid rgba(212,168,67,0.3);color:rgba(212,168,67,0.75);font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.35em;text-decoration:none;transition:all .2s;"
+         onmouseover="this.style.borderColor='#D4A843';this.style.color='#D4A843';this.style.background='rgba(212,168,67,0.05)'"
+         onmouseout="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='rgba(212,168,67,0.75)';this.style.background='transparent'">
+        提交命盤反饋
+      </a>
+    </div>`;
+    oc.innerHTML = headerHTML + html + feedbackBar;
     window.scrollTo(0,0);
   }catch(e){
     stopL(); document.getElementById('lov').style.display='none';
