@@ -859,14 +859,21 @@ async function genReport(){
     const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});
     const html=await r.text();
     stopL(); document.getElementById('lov').style.display='none';
-    // 在報告末尾追加「提交反饋」入口
+    // 在報告末尾追加「提交反饋」＋「私人定制」常駐入口
     const feedbackBar=`<div style="text-align:center;padding:48px 24px 64px;border-top:1px solid rgba(212,168,67,0.08);">
       <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;letter-spacing:0.4em;color:rgba(212,168,67,0.4);margin-bottom:20px;">✦ 命盤準確嗎？您的反饋幫助系統持續進化 ✦</div>
-      <a href="/feedback" style="display:inline-block;padding:12px 36px;border:1px solid rgba(212,168,67,0.3);color:rgba(212,168,67,0.75);font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.35em;text-decoration:none;transition:all .2s;"
-         onmouseover="this.style.borderColor='#D4A843';this.style.color='#D4A843';this.style.background='rgba(212,168,67,0.05)'"
-         onmouseout="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='rgba(212,168,67,0.75)';this.style.background='transparent'">
-        提交命盤反饋
-      </a>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <a href="/feedback" style="display:inline-block;padding:12px 30px;border:1px solid rgba(212,168,67,0.3);color:rgba(212,168,67,0.75);font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.35em;text-decoration:none;transition:all .2s;"
+           onmouseover="this.style.borderColor='#D4A843';this.style.color='#D4A843';this.style.background='rgba(212,168,67,0.05)'"
+           onmouseout="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='rgba(212,168,67,0.75)';this.style.background='transparent'">
+          提交命盤反饋
+        </a>
+        <button onclick="vipShown=false;showVip();" style="display:inline-block;padding:12px 30px;background:linear-gradient(135deg,#5A0A0A,#9C2F18,#C8402A);border:none;color:rgba(255,255,255,0.9);font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.35em;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(180,40,20,0.25);"
+           onmouseover="this.style.filter='brightness(1.15)';this.style.transform='translateY(-1px)'"
+           onmouseout="this.style.filter='';this.style.transform=''">
+          私人定制服務
+        </button>
+      </div>
     </div>`;
     oc.innerHTML = headerHTML + html + feedbackBar;
     window.scrollTo(0,0);
