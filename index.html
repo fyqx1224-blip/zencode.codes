@@ -21,12 +21,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   animation:scan 9s linear infinite;}
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
 .page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 80px;width:100%;}
-.header{text-align:center;margin-bottom:52px;width:100%;max-width:860px;}
+.header{text-align:center;margin-bottom:52px;width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;}
 .h-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;font-size:0.63rem;letter-spacing:0.55em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fsd .8s ease .2s forwards;}
 .h-tag::before,.h-tag::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
 .h-tag::after{transform:scaleX(-1);}
-.t-wrap{position:relative;display:inline-block;margin-bottom:14px;opacity:0;animation:fsd .9s ease .35s forwards;}
-.t-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(3.4rem,7vw,5.2rem);line-height:1;letter-spacing:0.1em;
+.t-wrap{position:relative;display:block;width:100%;text-align:center;margin-bottom:14px;opacity:0;animation:fsd .9s ease .35s forwards;}
+.t-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(3rem,6.5vw,5rem);line-height:1;letter-spacing:0.1em;display:block;width:100%;
   background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 38%,#A0680A 68%,#D4A843 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   filter:drop-shadow(0 0 45px rgba(212,168,67,0.38));}
@@ -132,7 +132,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
   .page{padding:32px 16px 60px;}
   .header{margin-bottom:32px;}
   /* 标题 */
-  .t-main{font-size:clamp(2.6rem,11vw,3.4rem);}
+  .t-main{font-size:clamp(2.4rem,10vw,3rem);}
   .t-sub{font-size:0.72rem;letter-spacing:0.22em;}
   .h-tag{font-size:0.55rem;letter-spacing:0.38em;}
   .hdiv{width:200px;margin:20px auto 28px;}
