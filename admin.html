@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode · 反饋洞察</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.15);
+  --bg:#06050A;--bg2:#0C0B14;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
+  --green:#5AB86C;--red:#D85050;--blue:#4080C8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh;}
+
+/* ── 登入畫面 ── */
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;}
+.login-box{width:360px;padding:48px 40px;border:1px solid var(--gold-dim);background:rgba(12,11,20,0.9);text-align:center;}
+.login-logo{font-family:'Ma Shan Zheng',cursive;font-size:2.4rem;color:var(--gold);filter:drop-shadow(0 0 20px rgba(212,168,67,0.4));margin-bottom:8px;}
+.login-sub{font-size:0.62rem;letter-spacing:0.5em;color:var(--text-f);margin-bottom:36px;}
+.login-input{width:100%;padding:13px 16px;background:rgba(0,0,0,0.6);border:1px solid rgba(212,168,67,0.2);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:0.9rem;outline:none;border-radius:2px;margin-bottom:14px;text-align:center;letter-spacing:0.15em;}
+.login-input:focus{border-color:rgba(212,168,67,0.5);background:rgba(212,168,67,0.04);}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#3A2800,#7A5800,#A07010);color:rgba(255,255,255,0.9);border:none;border-radius:2px;font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;letter-spacing:4px;cursor:pointer;transition:all .2s;}
+.login-btn:hover{filter:brightness(1.2);}
+.login-err{font-size:0.68rem;color:var(--red);margin-top:10px;letter-spacing:0.08em;min-height:20px;}
+
+/* ── 主介面 ── */
+#main{display:none;max-width:1100px;margin:0 auto;padding:48px 28px 100px;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--gold-dim);}
+.top-logo{font-family:'Ma Shan Zheng',cursive;font-size:1.6rem;color:var(--gold);}
+.top-title{font-size:0.62rem;letter-spacing:0.5em;color:var(--text-f);margin-top:2px;}
+.ctrl-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ctrl-select{padding:9px 14px;background:rgba(0,0,0,0.5);border:1px solid var(--gold-dim);color:var(--text-d);font-family:'Noto Sans TC',sans-serif;font-size:0.72rem;letter-spacing:0.1em;outline:none;border-radius:2px;cursor:pointer;}
+.run-btn{padding:10px 28px;background:linear-gradient(135deg,#3A2800,#7A5800,#A07010);color:rgba(255,255,255,0.9);border:none;border-radius:2px;font-family:'Ma Shan Zheng',cursive;font-size:1rem;letter-spacing:3px;cursor:pointer;transition:all .25s;white-space:nowrap;}
+.run-btn:hover{filter:brightness(1.2);transform:translateY(-1px);}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+/* ── 統計卡片 ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:36px;}
+.stat-card{background:var(--bg2);border:1px solid var(--gold-dim);padding:20px 22px;}
+.stat-label{font-size:0.58rem;letter-spacing:0.4em;color:var(--text-f);margin-bottom:8px;}
+.stat-val{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;color:var(--gold);line-height:1;}
+.stat-sub{font-size:0.62rem;color:var(--text-f);margin-top:4px;}
+.stat-card.green .stat-val{color:var(--green);}
+.stat-card.red   .stat-val{color:var(--red);}
+.stat-card.blue  .stat-val{color:var(--blue);}
+
+/* ── 欄位排行 ── */
+.field-bar-wrap{margin-bottom:36px;}
+.section-title{font-size:0.6rem;letter-spacing:0.5em;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--gold-dim);}
+.field-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.field-bar-name{font-size:0.72rem;color:var(--text-d);width:80px;flex-shrink:0;text-align:right;}
+.field-bar-track{flex:1;height:8px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;}
+.field-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-b));border-radius:2px;transition:width .6s ease;}
+.field-bar-pct{font-size:0.62rem;color:var(--text-f);width:40px;flex-shrink:0;}
+
+/* ── 報告區塊 ── */
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.report-card{background:var(--bg2);border:1px solid var(--gold-dim);padding:24px 26px;position:relative;overflow:hidden;}
+.report-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);opacity:0.4;}
+.report-card.full{grid-column:1/-1;}
+.report-card.green::before{background:var(--green);}
+.report-card.red::before{background:var(--red);}
+.report-card.blue::before{background:var(--blue);}
+.rc-title{font-size:0.58rem;letter-spacing:0.4em;color:var(--gold);margin-bottom:14px;}
+.rc-body{font-size:0.82rem;line-height:1.9;color:var(--text-d);font-weight:300;}
+.rc-body strong{color:var(--text);font-weight:500;}
+
+/* ── 問題列表 ── */
+.issue-list{display:flex;flex-direction:column;gap:16px;}
+.issue-item{background:rgba(212,168,67,0.03);border:1px solid rgba(212,168,67,0.1);padding:18px 20px;}
+.issue-field{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold-b);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.issue-freq{font-size:0.6rem;color:var(--text-f);background:rgba(212,168,67,0.08);padding:2px 8px;border-radius:1px;}
+.issue-diagnosis{font-size:0.8rem;line-height:1.85;color:var(--text-d);margin-bottom:10px;}
+.issue-fix{font-size:0.75rem;line-height:1.75;color:rgba(90,184,108,0.75);padding-left:12px;border-left:2px solid rgba(90,184,108,0.25);}
+
+/* ── Prompt 建議 ── */
+.prompt-list{display:flex;flex-direction:column;gap:10px;}
+.prompt-item{background:rgba(64,128,200,0.06);border:1px solid rgba(64,128,200,0.2);padding:14px 18px;font-size:0.78rem;line-height:1.8;color:var(--text-d);position:relative;cursor:pointer;transition:background .2s;}
+.prompt-item:hover{background:rgba(64,128,200,0.1);}
+.prompt-item::after{content:'複製';position:absolute;top:10px;right:12px;font-size:0.55rem;letter-spacing:0.2em;color:rgba(64,128,200,0.5);}
+.prompt-item.copied::after{content:'✓ 已複製';color:var(--green);}
+
+/* ── 優先行動 ── */
+.priority-box{background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.35);padding:22px 26px;text-align:center;margin-top:8px;}
+.priority-label{font-size:0.55rem;letter-spacing:0.5em;color:var(--gold);margin-bottom:10px;}
+.priority-text{font-size:1rem;line-height:1.7;color:var(--text);font-weight:400;}
+
+/* ── Loading / 空狀態 ── */
+.loading{text-align:center;padding:80px 20px;color:var(--text-f);}
+.loading-ring{width:48px;height:48px;margin:0 auto 20px;border:1px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1.2s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;color:rgba(212,168,67,0.5);letter-spacing:0.3em;}
+.empty{text-align:center;padding:60px 20px;color:var(--text-f);font-size:0.78rem;letter-spacing:0.1em;}
+.err-msg{background:rgba(200,50,30,0.08);border:1px solid rgba(200,50,30,0.25);padding:14px 18px;font-size:0.75rem;color:rgba(240,100,80,0.8);letter-spacing:0.06em;margin-bottom:24px;}
+
+/* ── 歷史時間戳 ── */
+.last-run{font-size:0.6rem;color:var(--text-f);letter-spacing:0.1em;margin-top:6px;}
+
+@media(max-width:700px){.report-grid{grid-template-columns:1fr;}.stat-grid{grid-template-columns:repeat(2,1fr);}.ctrl-row{flex-direction:column;align-items:stretch;}}
+</style>
+</head>
+<body>
+
+<!-- ── 登入畫面 ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">洞察</div>
+    <div class="login-sub">ZENCODE · ADMIN INSIGHT</div>
+    <input type="password" class="login-input" id="pwd-input" placeholder="輸入管理密碼"
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">進入後台</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ── 主介面 ── -->
+<div id="main">
+  <div class="top-bar">
+    <div>
+      <div class="top-logo">命盤反饋洞察</div>
+      <div class="top-title">ZENCODE · FEEDBACK INSIGHT DASHBOARD</div>
+      <div class="last-run" id="last-run"></div>
+    </div>
+    <div class="ctrl-row">
+      <select class="ctrl-select" id="days-sel">
+        <option value="7">最近 7 天</option>
+        <option value="30">最近 30 天</option>
+        <option value="90" selected>最近 90 天</option>
+        <option value="365">最近 1 年</option>
+        <option value="9999">全部數據</option>
+      </select>
+      <button class="run-btn" id="run-btn" onclick="runInsight()">生成洞察報告</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="empty">點擊「生成洞察報告」開始分析反饋數據</div>
+  </div>
+</div>
+
+<script>
+let adminKey = '';
+
+/* ── 登入 ── */
+function doLogin(){
+  const pwd = document.getElementById('pwd-input').value.trim();
+  if(!pwd){ document.getElementById('login-err').textContent = '請輸入密碼'; return; }
+  adminKey = pwd;
+  // 立即嘗試一次 API 驗證密碼是否正確
+  fetch('/api/insight',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-admin-key':adminKey},
+    body: JSON.stringify({ days:1 })
+  }).then(r=>{
+    if(r.status === 401){ document.getElementById('login-err').textContent='密碼錯誤'; adminKey=''; return; }
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main').style.display='block';
+  }).catch(()=>{ document.getElementById('login-err').textContent='連線失敗，請重試'; });
+}
+
+/* ── 執行分析 ── */
+async function runInsight(){
+  const days = Number(document.getElementById('days-sel').value);
+  const btn  = document.getElementById('run-btn');
+  btn.disabled = true;
+  btn.textContent = '分析中…';
+
+  document.getElementById('content').innerHTML = `
+    <div class="loading">
+      <div class="loading-ring"></div>
+      <div class="loading-txt">正在讀取反饋 · 調用 AI 分析中</div>
+    </div>`;
+
+  try{
+    const res = await fetch('/api/insight',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':adminKey},
+      body: JSON.stringify({ days })
+    });
+    if(res.status===401){ alert('密碼已失效，請重新整理頁面'); return; }
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    document.getElementById('last-run').textContent =
+      `上次分析：${new Date().toLocaleString('zh-TW')}　分析範圍：最近 ${days === 9999 ? '全部' : days + ' 天'}`;
+
+    renderDashboard(data);
+  }catch(err){
+    document.getElementById('content').innerHTML =
+      `<div class="err-msg">分析失敗：${err.message}</div><div class="empty">請檢查 API 設定後重試</div>`;
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '重新生成';
+  }
+}
+
+/* ── 渲染儀表板 ── */
+function renderDashboard({ summary, report, rawCount }){
+  if(!rawCount || rawCount === 0){
+    document.getElementById('content').innerHTML = '<div class="empty">暫無反饋數據，請先收集一些用戶反饋</div>';
+    return;
+  }
+
+  const { total, avgRating, byLang, fieldRanking, lowCount, highCount } = summary;
+  const satisfactionPct = ((highCount/total)*100).toFixed(0);
+
+  // ── 統計卡片 ──
+  const statsHTML = `
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">總反饋數</div>
+      <div class="stat-val">${total}</div>
+      <div class="stat-sub">條有效記錄</div>
+    </div>
+    <div class="stat-card ${parseFloat(avgRating)>=4?'green':parseFloat(avgRating)<=2.5?'red':''}">
+      <div class="stat-label">平均評分</div>
+      <div class="stat-val">${avgRating}</div>
+      <div class="stat-sub">滿分 5.0</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">高分佔比</div>
+      <div class="stat-val">${satisfactionPct}%</div>
+      <div class="stat-sub">評分 4-5 星</div>
+    </div>
+    <div class="stat-card ${lowCount>total*0.2?'red':''}">
+      <div class="stat-label">低分數量</div>
+      <div class="stat-val">${lowCount}</div>
+      <div class="stat-sub">評分 1-2 星</div>
+    </div>
+    ${Object.entries(byLang).map(([l,c])=>`
+    <div class="stat-card blue">
+      <div class="stat-label">語言 · ${l}</div>
+      <div class="stat-val">${c}</div>
+      <div class="stat-sub">${((c/total)*100).toFixed(0)}% 佔比</div>
+    </div>`).join('')}
+  </div>`;
+
+  // ── 欄位排行 ──
+  const maxCount = fieldRanking.length ? fieldRanking[0].count : 1;
+  const fieldHTML = fieldRanking.length ? `
+  <div class="field-bar-wrap">
+    <div class="section-title">不準確欄位排行</div>
+    ${fieldRanking.map(f=>`
+    <div class="field-bar-row">
+      <div class="field-bar-name">${f.field}</div>
+      <div class="field-bar-track"><div class="field-bar-fill" style="width:${(f.count/maxCount*100).toFixed(0)}%"></div></div>
+      <div class="field-bar-pct">${f.count}次 · ${f.pct}%</div>
+    </div>`).join('')}
+  </div>` : '';
+
+  // ── AI 報告 ──
+  let reportHTML = '';
+  if(!report){
+    reportHTML = '<div class="empty">AI 分析未返回結果</div>';
+  } else if(report.parse_error){
+    reportHTML = `<div class="report-card full"><div class="rc-title">原始 AI 輸出</div><div class="rc-body" style="white-space:pre-wrap;font-size:0.75rem;">${escHtml(report.raw)}</div></div>`;
+  } else {
+    // 概述
+    const overviewHTML = report.overview ? `
+    <div class="report-card full">
+      <div class="rc-title">整體解讀</div>
+      <div class="rc-body">${escHtml(report.overview)}</div>
+    </div>` : '';
+
+    // 問題分析
+    const issuesHTML = (report.top_issues?.length) ? `
+    <div class="report-card full red">
+      <div class="rc-title">主要問題深度分析</div>
+      <div class="issue-list">
+        ${report.top_issues.map(issue=>`
+        <div class="issue-item">
+          <div class="issue-field">${escHtml(issue.field)}<span class="issue-freq">${escHtml(String(issue.frequency))}</span></div>
+          <div class="issue-diagnosis">${escHtml(issue.diagnosis)}</div>
+          <div class="issue-fix">💡 ${escHtml(issue.fix_direction)}</div>
+        </div>`).join('')}
+      </div>
+    </div>` : '';
+
+    // 規律性偏差
+    const patternHTML = report.pattern_analysis ? `
+    <div class="report-card full">
+      <div class="rc-title">命盤規律性偏差分析</div>
+      <div class="rc-body">${escHtml(report.pattern_analysis)}</div>
+    </div>` : '';
+
+    // Prompt 建議
+    const promptHTML = (report.prompt_suggestions?.length) ? `
+    <div class="report-card full blue">
+      <div class="rc-title">PROMPT 改進建議（點擊複製）</div>
+      <div class="prompt-list">
+        ${report.prompt_suggestions.map((s,i)=>`
+        <div class="prompt-item" onclick="copyPrompt(this)">${i+1}. ${escHtml(s)}</div>`).join('')}
+      </div>
+    </div>` : '';
+
+    // 正向信號
+    const positiveHTML = report.positive_signals ? `
+    <div class="report-card green">
+      <div class="rc-title">系統做得好的地方</div>
+      <div class="rc-body">${escHtml(report.positive_signals)}</div>
+    </div>` : '';
+
+    // 優先行動
+    const priorityHTML = report.priority_action ? `
+    <div class="priority-box">
+      <div class="priority-label">✦ 本周優先行動 ✦</div>
+      <div class="priority-text">${escHtml(report.priority_action)}</div>
+    </div>` : '';
+
+    reportHTML = `
+    <div class="section-title" style="margin-top:8px">AI 洞察報告</div>
+    ${overviewHTML}
+    <div class="report-grid">
+      ${issuesHTML}
+      ${patternHTML}
+    </div>
+    ${promptHTML}
+    <div class="report-grid">
+      ${positiveHTML}
+    </div>
+    ${priorityHTML}`;
+  }
+
+  document.getElementById('content').innerHTML = statsHTML + fieldHTML + reportHTML;
+}
+
+function copyPrompt(el){
+  const text = el.textContent.replace(/^\d+\.\s*/,'').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    el.classList.add('copied');
+    setTimeout(()=>el.classList.remove('copied'), 2000);
+  });
+}
+
+function escHtml(str){
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+document.getElementById('pwd-input').focus();
+</script>
+</body>
+</html>
