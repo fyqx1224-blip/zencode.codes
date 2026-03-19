@@ -6,10 +6,11 @@
   const currentPath = location.pathname.replace(/\/$/, '') || '/';
 
   const links = [
-    { href: '/',        key: 'nav.reading' },
-    { href: '/about',   key: 'nav.about'   },
-    { href: '/privacy', key: 'nav.privacy' },
-    { href: '/terms',   key: 'nav.terms'   },
+    { href: '/',          key: 'nav.reading'  },
+    { href: '/about',     key: 'nav.about'    },
+    { href: '/feedback',  key: 'nav.feedback' },
+    { href: '/privacy',   key: 'nav.privacy'  },
+    { href: '/terms',     key: 'nav.terms'    },
   ];
 
   const langBtns = [
