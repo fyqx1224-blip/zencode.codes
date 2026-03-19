@@ -20,13 +20,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   background:linear-gradient(90deg,transparent,rgba(212,168,67,0.12),rgba(212,168,67,0.38),rgba(212,168,67,0.12),transparent);
   animation:scan 9s linear infinite;}
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
-.page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 80px;}
-.header{text-align:center;margin-bottom:52px;}
+.page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 80px;width:100%;}
+.header{text-align:center;margin-bottom:52px;width:100%;max-width:860px;}
 .h-tag{display:inline-flex;align-items:center;gap:12px;font-family:'Noto Sans TC',sans-serif;font-size:0.63rem;letter-spacing:0.55em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fsd .8s ease .2s forwards;}
 .h-tag::before,.h-tag::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
 .h-tag::after{transform:scaleX(-1);}
 .t-wrap{position:relative;display:inline-block;margin-bottom:14px;opacity:0;animation:fsd .9s ease .35s forwards;}
-.t-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(3.4rem,9vw,5.8rem);line-height:1;letter-spacing:0.1em;
+.t-main{font-family:'Ma Shan Zheng',cursive;font-size:clamp(3.4rem,7vw,5.2rem);line-height:1;letter-spacing:0.1em;
   background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 38%,#A0680A 68%,#D4A843 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   filter:drop-shadow(0 0 45px rgba(212,168,67,0.38));}
@@ -127,7 +127,32 @@ select.inp option{background:#0C0B14;color:var(--text);}
 @keyframes fsu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fi{from{opacity:0}to{opacity:1}}
 #roc{position:relative;z-index:10;width:100%;}
-@media(max-width:480px){.form-card{padding:32px 20px 28px;}.dg3{grid-template-columns:1.5fr 1fr 1fr;}.bp-p{min-width:52px;padding:8px 10px 6px;}}
+@media(max-width:480px){
+  /* 页面整体 */
+  .page{padding:32px 16px 60px;}
+  .header{margin-bottom:32px;}
+  /* 标题 */
+  .t-main{font-size:clamp(2.6rem,11vw,3.4rem);}
+  .t-sub{font-size:0.72rem;letter-spacing:0.22em;}
+  .h-tag{font-size:0.55rem;letter-spacing:0.38em;}
+  .hdiv{width:200px;margin:20px auto 28px;}
+  /* 表单卡片 */
+  .form-card{padding:28px 18px 24px;}
+  /* 日期网格：年份更宽 */
+  .dg3{grid-template-columns:1.6fr 1fr 1fr;gap:6px;}
+  .dg2{gap:6px;}
+  .sl3,.sl2{gap:6px;}
+  /* 命盘预览 */
+  .bp-p{min-width:48px;padding:8px 8px 6px;}
+  .bp-t,.bp-d{font-size:1.5rem;}
+  /* 底部符文行 */
+  .rune-row{gap:8px;margin-top:24px;}
+  .rune{font-size:0.72rem;}
+  /* VIP 弹窗 */
+  .vip-inner{padding:20px 18px 16px;}
+  .vip-items{grid-template-columns:1fr 1fr;gap:6px;}
+  .vip-item{padding:8px 10px;}
+}
 /* ══════════════════════════════════════════════════════
    VIP 私人定制彈窗
 ══════════════════════════════════════════════════════ */
@@ -159,7 +184,6 @@ select.inp option{background:#0C0B14;color:var(--text);}
 .vip-note{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:rgba(240,234,214,0.2);text-align:center;margin-top:14px;letter-spacing:0.12em;line-height:1.6;}
 .vip-close{position:absolute;top:14px;right:14px;background:none;border:none;color:rgba(240,234,214,0.2);cursor:pointer;font-size:1.1rem;line-height:1;padding:6px;transition:color .2s;}
 .vip-close:hover{color:rgba(212,168,67,0.6);}
-@media(max-width:420px){.vip-inner{padding:20px 18px 16px;}.vip-items{grid-template-columns:1fr 1fr;gap:6px;}.vip-item{padding:8px 10px;}}
 </style>
 <script src="/i18n.js"></script>
 
