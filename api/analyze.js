@@ -181,7 +181,53 @@ module.exports = async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("找不到 GEMINI_API_KEY");
 
-        const body = req.body || {};
+        // ── 模型降級鏈：按優先順序嘗試，429 自動換下一個 ──
+        const MODEL_CHAIN = [
+            'gemini-2.0-flash',          // 首選：快、便宜
+            'gemini-2.0-flash-lite',     // 備用1：更輕量
+            'gemini-2.5-flash',          // 備用2：能力強但有 thinking
+            'gemini-2.0-flash-exp',      // 備用3：實驗版
+        ];
+
+        let response, data;
+        let usedModel = MODEL_CHAIN[0];
+
+        for (const model of MODEL_CHAIN) {
+            usedModel = model;
+            response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            temperature: 0.35,
+                            maxOutputTokens: 16000,
+                            responseMimeType: "application/json"
+                        }
+                    })
+                }
+            );
+            data = await response.json();
+
+            if (response.status === 429) {
+                console.log(`Model ${model} 429，嘗試下一個模型`);
+                continue; // 換下一個模型
+            }
+            break; // 成功或其他錯誤，停止循環
+        }
+
+        if (!response.ok) {
+            if (response.status === 429) {
+                // 所有模型都 429 了，告訴前端等待
+                const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+                const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
+                return res.status(429).json({ retryAfter: retrySeconds });
+            }
+            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
+        }
+        console.log(`使用模型：${usedModel}`);
         const { name, gender, birthday, birthplace, pillars, ganzhiString,
                 riZhu, riZhuTg, nayin, dizhi_state, boneWeight, dayun,
                 lang, langInstruction } = body;
@@ -446,33 +492,6 @@ ${pillarDesc}
     "footer": "（一句簡短的實用提示，針對此命盤的核心建議）"
   }
 }`;
-
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        temperature: 0.35,
-                        maxOutputTokens: 16000,
-                        responseMimeType: "application/json"
-                    }
-                })
-            }
-        );
-
-        const data = await response.json();
-        if (!response.ok) {
-            // 429 單獨處理：把 retryDelay 透傳給前端
-            if (response.status === 429) {
-                const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
-                const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
-                return res.status(429).json({ retryAfter: retrySeconds });
-            }
-            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
-        }
 
         let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
