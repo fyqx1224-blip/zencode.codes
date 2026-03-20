@@ -157,7 +157,7 @@ module.exports = async function handler(req, res) {
             ? `${langInstruction}\n\n`
             : '';
 
-        const prompt = `${langBlock}你是一位精通東西方命理的命理大師，請依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》為以下對象進行深度八字解讀。
+        const prompt = `${langBlock}你是一位熟悉傳統命理的分析師，依據《滴天髓》《淵海子平》《三命通會》《子平真詮》《神峰通考》《窮通寶鑒》的理論框架，對以下命盤進行客觀、深入的文字解讀。
 
 【⚠️ 重要：以下所有八字數據由精確演算法計算完畢，請直接使用這些數值進行分析，絕對不得自行重新推算或修改任何干支、納音、地勢、骨重數字】
 
@@ -179,6 +179,7 @@ ${pillarDesc}
 大運排列（已算定）：${dayunDesc}
 
 【你的任務：只撰寫文字解讀內容，所有數字欄位已由系統填入，請勿修改】
+【語氣要求：中肯、客觀、具體。避免空洞的激勵語言、誇大吉凶、過度詩化。分析應基於八字結構本身，指出優勢也需說明條件，指出風險也需給出應對方向。】
 【解讀框架·請逐項完整分析】
 壹、格局鑑定（正格vs特殊格局、身強身弱、調候用神vs扶抑用神）
 貳、十神心理原型對照（每個主要十神的心理分析，每個至少200字）
@@ -203,7 +204,7 @@ ${pillarDesc}
           "paragraphs": ["（詳細分析，至少200字，引用古籍）", "（段落2）"],
           "highlight_type": "special",
           "highlight_content": "（格局核心特質總結）",
-          "analogy": "（白話比喻）"
+          "analogy": "（選填：若有適切比喻再填，否則留空字串）"
         },
         {
           "title": "身強身弱：（結論）",
@@ -230,7 +231,7 @@ ${pillarDesc}
       "cards": [
         {
           "title": "（主要十神）——命盤主旋律：（心理描述）",
-          "paragraphs": ["（200字以上詳細心理分析）", "（段落2）"],
+          "paragraphs": ["（充分說明此十神在日主五行格局下的具體表現，結合命盤結構，避免套語）", "（如有必要可補充段落2）"],
           "analogy": "（比喻）"
         },
         {
@@ -353,7 +354,7 @@ ${pillarDesc}
     {
       "num": "柒",
       "title": "稱骨訣·先天能量解讀",
-      "subtitle": "BONE WEIGHT · INNATE CAPACITY · SOFTWARE UPGRADE",
+      "subtitle": "BONE WEIGHT · INNATE CAPACITY · POTENTIAL",
       "bone": {
         "value": "${boneWeight}",
         "desc1": "（引用袁天罡稱骨歌原文及解釋，${boneWeight}對應的詩句）",
@@ -366,25 +367,25 @@ ${pillarDesc}
       }
     },
     {
-      "num": "🔴",
-      "title": "當前最值得把握的機會＋最需警惕的地雷",
+      "num": "捌",
+      "title": "近期值得關注的方向與需留意的風險",
       "subtitle": "NOW · OPPORTUNITY · WARNING",
       "opportunities": [
-        "（機會1標題）：（詳細說明，結合2025-2026流年與當前大運）",
-        "（機會2標題）：（詳細說明）",
-        "（機會3標題）：（詳細說明）"
+        "（方向1）：（說明此時機的命理依據，及建議如何把握，具體可操作）",
+        "（方向2）：（說明）",
+        "（方向3）：（說明）"
       ],
       "warnings": [
-        "（地雷1標題）：（詳細說明）",
-        "（地雷2標題）：（詳細說明）",
-        "（地雷3標題）：（詳細說明）"
+        "（風險1）：（說明此風險的命理依據及建議應對方式）",
+        "（風險2）：（說明）",
+        "（風險3）：（說明）"
       ]
     }
   ],
   "verdict": {
     "main": "（四字結語，如：甲木向陽）",
-    "text": "（詩意總結，用\\n換行，8-12行，關於命主的人生底色與核心課題）",
-    "footer": "（一句關於命運與自由意志的金句）"
+    "text": "（總結，用\\n換行，6-8行，說明命主的核心格局特徵、優勢與主要課題，語氣平實）",
+    "footer": "（一句簡短的實用提示，針對此命盤的核心建議）"
   }
 }`;
 
@@ -396,8 +397,9 @@ ${pillarDesc}
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
                     generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 65536,
+                        temperature: 0.35,
+                        maxOutputTokens: 16000,
+                        thinkingConfig: { thinkingBudget: 0 },
                         responseMimeType: "application/json"
                     }
                 })
