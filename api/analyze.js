@@ -390,7 +390,7 @@ ${pillarDesc}
 }`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -399,7 +399,6 @@ ${pillarDesc}
                     generationConfig: {
                         temperature: 0.35,
                         maxOutputTokens: 16000,
-                        thinkingConfig: { thinkingBudget: 0 },
                         responseMimeType: "application/json"
                     }
                 })
@@ -407,7 +406,15 @@ ${pillarDesc}
         );
 
         const data = await response.json();
-        if (!response.ok) throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
+        if (!response.ok) {
+            // 429 單獨處理：把 retryDelay 透傳給前端
+            if (response.status === 429) {
+                const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+                const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
+                return res.status(429).json({ retryAfter: retrySeconds });
+            }
+            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
+        }
 
         let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
