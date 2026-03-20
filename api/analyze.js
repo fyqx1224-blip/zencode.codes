@@ -181,6 +181,7 @@ module.exports = async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("找不到 GEMINI_API_KEY");
 
+        const body = req.body || {};
         const { name, gender, birthday, birthplace, pillars, ganzhiString,
                 riZhu, riZhuTg, nayin, dizhi_state, boneWeight, dayun,
                 lang, langInstruction } = body;
