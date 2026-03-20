@@ -18,7 +18,7 @@ const redis = {
         const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
         if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return;
         await fetch(`${UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}/${value}?EX=${ex}`, {
-            method: 'POST',
+            method: 'GET',
             headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
         });
     },
@@ -447,16 +447,14 @@ ${pillarDesc}
   }
 }`;
 
-        // ── 模型降級鏈：按優先順序嘗試，429 自動換下一個 ──
+        // ── 模型降級鏈：429/404 自動換下一個 ──────────────
         const MODEL_CHAIN = [
+            'gemini-2.5-flash',
+            'gemini-2.5-pro',
             'gemini-2.0-flash',
             'gemini-2.0-flash-lite',
-            'gemini-2.5-flash',
         ];
-
-        let response, data;
-        let usedModel = MODEL_CHAIN[0];
-
+        let response, data, usedModel = MODEL_CHAIN[0];
         for (const model of MODEL_CHAIN) {
             usedModel = model;
             response = await fetch(
@@ -475,13 +473,12 @@ ${pillarDesc}
                 }
             );
             data = await response.json();
-            if (response.status === 429) {
-                console.log(`${model} 429，換下一個模型`);
+            if (response.status === 429 || response.status === 404) {
+                console.log(`${model} ${response.status}，換下一個模型`);
                 continue;
             }
             break;
         }
-
         if (!response || !response.ok) {
             if (!response || response.status === 429) {
                 const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
@@ -491,6 +488,7 @@ ${pillarDesc}
             throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
         }
         console.log(`使用模型：${usedModel}`);
+
         let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
 
