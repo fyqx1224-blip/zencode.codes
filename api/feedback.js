@@ -58,7 +58,7 @@ module.exports = async function handler(req, res) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return res.status(500).json({ error: 'Missing Supabase credentials' });
 
   try {
-    const { name, ganzhi, ri_zhu, rating, wrong_fields, correction, actual_outcome, lang } = req.body || {};
+    const { name, ganzhi, ri_zhu, rating, wrong_fields, correction, actual_outcome, contact, lang } = req.body || {};
     if (!rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'rating must be 1–5' });
 
     const userLang  = lang || 'zh-TW';
@@ -79,6 +79,7 @@ module.exports = async function handler(req, res) {
       correction:              correction     || null,
       correction_normalized:   normalizedCorrection || null,
       actual_outcome:          actual_outcome || null,
+      contact:                 contact        || null,
       lang:                    userLang,
     };
 
