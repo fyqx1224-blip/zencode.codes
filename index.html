@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -188,6 +189,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
 <script src="/i18n.js"></script>
 
 <!-- ══ VIP 私人定制彈窗 ══ -->
+
 <div id="vip-overlay" role="dialog" aria-modal="true">
   <div class="vip-box">
     <div class="vip-glow"></div>
@@ -213,6 +215,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
 </div>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
@@ -249,112 +252,153 @@ select.inp option{background:#0C0B14;color:var(--text);}
   <div class="form-card">
     <div class="c-tl"></div><div class="c-tr"></div><div class="c-bl"></div><div class="c-br"></div>
 
-    <div class="cal-tog">
-      <button class="cal-btn active" id="bsol" onclick="setCalType('solar')" data-i18n="cal.solar">公曆（西曆）</button>
-      <button class="cal-btn" id="blun" onclick="setCalType('lunar')" data-i18n="cal.lunar">農曆（陰曆）</button>
-    </div>
+```
+<div class="cal-tog">
+  <button class="cal-btn active" id="bsol" onclick="setCalType('solar')" data-i18n="cal.solar">公曆（西曆）</button>
+  <button class="cal-btn" id="blun" onclick="setCalType('lunar')" data-i18n="cal.lunar">農曆（陰曆）</button>
+</div>
 
-    <div class="field">
-      <div class="flbl" data-i18n="form.name">命主姓名</div>
-      <div class="iw"><input type="text" id="un" class="inp" placeholder="請輸入姓名" data-i18n-ph="form.name.ph" autocomplete="off"></div>
-    </div>
-    <div class="field">
-      <div class="flbl" data-i18n="form.gender">命主性別</div>
-      <div class="iw">
-        <select id="ug" class="inp">
-          <option value="" disabled selected data-i18n="form.gender.ph">請選擇性別</option>
-          <option value="女" data-i18n="form.gender.f">女命</option>
-          <option value="男" data-i18n="form.gender.m">男命</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <div class="flbl" data-i18n="form.date">出生日期</div>
-      <div class="lunar-h" id="lh" data-i18n="form.lunar.hint">✦ 請輸入農曆年月日，系統自動換算公曆</div>
-      <div class="sl3">
-        <div class="slbl" id="lby" data-i18n="form.year">年</div>
-        <div class="slbl" id="lbm" data-i18n="form.month">月</div>
-        <div class="slbl" id="lbd" data-i18n="form.day">日</div>
-      </div>
-      <div class="dg3">
-        <div class="iw"><input type="number" id="by" class="inp c" placeholder="1995" min="1900" max="2030" oninput="odc()"></div>
-        <div class="iw"><input type="number" id="bm" class="inp c" placeholder="8" min="1" max="13" oninput="odc()"></div>
-        <div class="iw"><input type="number" id="bd" class="inp c" placeholder="15" min="1" max="31" oninput="odc()"></div>
-      </div>
-      <div id="leap-wrap" style="display:none;margin-top:8px;">
-        <label style="display:flex;align-items:center;gap:8px;font-family:'Noto Sans TC',sans-serif;font-size:0.73rem;color:var(--text-d);cursor:pointer;">
-          <input type="checkbox" id="ilp" onchange="odc()" style="accent-color:var(--gold);width:14px;height:14px;"> <span data-i18n="form.leap">閏月</span>
-        </label>
-      </div>
-      <div class="sl2">
-        <div class="slbl" data-i18n="form.hour">時（24小時制）</div>
-        <div class="slbl" data-i18n="form.min">分（可選）</div>
-      </div>
-      <div class="dg2">
-        <div class="iw"><input type="number" id="bh" class="inp c" placeholder="13" min="0" max="23" oninput="odc()"></div>
-        <div class="iw"><input type="number" id="bmin" class="inp c" placeholder="30" min="0" max="59" oninput="odc()"></div>
-      </div>
-    </div>
+<div class="field">
+  <div class="flbl" data-i18n="form.name">命主姓名</div>
+  <div class="iw"><input type="text" id="un" class="inp" placeholder="請輸入姓名" data-i18n-ph="form.name.ph" autocomplete="off"></div>
+</div>
+<div class="field">
+  <div class="flbl" data-i18n="form.gender">命主性別</div>
+  <div class="iw">
+    <select id="ug" class="inp">
+      <option value="" disabled selected data-i18n="form.gender.ph">請選擇性別</option>
+      <option value="女" data-i18n="form.gender.f">女命</option>
+      <option value="男" data-i18n="form.gender.m">男命</option>
+    </select>
+  </div>
+</div>
+<div class="field">
+  <div class="flbl" data-i18n="form.date">出生日期</div>
+  <div class="lunar-h" id="lh" data-i18n="form.lunar.hint">✦ 請輸入農曆年月日，系統自動換算公曆</div>
+  <div class="sl3">
+    <div class="slbl" id="lby" data-i18n="form.year">年</div>
+    <div class="slbl" id="lbm" data-i18n="form.month">月</div>
+    <div class="slbl" id="lbd" data-i18n="form.day">日</div>
+  </div>
+  <div class="dg3">
+    <div class="iw"><input type="number" id="by" class="inp c" placeholder="1995" min="1900" max="2030" oninput="odc()"></div>
+    <div class="iw"><input type="number" id="bm" class="inp c" placeholder="8" min="1" max="13" oninput="odc()"></div>
+    <div class="iw"><input type="number" id="bd" class="inp c" placeholder="15" min="1" max="31" oninput="odc()"></div>
+  </div>
+  <div id="leap-wrap" style="display:none;margin-top:8px;">
+    <label style="display:flex;align-items:center;gap:8px;font-family:'Noto Sans TC',sans-serif;font-size:0.73rem;color:var(--text-d);cursor:pointer;">
+      <input type="checkbox" id="ilp" onchange="odc()" style="accent-color:var(--gold);width:14px;height:14px;"> <span data-i18n="form.leap">閏月</span>
+    </label>
+  </div>
+  <div class="sl2">
+    <div class="slbl" data-i18n="form.hour">時（24小時制）</div>
+    <div class="slbl" data-i18n="form.min">分（可選）</div>
+  </div>
+  <div class="dg2">
+    <div class="iw"><input type="number" id="bh" class="inp c" placeholder="13" min="0" max="23" oninput="odc()"></div>
+    <div class="iw"><input type="number" id="bmin" class="inp c" placeholder="30" min="0" max="59" oninput="odc()"></div>
+  </div>
+</div>
 
-    <!-- 夏令時開關 -->
-    <div class="dst-row" id="dst-row">
-      <label class="dst-toggle" title="夏令時（DST）">
-        <input type="checkbox" id="idst" onchange="odc()">
-        <span class="dst-slider"></span>
-      </label>
-      <span class="dst-label"><strong data-i18n="form.dst.label">夏令時 DST</strong><br><span data-i18n="form.dst.sub">出生時當地是否正在實行夏令時（+1小時）</span></span>
-      <button type="button" class="dst-info-btn" onclick="toggleDstPanel()" title="查看各地夏令時參考">?</button>
-    </div>
-    <div class="dst-panel" id="dst-panel">
-      <div class="dst-panel-title" data-i18n="form.dst.panel.title">主要國家／地區夏令時參考</div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇨🇳 <span data-i18n="form.dst.cn.name">中國大陸</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.cn.detail"><em>1986 – 1991 年</em>實行，每年 <em>4月第二週日 02:00</em> 撥快，<em>9月第二週日 02:00</em> 撥回</div>
-      </div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇹🇼 <span data-i18n="form.dst.tw.name">台灣</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.tw.detail"><em>1945 – 1979 年</em>多次實行（<em>1961–1974 年</em>中斷），各年起訖日期不同</div>
-      </div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇺🇸 <span data-i18n="form.dst.us.name">美國 / 加拿大</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.us.detail">現行：<em>3月第二週日</em> → <em>11月第一週日</em>（亞利桑那州、夏威夷等除外）</div>
-      </div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇪🇺 <span data-i18n="form.dst.eu.name">歐洲</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.eu.detail">現行：<em>3月最後一週日</em> → <em>10月最後一週日</em></div>
-      </div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇦🇺 <span data-i18n="form.dst.au.name">澳洲（東/南部）</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.au.detail">現行：<em>10月第一週日</em> → <em>4月第一週日</em>（南半球，與北半球相反）</div>
-      </div>
-      <div class="dst-region">
-        <div class="dst-region-name">🇰🇷🇯🇵 <span data-i18n="form.dst.kr.name">韓國 / 日本</span></div>
-        <div class="dst-region-detail" data-i18n="form.dst.kr.detail">韓國 <em>1948–1960</em>、日本 <em>1948–1951</em> 曾短暫實行，現均<em>不再實行</em></div>
-      </div>
-      <div class="dst-note" data-i18n="form.dst.note">✦ 開啟後系統將在時辰計算前自動減去 1 小時，還原為標準時。如不確定是否在夏令時期間出生，請查閱出生地當年曆法。</div>
-    </div>
+<!-- 夏令時開關 -->
+<div class="dst-row" id="dst-row">
+  <label class="dst-toggle" title="夏令時（DST）">
+    <input type="checkbox" id="idst" onchange="odc()">
+    <span class="dst-slider"></span>
+  </label>
+  <span class="dst-label"><strong data-i18n="form.dst.label">夏令時 DST</strong><br><span data-i18n="form.dst.sub">出生時當地是否正在實行夏令時（+1小時）</span></span>
+  <button type="button" class="dst-info-btn" onclick="toggleDstPanel()" title="查看各地夏令時參考">?</button>
+</div>
+<div class="dst-panel" id="dst-panel">
+  <div class="dst-panel-title" data-i18n="form.dst.panel.title">主要國家／地區夏令時參考</div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇨🇳 <span data-i18n="form.dst.cn.name">中國大陸</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.cn.detail"><em>1986 – 1991 年</em>實行，每年 <em>4月第二週日 02:00</em> 撥快，<em>9月第二週日 02:00</em> 撥回</div>
+  </div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇹🇼 <span data-i18n="form.dst.tw.name">台灣</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.tw.detail"><em>1945 – 1979 年</em>多次實行（<em>1961–1974 年</em>中斷），各年起訖日期不同</div>
+  </div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇺🇸 <span data-i18n="form.dst.us.name">美國 / 加拿大</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.us.detail">現行：<em>3月第二週日</em> → <em>11月第一週日</em>（亞利桑那州、夏威夷等除外）</div>
+  </div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇪🇺 <span data-i18n="form.dst.eu.name">歐洲</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.eu.detail">現行：<em>3月最後一週日</em> → <em>10月最後一週日</em></div>
+  </div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇦🇺 <span data-i18n="form.dst.au.name">澳洲（東/南部）</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.au.detail">現行：<em>10月第一週日</em> → <em>4月第一週日</em>（南半球，與北半球相反）</div>
+  </div>
+  <div class="dst-region">
+    <div class="dst-region-name">🇰🇷🇯🇵 <span data-i18n="form.dst.kr.name">韓國 / 日本</span></div>
+    <div class="dst-region-detail" data-i18n="form.dst.kr.detail">韓國 <em>1948–1960</em>、日本 <em>1948–1951</em> 曾短暫實行，現均<em>不再實行</em></div>
+  </div>
+  <div class="dst-note" data-i18n="form.dst.note">✦ 開啟後系統將在時辰計算前自動減去 1 小時，還原為標準時。如不確定是否在夏令時期間出生，請查閱出生地當年曆法。</div>
+</div>
 
-    <div class="field" style="margin-top:4px;">
-      <div class="flbl" data-i18n="form.place">出生地點</div>
-      <div class="iw"><input type="text" id="ubp" class="inp" placeholder="如：四川省成都市" data-i18n-ph="form.place.ph" autocomplete="off" oninput="odc()"></div>
-      <div class="solar-hint" id="solar-hint"></div>
-      <div class="solar-hint show" id="jq-hint" style="color:rgba(99,163,237,0.5);border-left-color:rgba(99,163,237,0.3);background:rgba(99,163,237,0.04);margin-top:4px;" data-i18n="form.jq.hint">✦ 節氣換月精確至分鐘（資料來源：天文年曆）· 採早子時流派（23:00 起為當天子時）</div>
-    </div>
+<div class="field" style="margin-top:4px;">
+  <div class="flbl" data-i18n="form.place">出生地點</div>
+  <div class="iw" style="position:relative;">
+    <input type="text" id="ubp" class="inp" placeholder="如：四川省成都市" data-i18n-ph="form.place.ph" autocomplete="off" oninput="onPlaceInput()">
+    <div id="geo-spinner" style="display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;border:1.5px solid rgba(212,168,67,0.2);border-top-color:rgba(212,168,67,0.7);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  </div>
+  <div class="solar-hint" id="solar-hint"></div>
+  <div class="solar-hint" id="geo-hint" style="color:rgba(90,184,108,0.65);border-left-color:rgba(90,184,108,0.3);background:rgba(90,184,108,0.04);margin-top:4px;display:none;"></div>
+  <div class="solar-hint show" id="jq-hint" style="color:rgba(99,163,237,0.5);border-left-color:rgba(99,163,237,0.3);background:rgba(99,163,237,0.04);margin-top:4px;" data-i18n="form.jq.hint">✦ 節氣換月精確至分鐘（資料來源：天文年曆）· 採早子時流派（23:00 起為當天子時）</div>
+</div>
 
-    <div class="bazi-prev" id="bprev">
-      <div class="bp-hd" data-i18n="prev.title">命盤預覽（已校正真太陽時）</div>
-      <div class="bp-ps" id="bpps"></div>
-      <div class="bp-ex" id="bpex"></div>
-    </div>
+<div class="field" style="margin-top:0;">
+  <div class="flbl" data-i18n="form.tz">出生時當地時區</div>
+  <div class="iw">
+    <select id="utz" class="inp" onchange="odc()">
+      <option value="+8">UTC+8 · 中國大陸 / 台灣 / 香港 / 澳門 / 新加坡 / 馬來西亞 / 菲律賓 / 西澳大利亞</option>
+      <option value="+9">UTC+9 · 日本 / 韓國 / 東帝汶</option>
+      <option value="+7">UTC+7 · 泰國 / 越南 / 柬埔寨 / 老撾 / 印尼西部（雅加達）</option>
+      <option value="+6">UTC+6 · 孟加拉 / 緬甸UTC+6:30 / 哈薩克斯坦東部</option>
+      <option value="+5.5">UTC+5:30 · 印度 / 斯里蘭卡</option>
+      <option value="+5">UTC+5 · 巴基斯坦 / 烏茲別克斯坦</option>
+      <option value="+4">UTC+4 · 阿聯酋 / 阿曼 / 阿塞拜疆</option>
+      <option value="+3">UTC+3 · 沙特阿拉伯 / 土耳其 / 俄羅斯莫斯科 / 肯尼亞</option>
+      <option value="+2">UTC+2 · 以色列 / 南非 / 埃及 / 東歐（夏令時前）</option>
+      <option value="+1">UTC+1 · 西歐（英國夏令時 / 法德意夏令時）/ 西非</option>
+      <option value="+0">UTC+0 · 英國（冬季）/ 愛爾蘭 / 葡萄牙 / 冰島 / 加納</option>
+      <option value="-1">UTC-1 · 佛得角 / 葡萄牙亞速爾群島</option>
+      <option value="-2">UTC-2 · 巴西費爾南多迪諾羅尼亞島</option>
+      <option value="-3">UTC-3 · 巴西東部（聖保羅/里約）/ 阿根廷 / 烏拉圭</option>
+      <option value="-4">UTC-4 · 加拿大大西洋省份 / 玻利維亞 / 委內瑞拉 / 智利</option>
+      <option value="-5">UTC-5 · 美國東部（EST）/ 加拿大安大略 / 秘魯 / 哥倫比亞</option>
+      <option value="-6">UTC-6 · 美國中部（CST）/ 墨西哥城 / 中美洲</option>
+      <option value="-7">UTC-7 · 美國山地（MST）/ 亞利桑那 / 墨西哥索諾拉</option>
+      <option value="-8">UTC-8 · 美國西部（PST）/ 加拿大英屬哥倫比亞 / 墨西哥下加利福尼亞</option>
+      <option value="-9">UTC-9 · 美國阿拉斯加</option>
+      <option value="-10">UTC-10 · 夏威夷 / 法屬波利尼西亞</option>
+      <option value="-12">UTC-12 · 貝克島 / 豪蘭島（無人島）</option>
+      <option value="+10">UTC+10 · 澳大利亞東部（悉尼/墨爾本/布里斯班）/ 巴布亞新幾內亞</option>
+      <option value="+11">UTC+11 · 所羅門群島 / 瓦努阿圖 / 新喀里多尼亞</option>
+      <option value="+12">UTC+12 · 紐西蘭 / 斐濟 / 基里巴斯</option>
+    </select>
+  </div>
+  <div class="solar-hint show" style="margin-top:4px;font-family:'Noto Sans TC',sans-serif;font-size:0.63rem;color:rgba(212,168,67,0.4);letter-spacing:0.06em;line-height:1.7;padding:6px 10px;background:rgba(212,168,67,0.03);border-left:2px solid rgba(212,168,67,0.2);" data-i18n="form.tz.hint">✦ 請選擇出生當時當地使用的標準時間（夏令時期間請選夏令時對應的時區）</div>
+</div>
 
-    <div style="margin-bottom:16px;padding:10px 14px;background:rgba(99,163,237,0.04);border-left:2px solid rgba(99,163,237,0.3);display:flex;align-items:flex-start;gap:8px;">
-      <span style="color:rgba(99,163,237,0.6);font-size:0.75rem;flex-shrink:0;margin-top:1px;">𝒊</span>
-      <span style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.38);letter-spacing:0.08em;line-height:1.7;" data-i18n="form.lang.hint">報告語言由右上角語言切換器決定，請在測算前確認語言設定，生成後無法切換</span>
-    </div>
+<div class="bazi-prev" id="bprev">
+  <div class="bp-hd" data-i18n="prev.title">命盤預覽（已校正真太陽時）</div>
+  <div class="bp-ps" id="bpps"></div>
+  <div class="bp-ex" id="bpex"></div>
+</div>
 
-    <div class="btn-row">
-      <button class="sbtn" id="sbtn" onclick="genReport()" data-i18n="btn.submit">觀測星象能量</button>
-    </div>
+<div style="margin-bottom:16px;padding:10px 14px;background:rgba(99,163,237,0.04);border-left:2px solid rgba(99,163,237,0.3);display:flex;align-items:flex-start;gap:8px;">
+  <span style="color:rgba(99,163,237,0.6);font-size:0.75rem;flex-shrink:0;margin-top:1px;">𝒊</span>
+  <span style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.38);letter-spacing:0.08em;line-height:1.7;" data-i18n="form.lang.hint">報告語言由右上角語言切換器決定，請在測算前確認語言設定，生成後無法切換</span>
+</div>
+
+<div class="btn-row">
+  <button class="sbtn" id="sbtn" onclick="genReport()" data-i18n="btn.submit">觀測星象能量</button>
+</div>
+```
+
   </div>
 
   <div class="rune-row">
@@ -589,12 +633,21 @@ function getLng(birthplace){
   for(const[k,v]of Object.entries(PROV_LNG)){if(birthplace.includes(k))return v;}
   return null;
 }
-function correctSolarTime(hour, minute, birthplace){
-  const lng=getLng(birthplace);
+// 精確經度緩存（地理編碼結果）
+let _geoLng = null;      // 從 Nominatim 查到的精確經度
+let _geoLabel = '';      // 地名確認標籤
+
+function correctSolarTime(hour, minute, birthplace, tzOffset=8){
+  // tzOffset：出生地當時的時區偏移（小時），如 UTC+8 傳 8，UTC-5 傳 -5
+  // 真太陽時公式：本地時間 → UTC → 真太陽時
+  //   UTC分鐘 = 本地分鐘 - tzOffset*60
+  //   真太陽時分鐘 = UTC分鐘 + 經度*4
+  const lng = _geoLng !== null ? _geoLng : getLng(birthplace);
   if(lng===null)return{hour,minute,adjusted:false,diffMin:0,lng:null};
-  const diffMin=Math.round((lng-120)*4);
+  // 真太陽時偏差 = 經度*4 - 標準時區*60（分鐘）
+  const diffMin=Math.round(lng*4 - tzOffset*60);
   const total=((hour*60+minute+diffMin)%1440+1440)%1440;
-  return{hour:Math.floor(total/60),minute:Math.floor(total%60),adjusted:true,diffMin,lng};
+  return{hour:Math.floor(total/60),minute:Math.floor(total%60),adjusted:true,diffMin,lng,precise:_geoLng!==null,tzOffset};
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -722,9 +775,9 @@ function getDayun(gender,year,month,day,yrTg){
   return{startAge,list};
 }
 
-function calcBazi(year,month,day,hour,minute,gender,birthplace){
+function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
   // ★ Bug5修復：真太陽時校正
-  const st=correctSolarTime(hour,minute,birthplace);
+  const st=correctSolarTime(hour,minute,birthplace,tzOffset);
   let ah=st.hour,am=st.minute,dy=day;
   // ★ 早子時流派：子時 = 23:00–00:59，23:00 起仍屬當天
   // 時柱地支：23時→子(0)，與主流命理軟體（萬年曆 App 等）一致
@@ -744,6 +797,70 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace){
   const bt10=Math.round((BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz])*10);
   const bl=Math.floor(bt10/10),bq=bt10%10;
   return{pillars,dayunData:dy2,nayin:ny,boneWeight:`${bl}兩${bq}錢`,solarTime:st};
+}
+
+/* ═══════════════════════════════════════════════════════
+   ★ 地理編碼：Nominatim（OpenStreetMap）查精確經度
+   · 用戶停止輸入 600ms 後觸發，結果緩存在 _geoLng
+═══════════════════════════════════════════════════════ */
+let _geoTimer = null;
+const _geoCache = {}; // 本地緩存，避免重複請求同一地名
+
+async function geocodePlace(place) {
+  if (!place || place.length < 2) return;
+  if (_geoCache[place] !== undefined) {
+    _geoLng   = _geoCache[place].lng;
+    _geoLabel = _geoCache[place].label;
+    updateGeoHint(); odc(); return;
+  }
+
+  document.getElementById('geo-spinner').style.display = 'block';
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1&accept-language=zh`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'zh,en' } });
+    const data = await res.json();
+
+    if (data && data.length > 0) {
+      const item = data[0];
+      _geoLng   = parseFloat(item.lon);
+      _geoLabel = item.display_name.split(',').slice(0,3).join(',');
+    } else {
+      // Nominatim 查無結果，fallback 到字典
+      _geoLng   = getLng(place);
+      _geoLabel = '';
+    }
+    _geoCache[place] = { lng: _geoLng, label: _geoLabel };
+  } catch(e) {
+    // 網絡失敗，fallback
+    _geoLng   = getLng(place);
+    _geoLabel = '';
+  } finally {
+    document.getElementById('geo-spinner').style.display = 'none';
+  }
+  updateGeoHint(); odc();
+}
+
+function updateGeoHint() {
+  const el = document.getElementById('geo-hint');
+  if (_geoLng === null) { el.style.display = 'none'; return; }
+  const diffMin = Math.round((_geoLng - 120) * 4);
+  const sign    = diffMin >= 0 ? '+' : '';
+  const src     = _geoLabel ? `📍 ${_geoLabel.slice(0,30)}` : '📍 字典估算';
+  el.textContent = `✦ 經度 ${_geoLng.toFixed(2)}° → 真太陽時偏差 ${sign}${diffMin} 分　${src}`;
+  el.style.display = 'block';
+}
+
+function onPlaceInput() {
+  // 重置地理編碼緩存
+  _geoLng   = null;
+  _geoLabel = '';
+  document.getElementById('geo-hint').style.display = 'none';
+  clearTimeout(_geoTimer);
+  const place = document.getElementById('ubp').value.trim();
+  if (place.length >= 2) {
+    _geoTimer = setTimeout(() => geocodePlace(place), 600);
+  }
+  odc();
 }
 
 function toggleDstPanel(){
@@ -783,13 +900,15 @@ function odc(){
   // 更新真太陽時提示
   const stHint=document.getElementById('solar-hint');
   if(bp){
-    const st=correctSolarTime(h,mn,bp);
+    const tzOffset=parseFloat(document.getElementById('utz')?.value||'8');
+    const st=correctSolarTime(h,mn,bp,tzOffset);
     if(st.adjusted){
       const sign=st.diffMin>=0?'+':'';
-      stHint.textContent=`✦ 真太陽時校正：${bp.slice(0,4)} 偏差 ${sign}${st.diffMin} 分 → 實際時辰 ${String(st.hour).padStart(2,'0')}:${String(st.minute).padStart(2,'0')}`;
+      const preciseTag = st.precise ? '' : '（估算）';
+      stHint.textContent=`✦ 真太陽時校正${preciseTag}：偏差 ${sign}${st.diffMin} 分 → 實際時辰 ${String(st.hour).padStart(2,'0')}:${String(st.minute).padStart(2,'0')}`;
       stHint.classList.add('show');
     } else {
-      stHint.textContent='✦ 未識別地點經度，以北京時間(UTC+8)計算';
+      stHint.textContent='✦ 未識別地點，以北京時間(UTC+8)計算，建議填寫更詳細的地名';
       stHint.classList.add('show');
     }
   } else {
@@ -868,7 +987,8 @@ async function genReport(){
     cNote=`（農曆${year}年${document.getElementById('ilp').checked?'閏':''}${month}月${day}日）`;
   }
 
-  const res=calcBazi(sy,sm,sd,adjHour,adjMinute,gender,birthplace);
+  const tzOffset=parseFloat(document.getElementById('utz')?.value||'8');
+  const res=calcBazi(sy,sm,sd,adjHour,adjMinute,gender,birthplace,tzOffset);
   const{pillars,dayunData,nayin,boneWeight,solarTime}=res;
 
   // 構建真太陽時備注
@@ -878,7 +998,8 @@ async function genReport(){
   }
   if(solarTime.adjusted){
     const sign=solarTime.diffMin>=0?'+':'';
-    stNote+=`（真太陽時校正${sign}${solarTime.diffMin}分，實際時辰${String(solarTime.hour).padStart(2,'0')}:${String(solarTime.minute).padStart(2,'0')}）`;
+    const preciseTag = solarTime.precise ? '精確經度' : '估算經度';
+    stNote+=`（真太陽時${preciseTag}${sign}${solarTime.diffMin}分，實際時辰${String(solarTime.hour).padStart(2,'0')}:${String(solarTime.minute).padStart(2,'0')}）`;
   }
 
   // ── 組裝傳給後端的完整數據（所有數字已在前端算好）──
@@ -1096,6 +1217,7 @@ document.getElementById('vip-overlay').addEventListener('click', function(e){
   if(e.target===this) closeVip();
 });
 </script>
+
 <footer style="position:relative;z-index:10;text-align:center;padding:32px 24px;border-top:1px solid rgba(212,168,67,0.08);font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.22);letter-spacing:0.15em;line-height:2.2;">
   <div style="margin-bottom:10px;">
     <a href="/about" data-i18n="footer.about" style="color:rgba(212,168,67,0.4);text-decoration:none;margin:0 12px;transition:color .2s;" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(212,168,67,0.4)'">關於我們</a>
