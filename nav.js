@@ -87,16 +87,28 @@ body{padding-top:56px !important;}
 </div>`;
   }
 
-  document.body.insertAdjacentHTML('afterbegin', buildNav());
+  try {
+    document.body.insertAdjacentHTML('afterbegin', buildNav());
+  } catch(e) {
+    // 降級：直接寫入 body 最前面
+    const tmp = document.createElement('div');
+    tmp.innerHTML = buildNav();
+    document.body.insertBefore(tmp.firstChild, document.body.firstChild);
+    console.warn('ZenCode nav fallback used:', e.message);
+  }
 
-  document.getElementById('zc-hbg').addEventListener('click', function(){
-    this.classList.toggle('open');
-    document.getElementById('zc-mm').classList.toggle('open');
-  });
-  document.querySelectorAll('.zc-mobile-link').forEach(el=>{
-    el.addEventListener('click',()=>{
-      document.getElementById('zc-hbg').classList.remove('open');
-      document.getElementById('zc-mm').classList.remove('open');
+  try {
+    document.getElementById('zc-hbg').addEventListener('click', function(){
+      this.classList.toggle('open');
+      document.getElementById('zc-mm').classList.toggle('open');
     });
-  });
+    document.querySelectorAll('.zc-mobile-link').forEach(el=>{
+      el.addEventListener('click',()=>{
+        document.getElementById('zc-hbg').classList.remove('open');
+        document.getElementById('zc-mm').classList.remove('open');
+      });
+    });
+  } catch(e) {
+    console.warn('ZenCode nav event binding failed:', e.message);
+  }
 })();
