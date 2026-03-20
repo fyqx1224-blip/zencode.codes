@@ -1,4 +1,39 @@
 // ═══════════════════════════════════════════════════
+// ZenCode 八字分析 API · api/analyze.js
+// · IP 限流：每個 IP 每 60 秒最多 1 次請求（Upstash Redis）
+// ═══════════════════════════════════════════════════
+
+// Upstash Redis REST 封裝（不需要安裝任何套件）
+const redis = {
+    async get(key) {
+        const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+        if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return null;
+        const r = await fetch(`${UPSTASH_REDIS_REST_URL}/get/${encodeURIComponent(key)}`, {
+            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        });
+        const d = await r.json();
+        return d.result ?? null;
+    },
+    async set(key, value, ex) {
+        const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+        if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return;
+        await fetch(`${UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}/${value}?EX=${ex}`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        });
+    },
+    async ttl(key) {
+        const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+        if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return 60;
+        const r = await fetch(`${UPSTASH_REDIS_REST_URL}/ttl/${encodeURIComponent(key)}`, {
+            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        });
+        const d = await r.json();
+        return d.result ?? 60;
+    }
+};
+
+// ═══════════════════════════════════════════════════
 // 五行主題色系（根據日主天干自動切換）
 // ═══════════════════════════════════════════════════
 const WUXING_THEMES = {
@@ -117,6 +152,29 @@ module.exports = async function handler(req, res) {
 
     if (req.method !== 'POST') {
         return res.status(405).send('<div>只接受 POST 請求</div>');
+    }
+
+    // ── IP 限流：每個 IP 每 60 秒最多 1 次 ──────────────
+    const COOLDOWN = 60; // 秒
+    if (redis) {
+        try {
+            const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+                    || req.headers['x-real-ip']
+                    || req.socket?.remoteAddress
+                    || 'unknown';
+            const kvKey = `rl:${ip}`;
+            const existing = await redis.get(kvKey);
+            if (existing) {
+                const ttl = await redis.ttl(kvKey);
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(429).json({ retryAfter: Math.max(ttl, 1) });
+            }
+            // 請求放行，寫入冷卻 key（在報告生成後設定，避免失敗時白白鎖住）
+            req._rl_ip = ip;
+        } catch(e) {
+            // KV 故障時降級放行，不影響主流程
+            console.warn('Redis rate limit check failed:', e.message);
+        }
     }
 
     try {
@@ -746,6 +804,11 @@ document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,
 <\/script>
 </body></html>`;
 
+        // ── 成功後寫入冷卻 key ──
+        if (redis && req._rl_ip) {
+            try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); }
+            catch(e) { console.warn('Redis set failed:', e.message); }
+        }
         res.status(200).send(html);
 
     } catch (error) {
