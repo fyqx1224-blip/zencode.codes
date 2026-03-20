@@ -492,6 +492,7 @@ ${pillarDesc}
             throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
         }
         console.log(`使用模型：${usedModel}`);
+        let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
 
         let d;
