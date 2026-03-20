@@ -469,7 +469,7 @@ ${pillarDesc}
                         contents: [{ parts: [{ text: prompt }] }],
                         generationConfig: {
                             temperature: 0.35,
-                            maxOutputTokens: 16000,
+                            maxOutputTokens: 32000,
                             responseMimeType: "application/json"
                         }
                     })
