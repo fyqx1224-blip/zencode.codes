@@ -134,6 +134,7 @@ const ZCI18n = (function () {
       // 導航（反饋入口）
       'nav.feedback':        '命盤校準',
       'form.lang.hint':      '報告語言由右上角語言切換器決定，請在測算前確認語言設定，生成後無法切換',
+      'form.jq.hint':        '✦ 節氣換月精確至分鐘（資料來源：天文年曆）· 採早子時流派（23:00 起為當天子時）',
       // VIP 私人定制彈窗
       'vip.eyebrow':         '命盤已生成 · 深度服務開放中',
       'vip.title':           '一對一私人命理定制',
@@ -262,6 +263,7 @@ const ZCI18n = (function () {
       'fb.success.back':     '返回命盘推演',
       'nav.feedback':        '命盘校准',
       'form.lang.hint':      '报告语言由右上角语言切换器决定，请在测算前确认语言设置，生成后无法切换',
+      'form.jq.hint':        '✦ 节气换月精确至分钟（数据来源：天文年历）· 采早子时流派（23:00 起为当天子时）',
       // VIP 私人定制弹窗
       'vip.eyebrow':         '命盘已生成 · 深度服务开放中',
       'vip.title':           '一对一私人命理定制',
@@ -392,6 +394,7 @@ const ZCI18n = (function () {
       'fb.success.back':     'Back to Chart Reading',
       'nav.feedback':        'Calibrate',
       'form.lang.hint':      'Report language is set by the language switcher (top right). Please select your language before generating — it cannot be changed afterwards.',
+      'form.jq.hint':        '✦ Solar term transitions accurate to the minute (source: astronomical almanac) · Early-zi convention: 23:00–00:59 belongs to the current day',
       // VIP modal
       'vip.eyebrow':         'Your Chart is Ready · Exclusive Service Now Open',
       'vip.title':           'One-on-One Personal Destiny Consultation',
@@ -521,6 +524,7 @@ const ZCI18n = (function () {
       'fb.success.back':     '사주 추연으로 돌아가기',
       'nav.feedback':        '차트 교정',
       'form.lang.hint':      '보고서 언어는 오른쪽 상단의 언어 선택기로 결정됩니다. 생성 전에 언어를 먼저 설정해 주세요 — 생성 후에는 변경할 수 없습니다.',
+      'form.jq.hint':        '✦ 절기 교체 시각은 분 단위로 정확합니다（출처: 천문 연감）· 조자시 기준: 23:00부터 당일 자시로 계산',
       // VIP 모달
       'vip.eyebrow':         '사주 차트 완성 · 프리미엄 서비스 오픈',
       'vip.title':           '1:1 맞춤형 명리 컨설팅',
