@@ -1,5 +1,10 @@
 {
   "outputDirectory": ".",
+  "functions": {
+    "api/analyze.js": { "maxDuration": 60 },
+    "api/feedback.js": { "maxDuration": 15 },
+    "api/insight.js": { "maxDuration": 60 }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/about",    "destination": "/about.html" },
