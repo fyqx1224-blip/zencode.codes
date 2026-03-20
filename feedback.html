@@ -142,6 +142,14 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
       <div class="fb-hint" data-i18n="fb.outcome.hint">✦ 此欄資料匿名儲存，僅用於改善推演模型，不會對外公開</div>
     </div>
 
+    <!-- 6. 联系方式 -->
+    <div class="fb-section">
+      <div class="fb-label" data-i18n="fb.sec.contact">留下聯絡方式（選填）</div>
+      <textarea class="fb-input fb-input-line" id="inp-contact" data-i18n-ph="fb.contact.ph"
+        placeholder="Email 或微信號，方便我們回覆您的反饋" rows="1" style="resize:none;height:48px;"></textarea>
+      <div class="fb-hint" data-i18n="fb.contact.hint">✦ 僅用於回覆此次反饋，不會用於任何推廣</div>
+    </div>
+
     <div class="err-bar" id="err-bar" data-i18n="fb.err.rating">請至少完成評分後再提交</div>
 
     <div class="submit-row">
@@ -306,6 +314,7 @@ async function submitFeedback(){
     wrong_fields:   [...selectedFields],
     correction:     document.getElementById('inp-correction').value.trim() || null,
     actual_outcome: document.getElementById('inp-outcome').value.trim()    || null,
+    contact:        document.getElementById('inp-contact').value.trim()    || null,
     lang: (typeof ZCI18n !== 'undefined') ? ZCI18n.lang() : 'zh-TW',
   };
 
