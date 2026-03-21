@@ -49,27 +49,30 @@ const redis = {
             headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
         });
     },
-    // 存報告快取（7天過期）
+    // 存報告快取（永久）- 用 POST pipeline 避免 URL 長度限制
     async setCache(key, value) {
         const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
         if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return;
-        // 值先 base64 避免特殊字符問題
         const encoded = Buffer.from(value, 'utf8').toString('base64');
-        await fetch(`${UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(encoded)}`, {
-            method: 'GET',
-            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        await fetch(UPSTASH_REDIS_REST_URL + '/pipeline', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + UPSTASH_REDIS_REST_TOKEN, 'Content-Type': 'application/json' },
+            body: JSON.stringify([['SET', key, encoded]])
         });
     },
     // 讀報告快取
     async getCache(key) {
         const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
         if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return null;
-        const r = await fetch(`${UPSTASH_REDIS_REST_URL}/get/${encodeURIComponent(key)}`, {
-            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        const r = await fetch(UPSTASH_REDIS_REST_URL + '/pipeline', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + UPSTASH_REDIS_REST_TOKEN, 'Content-Type': 'application/json' },
+            body: JSON.stringify([['GET', key]])
         });
         const d = await r.json();
-        if (!d.result) return null;
-        return Buffer.from(d.result, 'base64').toString('utf8');
+        const result = d && d[0] && d[0].result;
+        if (!result) return null;
+        return Buffer.from(result, 'base64').toString('utf8');
     }
 };
 
