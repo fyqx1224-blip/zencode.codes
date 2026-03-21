@@ -187,7 +187,6 @@ select.inp option{background:#0C0B14;color:var(--text);}
 .vip-close:hover{color:rgba(212,168,67,0.6);}
 </style>
 <script src="/i18n.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -459,26 +458,46 @@ function setCalType(t){
   odc();
 }
 
-
 /* ═══════════════════════════════════════════════════════
-   LUNAR→SOLAR（使用 lunar-javascript 精確庫）
+   LUNAR→SOLAR
 ═══════════════════════════════════════════════════════ */
-function lunarToSolar(ly, lm, ld, isLeap) {
-  try {
-    // lunar-javascript: Lunar.fromYmd(年, 月, 日)
-    // 闰月用负数表示：闰5月 = -5
-    const lunarMonth = isLeap ? -lm : lm;
-    const lunar = Lunar.fromYmd(ly, lunarMonth, ld);
-    const solar = lunar.getSolar();
-    return { year: solar.getYear(), month: solar.getMonth(), day: solar.getDay() };
-  } catch(e) {
-    // 降級到備用計算
-    console.warn('lunar-javascript 換算失敗:', e.message);
-    return null;
+const LD=(function(){
+  const raw=[
+    [131,0x04AE,5],[220,0x0A57,4],[209,0x054D,2],[129,0x0D26,6],[218,0x0A56,5],[207,0x052B,4],[126,0x0AAB,2],[213,0x0AB5,7],[202,0x04AE,5],[122,0x0A4D,4],
+    [210,0x0D15,3],[130,0x0D93,8],[218,0x0A95,6],[206,0x052D,5],[126,0x0AAB,4],[214,0x0AB6,9],[203,0x0AD5,6],[123,0x05B5,5],[211,0x056A,4],[131,0x0A6B,9],
+    [220,0x0AAB,7],[208,0x054B,5],[128,0x0AAB,4],[216,0x0ABB,8],[204,0x0AE6,6],[124,0x0AB5,4],[213,0x04AD,8],[202,0x0A4D,7],[123,0x0D25,5],[210,0x0D93,4],
+    [130,0x0B55,9],[217,0x056D,6],[206,0x055B,5],[126,0x04BA,3],[214,0x0A5B,8],[204,0x052B,7],[124,0x0AAB,5],[211,0x0AB5,4],[131,0x0ABA,9],[221,0x0AAD,7],
+    [208,0x052B,5],[127,0x0AB3,4],[215,0x0AD5,8],[205,0x0B69,7],[125,0x04BE,5],[213,0x0A6D,4],[203,0x0A56,9],[122,0x0D2A,7],[210,0x0D15,5],[129,0x0D93,4],
+    [217,0x0A95,8],[206,0x052D,7],[127,0x0AB5,5],[214,0x0AB6,4],[203,0x0A6E,9],[124,0x0A56,8],[212,0x0D26,6],[131,0x0D25,4],[220,0x0B55,9],[208,0x056A,8],
+    [128,0x0A5B,6],[215,0x052B,4],[205,0x0AAB,8],[125,0x0AB5,7],[213,0x04AE,5],[202,0x0A4D,4],[121,0x0D25,9],[209,0x0D53,7],[130,0x0DA5,5],[217,0x0A96,4],
+    [206,0x0D4B,9],[127,0x0AB5,8],[215,0x04AE,6],[203,0x0A4E,4],[123,0x0D25,10],[211,0x0D53,8],[131,0x0DA5,7],[218,0x0A96,5],[207,0x096D,4],[128,0x04BD,9],
+    [216,0x04AE,8],[205,0x0A4D,7],[125,0x0EA5,5],[213,0x06AA,4],[202,0x0AB5,9],[120,0x04AE,7],[209,0x0A4E,6],[129,0x0D15,5],[217,0x0D35,4],[206,0x0D55,10],
+    [127,0x056A,8],[215,0x096D,7],[204,0x04DD,5],[123,0x04AE,3],[211,0x0A56,8],[131,0x0D2A,7],[219,0x0D95,5],[207,0x0B55,4],[128,0x056D,9],[216,0x055B,8],
+    [205,0x04AE,7],[124,0x0A5B,5],[212,0x052B,4],[201,0x0A2B,8],[122,0x0AB5,7],[209,0x04AE,6],[129,0x0A56,5],[218,0x0D2A,9],[207,0x0D55,7],[126,0x056A,5],
+    [214,0x096D,4],[203,0x04AE,9],[123,0x0A4E,7],[210,0x0D26,6],[131,0x0EA6,5],[219,0x0AB5,4],[208,0x04AE,9],[128,0x0A4D,6],[216,0x0EA5,5],[205,0x06D4,4],
+    [125,0x0AB6,9],[212,0x04AE,7],[201,0x0A57,5],[122,0x0526,3],[210,0x0D26,8],[129,0x0EA6,7],[217,0x0AB5,5],[206,0x04AE,4],[126,0x0A4E,9],[213,0x0D25,7],
+  ];
+  const m={};raw.forEach((d,i)=>{m[1900+i]=d;});return m;
+})();
+function lunarToSolar(ly,lm,ld,isLeap){
+  const d=LD[ly];if(!d)return null;
+  const[smmd,bits,leapM]=d;
+  const sm=Math.floor(smmd/100),sd=smmd%100;
+  const months=[];
+  for(let m=1;m<=12;m++){
+    const big=(bits>>(12-m))&1;months.push({m,days:big?30:29,leap:false});
+    if(m===leapM&&leapM>0)months.push({m,days:29,leap:true});
   }
+  let off=0,found=false;
+  for(const mi of months){
+    const tm=isLeap?leapM:lm,tl=isLeap?mi.leap:!mi.leap;
+    if(mi.m===tm&&tl){off+=ld-1;found=true;break;}
+    off+=mi.days;
+  }
+  if(!found)return null;
+  const base=new Date(ly,sm-1,sd);base.setDate(base.getDate()+off);
+  return{year:base.getFullYear(),month:base.getMonth()+1,day:base.getDate()};
 }
-
-
 
 /* ═══════════════════════════════════════════════════════
    ★ 精確節氣表（精確到分鐘）
@@ -610,6 +629,29 @@ function getLng(birthplace){
   const bp=birthplace.replace(/省|市|縣|區|自治區|特別行政區/g,'');
   for(const[k,v]of Object.entries(CITY_LNG)){if(bp.includes(k.replace(/市/g,'')))return v;}
   for(const[k,v]of Object.entries(PROV_LNG)){if(birthplace.includes(k))return v;}
+
+  // 英文/韓文常見城市快速映射
+  const INTL_LNG={
+    // 中国
+    'beijing':116.4,'shanghai':121.5,'guangzhou':113.3,'shenzhen':114.1,
+    'chengdu':104.1,'chongqing':106.5,'wuhan':114.3,'xian':108.9,
+    'hangzhou':120.2,'nanjing':118.8,'tianjin':117.2,'shenyang':123.4,
+    'harbin':126.5,'qingdao':120.4,'dalian':121.6,'kunming':102.7,
+    'taipei':121.5,'hong kong':114.2,'hongkong':114.2,'macau':113.5,
+    // 韓文城市
+    '서울':126.9,'부산':129.0,'인천':126.7,'대구':128.6,'대전':127.4,
+    '광주':126.9,'울산':129.3,'수원':127.0,'제주':126.5,
+    // 英文国际城市
+    'seoul':126.9,'busan':129.0,'tokyo':139.7,'osaka':135.5,'kyoto':135.8,
+    'singapore':103.8,'kuala lumpur':101.7,'kl':101.7,'bangkok':100.5,
+    'new york':-74.0,'los angeles':-118.2,'san francisco':-122.4,
+    'london':-0.1,'paris':2.3,'sydney':151.2,'melbourne':145.0,
+    'toronto':-79.4,'vancouver':-123.1,
+  };
+  const lower = birthplace.toLowerCase().trim();
+  for(const[k,v]of Object.entries(INTL_LNG)){
+    if(lower.includes(k))return v;
+  }
   return null;
 }
 // 精確經度緩存（地理編碼結果）
@@ -795,22 +837,38 @@ async function geocodePlace(place) {
 
   document.getElementById('geo-spinner').style.display = 'block';
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1&accept-language=zh`;
-    const res = await fetch(url, { headers: { 'Accept-Language': 'zh,en' } });
-    const data = await res.json();
+    // 先試字典快速查找（含英文韓文）
+    const dictLng = getLng(place);
 
-    if (data && data.length > 0) {
-      const item = data[0];
-      _geoLng   = parseFloat(item.lon);
-      _geoLabel = item.display_name.split(',').slice(0,3).join(',');
+    // Nominatim 多語言查詢
+    // accept-language 不限語言，讓 Nominatim 自動識別輸入語言
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=5&addressdetails=1`;
+    const res = await fetch(url, {
+      headers: { 'Accept-Language': 'zh,en,ko,ja', 'User-Agent': 'ZenCode/1.0' }
+    });
+    const rows = await res.json();
+
+    let best = null;
+    if (rows && rows.length > 0) {
+      // 優先選城市/行政區類型，排除太大的結果（國家級）
+      best = rows.find(r => ['city','town','county','district','suburb','municipality','administrative'].includes(r.type) && r.class !== 'country')
+          || rows.find(r => r.class === 'place' || r.class === 'boundary')
+          || rows[0];
+    }
+
+    if (best) {
+      _geoLng   = parseFloat(best.lon);
+      _geoLabel = best.display_name.split(',').slice(0,3).join(',');
+    } else if (dictLng !== null) {
+      // Nominatim 無結果，用字典
+      _geoLng   = dictLng;
+      _geoLabel = '';
     } else {
-      // Nominatim 查無結果，fallback 到字典
-      _geoLng   = getLng(place);
+      _geoLng   = null;
       _geoLabel = '';
     }
     _geoCache[place] = { lng: _geoLng, label: _geoLabel };
   } catch(e) {
-    // 網絡失敗，fallback
     _geoLng   = getLng(place);
     _geoLabel = '';
   } finally {
