@@ -7,8 +7,10 @@
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/about",   "destination": "/about.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms",   "destination": "/terms.html" }
+    { "source": "/about",    "destination": "/about.html" },
+    { "source": "/privacy",  "destination": "/privacy.html" },
+    { "source": "/terms",    "destination": "/terms.html" },
+    { "source": "/feedback", "destination": "/feedback.html" },
+    { "source": "/admin",    "destination": "/admin.html" }
   ]
 }
