@@ -48,6 +48,28 @@ const redis = {
             method: 'GET',
             headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
         });
+    },
+    // 存報告快取（7天過期）
+    async setCache(key, value) {
+        const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+        if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return;
+        // 值先 base64 避免特殊字符問題
+        const encoded = Buffer.from(value, 'utf8').toString('base64');
+        await fetch(`${UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(encoded)}`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        });
+    },
+    // 讀報告快取
+    async getCache(key) {
+        const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+        if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return null;
+        const r = await fetch(`${UPSTASH_REDIS_REST_URL}/get/${encodeURIComponent(key)}`, {
+            headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
+        });
+        const d = await r.json();
+        if (!d.result) return null;
+        return Buffer.from(d.result, 'base64').toString('utf8');
     }
 };
 
@@ -236,6 +258,19 @@ module.exports = async function handler(req, res) {
                 lang, langInstruction } = body;
 
         if (!name || !pillars) throw new Error("缺少必要資料");
+
+        // ── 報告快取：同一八字直接返回，不重複呼叫 Gemini ──
+        const cacheKey = 'rpt:' + (ganzhiString || '').replace(/\s/g, '') + ':' + (gender || '') + ':' + (lang || 'zh-TW');
+        try {
+            const cached = await redis.getCache(cacheKey);
+            if (cached) {
+                console.log('Cache hit:', cacheKey);
+                if (lockAcquired) { try { await redis.del(LOCK_KEY); } catch(e) {} lockAcquired = false; }
+                return res.status(200).send(cached);
+            }
+        } catch(e) {
+            console.warn('Cache read failed:', e.message);
+        }
 
         // ── 根據日主天干決定五行主題 ──
         const riTgIdx = TG_LIST.indexOf(riZhuTg || '甲');
@@ -839,6 +874,9 @@ document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,
             try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); }
             catch(e) { console.warn('Redis set failed:', e.message); }
         }
+        // ── 存入快取（非同步，不阻塞回應）──
+        redis.setCache(cacheKey, html).catch(e => console.warn('Cache write failed:', e.message));
+
         res.status(200).send(html);
 
     } catch (error) {
