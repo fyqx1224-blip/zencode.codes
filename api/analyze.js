@@ -324,7 +324,7 @@ ${pillarDesc}
 大運排列（已算定）：${dayunDesc}
 
 【你的任務：只撰寫文字解讀內容，所有數字欄位已由系統填入，請勿修改】
-【長度要求：每個 card 的 paragraphs 總字數控制在 150–250 字，精煉為主，避免重複。】
+【長度要求：每個 card 的 paragraphs 總字數嚴格控制在 100–150 字。大運每條簡析不超過 50 字。神煞每條不超過 60 字。整體 JSON 輸出必須在 6000 tokens 以內完整結束。】
 【語氣要求：中肯、客觀、具體。避免空洞的激勵語言、誇大吉凶、過度詩化。分析應基於八字結構本身，指出優勢也需說明條件，指出風險也需給出應對方向。】
 【解讀框架·請逐項分析，每項精煉，控制總輸出在 6000 字以內】
 壹、格局鑑定（正格vs特殊格局、身強身弱、用神忌神）
@@ -452,7 +452,7 @@ ${pillarDesc}
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
                 temperature: 0.35,
-                maxOutputTokens: 8000,
+                maxOutputTokens: 16000,
                 responseMimeType: 'application/json'
             }
         });
