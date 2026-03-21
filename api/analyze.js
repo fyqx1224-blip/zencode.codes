@@ -213,33 +213,19 @@ module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('X-Accel-Buffering', 'no');
 
-    const keepAlive = () => { try { res.write(': ping
-
-'); } catch {} };
+    const keepAlive = () => { try { res.write(': ping\n\n'); } catch {} };
     const sendHTML = (html) => {
-        const escaped = html.replace(/
-/g, '
-data: ');
-        res.write(`data: ${escaped}
-
-`);
-        res.write('data: [DONE]
-
-');
+        const escaped = html.replace(/\n/g, '\ndata: ');
+        res.write(`data: ${escaped}\n\n`);
+        res.write('data: [DONE]\n\n');
         res.end();
     };
     const sendError = (msg) => {
-        res.write(`event: error
-data: ${JSON.stringify({ message: msg })}
-
-`);
+        res.write(`event: error\ndata: ${JSON.stringify({ message: msg })}\n\n`);
         res.end();
     };
     const sendRateLimit = (retryAfter) => {
-        res.write(`event: ratelimit
-data: ${JSON.stringify({ retryAfter })}
-
-`);
+        res.write(`event: ratelimit\ndata: ${JSON.stringify({ retryAfter })}\n\n`);
         res.end();
     };
 
