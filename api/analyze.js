@@ -449,16 +449,15 @@ ${pillarDesc}
 
         // ── 模型降級鏈：429/404 自動換下一個 ──────────────
         const MODEL_CHAIN = [
-            'gemini-2.5-flash',
-            'gemini-2.5-pro',
-            'gemini-2.0-flash',
-            'gemini-2.0-flash-lite',
+            { name: 'gemini-2.5-flash',    maxTokens: 24000 },
+            { name: 'gemini-2.0-flash',    maxTokens: 16000 },
+            { name: 'gemini-2.0-flash-lite', maxTokens: 12000 },
         ];
-        let response, data, usedModel = MODEL_CHAIN[0];
+        let response, data, usedModel = MODEL_CHAIN[0].name;
         for (const model of MODEL_CHAIN) {
-            usedModel = model;
+            usedModel = model.name;
             response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -466,7 +465,7 @@ ${pillarDesc}
                         contents: [{ parts: [{ text: prompt }] }],
                         generationConfig: {
                             temperature: 0.35,
-                            maxOutputTokens: 32000,
+                            maxOutputTokens: model.maxTokens,
                             responseMimeType: "application/json"
                         }
                     })
@@ -474,7 +473,7 @@ ${pillarDesc}
             );
             data = await response.json();
             if (response.status === 429 || response.status === 404) {
-                console.log(`${model} ${response.status}，換下一個模型`);
+                console.log(`${model.name} ${response.status}，換下一個模型`);
                 continue;
             }
             break;
