@@ -18,7 +18,7 @@ const redis = {
         const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
         if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return;
         await fetch(`${UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}/${value}?EX=${ex}`, {
-            method: 'POST',
+            method: 'GET',
             headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` }
         });
     },
@@ -147,12 +147,76 @@ const WUXING_THEMES = {
 const TG_LIST   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const TG_WUXING = ['木','木','火','火','土','土','金','金','水','水'];
 
-module.exports = async function handler(req, res) {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+// ── 流式讀取 Gemini SSE，回傳完整文字 ──────────────────
+async function fetchGeminiStream(apiKey, payload, onKeepAlive) {
+    const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+    );
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        if (resp.status === 429) {
+            const violations = err?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+            const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
+            const e = new Error('RATE_LIMIT'); e.retryAfter = retrySeconds; throw e;
+        }
+        throw new Error(`Google API 錯誤 ${resp.status}: ${JSON.stringify(err)}`);
+    }
 
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let heartbeat = setInterval(onKeepAlive, 8000); // 每 8 秒通知一次，防止連線逾時
+
+    try {
+        for await (const chunk of resp.body) {
+            const lines = decoder.decode(chunk, { stream: true }).split('\n');
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const json = line.slice(6).trim();
+                if (!json || json === '[DONE]') continue;
+                try {
+                    const part = JSON.parse(json);
+                    const text = part?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) fullText += text;
+                } catch {}
+            }
+        }
+    } finally {
+        clearInterval(heartbeat);
+    }
+    return fullText;
+}
+
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
         return res.status(405).send('<div>只接受 POST 請求</div>');
     }
+
+    // ── 改為 SSE，保持長連線不被 Vercel 掐斷 ──
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    // 傳送 SSE 心跳（注釋行，瀏覽器不渲染，但能讓 Vercel 知道連線還活著）
+    const keepAlive = () => { try { res.write(': ping\n\n'); } catch {} };
+
+    // 最終傳送 HTML（包在 SSE data 欄位裡）
+    const sendHTML = (html) => {
+        // 把 HTML 用 SSE data 送出，前端監聽 message 事件取得
+        const escaped = html.replace(/\n/g, '\ndata: ');
+        res.write(`data: ${escaped}\n\n`);
+        res.write('data: [DONE]\n\n');
+        res.end();
+    };
+    const sendError = (msg) => {
+        res.write(`event: error\ndata: ${JSON.stringify({ message: msg })}\n\n`);
+        res.end();
+    };
+    const sendRateLimit = (retryAfter) => {
+        res.write(`event: ratelimit\ndata: ${JSON.stringify({ retryAfter })}\n\n`);
+        res.end();
+    };
 
     // ── IP 限流：每個 IP 每 60 秒最多 1 次 ──────────────
     const COOLDOWN = 60; // 秒
@@ -166,8 +230,7 @@ module.exports = async function handler(req, res) {
             const existing = await redis.get(kvKey);
             if (existing) {
                 const ttl = await redis.ttl(kvKey);
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(429).json({ retryAfter: Math.max(ttl, 1) });
+                return sendRateLimit(Math.max(ttl, 1));
             }
             // 請求放行，寫入冷卻 key（在報告生成後設定，避免失敗時白白鎖住）
             req._rl_ip = ip;
@@ -187,38 +250,6 @@ module.exports = async function handler(req, res) {
                 lang, langInstruction } = body;
 
         if (!name || !pillars) throw new Error("缺少必要資料");
-
-        // ── 八字緩存：相同四柱+性別+年份直接返回 ──────────
-        const SUPABASE_URL = process.env.SUPABASE_URL;
-        const SUPABASE_KEY = process.env.SUPABASE_KEY;
-        const validYear = new Date().getFullYear();
-        const cacheKey = ganzhiString?.trim();
-
-        if (SUPABASE_URL && SUPABASE_KEY && cacheKey && gender) {
-            try {
-                const cacheRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/bazi_cache?ganzhi=eq.${encodeURIComponent(cacheKey)}&gender=eq.${encodeURIComponent(gender)}&valid_year=eq.${validYear}&select=id,report_html&limit=1`,
-                    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-                );
-                const cacheRows = await cacheRes.json();
-                if (Array.isArray(cacheRows) && cacheRows.length > 0) {
-                    // 命中緩存：更新 hit_count，直接返回
-                    console.log(`緩存命中：${cacheKey} ${gender}`);
-                    fetch(`${SUPABASE_URL}/rest/v1/bazi_cache?id=eq.${cacheRows[0].id}`, {
-                        method: 'PATCH',
-                        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ hit_count: cacheRows[0].hit_count + 1 })
-                    }).catch(() => {});
-                    // 寫入 Redis 冷卻 key（緩存命中也要限流，防止刷量）
-                    if (redis && req._rl_ip) {
-                        try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); } catch(e) {}
-                    }
-                    return res.status(200).send(cacheRows[0].report_html);
-                }
-            } catch(e) {
-                console.warn('緩存查詢失敗，降級到 AI 生成:', e.message);
-            }
-        }
 
         // ── 根據日主天干決定五行主題 ──
         const riTgIdx = TG_LIST.indexOf(riZhuTg || '甲');
@@ -479,48 +510,14 @@ ${pillarDesc}
   }
 }`;
 
-        // ── 全局 RPM 控制已暫時停用 ──────────────────────
-
-        // ── 模型降級鏈：只使用有額度的模型 ──────────────
-        const MODEL_CHAIN = [
-            { name: 'gemini-2.5-flash', maxTokens: 24000 },
-        ];
-        let response, data, usedModel = MODEL_CHAIN[0].name;
-        for (const model of MODEL_CHAIN) {
-            usedModel = model.name;
-            response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.35,
-                            maxOutputTokens: model.maxTokens,
-                            responseMimeType: "application/json"
-                        }
-                    })
-                }
-            );
-            data = await response.json();
-            if (response.status === 429 || response.status === 404) {
-                console.log(`${model.name} ${response.status}，換下一個模型`);
-                continue;
+        let raw = await fetchGeminiStream(apiKey, {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+                temperature: 0.35,
+                maxOutputTokens: 16000,
+                responseMimeType: "application/json"
             }
-            break;
-        }
-        if (!response || !response.ok) {
-            if (!response || response.status === 429) {
-                const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
-                const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
-                return res.status(429).json({ retryAfter: retrySeconds });
-            }
-            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
-        }
-        console.log(`使用模型：${usedModel}`);
-
-        let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }, keepAlive);
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
 
         let d;
@@ -855,35 +852,13 @@ document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,
             try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); }
             catch(e) { console.warn('Redis set failed:', e.message); }
         }
-
-        // ── 寫入八字緩存 ──────────────────────────────────
-        if (SUPABASE_URL && SUPABASE_KEY && cacheKey && gender) {
-            try {
-                await fetch(`${SUPABASE_URL}/rest/v1/bazi_cache`, {
-                    method: 'POST',
-                    headers: {
-                        apikey: SUPABASE_KEY,
-                        Authorization: `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json',
-                        Prefer: 'resolution=merge-duplicates'
-                    },
-                    body: JSON.stringify({
-                        ganzhi: cacheKey,
-                        gender,
-                        report_html: html,
-                        valid_year: validYear,
-                        hit_count: 0
-                    })
-                });
-                console.log(`緩存已寫入：${cacheKey} ${gender}`);
-            } catch(e) {
-                console.warn('緩存寫入失敗:', e.message);
-            }
-        }
-
-        res.status(200).send(html);
+        sendHTML(html);
 
     } catch (error) {
-        res.status(500).send(`<div style="color:#7AB860;padding:40px;font-family:monospace;background:#000;min-height:100vh;"><p style="font-size:1.2rem;margin-bottom:16px;">觀測中斷</p><p>${error.message}</p></div>`);
+        if (error.message === 'RATE_LIMIT') {
+            sendRateLimit(error.retryAfter || 60);
+        } else {
+            sendError(error.message);
+        }
     }
 };
