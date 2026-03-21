@@ -502,8 +502,7 @@ ${pillarDesc}
                 temperature: 0.35,
                 maxOutputTokens: 8000,
                 responseMimeType: 'application/json'
-            },
-            thinkingConfig: { thinkingBudget: 0 }
+            }
         });
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
 
