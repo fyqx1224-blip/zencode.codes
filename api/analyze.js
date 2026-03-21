@@ -481,11 +481,9 @@ ${pillarDesc}
 
         // ── 全局 RPM 控制已暫時停用 ──────────────────────
 
-        // ── 模型降級鏈：429/404 自動換下一個 ──────────────
+        // ── 模型降級鏈：只使用有額度的模型 ──────────────
         const MODEL_CHAIN = [
-            { name: 'gemini-2.5-flash',    maxTokens: 24000 },
-            { name: 'gemini-2.0-flash',    maxTokens: 16000 },
-            { name: 'gemini-2.0-flash-lite', maxTokens: 12000 },
+            { name: 'gemini-2.5-flash', maxTokens: 24000 },
         ];
         let response, data, usedModel = MODEL_CHAIN[0].name;
         for (const model of MODEL_CHAIN) {
