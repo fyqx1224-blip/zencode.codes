@@ -588,8 +588,7 @@ const ZCI18n = (function () {
   // 告訴後端 analyze.js 用哪個語言生成報告
   const PROMPT_LANG = {
     'zh-TW': null, // 不改，原版繁體
-    'zh-CN': null, // 不改，原版（AI 本身輸出簡繁不穩定，交給繁體即可；
-                   // 如需強制簡體可改為 '请全程使用简体中文撰写报告。'）
+    'zh-CN': '语言要求：请全程使用简体中文撰写报告，包括所有分析内容、标题和说明。不得使用繁体字。'
     'en': `LANGUAGE INSTRUCTION: Write the entire reading in English.
 For Chinese cosmological terms that have no direct English equivalent, keep the original Chinese characters and add an English explanation in parentheses.
 Examples of required format:
