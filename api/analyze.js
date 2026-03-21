@@ -479,23 +479,7 @@ ${pillarDesc}
   }
 }`;
 
-        // ── 全局 RPM 控制：每分鐘最多4次 Gemini 調用 ────────
-        if (redis) {
-            try {
-                const minute = Math.floor(Date.now() / 60000);
-                const rpmKey = `rpm:${minute}`;
-                const rpmRaw = await redis.get(rpmKey);
-                const rpmCount = parseInt(rpmRaw || '0');
-                if (rpmCount >= 4) {
-                    const waitSec = 60 - Math.floor((Date.now() % 60000) / 1000);
-                    res.setHeader('Content-Type', 'application/json');
-                    return res.status(429).json({ retryAfter: waitSec + 2 });
-                }
-                await redis.set(rpmKey, rpmCount + 1, 61);
-            } catch(e) {
-                console.warn('RPM check failed:', e.message);
-            }
-        }
+        // ── 全局 RPM 控制已暫時停用 ──────────────────────
 
         // ── 模型降級鏈：429/404 自動換下一個 ──────────────
         const MODEL_CHAIN = [
