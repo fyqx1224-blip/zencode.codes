@@ -156,6 +156,26 @@ module.exports = async function handler(req, res) {
 
     // ── IP 限流：每個 IP 每 60 秒最多 1 次 ──────────────
     const COOLDOWN = 60; // 秒
+
+    // ── 全局 RPM 控制：確保每分鐘發往 Gemini 的請求 ≤4 次 ──
+    if (redis) {
+        try {
+            const minute = Math.floor(Date.now() / 60000); // 當前分鐘時間戳
+            const rpmKey = `rpm:${minute}`;
+            const rpmRaw = await redis.get(rpmKey);
+            const rpmCount = parseInt(rpmRaw || '0');
+            if (rpmCount >= 4) {
+                // 本分鐘已滿，讓用戶等到下一分鐘
+                const waitSec = 60 - Math.floor((Date.now() % 60000) / 1000);
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(429).json({ retryAfter: waitSec + 2 });
+            }
+            // 預佔一個名額（原子性不完美但夠用）
+            await redis.set(rpmKey, rpmCount + 1, 61);
+        } catch(e) {
+            console.warn('RPM check failed:', e.message);
+        }
+    }
     if (redis) {
         try {
             const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
