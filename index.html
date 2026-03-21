@@ -1099,8 +1099,7 @@ async function genReport(){
           for (const line of lines) {
             if (!line.startsWith('data: ')) continue;
             const payload = line.slice(6);
-            if (payload === '[DONE]') { resolve(htmlLines.join('
-')); return; }
+            if (payload === '[DONE]') { resolve(htmlLines.join('\n')); return; }
             if (payload.startsWith('{')) {
               try {
                 const obj = JSON.parse(payload);
@@ -1114,8 +1113,7 @@ async function genReport(){
             htmlLines.push(payload);
           }
         }
-        if (htmlLines.length > 0) resolve(htmlLines.join('
-'));
+        if (htmlLines.length > 0) resolve(htmlLines.join('\n'));
         else reject(new Error('empty'));
       }).catch(reject);
     });
