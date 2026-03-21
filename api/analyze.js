@@ -326,15 +326,12 @@ ${pillarDesc}
 【你的任務：只撰寫文字解讀內容，所有數字欄位已由系統填入，請勿修改】
 【長度要求：每個 card 的 paragraphs 總字數控制在 150–250 字，精煉為主，避免重複。】
 【語氣要求：中肯、客觀、具體。避免空洞的激勵語言、誇大吉凶、過度詩化。分析應基於八字結構本身，指出優勢也需說明條件，指出風險也需給出應對方向。】
-【解讀框架·請逐項完整分析】
-壹、格局鑑定（正格vs特殊格局、身強身弱、調候用神vs扶抑用神）
-貳、十神心理原型對照（每個主要十神的心理分析）
-叁、宮位生活映射（四柱各階段人生，含刑沖合害具象化表格）
-肆、天干地支互動分析（天干合化、地支三合六合六衝三刑六害）
-伍、大運流年交叉分析（全部8個大運的逐一簡析、2025乙巳年、2026丙午年詳析）
-陸、神煞解讀（天乙貴人、文昌、驛馬、桃花、羊刃、魁罡等）
-柒、稱骨訣白話詮釋（${boneWeight}的命格解析）
-捌、當前機會與地雷（最值得把握的3個機會、最需警惕的3個地雷）
+【解讀框架·請逐項分析，每項精煉，控制總輸出在 6000 字以內】
+壹、格局鑑定（正格vs特殊格局、身強身弱、用神忌神）
+貳、十神心理原型（主要2-3個十神的心理分析）
+叁、大運流年（全部8個大運簡析、2025乙巳年、2026丙午年詳析）
+肆、神煞解讀（天乙貴人、文昌、驛馬、桃花等主要神煞）
+伍、當前機會與地雷（3個機會、3個地雷）
 
 請嚴格按照以下 JSON 格式輸出，只填寫「文字分析內容」的部分（即帶有「請填寫」標記的欄位），帶有【已填入】標記的欄位值不得修改：
 
@@ -396,60 +393,8 @@ ${pillarDesc}
         }
       ]
     },
-    {
+  {
       "num": "叁",
-      "title": "宮位生活映射",
-      "subtitle": "PILLARS · LIFE STAGES · ENVIRONMENT",
-      "cards": [
-        {
-          "title": "年柱 ${pillars[0].tg}${pillars[0].dz}｜0–15歲·（主題）",
-          "paragraphs": ["（詳細分析）"],
-          "analogy": "（比喻）"
-        },
-        {
-          "title": "月柱 ${pillars[1].tg}${pillars[1].dz}｜16–30歲·（主題）",
-          "paragraphs": ["（詳細分析）"],
-          "analogy": "（比喻）"
-        },
-        {
-          "title": "日柱 ${pillars[2].tg}${pillars[2].dz}｜31–45歲·（主題）",
-          "paragraphs": ["（詳細分析）"],
-          "highlight_type": "gold",
-          "highlight_content": "（日柱感情核心）",
-          "analogy": "（比喻）"
-        },
-        {
-          "title": "時柱 ${pillars[3].tg}${pillars[3].dz}｜46歲後·（主題）",
-          "paragraphs": ["（詳細分析）"],
-          "analogy": "（比喻）"
-        }
-      ],
-      "interaction_table": [
-        { "tag": "（互動名稱）", "tagClass": "（fire/wood/water/metal/earth之一）", "position": "（宮位）", "desc": "（具象化說明）" },
-        { "tag": "（互動名稱）", "tagClass": "（顏色）", "position": "（宮位）", "desc": "（說明）" },
-        { "tag": "（互動名稱）", "tagClass": "（顏色）", "position": "（宮位）", "desc": "（說明）" },
-        { "tag": "（互動名稱）", "tagClass": "（顏色）", "position": "（宮位）", "desc": "（說明）" }
-      ]
-    },
-    {
-      "num": "肆",
-      "title": "天干地支互動分析",
-      "subtitle": "STEMS · BRANCHES · INTERACTION",
-      "cards_grid": [
-        {
-          "title": "天干：（互動描述）",
-          "paragraphs": ["（詳細分析）"],
-          "analogy": "（比喻）"
-        },
-        {
-          "title": "地支：（互動描述）",
-          "paragraphs": ["（詳細分析）"],
-          "analogy": "（比喻）"
-        }
-      ]
-    },
-    {
-      "num": "伍",
       "title": "大運流年交叉分析",
       "subtitle": "LUCK PILLARS · ANNUAL STARS · CURRENT",
       "yunliu": [
@@ -463,57 +408,25 @@ ${pillarDesc}
         { "age": "${dayun.list[7]?.age||''}", "stem": "${dayun.list[7]?.stem||''}", "stemClass": "${dayun.list[7]?.tgClass||''}", "desc": "（此大運簡析）", "active": false }
       ],
       "yunliu_cards": [
-        {
-          "title": "當前大運深度解析",
-          "paragraphs": ["（當前所處大運的詳細分析，結合本命盤）", "（段落2）"],
-          "highlight_type": "warn",
-          "highlight_content": "（核心提示與行動建議）",
-          "analogy": "（比喻）"
-        },
-        {
-          "title": "2025 乙巳年｜流年解析",
-          "paragraphs": ["（乙木對日主的作用）", "（巳火引動宮位分析）"],
-          "highlight_type": "gold",
-          "highlight_content": "（2025年最適合做的事）"
-        },
-        {
-          "title": "2026 丙午年｜流年解析（當前年份）",
-          "paragraphs": ["（丙火格局意義）", "（午火對大運與本命的影響）"],
-          "highlight_type": "warn",
-          "highlight_content": "（2026年注意事項與策略）",
-          "analogy": "（比喻）"
-        }
+        { "title": "當前大運深度解析", "paragraphs": ["（當前大運分析）"], "highlight_type": "warn", "highlight_content": "（核心提示）" },
+        { "title": "2025 乙巳年", "paragraphs": ["（乙巳年影響）"], "highlight_type": "gold", "highlight_content": "（2025建議）" },
+        { "title": "2026 丙午年", "paragraphs": ["（丙午年影響）"], "highlight_type": "warn", "highlight_content": "（2026建議）" }
       ]
     },
-    {
-      "num": "陸",
+  {
+      "num": "肆",
       "title": "神煞解讀",
-      "subtitle": "DIVINE STARS · AUSPICIOUS · INAUSPICIOUS",
+      "subtitle": "DIVINE STARS",
       "shensha": [
-        { "name": "天乙貴人", "nameColor": "#C9A84C", "desc": "（根據日主或年干計算天乙貴人落在哪個地支，詳細解讀其在命盤的意義）" },
-        { "name": "（第二神煞名稱）", "nameColor": "#9BC46A", "desc": "（詳細描述）" },
-        { "name": "（第三神煞名稱）", "nameColor": "#FFB8A0", "desc": "（詳細描述）" },
-        { "name": "（第四神煞名稱）", "nameColor": "#7BB8E8", "desc": "（詳細描述）" }
+        { "name": "天乙貴人", "nameColor": "#C9A84C", "desc": "（天乙貴人落位及意義）" },
+        { "name": "（神煞2）", "nameColor": "#9BC46A", "desc": "（描述）" },
+        { "name": "（神煞3）", "nameColor": "#FFB8A0", "desc": "（描述）" },
+        { "name": "（神煞4）", "nameColor": "#7BB8E8", "desc": "（描述）" }
       ],
-      "shensha_analogy": "（四個神煞的整體白話總結）"
+      "shensha_analogy": "（神煞白話總結）"
     },
-    {
-      "num": "柒",
-      "title": "稱骨訣·先天能量解讀",
-      "subtitle": "BONE WEIGHT · INNATE CAPACITY · POTENTIAL",
-      "bone": {
-        "value": "${boneWeight}",
-        "desc1": "（引用袁天罡稱骨歌原文及解釋，${boneWeight}對應的詩句）",
-        "desc2": "（${boneWeight}與此命盤八字格局的呼應分析）"
-      },
-      "bone_card": {
-        "title": "骨重 ${boneWeight} × 此命格的人生質地",
-        "paragraphs": ["（詳細分析先天配備與後天可升級之處）"],
-        "analogy": "（比喻）"
-      }
-    },
-    {
-      "num": "捌",
+  {
+      "num": "伍",
       "title": "近期值得關注的方向與需留意的風險",
       "subtitle": "NOW · OPPORTUNITY · WARNING",
       "opportunities": [
@@ -539,7 +452,7 @@ ${pillarDesc}
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
                 temperature: 0.35,
-                maxOutputTokens: 16000,
+                maxOutputTokens: 8000,
                 responseMimeType: 'application/json'
             }
         });
