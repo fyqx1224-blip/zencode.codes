@@ -215,9 +215,10 @@ module.exports = async function handler(req, res) {
 
     const keepAlive = () => { try { res.write(': ping\n\n'); } catch {} };
     const sendHTML = (html) => {
-        const escaped = html.replace(/\n/g, '\ndata: ');
-        res.write(`data: ${escaped}\n\n`);
-        res.write('data: [DONE]\n\n');
+        // base64 避免 HTML 內的換行符破壞 SSE 格式
+        const b64 = Buffer.from(html, 'utf8').toString('base64');
+        res.write('event: html\n');
+        res.write(`data: ${b64}\n\n`);
         res.end();
     };
     const sendError = (msg) => {
