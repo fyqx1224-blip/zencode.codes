@@ -185,8 +185,7 @@ async function fetchGeminiStream(apiKey, payload, onKeepAlive) {
     const heartbeat = setInterval(onKeepAlive, 8000);
     try {
         for await (const chunk of resp.body) {
-            const lines = decoder.decode(chunk, { stream: true }).split('
-');
+            const lines = decoder.decode(chunk, { stream: true }).split('\n');
             for (const line of lines) {
                 if (!line.startsWith('data: ')) continue;
                 const json = line.slice(6).trim();
