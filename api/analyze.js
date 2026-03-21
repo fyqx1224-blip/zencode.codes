@@ -169,7 +169,7 @@ const TG_WUXING = ['木','木','火','火','土','土','金','金','水','水'];
 async function fetchGeminiStream(apiKey, payload) {
     // 直接用標準 generateContent，最穩定
     const resp = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey,
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=' + apiKey,
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
     );
     const data = await resp.json();
