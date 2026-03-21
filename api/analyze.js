@@ -188,6 +188,38 @@ module.exports = async function handler(req, res) {
 
         if (!name || !pillars) throw new Error("缺少必要資料");
 
+        // ── 八字緩存：相同四柱+性別+年份直接返回 ──────────
+        const SUPABASE_URL = process.env.SUPABASE_URL;
+        const SUPABASE_KEY = process.env.SUPABASE_KEY;
+        const validYear = new Date().getFullYear();
+        const cacheKey = ganzhiString?.trim();
+
+        if (SUPABASE_URL && SUPABASE_KEY && cacheKey && gender) {
+            try {
+                const cacheRes = await fetch(
+                    `${SUPABASE_URL}/rest/v1/bazi_cache?ganzhi=eq.${encodeURIComponent(cacheKey)}&gender=eq.${encodeURIComponent(gender)}&valid_year=eq.${validYear}&select=id,report_html&limit=1`,
+                    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+                );
+                const cacheRows = await cacheRes.json();
+                if (Array.isArray(cacheRows) && cacheRows.length > 0) {
+                    // 命中緩存：更新 hit_count，直接返回
+                    console.log(`緩存命中：${cacheKey} ${gender}`);
+                    fetch(`${SUPABASE_URL}/rest/v1/bazi_cache?id=eq.${cacheRows[0].id}`, {
+                        method: 'PATCH',
+                        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ hit_count: cacheRows[0].hit_count + 1 })
+                    }).catch(() => {});
+                    // 寫入 Redis 冷卻 key（緩存命中也要限流，防止刷量）
+                    if (redis && req._rl_ip) {
+                        try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); } catch(e) {}
+                    }
+                    return res.status(200).send(cacheRows[0].report_html);
+                }
+            } catch(e) {
+                console.warn('緩存查詢失敗，降級到 AI 生成:', e.message);
+            }
+        }
+
         // ── 根據日主天干決定五行主題 ──
         const riTgIdx = TG_LIST.indexOf(riZhuTg || '甲');
         const riWuxing = TG_WUXING[Math.max(0, riTgIdx)] || '木';
@@ -823,6 +855,32 @@ document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,
             try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); }
             catch(e) { console.warn('Redis set failed:', e.message); }
         }
+
+        // ── 寫入八字緩存 ──────────────────────────────────
+        if (SUPABASE_URL && SUPABASE_KEY && cacheKey && gender) {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/bazi_cache`, {
+                    method: 'POST',
+                    headers: {
+                        apikey: SUPABASE_KEY,
+                        Authorization: `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        Prefer: 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        ganzhi: cacheKey,
+                        gender,
+                        report_html: html,
+                        valid_year: validYear,
+                        hit_count: 0
+                    })
+                });
+                console.log(`緩存已寫入：${cacheKey} ${gender}`);
+            } catch(e) {
+                console.warn('緩存寫入失敗:', e.message);
+            }
+        }
+
         res.status(200).send(html);
 
     } catch (error) {
