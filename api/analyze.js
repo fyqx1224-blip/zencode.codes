@@ -31,7 +31,6 @@ const redis = {
         const d = await r.json();
         return d.result ?? 60;
     },
-    // 原子加鎖：key 不存在時才設值，返回 1=成功，0=已佔用
     async setnx(key, value, ex) {
         const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
         if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return 1;
@@ -166,22 +165,92 @@ const WUXING_THEMES = {
 const TG_LIST   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const TG_WUXING = ['木','木','火','火','土','土','金','金','水','水'];
 
-module.exports = async function handler(req, res) {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+// ── 流式讀取 Gemini SSE ──────────────────────────────────
+async function fetchGeminiStream(apiKey, payload, onKeepAlive) {
+    const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+    );
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        if (resp.status === 429) {
+            const violations = err?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+            const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
+            const e = new Error('RATE_LIMIT'); e.retryAfter = retrySeconds; throw e;
+        }
+        throw new Error(`Google API 錯誤 ${resp.status}: ${JSON.stringify(err)}`);
+    }
+    const decoder = new TextDecoder();
+    let fullText = '';
+    const heartbeat = setInterval(onKeepAlive, 8000);
+    try {
+        for await (const chunk of resp.body) {
+            const lines = decoder.decode(chunk, { stream: true }).split('
+');
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const json = line.slice(6).trim();
+                if (!json || json === '[DONE]') continue;
+                try {
+                    const part = JSON.parse(json);
+                    const text = part?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) fullText += text;
+                } catch {}
+            }
+        }
+    } finally {
+        clearInterval(heartbeat);
+    }
+    return fullText;
+}
 
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
         return res.status(405).send('<div>只接受 POST 請求</div>');
     }
 
-    // ── 全局並發鎖：同時只允許 1 個請求呼叫 Gemini ─────────
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const keepAlive = () => { try { res.write(': ping
+
+'); } catch {} };
+    const sendHTML = (html) => {
+        const escaped = html.replace(/
+/g, '
+data: ');
+        res.write(`data: ${escaped}
+
+`);
+        res.write('data: [DONE]
+
+');
+        res.end();
+    };
+    const sendError = (msg) => {
+        res.write(`event: error
+data: ${JSON.stringify({ message: msg })}
+
+`);
+        res.end();
+    };
+    const sendRateLimit = (retryAfter) => {
+        res.write(`event: ratelimit
+data: ${JSON.stringify({ retryAfter })}
+
+`);
+        res.end();
+    };
+
+    // ── 全局並發鎖 ───────────────────────────────────────
     const LOCK_KEY = 'zc:gemini_lock';
     const LOCK_TTL = 90;
     let lockAcquired = false;
     try {
         const got = await redis.setnx(LOCK_KEY, '1', LOCK_TTL);
-        if (!got) {
-            return sendRateLimit(15);
-        }
+        if (!got) return sendRateLimit(15);
         lockAcquired = true;
     } catch(e) {
         console.warn('Lock check failed:', e.message);
@@ -199,8 +268,7 @@ module.exports = async function handler(req, res) {
             const existing = await redis.get(kvKey);
             if (existing) {
                 const ttl = await redis.ttl(kvKey);
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(429).json({ retryAfter: Math.max(ttl, 1) });
+                return sendRateLimit(Math.max(ttl, 1));
             }
             // 請求放行，寫入冷卻 key（在報告生成後設定，避免失敗時白白鎖住）
             req._rl_ip = ip;
@@ -480,34 +548,14 @@ ${pillarDesc}
   }
 }`;
 
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        temperature: 0.35,
-                        maxOutputTokens: 16000,
-                        responseMimeType: "application/json"
-                    }
-                })
+        let raw = await fetchGeminiStream(apiKey, {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+                temperature: 0.35,
+                maxOutputTokens: 16000,
+                responseMimeType: "application/json"
             }
-        );
-
-        const data = await response.json();
-        if (!response.ok) {
-            // 429 單獨處理：把 retryDelay 透傳給前端
-            if (response.status === 429) {
-                const violations = data?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
-                const retrySeconds = parseInt((violations?.retryDelay || '60s').replace('s','')) || 60;
-                return res.status(429).json({ retryAfter: retrySeconds });
-            }
-            throw new Error(`Google API 錯誤 ${response.status}: ${JSON.stringify(data)}`);
-        }
-
-        let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }, keepAlive);
         raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
 
         let d;
@@ -842,10 +890,14 @@ document.querySelectorAll('.card,.yun-card,.shensha-item,.warning-box,.oppo-box,
             try { await redis.set(`rl:${req._rl_ip}`, 1, COOLDOWN); }
             catch(e) { console.warn('Redis set failed:', e.message); }
         }
-        res.status(200).send(html);
+        sendHTML(html);
 
     } catch (error) {
-        res.status(500).send(`<div style="color:#7AB860;padding:40px;font-family:monospace;background:#000;min-height:100vh;"><p style="font-size:1.2rem;margin-bottom:16px;">觀測中斷</p><p>${error.message}</p></div>`);
+        if (error.message === 'RATE_LIMIT') {
+            sendRateLimit(error.retryAfter || 60);
+        } else {
+            sendError(error.message);
+        }
     } finally {
         if (lockAcquired) {
             try { await redis.del(LOCK_KEY); } catch(e) {}
