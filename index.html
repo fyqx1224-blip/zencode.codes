@@ -629,29 +629,6 @@ function getLng(birthplace){
   const bp=birthplace.replace(/省|市|縣|區|自治區|特別行政區/g,'');
   for(const[k,v]of Object.entries(CITY_LNG)){if(bp.includes(k.replace(/市/g,'')))return v;}
   for(const[k,v]of Object.entries(PROV_LNG)){if(birthplace.includes(k))return v;}
-
-  // 英文/韓文常見城市快速映射
-  const INTL_LNG={
-    // 中国
-    'beijing':116.4,'shanghai':121.5,'guangzhou':113.3,'shenzhen':114.1,
-    'chengdu':104.1,'chongqing':106.5,'wuhan':114.3,'xian':108.9,
-    'hangzhou':120.2,'nanjing':118.8,'tianjin':117.2,'shenyang':123.4,
-    'harbin':126.5,'qingdao':120.4,'dalian':121.6,'kunming':102.7,
-    'taipei':121.5,'hong kong':114.2,'hongkong':114.2,'macau':113.5,
-    // 韓文城市
-    '서울':126.9,'부산':129.0,'인천':126.7,'대구':128.6,'대전':127.4,
-    '광주':126.9,'울산':129.3,'수원':127.0,'제주':126.5,
-    // 英文国际城市
-    'seoul':126.9,'busan':129.0,'tokyo':139.7,'osaka':135.5,'kyoto':135.8,
-    'singapore':103.8,'kuala lumpur':101.7,'kl':101.7,'bangkok':100.5,
-    'new york':-74.0,'los angeles':-118.2,'san francisco':-122.4,
-    'london':-0.1,'paris':2.3,'sydney':151.2,'melbourne':145.0,
-    'toronto':-79.4,'vancouver':-123.1,
-  };
-  const lower = birthplace.toLowerCase().trim();
-  for(const[k,v]of Object.entries(INTL_LNG)){
-    if(lower.includes(k))return v;
-  }
   return null;
 }
 // 精確經度緩存（地理編碼結果）
@@ -837,38 +814,22 @@ async function geocodePlace(place) {
 
   document.getElementById('geo-spinner').style.display = 'block';
   try {
-    // 先試字典快速查找（含英文韓文）
-    const dictLng = getLng(place);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1&accept-language=zh`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'zh,en' } });
+    const data = await res.json();
 
-    // Nominatim 多語言查詢
-    // accept-language 不限語言，讓 Nominatim 自動識別輸入語言
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=5&addressdetails=1`;
-    const res = await fetch(url, {
-      headers: { 'Accept-Language': 'zh,en,ko,ja', 'User-Agent': 'ZenCode/1.0' }
-    });
-    const rows = await res.json();
-
-    let best = null;
-    if (rows && rows.length > 0) {
-      // 優先選城市/行政區類型，排除太大的結果（國家級）
-      best = rows.find(r => ['city','town','county','district','suburb','municipality','administrative'].includes(r.type) && r.class !== 'country')
-          || rows.find(r => r.class === 'place' || r.class === 'boundary')
-          || rows[0];
-    }
-
-    if (best) {
-      _geoLng   = parseFloat(best.lon);
-      _geoLabel = best.display_name.split(',').slice(0,3).join(',');
-    } else if (dictLng !== null) {
-      // Nominatim 無結果，用字典
-      _geoLng   = dictLng;
-      _geoLabel = '';
+    if (data && data.length > 0) {
+      const item = data[0];
+      _geoLng   = parseFloat(item.lon);
+      _geoLabel = item.display_name.split(',').slice(0,3).join(',');
     } else {
-      _geoLng   = null;
+      // Nominatim 查無結果，fallback 到字典
+      _geoLng   = getLng(place);
       _geoLabel = '';
     }
     _geoCache[place] = { lng: _geoLng, label: _geoLabel };
   } catch(e) {
+    // 網絡失敗，fallback
     _geoLng   = getLng(place);
     _geoLabel = '';
   } finally {
@@ -1118,7 +1079,7 @@ async function genReport(){
   document.getElementById('lov').style.display='flex'; startL();
 
   // ── 帶自動重試的請求函數 ──
-  async function fetchWithRetry(body, maxRetries=3){
+  async function fetchWithRetry(body, maxRetries=1){
     for(let attempt=0; attempt<=maxRetries; attempt++){
       const r = await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 
