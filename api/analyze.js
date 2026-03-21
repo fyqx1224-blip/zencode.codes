@@ -167,46 +167,24 @@ const TG_WUXING = ['木','木','火','火','土','土','金','金','水','水'];
 
 // ── 用 Gemini 串流 API 收集完整回應（避免 Vercel 60s 逾時）──
 async function fetchGeminiStream(apiKey, payload) {
+    // 直接用標準 generateContent，最穩定
     const resp = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=' + apiKey,
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=' + apiKey,
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
     );
+    const data = await resp.json();
     if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
         if (resp.status === 429) {
-            const violations = err && err.error && err.error.details &&
-                err.error.details.find(function(d){ return d['@type'] && d['@type'].includes('RetryInfo'); });
+            const violations = data && data.error && data.error.details &&
+                data.error.details.find(function(d){ return d['@type'] && d['@type'].includes('RetryInfo'); });
             const retrySeconds = parseInt((violations && violations.retryDelay || '60s').replace('s','')) || 60;
             const e = new Error('RATE_LIMIT'); e.retryAfter = retrySeconds; throw e;
         }
-        throw new Error('Google API Error ' + resp.status);
+        throw new Error('Google API Error ' + resp.status + ': ' + JSON.stringify(data));
     }
-    // 用 getReader() 替代 for-await，相容 Vercel Node.js 環境
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
-    let buf = '';
-    while (true) {
-        const result = await reader.read();
-        if (result.done) break;
-        buf += decoder.decode(result.value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop();
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (!line.startsWith('data: ')) continue;
-            const json = line.slice(6).trim();
-            if (!json || json === '[DONE]') continue;
-            try {
-                const part = JSON.parse(json);
-                const t = part && part.candidates && part.candidates[0] &&
-                    part.candidates[0].content && part.candidates[0].content.parts &&
-                    part.candidates[0].content.parts[0] && part.candidates[0].content.parts[0].text;
-                if (t) fullText += t;
-            } catch(e) {}
-        }
-    }
-    return fullText;
+    return (data.candidates && data.candidates[0] &&
+            data.candidates[0].content && data.candidates[0].content.parts &&
+            data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
 }
 
 module.exports = async function handler(req, res) {
