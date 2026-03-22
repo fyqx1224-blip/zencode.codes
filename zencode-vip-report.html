@@ -444,7 +444,7 @@ const I18N = {
   'ko': {
     'hero.tag':     'ZenCode · VIP 운명 심층 리포트',
     'hero.sub':     '깊은 유년 · 팔자 감정 · 대운 해석',
-    'audio.hint':   '클릭하여 몰입 사운드 잠금 해제',
+    'audio.hint':   '클릭하여 몰입 사운드 해제',
     'audio.hint.sub': '오행 환경음 · 프로그램 합성',
     'sec.1.title':  '격국 감정과 에너지 흐름',
     'sec.1.body':   '명반 격국 감정 · 오행 강약 분석 · 에너지 흐름 추연',
@@ -557,9 +557,11 @@ function applyLang(lang) {
   // 含 HTML 的欄位（footer sub 有 <br>）
   const fsub = document.getElementById('footer-sub');
   if(fsub){ const v=t('footer.vip.sub'); if(v) fsub.innerHTML=v; }
-  // 音效副標題單獨更新（結構複雜，手動處理）
-  const sub = document.getElementById('audio-pulse-sub');
-  if(sub) sub.textContent = t('audio.hint.sub');
+  // 音效氣泡兩行文字——顯式更新，確保語言切換生效
+  const apMain = document.getElementById('audio-pulse-main');
+  if(apMain) apMain.textContent = t('audio.hint');
+  const apSub = document.getElementById('audio-pulse-sub');
+  if(apSub) apSub.textContent = t('audio.hint.sub');
   // 數字
   document.querySelectorAll('[data-i18n-num]').forEach(el => {
     const n = el.dataset.i18nNum;
