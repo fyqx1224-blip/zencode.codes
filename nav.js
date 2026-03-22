@@ -6,11 +6,12 @@
   const currentPath = location.pathname.replace(/\/$/, '') || '/';
 
   const links = [
-    { href: '/',          key: 'nav.reading'  },
-    { href: '/about',     key: 'nav.about'    },
-    { href: '/feedback',  key: 'nav.feedback' },
-    { href: '/privacy',   key: 'nav.privacy'  },
-    { href: '/terms',     key: 'nav.terms'    },
+    { href: '/',            key: 'nav.reading'  },
+    { href: '/about',       key: 'nav.about'    },
+    { href: '/feedback',    key: 'nav.feedback' },
+    { href: '/vip-preview', key: 'nav.vip'      },
+    { href: '/privacy',     key: 'nav.privacy'  },
+    { href: '/terms',       key: 'nav.terms'    },
   ];
 
   const langBtns = [
@@ -30,6 +31,10 @@
 .zc-nav-link:hover{color:rgba(240,234,214,0.9);background:rgba(212,168,67,0.06);border-color:rgba(212,168,67,0.18);}
 .zc-nav-link.active{color:#D4A843;border-color:rgba(212,168,67,0.3);background:rgba(212,168,67,0.07);}
 .zc-nav-link.active::after{content:'';position:absolute;bottom:-1px;left:20%;right:20%;height:1px;background:#D4A843;box-shadow:0 0 6px rgba(212,168,67,0.6);}
+.zc-nav-link.zc-vip{color:rgba(212,168,67,0.7);border-color:rgba(212,168,67,0.2);background:rgba(212,168,67,0.05);animation:zc-vip-pulse 3s ease-in-out infinite;}
+.zc-nav-link.zc-vip:hover{color:#D4A843;border-color:rgba(212,168,67,0.5);background:rgba(212,168,67,0.1);animation:none;}
+.zc-nav-link.zc-vip.active{color:#D4A843;border-color:rgba(212,168,67,0.45);background:rgba(212,168,67,0.1);animation:none;}
+@keyframes zc-vip-pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 12px rgba(212,168,67,0.15)}}
 .zc-lang-sw{display:flex;align-items:center;gap:1px;border:1px solid rgba(212,168,67,0.14);flex-shrink:0;}
 .zc-lang-btn{padding:5px 9px;font-family:'Noto Sans TC',sans-serif;font-size:0.62rem;letter-spacing:0.05em;color:rgba(240,234,214,0.35);background:transparent;border:none;cursor:pointer;transition:all .2s;line-height:1;}
 .zc-lang-btn:hover{color:rgba(240,234,214,0.8);background:rgba(212,168,67,0.07);}
@@ -44,6 +49,8 @@
 .zc-mobile-menu.open{display:flex;}
 .zc-mobile-link{padding:13px 32px;font-family:'Noto Sans TC',sans-serif;font-size:0.8rem;letter-spacing:0.28em;color:rgba(240,234,214,0.5);text-decoration:none;border-left:2px solid transparent;transition:all .2s;}
 .zc-mobile-link:hover,.zc-mobile-link.active{color:#D4A843;border-left-color:#D4A843;background:rgba(212,168,67,0.04);}
+.zc-mobile-link.zc-vip{color:rgba(212,168,67,0.65);border-left-color:rgba(212,168,67,0.25);}
+.zc-mobile-link.zc-vip:hover,.zc-mobile-link.zc-vip.active{color:#D4A843;border-left-color:#D4A843;background:rgba(212,168,67,0.06);}
 .zc-mobile-lang{display:flex;align-items:center;gap:8px;padding:14px 32px 6px;border-top:1px solid rgba(212,168,67,0.08);margin-top:8px;}
 .zc-mobile-lang-label{font-size:0.6rem;letter-spacing:0.3em;color:rgba(212,168,67,0.4);font-family:'Noto Sans TC',sans-serif;margin-right:4px;}
 .zc-mobile-lang-btn{padding:4px 10px;font-size:0.68rem;color:rgba(240,234,214,0.4);background:transparent;border:1px solid rgba(212,168,67,0.15);cursor:pointer;transition:all .2s;font-family:'Noto Sans TC',sans-serif;}
@@ -57,18 +64,22 @@ body{padding-top:56px !important;}
     const tl = k => L ? L.t(k) : k;
     const curLang = L ? L.lang() : 'zh-TW';
 
-    const navLinksHTML = links.map(l =>
-      `<a href="${l.href}" class="zc-nav-link${currentPath===l.href?' active':''}" data-i18n="${l.key}">${tl(l.key)}</a>`
-    ).join('');
+    const navLinksHTML = links.map(l => {
+      const isVip = l.href === '/vip-preview';
+      const cls = ['zc-nav-link', currentPath===l.href?'active':'', isVip?'zc-vip':''].filter(Boolean).join(' ');
+      return `<a href="${l.href}" class="${cls}" data-i18n="${l.key}">${tl(l.key)}</a>`;
+    }).join('');
 
     const langSwHTML = langBtns.map((b,i) =>
       (i>0?'<div class="zc-lang-sep"></div>':'')+
       `<button class="zc-lang-btn${curLang===b.code?' active':''}" data-lang-btn="${b.code}" onclick="ZCI18n.setLang('${b.code}')">${b.label}</button>`
     ).join('');
 
-    const mobileLinksHTML = links.map(l =>
-      `<a href="${l.href}" class="zc-mobile-link${currentPath===l.href?' active':''}" data-i18n="${l.key}">${tl(l.key)}</a>`
-    ).join('');
+    const mobileLinksHTML = links.map(l => {
+      const isVip = l.href === '/vip-preview';
+      const cls = ['zc-mobile-link', currentPath===l.href?'active':'', isVip?'zc-vip':''].filter(Boolean).join(' ');
+      return `<a href="${l.href}" class="${cls}" data-i18n="${l.key}">${tl(l.key)}</a>`;
+    }).join('');
 
     const mobileLangHTML = langBtns.map(b =>
       `<button class="zc-mobile-lang-btn${curLang===b.code?' active':''}" data-lang-btn="${b.code}" onclick="ZCI18n.setLang('${b.code}');document.getElementById('zc-hbg').classList.remove('open');document.getElementById('zc-mm').classList.remove('open');">${b.label}</button>`
