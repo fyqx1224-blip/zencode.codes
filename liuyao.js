@@ -1,5 +1,5 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (强力防卡死版)
+ * ZenCode - 六爻排盘核心逻辑 (六亲字典修正版)
  */
 
 let currentYaos = [];
@@ -78,7 +78,6 @@ function executeTimeMethod() {
     renderFinalResult();
 }
 
-// ════════ 3D 铜钱引擎防卡死重构 ════════
 function setupShakeMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = "心诚则灵 · 掷铜钱排盘";
@@ -111,12 +110,10 @@ function setupShakeMethod() {
             sum += isFront ? 3 : 2;
         }
 
-        // 清除旧动画
         for (let i = 0; i < coins.length; i++) {
             coins[i].style.animation = 'none';
         }
 
-        // 强行延迟 20ms 等待浏览器注册样式，避免动画丢帧
         setTimeout(() => {
             for (let i = 0; i < coins.length; i++) {
                 let animName = results[i] ? 'flip-heads' : 'flip-tails';
@@ -124,7 +121,6 @@ function setupShakeMethod() {
             }
         }, 20);
 
-        // 无论动画是否成功，1100ms后绝对执行 DOM 更新
         setTimeout(() => {
             currentYaos.push(sum);
             let isYang = (sum === 7 || sum === 9);
@@ -159,7 +155,6 @@ function setupManualMethod() {
     document.getElementById('interact-shake').style.display = 'none';
     document.getElementById('interact-manual').style.display = 'block';
     
-    // 初始化 6 个手选状态
     manualYaos = [];
     for(let i=0; i<6; i++) {
         manualYaos.push({ set: false, isYang: true, isChanging: false });
@@ -211,13 +206,17 @@ window.generateManualGua = function() {
     renderFinalResult();
 }
 
+// ================= 4. 八宫纳甲核心算法 (严格修正版) =================
 const DZ = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 const DZ_WX = ["水","土","木","木","土","火","火","土","金","金","土","水"];
-const PALACE_WX = {7:"金", 6:"金", 5:"火", 4:"木", 3:"木", 2:"水", 1:"土", 0:"土"};
-const PALACE_NAME = {7:"乾", 6:"兑", 5:"离", 4:"震", 3:"巽", 2:"坎", 1:"艮", 0:"坤"};
 const WX_IDX = {"木":0, "火":1, "土":2, "金":3, "水":4};
 const KINSHIPS = ["兄弟", "子孙", "妻财", "官鬼", "父母"];
 const BEASTS = ["青龙", "朱雀", "勾陈", "滕蛇", "白虎", "玄武"];
+
+// 【核心修正】正确对应二进制位 (0=坤, 1=震, 2=坎, 3=兑, 4=艮, 5=离, 6=巽, 7=乾)
+const PALACE_NAME = {0:"坤", 1:"震", 2:"坎", 3:"兑", 4:"艮", 5:"离", 6:"巽", 7:"乾"};
+const PALACE_WX = {0:"土", 1:"木", 2:"水", 3:"金", 4:"土", 5:"火", 6:"木", 7:"金"};
+
 const HEX_NAMES = [
   ["坤为地", "地雷复", "地水师", "地泽临", "地山谦", "地火明夷", "地风升", "地天泰"],
   ["雷地豫", "震为雷", "雷水解", "雷泽归妹", "雷山小过", "雷火丰", "雷风恒", "雷天大壮"],
@@ -228,12 +227,14 @@ const HEX_NAMES = [
   ["风地观", "风雷益", "风水涣", "风泽中孚", "风山渐", "风火家人", "巽为风", "风天小畜"],
   ["天地否", "天雷无妄", "天水讼", "天泽履", "天山遁", "天火同人", "天风姤", "乾为天"]
 ];
+
 const NA_JIA_DZ = {
   0: [[7,5,3], [1,11,9]], 1: [[0,2,4], [6,8,10]], 2: [[2,4,6], [8,10,0]], 3: [[5,3,1], [11,9,7]],
   4: [[4,6,8], [10,0,2]], 5: [[3,1,11], [9,7,5]], 6: [[1,11,9], [7,5,3]], 7: [[0,2,4], [6,8,10]]
 };
 const NA_JIA_TG = { 0:["乙","癸"], 1:["庚","庚"], 2:["戊","戊"], 3:["丁","丁"], 4:["丙","丙"], 5:["己","己"], 6:["辛","辛"], 7:["甲","壬"] };
 
+// 二进制异或寻世诀
 function getPalaceAndShi(b, t) {
     let x = b ^ t;
     if (x === 0) return { p: b, shi: 5 };
@@ -247,7 +248,10 @@ function getPalaceAndShi(b, t) {
     return { p: 7, shi: 0 };
 }
 
-function getKinship(palaceWx, lineWx) { return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5]; }
+// 严谨的生克排六亲算法：(爻支五行 - 宫位五行 + 5) % 5
+function getKinship(palaceWx, lineWx) {
+    return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5];
+}
 
 function calcGua(yaos) {
     let mY = [], cY = [];
@@ -260,12 +264,22 @@ function calcGua(yaos) {
     
     let infoM = getPalaceAndShi(bM, tM);
     let infoC = getPalaceAndShi(bC, tC); 
+    
+    // 取出正确的本卦宫位五行属性
     let pWx = PALACE_WX[infoM.p]; 
 
     function buildLines(b, t) {
         let lines = [];
-        for(let i=0; i<3; i++) lines.push({tg:NA_JIA_TG[b][0], dz:DZ[NA_JIA_DZ[b][0][i]], wx:DZ_WX[NA_JIA_DZ[b][0][i]], k:getKinship(pWx, DZ_WX[NA_JIA_DZ[b][0][i]])});
-        for(let i=0; i<3; i++) lines.push({tg:NA_JIA_TG[t][1], dz:DZ[NA_JIA_DZ[t][1][i]], wx:DZ_WX[NA_JIA_DZ[t][1][i]], k:getKinship(pWx, DZ_WX[NA_JIA_DZ[t][1][i]])});
+        for(let i=0; i<3; i++) {
+            let dzIdx = NA_JIA_DZ[b][0][i];
+            let wxStr = DZ_WX[dzIdx];
+            lines.push({tg:NA_JIA_TG[b][0], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr)});
+        }
+        for(let i=0; i<3; i++) {
+            let dzIdx = NA_JIA_DZ[t][1][i];
+            let wxStr = DZ_WX[dzIdx];
+            lines.push({tg:NA_JIA_TG[t][1], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr)});
+        }
         return lines;
     }
     
@@ -280,6 +294,7 @@ function calcGua(yaos) {
     };
 }
 
+// ================= 5. 最终渲染 =================
 window.renderFinalResult = function() {
     showScreen('screen-result');
     const mainContainer = document.getElementById('dynamic-main-gua');
