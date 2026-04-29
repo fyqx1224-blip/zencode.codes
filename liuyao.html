@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>六爻排盘 - ZenCode</title>
+    <style>
+        /* 基础色彩变量提取自你的 ZenCode 截图 */
+        :root {
+            --zc-bg-main: #050505; /* 极深星空黑 */
+            --zc-bg-panel: #0d0c11; /* 略带紫灰的面板底色 */
+            --zc-gold-light: #e6c587; /* 亮金色，用于标题/高亮 */
+            --zc-gold-dark: #8a7342; /* 暗金色，用于边框/次要信息 */
+            --zc-text-main: #b3b3b3; /* 浅灰正文 */
+            --zc-text-muted: #666666; /* 暗灰辅助说明 */
+        }
+
+        body {
+            background-color: var(--zc-bg-main);
+            color: var(--zc-text-main);
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            /* 简易星空背景模拟，如果你原本有背景图可以直接复用 */
+            background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #050505 80%);
+            min-height: 100vh;
+        }
+
+        /* 标题区域 */
+        .page-header {
+            text-align: center;
+            padding: 4rem 0 2rem;
+        }
+        .page-title {
+            color: var(--zc-gold-light);
+            font-size: 2.5rem;
+            font-family: "STZhongsong", serif; /* 衬线体显高级 */
+            letter-spacing: 4px;
+            margin: 0 0 10px 0;
+        }
+        .page-subtitle {
+            color: var(--zc-gold-dark);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* 核心面板容器 (带四个折角设计的框) */
+        .zencode-panel {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            background-color: var(--zc-bg-panel);
+            border: 1px solid #2a2a35;
+            padding: 2rem;
+            position: relative;
+        }
+        /* 模拟面板角落的折线装饰 */
+        .zencode-panel::before, .zencode-panel::after {
+            content: ''; position: absolute; width: 15px; height: 15px; border: 1px solid var(--zc-gold-dark);
+        }
+        .zencode-panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .zencode-panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+        /* --- 排盘专属网格布局 --- */
+        .divination-info {
+            border-bottom: 1px dashed var(--zc-gold-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-family: monospace; /* 强制等宽，保证干支对齐 */
+            line-height: 1.8;
+            color: var(--zc-gold-light);
+        }
+
+        .gua-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr;
+            gap: 20px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 1.1rem;
+        }
+
+        /* 每一爻的行容器 */
+        .yao-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 36px;
+            margin-bottom: 8px;
+        }
+
+        /* 爻象图形绘制 (纯CSS，极度清晰) */
+        .yao-symbol {
+            width: 80px;
+            height: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .yao-yang .line { width: 100%; height: 100%; background-color: var(--zc-gold-light); }
+        .yao-yin .line { width: 45%; height: 100%; background-color: var(--zc-text-main); }
+        
+        /* 动爻标记 */
+        .changing-mark {
+            color: var(--zc-gold-dark);
+            font-weight: bold;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .label-text {
+            color: var(--zc-text-main);
+        }
+        .label-highlight {
+            color: var(--zc-gold-light);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="nav-container"></div>
+
+    <div class="page-header">
+        <h1 class="page-title">六爻排盘</h1>
+        <div class="page-subtitle">· ZENCODE · 易理推演系统 ·</div>
+    </div>
+
+    <div class="zencode-panel">
+        
+        <div class="divination-info">
+            男测：<br>
+            公历：2026年 4月 29日 1时 15分<br>
+            干支：丙午年 壬辰月 癸酉日 癸丑时 （旬空：戌亥）<br>
+            神煞：驿马-亥 桃花-午 日禄-子 贵人-卯,巳 ...
+        </div>
+
+        <div class="gua-grid">
+            <div style="display: flex; flex-direction: column; justify-content: space-between; padding-top: 24px;">
+                <div class="label-text">白虎</div>
+                <div class="label-text">滕蛇</div>
+                <div class="label-text">勾陈</div>
+                <div class="label-text">朱雀</div>
+                <div class="label-text">青龙</div>
+                <div class="label-text">玄武</div>
+            </div>
+
+            <div>
+                <div class="label-highlight" style="margin-bottom: 10px; text-align: center;">兑宫：水山蹇</div>
+                <div class="yao-row">
+                    <span class="label-text">父母丁未土</span>
+                    <span class="label-text">子孙戊子水</span>
+                    <div class="yao-symbol yao-yin"><div class="line"></div><div class="line"></div></div>
+                    <span class="changing-mark"></span>
+                </div>
+                <div class="yao-row">
+                    <span class="label-text">兄弟丁酉金</span>
+                    <span class="label-text">父母戊戌土</span>
+                    <div class="yao-symbol yao-yang"><div class="line"></div></div>
+                    <span class="changing-mark">○→</span>
+                </div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+            </div>
+
+            <div>
+                <div class="label-highlight" style="margin-bottom: 10px; text-align: center;">坤宫：坤为地 (六冲)</div>
+                <div class="yao-row">
+                    <div class="yao-symbol yao-yin"><div class="line"></div><div class="line"></div></div>
+                    <span class="label-text">兄弟癸酉金</span>
+                    <span class="label-text">世</span>
+                </div>
+                <div class="yao-row">
+                    <div class="yao-symbol yao-yin"><div class="line"></div><div class="line"></div></div>
+                    <span class="label-text">子孙癸亥水</span>
+                    <span class="label-text"></span>
+                </div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+                <div class="yao-row"><span class="label-text">...</span></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
