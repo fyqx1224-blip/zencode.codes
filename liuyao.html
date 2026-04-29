@@ -36,6 +36,7 @@
         .zencode-panel {
             max-width: 850px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
             border: 1px solid var(--zc-border); padding: 2.5rem; position: relative;
+            transition: max-width 0.4s ease;
         }
         .zencode-panel::before, .zencode-panel::after {
             content: ''; position: absolute; width: 15px; height: 15px; border: 1px solid var(--zc-gold-dark);
@@ -96,6 +97,7 @@
         .gua-grid {
             display: grid; grid-template-columns: 60px 1fr 1fr; gap: 20px;
             font-family: "Courier New", Courier, monospace; font-size: 1.1rem;
+            transition: all 0.4s ease;
         }
         .beast-column { display: flex; flex-direction: column; justify-content: space-between; padding-top: 36px; padding-bottom: 4px; color: var(--zc-text-muted); }
         .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px; }
@@ -118,11 +120,11 @@
     <div id="nav-container"></div>
 
     <div class="page-header">
-        <h1 class="page-title" data-i18n="nav.liuyao">六爻排盘</h1>
-        <div class="page-subtitle">· ZENCODE · 命运档案 ·</div>
+        <h1 class="page-title" data-i18n="nav.liuyao">六爻排盤</h1>
+        <div class="page-subtitle">· ZENCODE · 命運檔案 ·</div>
     </div>
 
-    <div class="zencode-panel">
+    <div class="zencode-panel" id="main-panel">
         
         <div class="divination-info" id="dynamic-info">加载中...</div>
 
@@ -146,7 +148,7 @@
 
             <div id="interact-manual" style="display: none;">
                 <div id="manual-rows" style="display: flex; flex-direction: column-reverse; max-width: 400px; margin: 0 auto;">
-                    </div>
+                </div>
                 <button class="zc-btn" onclick="generateManualGua()" style="margin-top: 2rem; background: var(--zc-gold-dark); color: #050505; font-weight: bold;">生成卦象</button>
             </div>
             
@@ -156,16 +158,16 @@
         </div>
 
         <div id="screen-result" class="flow-screen" style="display: none;">
-            <div class="gua-grid">
+            <div class="gua-grid" id="gua-layout">
                 <div class="beast-column" id="dynamic-beasts">
-                    </div>
+                </div>
 
-                <div>
+                <div id="main-gua-col">
                     <div class="gua-title" id="main-gua-title">主卦测算中...</div>
                     <div id="dynamic-main-gua"></div>
                 </div>
 
-                <div>
+                <div id="change-gua-col">
                     <div class="gua-title" id="change-gua-title">变卦测算中...</div>
                     <div id="dynamic-change-gua"></div>
                 </div>
