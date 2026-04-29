@@ -1,5 +1,5 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (神煞与变爻六亲版)
+ * ZenCode - 六爻排盘核心逻辑 (完整纳甲、神煞与交互版)
  */
 
 let currentYaos = [];
@@ -10,26 +10,22 @@ let manualYaos = [];
 const DZ_ARR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 function getShensha(tgIdx, dzIdx) {
     let ss = [];
-    // 1. 驿马 (申子辰马在寅...)
     if ([2,6,10].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[8]);
     else if ([8,0,4].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[2]);
     else if ([5,9,1].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[11]);
     else if ([11,3,7].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[5]);
     
-    // 2. 桃花 (寅午戌桃花在卯...)
     if ([2,6,10].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[3]);
     else if ([8,0,4].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[9]);
     else if ([5,9,1].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[6]);
     else if ([11,3,7].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[0]);
     
-    // 3. 贵人 (甲戊庚牛羊...)
     if ([0,4,6].includes(tgIdx)) ss.push("贵人-丑,未");
     else if ([1,5].includes(tgIdx)) ss.push("贵人-子,申");
     else if ([2,3].includes(tgIdx)) ss.push("贵人-亥,酉");
     else if ([8,9].includes(tgIdx)) ss.push("贵人-卯,巳");
     else if (tgIdx === 7) ss.push("贵人-午,寅");
     
-    // 4. 日禄 (甲禄在寅...)
     const luMap = {0:"寅", 1:"卯", 2:"巳", 3:"午", 4:"巳", 5:"午", 6:"申", 7:"酉", 8:"亥", 9:"子"};
     ss.push("日禄-" + luMap[tgIdx]);
     
@@ -54,7 +50,6 @@ function initDateTime() {
     const gzTime = d.getTimeInGanZhi(); 
     const xunKong = d.getDayXunKong();
 
-    // 获取当天神煞
     const shenshaStr = getShensha(currentDayTgIdx, d.getDayZhiIndex());
 
     const html = `
@@ -234,20 +229,25 @@ function calcGua(yaos) {
     }
     let bM = mY[0] | (mY[1]<<1) | (mY[2]<<2), tM = mY[3] | (mY[4]<<1) | (mY[5]<<2);
     let bC = cY[0] | (cY[1]<<1) | (cY[2]<<2), tC = cY[3] | (cY[4]<<1) | (cY[5]<<2);
+    
     let infoM = getPalaceAndShi(bM, tM);
-    let pWx = PALACE_WX[infoM.p]; 
+    let infoC = getPalaceAndShi(bC, tC); // 获取变卦的独立世应
+    let pWx = PALACE_WX[infoM.p]; // 变卦六亲依旧以【本卦宫位】为准
+
     function buildLines(b, t) {
         let lines = [];
         for(let i=0; i<3; i++) lines.push({tg:NA_JIA_TG[b][0], dz:DZ[NA_JIA_DZ[b][0][i]], wx:DZ_WX[NA_JIA_DZ[b][0][i]], k:getKinship(pWx, DZ_WX[NA_JIA_DZ[b][0][i]])});
         for(let i=0; i<3; i++) lines.push({tg:NA_JIA_TG[t][1], dz:DZ[NA_JIA_DZ[t][1][i]], wx:DZ_WX[NA_JIA_DZ[t][1][i]], k:getKinship(pWx, DZ_WX[NA_JIA_DZ[t][1][i]])});
         return lines;
     }
+    
     let bIdx = (currentDayTgIdx <= 1) ? 0 : (currentDayTgIdx <= 3) ? 1 : (currentDayTgIdx === 4) ? 2 : (currentDayTgIdx === 5) ? 3 : (currentDayTgIdx <= 7) ? 4 : 5;
     let beasts = [];
     for (let i=0; i<6; i++) beasts.push(BEASTS[(bIdx + i) % 6]);
+    
     return {
         main: { name: HEX_NAMES[tM][bM], palaceName: PALACE_NAME[infoM.p], shi: infoM.shi, ying: (infoM.shi+3)%6, lines: buildLines(bM, tM) },
-        change: { name: HEX_NAMES[tC][bC], lines: buildLines(bC, tC) },
+        change: { name: HEX_NAMES[tC][bC], palaceName: PALACE_NAME[infoC.p], shi: infoC.shi, ying: (infoC.shi+3)%6, lines: buildLines(bC, tC) },
         beasts: beasts
     };
 }
@@ -278,7 +278,7 @@ window.renderFinalResult = function() {
     }
 
     document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
-    if (hasChange) document.getElementById('change-gua-title').innerText = `变卦：${gua.change.name}`;
+    if (hasChange) document.getElementById('change-gua-title').innerText = `${gua.change.palaceName}宫：${gua.change.name}`;
     
     for(let i=5; i>=0; i--) beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
 
@@ -302,19 +302,21 @@ window.renderFinalResult = function() {
             let isChangeYang = val === 9 ? false : (val === 6 ? true : isMainYang);
             let isChangingLine = (val === 6 || val === 9);
             let cLine = gua.change.lines[i];
+            let cPos = (i === gua.change.shi) ? '世' : (i === gua.change.ying) ? '应' : '';
             
-            // 变卦显示结构优化：图标 + 完整信息（含六亲）
-            let changeHtml = '';
-            if (isChangingLine) {
-                changeHtml = `
-                <div style="display:flex; gap:12px; align-items:center;">
-                    <span class="yao-shishen" style="color:var(--zc-text-muted); width: 40px; text-align: right;">${cLine.k}</span>
-                    <span class="yao-text">${cLine.tg}${cLine.dz}${cLine.wx}</span>
-                </div>`;
-            }
+            // 为了主次分明，变卦里没发生变动的爻，文字微微调暗
+            let textStyle = isChangingLine ? 'color: var(--zc-gold-light); font-weight: bold;' : 'color: var(--zc-text-main); opacity: 0.5;';
+            let shishenStyle = isChangingLine ? 'color: var(--zc-gold-dark); font-weight: bold;' : 'color: var(--zc-text-muted); opacity: 0.5;';
+
+            let changeHtml = `
+            <div style="display:flex; gap:12px; align-items:center;">
+                <span class="yao-shishen" style="${shishenStyle} width: 40px; text-align: right;">${cLine.k}</span>
+                <span class="yao-text" style="${textStyle}">${cLine.tg}${cLine.dz}${cLine.wx}</span>
+                <span class="yao-position" style="color:var(--zc-text-muted); font-weight:normal; font-size:0.85rem; width:20px;">${cPos}</span>
+            </div>`;
 
             changeContainer.insertAdjacentHTML('beforeend', `
-                <div class="yao-row" style="justify-content: flex-start; gap: 20px;">
+                <div class="yao-row" style="justify-content: flex-start; gap: 15px;">
                     <div class="yao-symbol ${isChangeYang ? 'yao-yang' : 'yao-yin'}">${isChangeYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
                     ${changeHtml}
                 </div>`);
