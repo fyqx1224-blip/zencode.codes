@@ -6,7 +6,6 @@ let currentYaos = [];
 let currentDayTgIdx = 0; 
 let manualYaos = [];     
 
-// ================= 神煞计算算法 =================
 const DZ_ARR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 function getShensha(tgIdx, dzIdx) {
     let ss = [];
@@ -56,9 +55,7 @@ function showScreen(screenId) {
 window.resetFlow = function() {
     currentYaos = [];
     showScreen('screen-choice');
-    const panel = document.getElementById('main-panel');
     const layout = document.getElementById('gua-layout');
-    panel.style.maxWidth = '720px'; // 恢复初始设定
     layout.className = 'gua-grid';
     initDateTime();
 }
@@ -159,7 +156,6 @@ window.generateManualGua = function() {
     renderFinalResult();
 }
 
-// ================= 4. 八宫纳甲核心算法 =================
 const DZ = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 const DZ_WX = ["水","土","木","木","土","火","火","土","金","金","土","水"];
 const PALACE_WX = {7:"金", 6:"金", 5:"火", 4:"木", 3:"木", 2:"水", 1:"土", 0:"土"};
@@ -196,9 +192,7 @@ function getPalaceAndShi(b, t) {
     return { p: 7, shi: 0 };
 }
 
-function getKinship(palaceWx, lineWx) {
-    return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5];
-}
+function getKinship(palaceWx, lineWx) { return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5]; }
 
 function calcGua(yaos) {
     let mY = [], cY = [];
@@ -231,14 +225,12 @@ function calcGua(yaos) {
     };
 }
 
-// ================= 5. 最终渲染 =================
 window.renderFinalResult = function() {
     showScreen('screen-result');
     const mainContainer = document.getElementById('dynamic-main-gua');
     const changeContainer = document.getElementById('dynamic-change-gua');
     const beastContainer = document.getElementById('dynamic-beasts');
     const guaLayout = document.getElementById('gua-layout');
-    const panel = document.getElementById('main-panel');
     const changeCol = document.getElementById('change-gua-col');
 
     mainContainer.innerHTML = ''; changeContainer.innerHTML = ''; beastContainer.innerHTML = '';
@@ -249,11 +241,9 @@ window.renderFinalResult = function() {
     if (!hasChange) {
         changeCol.style.display = 'none';
         guaLayout.classList.add('is-jing-gua');
-        panel.style.maxWidth = '460px'; // 静卦时再缩窄一点居中
     } else {
         changeCol.style.display = 'block';
         guaLayout.classList.remove('is-jing-gua');
-        panel.style.maxWidth = '720px'; // 动卦时使用控制后的紧凑宽度
     }
 
     document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
