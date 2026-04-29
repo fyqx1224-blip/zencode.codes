@@ -32,18 +32,6 @@
             background-color: var(--zc-bg-main);
         }
 
-        /* 顶部语言切换按钮 */
-        .lang-switch-container {
-            position: absolute; top: 20px; right: 20px; z-index: 100;
-        }
-        #lang-btn {
-            background: rgba(13, 12, 17, 0.6); border: 1px solid var(--zc-gold-dark);
-            color: var(--zc-gold-light); padding: 4px 12px; border-radius: 4px;
-            font-size: 0.85rem; cursor: pointer; transition: all 0.3s;
-            backdrop-filter: blur(4px); letter-spacing: 1px;
-        }
-        #lang-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); }
-
         /* 标题与版式 */
         .page-header { text-align: center; padding: 4rem 0 2rem; position: relative; z-index: 10; }
         .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; text-shadow: 0 0 15px rgba(212, 168, 67, 0.4); }
@@ -160,10 +148,8 @@
             .page-title { font-size: 1.8rem; }
             .divination-info { font-size: 0.85rem; line-height: 1.6; }
             
-            /* 神煞强制折行 */
             .shensha-row { flex-direction: column; margin-bottom: 8px; }
             
-            /* 网格间距极度压缩 */
             .gua-grid { grid-template-columns: 22px auto auto; gap: 4px; }
             .is-jing-gua { grid-template-columns: 22px auto !important; }
             
@@ -175,7 +161,6 @@
             
             .yao-row { height: 30px; gap: 3px; justify-content: flex-start;}
             .yao-shishen { width: 22px; font-size: 0.7rem; text-align: right; }
-            /* 为容纳五行微缩，调优横向空间 */
             .yao-text { width: 52px; font-size: 0.7rem; letter-spacing: -0.5px; padding-left: 2px;}
             .yao-symbol { width: 36px; height: 8px; }
             .changing-mark { width: 14px; font-size: 0.6rem; }
@@ -190,10 +175,6 @@
     </style>
 </head>
 <body>
-
-    <div class="lang-switch-container">
-        <button id="lang-btn" onclick="toggleLang()">繁體</button>
-    </div>
 
     <canvas id="bg-canvas"></canvas>
 
