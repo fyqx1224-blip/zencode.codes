@@ -27,15 +27,12 @@
             min-height: 100vh;
         }
 
-        /* 标题与版式 */
         .page-header { text-align: center; padding: 4rem 0 2rem; }
         .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; }
         .page-subtitle { color: var(--zc-gold-dark); font-size: 0.9rem; letter-spacing: 4px; }
 
-        /* 面板容器 */
         .zencode-panel {
-            max-width: 720px; /* 缩小面板最大宽度，让电脑端更紧凑 */
-            margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
+            max-width: 720px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
             border: 1px solid var(--zc-border); padding: 2.5rem; position: relative;
             transition: max-width 0.4s ease;
         }
@@ -45,7 +42,6 @@
         .zencode-panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
         .zencode-panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
-        /* 顶部信息区 */
         .divination-info {
             border-bottom: 1px dashed var(--zc-gold-dark); padding-bottom: 1.5rem;
             margin-bottom: 2rem; font-family: "Courier New", Courier, monospace;
@@ -53,7 +49,6 @@
         }
         .info-highlight { color: var(--zc-gold-light); }
 
-        /* 基础按钮组件 */
         .zc-btn {
             background: transparent; border: 1px solid var(--zc-gold-dark); color: var(--zc-gold-light);
             padding: 12px 30px; cursor: pointer; transition: all 0.3s; font-family: inherit;
@@ -64,11 +59,11 @@
         .zc-btn-text { background: none; border: none; color: var(--zc-text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
         .zc-btn-text:hover { color: var(--zc-gold-light); }
 
-        /* 手工排盘动态交互样式 */
         .manual-row-interactive {
             display: flex; justify-content: space-between; align-items: center;
             border: 1px solid var(--zc-border); padding: 14px 24px;
             margin-bottom: 8px; background: rgba(0,0,0,0.3); border-radius: 2px;
+            max-width: 400px; margin-left: auto; margin-right: auto;
         }
         .yao-interactive { width: 100px; height: 14px; cursor: pointer; display: flex; justify-content: space-between; transition: all 0.2s ease; }
         .yao-interactive:hover { filter: brightness(1.2); transform: scale(1.05); }
@@ -82,39 +77,43 @@
         }
         .btn-dong.active { background: var(--zc-gold-dark); color: #050505; border-color: var(--zc-gold-light); box-shadow: 0 0 12px rgba(212, 168, 67, 0.4); font-weight: bold; }
 
-        /* ════════ 纯 CSS 终极排盘网格布局 ════════ */
+        /* ════════ 终极居中排版网格 ════════ */
         .gua-grid {
-            display: grid; grid-template-columns: 50px 1fr 1fr; gap: 30px;
-            font-family: "Courier New", Courier, monospace; font-size: 1rem; transition: all 0.4s ease;
+            display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px;
+            font-family: "Courier New", Courier, monospace; font-size: 1.05rem; transition: all 0.4s ease;
         }
         .is-jing-gua { grid-template-columns: 50px 1fr !important; max-width: 440px; margin: 0 auto; }
         
-        .beast-column { display: flex; flex-direction: column; justify-content: space-between; padding-top: 54px; /* 增加头部留白以对齐标题 */ padding-bottom: 4px; color: var(--zc-text-muted); font-size: 0.95rem; }
-        
+        /* 标题区 */
         .gua-label { color: var(--zc-text-muted); font-size: 0.85rem; text-align: center; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.7;}
         .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
         
-        .yao-row { display: flex; align-items: center; justify-content: space-between; height: 36px; margin-bottom: 8px; gap: 4px; }
+        /* 六兽栏：改为与爻象像素级对齐 */
+        .beast-column { padding-top: 55px; color: var(--zc-text-muted); font-size: 0.95rem; }
+        .beast-column span { display: flex; align-items: center; justify-content: flex-end; height: 36px; margin-bottom: 8px; padding-right: 10px; }
+
+        /* 每一爻的行：取消 space-between，改为居中抱团 */
+        .yao-row { display: flex; align-items: center; justify-content: center; height: 36px; margin-bottom: 8px; gap: 12px; }
         
-        /* 爻象与文字，严格限定 shrink */
+        /* 元素宽度严格固定，保证垂直对齐极度工整 */
+        .yao-shishen { color: var(--zc-text-muted); width: 40px; flex-shrink: 0; text-align: right; }
+        .yao-text { color: var(--zc-text-main); width: 60px; white-space: nowrap; flex-shrink: 0; text-align: center; }
         .yao-symbol { width: 65px; height: 10px; display: flex; justify-content: space-between; flex-shrink: 0; }
+        .changing-mark { color: var(--zc-gold-dark); width: 25px; text-align: center; font-weight: bold; flex-shrink: 0; }
+        .yao-position { color: var(--zc-gold-dark); width: 20px; text-align: center; flex-shrink: 0; }
+
         .yao-yang .line { width: 100%; height: 100%; background-color: var(--zc-gold-light); }
         .yao-yin .line { width: 42%; height: 100%; background-color: var(--zc-text-main); }
         
-        .changing-mark { color: var(--zc-gold-dark); width: 25px; text-align: center; font-weight: bold; flex-shrink: 0; }
-        .yao-text { color: var(--zc-text-main); width: 60px; white-space: nowrap; flex-shrink: 0; }
-        .yao-shishen { color: var(--zc-text-muted); width: 35px; flex-shrink: 0; text-align: right; }
-        .yao-position { color: var(--zc-gold-dark); width: 16px; text-align: center; flex-shrink: 0; }
-
-        /* 变卦专属结构 */
-        .change-row { justify-content: flex-start; gap: 10px; }
-        .change-info { display: flex; gap: 8px; align-items: center; flex: 1; justify-content: flex-end; }
+        /* 变卦行：同样居中抱团 */
+        .change-row { justify-content: center; gap: 12px; }
+        .change-info { display: flex; gap: 12px; align-items: center; }
         
-        /* 变卦动静状态切换 */
+        /* 动静状态 */
         .is-active-line .yao-shishen { color: var(--zc-gold-dark); font-weight: bold; opacity: 1; }
         .is-active-line .yao-text { color: var(--zc-gold-light); font-weight: bold; opacity: 1; }
-        .is-static-line .yao-shishen { opacity: 0.4; }
-        .is-static-line .yao-text { opacity: 0.4; }
+        .is-static-line .yao-shishen { opacity: 0.35; }
+        .is-static-line .yao-text { opacity: 0.35; }
 
         /* ════════ 手机端适配 ════════ */
         @media (max-width: 768px) {
@@ -123,24 +122,27 @@
             .page-title { font-size: 1.8rem; }
             .divination-info { font-size: 0.85rem; line-height: 1.6; }
             
-            .gua-grid { grid-template-columns: 20px 1fr 1fr; gap: 4px; }
-            .is-jing-gua { grid-template-columns: 20px 1fr !important; }
+            .gua-grid { grid-template-columns: 35px 1fr 1fr; gap: 2px; }
+            .is-jing-gua { grid-template-columns: 35px 1fr !important; }
             
-            .beast-column { font-size: 0.7rem; padding-top: 48px; }
+            .beast-column { font-size: 0.75rem; padding-top: 48px; }
+            .beast-column span { height: 30px; margin-bottom: 8px; justify-content: center; padding-right: 0;}
+            
             .gua-label { font-size: 0.75rem; margin-bottom: 4px;}
-            .gua-title { font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 0; }
+            .gua-title { font-size: 0.85rem; margin-bottom: 10px; letter-spacing: 0; }
             
-            .yao-row { height: 30px; gap: 2px; }
-            .yao-symbol { width: 42px; height: 8px; }
-            .changing-mark { width: 14px; font-size: 0.65rem; }
-            .yao-text { width: 42px; font-size: 0.7rem; letter-spacing: -0.5px; }
-            .yao-shishen { width: 24px; font-size: 0.7rem; }
+            /* 手机端间距压缩 */
+            .yao-row { height: 30px; gap: 4px; }
+            .yao-shishen { width: 28px; font-size: 0.75rem; }
+            .yao-text { width: 45px; font-size: 0.75rem; letter-spacing: -0.5px; }
+            .yao-symbol { width: 45px; height: 8px; }
+            .changing-mark { width: 14px; font-size: 0.7rem; }
             .yao-position { width: 14px; font-size: 0.7rem; }
             
             .change-row { gap: 4px; }
-            .change-info { gap: 3px; }
+            .change-info { gap: 4px; }
             
-            .manual-row-interactive { padding: 10px 8px; }
+            .manual-row-interactive { padding: 10px 12px; }
             .yao-interactive { width: 60px; }
         }
     </style>
@@ -176,7 +178,7 @@
             </div>
 
             <div id="interact-manual" style="display: none;">
-                <div id="manual-rows" style="display: flex; flex-direction: column-reverse; max-width: 400px; margin: 0 auto;"></div>
+                <div id="manual-rows"></div>
                 <button class="zc-btn" onclick="generateManualGua()" style="margin-top: 2rem; background: var(--zc-gold-dark); color: #050505; font-weight: bold;">生成卦象</button>
             </div>
             
