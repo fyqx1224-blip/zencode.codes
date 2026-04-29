@@ -173,8 +173,22 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 3.5rem;">
-                <button class="zc-btn" onclick="resetFlow()">重新推演</button>
+            <div style="text-align: center; margin-top: 3.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;">
+                <a href="mailto:VIP@zencode.codes?subject=【ZenCode 六爻解卦预约】" 
+                   class="zc-btn" 
+                   style="background: linear-gradient(135deg, #5A0A0A 0%, #9C2F18 55%, #C8402A 100%); 
+                          border: none; 
+                          color: rgba(255,255,255,0.95); 
+                          text-decoration: none; 
+                          display: flex; justify-content: center; align-items: center; 
+                          box-shadow: 0 6px 25px rgba(180,40,20,0.3); 
+                          font-weight: normal; letter-spacing: 3px;"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(200,64,42,0.4)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 25px rgba(180,40,20,0.3)';">
+                    不会解卦？联系我们
+                </a>
+                
+                <button class="zc-btn-text" onclick="resetFlow()" style="margin-top: 8px;">← 重新推演</button>
             </div>
         </div>
 
