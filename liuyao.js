@@ -1,9 +1,10 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (完整纳甲版)
+ * ZenCode - 六爻排盘核心逻辑 (完整纳甲与交互版)
  */
 
 let currentYaos = [];
 let currentDayTgIdx = 0; // 记录日干索引，用于推算六兽
+let manualYaos = [];     // 专门记录手工排盘的状态
 
 // ================= 1. 初始化历法与时间 =================
 function initDateTime() {
@@ -21,7 +22,7 @@ function initDateTime() {
     const gzYear = d.getYearInGanZhi();
     const gzMonth = d.getMonthInGanZhi();
     const gzDay = d.getDayInGanZhi();
-    const gzTime = d.getTimeInGanZhi(); // 修复问题一：获取带天干的完整时柱
+    const gzTime = d.getTimeInGanZhi(); // 获取带天干的完整时柱
     const xunKong = d.getDayXunKong();
 
     const html = `
@@ -46,7 +47,7 @@ function resetFlow() {
     initDateTime();
 }
 
-function startMethod(method) {
+window.startMethod = function(method) {
     currentYaos = [];
     if (method === 'time') executeTimeMethod();
     else if (method === 'shake') setupShakeMethod();
@@ -54,6 +55,8 @@ function startMethod(method) {
 }
 
 // ================= 3. 具体起卦交互 =================
+
+// A. 时间起卦
 function executeTimeMethod() {
     for(let i=0; i<6; i++) currentYaos.push(Math.random() > 0.5 ? 7 : 8); 
     let changingIndex = Math.floor(Math.random() * 6);
@@ -61,6 +64,7 @@ function executeTimeMethod() {
     renderFinalResult();
 }
 
+// B. 摇卦
 function setupShakeMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = "心诚则灵 · 默念所测之事";
@@ -93,40 +97,93 @@ function setupShakeMethod() {
     };
 }
 
+// C. 手工起卦 (动态交互版)
 function setupManualMethod() {
     showScreen('screen-interact');
-    document.getElementById('interact-title').innerText = "手工排定阴阳";
+    document.getElementById('interact-title').innerText = "点按虚线排定阴阳";
     document.getElementById('interact-shake').style.display = 'none';
     document.getElementById('interact-manual').style.display = 'block';
     
+    // 初始化6个爻，set:false代表虚线未点选
+    manualYaos = Array(6).fill(null).map(() => ({ set: false, isYang: true, isChanging: false }));
+    renderManualRows();
+}
+
+// 点击爻本体：虚线 -> 阳 -> 阴 -> 阳
+window.toggleManualYao = function(idx) {
+    let y = manualYaos[idx];
+    if (!y.set) {
+        y.set = true;
+        y.isYang = true; // 第一次点，变实心阳爻
+    } else if (y.isYang) {
+        y.isYang = false; // 第二次点，变实心阴爻
+    } else {
+        y.isYang = true; // 第三次点，切回阳爻
+    }
+    renderManualRows();
+}
+
+// 点击“动”按钮
+window.toggleManualDong = function(idx) {
+    let y = manualYaos[idx];
+    if (!y.set) {
+        // 如果还没排阴阳就点动，默认设为阳爻发动
+        y.set = true;
+        y.isYang = true;
+    }
+    y.isChanging = !y.isChanging;
+    renderManualRows();
+}
+
+// 渲染手工交互列表
+function renderManualRows() {
     const container = document.getElementById('manual-rows');
     container.innerHTML = '';
     const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
     
     for(let i=0; i<6; i++) {
+        let y = manualYaos[i];
+        let yaoHtml = '';
+        
+        if (!y.set) {
+            yaoHtml = `<div class="yao-interactive yao-dashed" onclick="toggleManualYao(${i})"><div class="line"></div></div>`;
+        } else if (y.isYang) {
+            yaoHtml = `<div class="yao-interactive yao-yang" onclick="toggleManualYao(${i})"><div class="line"></div></div>`;
+        } else {
+            yaoHtml = `<div class="yao-interactive yao-yin" onclick="toggleManualYao(${i})"><div class="line"></div><div class="line"></div></div>`;
+        }
+
+        let dongClass = y.isChanging ? 'btn-dong active' : 'btn-dong';
+
         container.innerHTML += `
-            <div class="manual-yao-group">
-                <span>${names[i]}</span>
-                <div class="yao-radio">
-                    <label><input type="radio" name="yao${i}" value="6"> 老阴(×)</label>
-                    <label><input type="radio" name="yao${i}" value="8" checked> 少阴(--)</label>
-                    <label><input type="radio" name="yao${i}" value="7"> 少阳(—)</label>
-                    <label><input type="radio" name="yao${i}" value="9"> 老阳(○)</label>
-                </div>
+            <div class="manual-row-interactive">
+                <span style="color: var(--zc-gold-light); width: 60px; font-weight: bold; letter-spacing:2px;">${names[i]}</span>
+                ${yaoHtml}
+                <div class="${dongClass}" onclick="toggleManualDong(${i})">动</div>
             </div>
         `;
     }
 }
 
-function generateManualGua() {
+window.generateManualGua = function() {
     currentYaos = [];
     for(let i=0; i<6; i++) {
-        currentYaos.push(parseInt(document.querySelector(`input[name="yao${i}"]:checked`).value));
+        let y = manualYaos[i];
+        if (!y.set) {
+            alert("请先点按排定所有六个爻的阴阳！");
+            return;
+        }
+        let val = 0;
+        if (y.isYang && !y.isChanging) val = 7;
+        if (!y.isYang && !y.isChanging) val = 8;
+        if (y.isYang && y.isChanging) val = 9;
+        if (!y.isYang && y.isChanging) val = 6;
+        currentYaos.push(val);
     }
     renderFinalResult();
 }
 
-// ================= 4. 八宫纳甲核心算法 (修复问题二) =================
+// ================= 4. 八宫纳甲核心算法 =================
 const DZ = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 const DZ_WX = ["水","土","木","木","土","火","火","土","金","金","土","水"];
 const PALACE_WX = {7:"金", 6:"金", 5:"火", 4:"木", 3:"木", 2:"水", 1:"土", 0:"土"};
@@ -146,14 +203,13 @@ const HEX_NAMES = [
   ["天地否", "天雷无妄", "天水讼", "天泽履", "天山遁", "天火同人", "天风姤", "乾为天"]
 ];
 
-// 八卦纳甲地支排布 (内卦/外卦)
 const NA_JIA_DZ = {
   0: [[7,5,3], [1,11,9]], 1: [[0,2,4], [6,8,10]], 2: [[2,4,6], [8,10,0]], 3: [[5,3,1], [11,9,7]],
   4: [[4,6,8], [10,0,2]], 5: [[3,1,11], [9,7,5]], 6: [[1,11,9], [7,5,3]], 7: [[0,2,4], [6,8,10]]
 };
 const NA_JIA_TG = { 0:["乙","癸"], 1:["庚","庚"], 2:["戊","戊"], 3:["丁","丁"], 4:["丙","丙"], 5:["己","己"], 6:["辛","辛"], 7:["甲","壬"] };
 
-// 二进制异或寻世诀算法
+// 二进制寻世诀
 function getPalaceAndShi(b, t) {
     let x = b ^ t;
     if (x === 0) return { p: b, shi: 5 };
@@ -171,19 +227,19 @@ function getKinship(palaceWx, lineWx) {
     return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5];
 }
 
-// 排演单卦结构
+// 排演卦结构
 function calcGua(yaos) {
     let mY = [], cY = [];
     for (let i=0; i<6; i++) {
         mY.push((yaos[i]===7||yaos[i]===9)?1:0);
         cY.push((yaos[i]===6)?1:(yaos[i]===9?0:mY[i]));
     }
-    // 转为二进制数字 (底爻为最低位)
+    
     let bM = mY[0] | (mY[1]<<1) | (mY[2]<<2), tM = mY[3] | (mY[4]<<1) | (mY[5]<<2);
     let bC = cY[0] | (cY[1]<<1) | (cY[2]<<2), tC = cY[3] | (cY[4]<<1) | (cY[5]<<2);
 
     let infoM = getPalaceAndShi(bM, tM), infoC = getPalaceAndShi(bC, tC);
-    let pWx = PALACE_WX[infoM.p]; // 变卦六亲也以【本卦】宫五行为准
+    let pWx = PALACE_WX[infoM.p]; // 变卦六亲基于本卦宫位五行
 
     function buildLines(b, t) {
         let lines = [];
@@ -198,7 +254,7 @@ function calcGua(yaos) {
         return lines;
     }
 
-    // 排六兽
+    // 排六兽 (甲乙起青龙，丙丁起朱雀...)
     let bIdx = (currentDayTgIdx <= 1) ? 0 : (currentDayTgIdx <= 3) ? 1 : (currentDayTgIdx === 4) ? 2 : (currentDayTgIdx === 5) ? 3 : (currentDayTgIdx <= 7) ? 4 : 5;
     let beasts = [];
     for (let i=0; i<6; i++) beasts.push(BEASTS[(bIdx + i) % 6]);
@@ -210,23 +266,24 @@ function calcGua(yaos) {
     };
 }
 
-// ================= 5. 渲染引擎 =================
-function renderFinalResult() {
+// ================= 5. 最终渲染 =================
+window.renderFinalResult = function() {
     showScreen('screen-result');
     const mainContainer = document.getElementById('dynamic-main-gua');
     const changeContainer = document.getElementById('dynamic-change-gua');
-    const beastContainer = document.querySelector('.beast-column');
+    const beastContainer = document.getElementById('dynamic-beasts');
     
     mainContainer.innerHTML = ''; changeContainer.innerHTML = ''; beastContainer.innerHTML = '';
 
     const gua = calcGua(currentYaos);
 
-    // 动态注入真实卦名与宫位
     document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
     document.getElementById('change-gua-title').innerText = `变卦：${gua.change.name}`;
     
     // 渲染六兽
-    for(let i=5; i>=0; i--) beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
+    for(let i=5; i>=0; i--) {
+        beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
+    }
 
     // 从上爻(5)往下渲染到初爻(0)
     for(let i=5; i>=0; i--) {
@@ -239,7 +296,6 @@ function renderFinalResult() {
         let mText = `${mLine.tg}${mLine.dz}${mLine.wx}`;
         let mPos = (i === gua.main.shi) ? '世' : (i === gua.main.ying) ? '应' : '';
 
-        // 主卦渲染
         mainContainer.insertAdjacentHTML('beforeend', `
             <div class="yao-row">
                 <span class="yao-shishen">${mLine.k}</span>
@@ -250,7 +306,6 @@ function renderFinalResult() {
             </div>
         `);
         
-        // 变卦渲染（只显示发动的变爻对应的干支和六亲）
         let isChangeYang = val === 9 ? false : (val === 6 ? true : isMainYang);
         let cSym = isChangeYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>';
         let isChangingLine = (val === 6 || val === 9);
