@@ -1,34 +1,100 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (强力防卡死 + 特殊卦象识别版)
+ * ZenCode - 六爻排盘核心逻辑 (完整神煞与衰旺推演版)
  */
 
 let currentYaos = [];
 let currentDayTgIdx = 0; 
+let currentMonthZhiIdx = 0; // 新增：保存月支，用于推算五行衰旺
 let manualYaos = [];     
 
-// ================= 神煞计算算法 =================
+// ================= 神煞计算算法全家桶 =================
 const DZ_ARR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 function getShensha(tgIdx, dzIdx) {
-    let ss = [];
-    if ([2,6,10].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[8]);
-    else if ([8,0,4].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[2]);
-    else if ([5,9,1].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[11]);
-    else if ([11,3,7].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[5]);
+    let tg_ss = [];
+    let dz_ss = [];
     
-    if ([2,6,10].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[3]);
-    else if ([8,0,4].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[9]);
-    else if ([5,9,1].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[6]);
-    else if ([11,3,7].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[0]);
+    // ---------------- 1. 日支神煞 ----------------
+    // 驿马: 申子辰马在寅, 亥卯未马在巳, 寅午戌马在申, 巳酉丑马在亥
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("驿马-寅");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("驿马-巳");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("驿马-申");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("驿马-亥");
     
-    if ([0,4,6].includes(tgIdx)) ss.push("贵人-丑,未");
-    else if ([1,5].includes(tgIdx)) ss.push("贵人-子,申");
-    else if ([2,3].includes(tgIdx)) ss.push("贵人-亥,酉");
-    else if ([8,9].includes(tgIdx)) ss.push("贵人-卯,巳");
-    else if (tgIdx === 7) ss.push("贵人-午,寅");
+    // 桃花: 申子辰见酉, 亥卯未见子, 寅午戌见卯, 巳酉丑见午
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("桃花-酉");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("桃花-子");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("桃花-卯");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("桃花-午");
+
+    // 将星: 申子辰见子, 亥卯未见卯, 寅午戌见午, 巳酉丑见酉
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("将星-子");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("将星-卯");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("将星-午");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("将星-酉");
+
+    // 华盖: 申子辰见辰, 亥卯未见未, 寅午戌见戌, 巳酉丑见丑
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("华盖-辰");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("华盖-未");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("华盖-戌");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("华盖-丑");
+
+    // 劫煞: 申子辰见巳, 亥卯未见申, 寅午戌见亥, 巳酉丑见寅
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("劫煞-巳");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("劫煞-申");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("劫煞-亥");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("劫煞-寅");
+
+    // 灾煞: 申子辰见午, 亥卯未见酉, 寅午戌见子, 巳酉丑见卯
+    if ([8,0,4].includes(dzIdx)) dz_ss.push("灾煞-午");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push("灾煞-酉");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push("灾煞-子");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push("灾煞-卯");
+
+    // ---------------- 2. 日干神煞 ----------------
+    // 贵人: 甲戊庚牛羊, 乙己鼠猴乡, 丙丁猪鸡位, 壬癸兔蛇藏, 六辛逢马虎
+    if ([0,4,6].includes(tgIdx)) tg_ss.push("贵人-丑,未");
+    else if ([1,5].includes(tgIdx)) tg_ss.push("贵人-子,申");
+    else if ([2,3].includes(tgIdx)) tg_ss.push("贵人-亥,酉");
+    else if ([8,9].includes(tgIdx)) tg_ss.push("贵人-卯,巳");
+    else if (tgIdx === 7) tg_ss.push("贵人-午,寅");
     
+    // 日禄: 甲禄在寅, 乙禄在卯, 丙戊在巳, 丁己在午, 庚在申, 辛在酉, 壬在亥, 癸在子
     const luMap = {0:"寅", 1:"卯", 2:"巳", 3:"午", 4:"巳", 5:"午", 6:"申", 7:"酉", 8:"亥", 9:"子"};
-    ss.push("日禄-" + luMap[tgIdx]);
-    return ss.join("　");
+    tg_ss.push("日禄-" + luMap[tgIdx]);
+
+    // 羊刃: 禄前一辰
+    const renMap = {0:"卯", 1:"辰", 2:"午", 3:"未", 4:"午", 5:"未", 6:"酉", 7:"戌", 8:"子", 9:"丑"};
+    tg_ss.push("羊刃-" + renMap[tgIdx]);
+
+    // 文昌: 甲巳, 乙午, 丙戊申, 丁己酉, 庚亥, 辛子, 壬寅, 癸卯
+    const wenMap = {0:"巳", 1:"午", 2:"申", 3:"酉", 4:"申", 5:"酉", 6:"亥", 7:"子", 8:"寅", 9:"卯"};
+    tg_ss.push("文昌-" + wenMap[tgIdx]);
+    
+    return `
+        <div style="margin-bottom:6px;"><b>【日干神煞】</b> ${tg_ss.join(" &nbsp; ")}</div>
+        <div><b>【日支神煞】</b> ${dz_ss.join(" &nbsp; ")}</div>
+    `;
+}
+
+// ================= 五行旺相休囚死算法 =================
+function getWangXiang(monthZhiIdx, yaoWx) {
+    let monthWx = "土"; // 辰(4),戌(10),丑(1),未(7)
+    if ([0, 11].includes(monthZhiIdx)) monthWx = "水"; // 子, 亥
+    if ([2, 3].includes(monthZhiIdx)) monthWx = "木";  // 寅, 卯
+    if ([5, 6].includes(monthZhiIdx)) monthWx = "火";  // 巳, 午
+    if ([8, 9].includes(monthZhiIdx)) monthWx = "金";  // 申, 酉
+
+    // 五行生克流转规则
+    const gen = {"木":"火", "火":"土", "土":"金", "金":"水", "水":"木"};
+    const res = {"木":"土", "土":"水", "水":"火", "火":"金", "金":"木"};
+
+    if (yaoWx === monthWx) return "旺";         // 同我者旺
+    if (gen[monthWx] === yaoWx) return "相";    // 我生者相 (月建生该爻)
+    if (gen[yaoWx] === monthWx) return "休";    // 生我者休 (该爻生月建)
+    if (res[yaoWx] === monthWx) return "囚";    // 克我者囚 (该爻克月建)
+    if (res[monthWx] === yaoWx) return "死";    // 我克者死 (月建克该爻)
+
+    return "";
 }
 
 function initDateTime() {
@@ -36,13 +102,14 @@ function initDateTime() {
     const now = new Date();
     const d = Lunar.fromDate(now);
     currentDayTgIdx = d.getDayGanIndex(); 
+    currentMonthZhiIdx = d.getMonthZhiIndex(); // 保存当前月支索引
     
     const html = `
         <span class="info-highlight">当前推演：</span>ZenCode 命運檔案<br>
         <span class="info-highlight">公历时间：</span>${d.getSolar().toYmdHms()}<br>
         <span class="info-highlight">干支历法：</span>${d.getYearInGanZhi()}年 ${d.getMonthInGanZhi()}月 ${d.getDayInGanZhi()}日 ${d.getTimeInGanZhi()}时 <span style="color:var(--zc-text-muted)">（旬空：${d.getDayXunKong()}）</span><br>
-        <div style="font-size: 0.9rem; color: var(--zc-gold-dark); margin-top: 6px; letter-spacing: 1px;">
-            神煞：${getShensha(currentDayTgIdx, d.getDayZhiIndex())}
+        <div style="font-size: 0.9rem; color: var(--zc-gold-dark); margin-top: 10px; letter-spacing: 1px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 4px; border: 1px solid rgba(138, 115, 66, 0.2);">
+            ${getShensha(currentDayTgIdx, d.getDayZhiIndex())}
         </div>
     `;
     document.getElementById('dynamic-info').innerHTML = html;
@@ -78,7 +145,6 @@ function executeTimeMethod() {
     renderFinalResult();
 }
 
-// ════════ 3D 铜钱引擎防卡死重构 ════════
 function setupShakeMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = "心诚则灵 · 掷铜钱排盘";
@@ -235,19 +301,12 @@ const NA_JIA_DZ = {
 };
 const NA_JIA_TG = { 0:["乙","癸"], 1:["庚","庚"], 2:["戊","戊"], 3:["丁","丁"], 4:["丙","丙"], 5:["己","己"], 6:["辛","辛"], 7:["甲","壬"] };
 
-// 特殊卦象识别算法
 function getGuaTags(b, t, name) {
     let tags = [];
     let x = b ^ t;
-    
-    // 游魂、归魂通过异或值精准判断
     if (x === 5) tags.push("游魂");
     if (x === 2) tags.push("归魂");
-    
-    // 六冲：八纯卦(x===0) + 另外两个特殊卦
     if (x === 0 || name === "天雷无妄" || name === "雷天大壮") tags.push("六冲");
-    
-    // 六合：必须通过名字比对
     const liuHe = ["天地否", "地天泰", "水泽节", "泽水困", "火山旅", "山火贲", "雷地豫", "地雷复"];
     if (liuHe.includes(name)) tags.push("六合");
     
@@ -282,7 +341,6 @@ function calcGua(yaos) {
     
     let infoM = getPalaceAndShi(bM, tM);
     let infoC = getPalaceAndShi(bC, tC); 
-    
     let pWx = PALACE_WX[infoM.p]; 
 
     function buildLines(b, t) {
@@ -290,12 +348,12 @@ function calcGua(yaos) {
         for(let i=0; i<3; i++) {
             let dzIdx = NA_JIA_DZ[b][0][i];
             let wxStr = DZ_WX[dzIdx];
-            lines.push({tg:NA_JIA_TG[b][0], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr)});
+            lines.push({tg:NA_JIA_TG[b][0], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
         }
         for(let i=0; i<3; i++) {
             let dzIdx = NA_JIA_DZ[t][1][i];
             let wxStr = DZ_WX[dzIdx];
-            lines.push({tg:NA_JIA_TG[t][1], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr)});
+            lines.push({tg:NA_JIA_TG[t][1], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
         }
         return lines;
     }
@@ -333,7 +391,6 @@ window.renderFinalResult = function() {
         guaLayout.classList.remove('is-jing-gua');
     }
 
-    // 将 tag 注入到标题中显示
     document.getElementById('main-gua-title').innerHTML = `${gua.main.palaceName}宫：${gua.main.name}${gua.main.tag}`;
     if (hasChange) document.getElementById('change-gua-title').innerHTML = `${gua.change.palaceName}宫：${gua.change.name}${gua.change.tag}`;
     
@@ -346,10 +403,13 @@ window.renderFinalResult = function() {
         let mLine = gua.main.lines[i];
         let mPos = (i === gua.main.shi) ? '世' : (i === gua.main.ying) ? '应' : '';
 
+        // 新增的五行状态附着在文字后面
+        let stateHtml = `<span style="font-size:0.7rem; opacity:0.6; margin-left:2px;">(${mLine.state})</span>`;
+
         mainContainer.insertAdjacentHTML('beforeend', `
             <div class="yao-row">
                 <span class="yao-shishen">${mLine.k}</span>
-                <span class="yao-text">${mLine.tg}${mLine.dz}${mLine.wx}</span>
+                <span class="yao-text">${mLine.tg}${mLine.dz}${mLine.wx}${stateHtml}</span>
                 <div class="yao-symbol ${isMainYang ? 'yao-yang' : 'yao-yin'}">${isMainYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
                 <span class="changing-mark">${mark}</span>
                 <span class="yao-position">${mPos}</span>
@@ -362,13 +422,14 @@ window.renderFinalResult = function() {
             let cPos = (i === gua.change.shi) ? '世' : (i === gua.change.ying) ? '应' : '';
             
             let stateClass = isChangingLine ? 'is-active-line' : 'is-static-line';
+            let cStateHtml = `<span style="font-size:0.7rem; opacity:0.6; margin-left:2px;">(${cLine.state})</span>`;
 
             changeContainer.insertAdjacentHTML('beforeend', `
                 <div class="yao-row change-row ${stateClass}">
                     <div class="yao-symbol ${isChangeYang ? 'yao-yang' : 'yao-yin'}">${isChangeYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
                     <div class="change-info">
                         <span class="yao-shishen">${cLine.k}</span>
-                        <span class="yao-text">${cLine.tg}${cLine.dz}${cLine.wx}</span>
+                        <span class="yao-text">${cLine.tg}${cLine.dz}${cLine.wx}${cStateHtml}</span>
                         <span class="yao-position">${cPos}</span>
                     </div>
                 </div>`);
