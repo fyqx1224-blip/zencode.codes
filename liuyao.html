@@ -32,6 +32,18 @@
             background-color: var(--zc-bg-main);
         }
 
+        /* 顶部语言切换按钮 */
+        .lang-switch-container {
+            position: absolute; top: 20px; right: 20px; z-index: 100;
+        }
+        #lang-btn {
+            background: rgba(13, 12, 17, 0.6); border: 1px solid var(--zc-gold-dark);
+            color: var(--zc-gold-light); padding: 4px 12px; border-radius: 4px;
+            font-size: 0.85rem; cursor: pointer; transition: all 0.3s;
+            backdrop-filter: blur(4px); letter-spacing: 1px;
+        }
+        #lang-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); }
+
         /* 标题与版式 */
         .page-header { text-align: center; padding: 4rem 0 2rem; position: relative; z-index: 10; }
         .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; text-shadow: 0 0 15px rgba(212, 168, 67, 0.4); }
@@ -40,8 +52,8 @@
         /* 面板容器 */
         .zencode-panel {
             max-width: 720px; margin: 0 auto 3rem; 
-            background-color: rgba(13, 12, 17, 0.65); 
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            background-color: rgba(13, 12, 17, 0.55); /* 稍微再透一点光 */
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(138, 115, 66, 0.4); padding: 2.5rem; position: relative;
             transition: max-width 0.4s ease; box-shadow: 0 10px 50px rgba(0,0,0,0.8);
         }
@@ -265,47 +277,95 @@
         const ctx = c.getContext('2d');
         let W, H;
         const particles = [];
-        const NUM_PARTICLES = 700;
+        const NUM_PARTICLES = 600; // 适当减少粒子，因为粒子变大了
 
         function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
+        // 正态分布算法，用于让粒子聚集成“宽大的光带”而非随意散落
+        function gaussianRandom() {
+            let u = 0, v = 0;
+            while(u === 0) u = Math.random();
+            while(v === 0) v = Math.random();
+            return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+        }
+
         class Particle {
             constructor() { this.isYang = Math.random() > 0.5; this.reset(true); }
+            
             reset(randomize = false) {
-                this.maxR = Math.max(W, H) * 0.55; 
-                this.radius = randomize ? Math.random() * this.maxR : this.maxR;
-                let normalizedR = this.radius / this.maxR;
-                let fishWidth = Math.sin(normalizedR * Math.PI) * 0.8;
-                this.angleOffset = (Math.random() - 0.5) * fishWidth;
-                this.speed = Math.random() * 2 + 1;
-                this.size = Math.random() * 1.5 + 0.5;
+                // 进度：0 是轨道起点，1 是轨道终点
+                this.progress = randomize ? Math.random() : 0; 
+                this.speed = Math.random() * 0.0015 + 0.0005; // 更平缓的流动速度
+                
+                // 粒子变粗、变大气
+                this.size = Math.random() * 3.5 + 1.5; 
+                
+                // 光带的散开度 (厚度)，中心密集，边缘稀疏
+                let spread = (Math.max(W, H) * 0.15); 
+                this.thickness = gaussianRandom() * spread;
             }
+            
             update() {
-                this.radius -= this.speed; this.speed += 0.02; 
-                if (this.radius < 5) this.reset();
-                let normalizedR = this.radius / this.maxR;
-                let fishWidth = Math.sin(normalizedR * Math.PI) * 0.8;
-                this.angleOffset *= 0.99; 
+                this.progress += this.speed;
+                if (this.progress > 1) this.reset();
             }
+            
             draw() {
                 let cx = W / 2, cy = H / 2;
-                let spiralFactor = 0.006, globalRot = Date.now() * 0.0008, armAngle = this.isYang ? 0 : Math.PI;
-                let theta = armAngle + (this.radius * spiralFactor) + globalRot + this.angleOffset;
-                let x = cx + this.radius * Math.cos(theta), y = cy + this.radius * Math.sin(theta);
-                let alpha = this.radius < 40 ? this.radius / 40 : (this.radius > this.maxR - 50 ? (this.maxR - this.radius)/50 : 1);
-                ctx.beginPath(); ctx.arc(x, y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.isYang ? `rgba(230, 197, 135, ${alpha * 0.9})` : `rgba(138, 115, 66, ${alpha * 0.6})`;
+                let maxR = Math.max(W, H) * 0.7; // 巨大的轨道半径
+                
+                // 轨道角度：绕中心旋转 1.25 圈形成太极鱼
+                let baseAngle = this.progress * Math.PI * 2.5; 
+                if (!this.isYang) baseAngle += Math.PI; // 阴鱼在对面
+                
+                // 半径映射：不是落入中心，而是在巨大的环带内向内收束一半，保持平面感
+                let r = maxR * (1 - this.progress * 0.6); 
+                
+                // 将厚度加在轨道的垂直方向上
+                let perpAngle = baseAngle + Math.PI / 2;
+                
+                // 整体缓慢公转
+                let globalRot = Date.now() * 0.00015; 
+                let finalAngle = baseAngle + globalRot;
+                
+                let x = cx + r * Math.cos(finalAngle) + Math.cos(perpAngle + globalRot) * this.thickness;
+                let y = cy + r * Math.sin(finalAngle) + Math.sin(perpAngle + globalRot) * this.thickness;
+                
+                // 丝滑的淡入淡出，掩盖出生和消亡
+                let alpha = 1;
+                if (this.progress < 0.1) alpha = this.progress / 0.1;
+                if (this.progress > 0.9) alpha = (1 - this.progress) / 0.1;
+                
+                ctx.beginPath(); 
+                ctx.arc(x, y, this.size, 0, Math.PI * 2);
+                
+                // 颜色设定：阳鱼明亮真金，阴鱼深邃暗金
+                if (this.isYang) {
+                    ctx.fillStyle = `rgba(245, 215, 150, ${alpha * 0.75})`;
+                } else {
+                    ctx.fillStyle = `rgba(160, 125, 65, ${alpha * 0.45})`;
+                }
                 ctx.fill();
             }
         }
+        
         for(let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
+        
         function loop() {
-            ctx.fillStyle = 'rgba(5, 5, 5, 0.12)'; ctx.fillRect(0, 0, W, H);
-            let glow = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W/4);
-            glow.addColorStop(0, 'rgba(212, 168, 67, 0.04)'); glow.addColorStop(1, 'transparent');
-            ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-            particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(loop);
+            // 稍快的刷新率带来清晰的拖影，不再糊成一团
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.25)'; 
+            ctx.fillRect(0, 0, W, H);
+            
+            // 叠加一层微弱的环境金光
+            let glow = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)/2);
+            glow.addColorStop(0, 'rgba(138, 115, 66, 0.06)'); 
+            glow.addColorStop(1, 'transparent');
+            ctx.fillStyle = glow; 
+            ctx.fillRect(0, 0, W, H);
+            
+            particles.forEach(p => { p.update(); p.draw(); }); 
+            requestAnimationFrame(loop);
         }
         loop();
     })();
