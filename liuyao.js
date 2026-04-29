@@ -1,33 +1,76 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (繁简切换 + 移动端自适应重构)
+ * ZenCode - 六爻排盘核心逻辑 (联动导航栏切换 + 繁简转化引擎)
  */
 
-// ================= 繁简翻译引擎 =================
-const s2t_map = {"阴":"陰","阳":"陽","动":"動","变":"變","宫":"宮","财":"財","孙":"孫","龙":"龍","陈":"陳","复":"復","师":"師","临":"臨","谦":"謙","归":"歸","丰":"豐","恒":"恆","济":"濟","随":"隨","兑":"兌","过":"過","剥":"剝","颐":"頤","损":"損","贲":"賁","蛊":"蠱","晋":"晉","观":"觀","涣":"渙","渐":"漸","无":"無","讼":"訟","门":"門","档":"檔","历":"歷","时":"時","间":"間","马":"馬","华":"華","盖":"蓋","煞":"煞","灾":"災","贵":"貴","禄":"祿","测":"測","选":"選","择":"擇","推":"推","演":"演","盘":"盤","点":"點","击":"擊","铜":"銅","钱":"錢","摇":"搖","会":"會","联":"聯","系":"系","们":"們","预":"預","约":"約","师":"師","态":"態","掷":"擲","线":"線","冲":"沖","游":"遊", "应":"應", "当":"當", "前":"前", "法":"法", "旬":"旬", "空":"空", "日":"日", "干":"干", "支":"支", "驿":"驛", "花":"花", "将":"將", "刃":"刃", "文":"文", "昌":"昌", "旺":"旺", "相":"相", "休":"休", "囚":"囚", "死":"死", "老":"老", "少":"少", "分":"分", "出":"出", "次":"次", "转":"轉", "中":"中", "生":"生", "成":"成", "排":"排", "定":"定", "初":"初", "二":"二", "三":"三", "四":"四", "五":"五", "上":"上", "合":"合", "魂":"魂", "本":"本", "不":"不", "我":"我", "方":"方", "式":"式", "重":"重", "新":"新", "网":"網", "络":"絡", "设":"設", "备":"備", "买":"買", "卖":"賣", "加":"加", "载":"載", "繁":"繁", "体":"體", "简":"簡", "宝":"寶"};
+// ================= 繁简翻译引擎 (字符级转换) =================
+const s2t_map = {
+    "阴":"陰","阳":"陽","动":"動","变":"變","宫":"宮","财":"財","孙":"孫","龙":"龍","陈":"陳",
+    "复":"復","师":"師","临":"臨","谦":"謙","归":"歸","丰":"豐","恒":"恆","济":"濟","随":"隨",
+    "兑":"兌","过":"過","剥":"剝","颐":"頤","损":"損","贲":"賁","蛊":"蠱","晋":"晉","观":"觀",
+    "涣":"渙","渐":"漸","无":"無","讼":"訟","门":"門","档":"檔","历":"歷","时":"時","间":"間",
+    "马":"馬","华":"華","盖":"蓋","灾":"災","贵":"貴","禄":"祿","测":"測","选":"選","择":"擇",
+    "推":"推","演":"演","盘":"盤","点":"點","击":"擊","铜":"銅","钱":"錢","摇":"搖","会":"會",
+    "联":"聯","系":"繫","们":"們","预":"預","约":"約","师":"師","态":"態","掷":"擲","线":"線",
+    "冲":"沖","游":"遊","应":"應","当":"當","前":"前","法":"法","旬":"旬","空":"空","日":"日",
+    "干":"干","支":"支","驿":"驛","花":"花","将":"將","刃":"刃","文":"文","昌":"昌","旺":"旺",
+    "相":"相","休":"休","囚":"囚","死":"死","老":"老","少":"少","分":"分","出":"出","次":"次",
+    "转":"轉","中":"中","生":"生","成":"成","排":"排","定":"定","初":"初","二":"二","三":"三",
+    "四":"四","五":"五","上":"上","合":"合","魂":"魂","本":"本","不":"不","我":"我","方":"方",
+    "式":"式","重":"重","新":"新","加":"加","载":"載","宝":"寶","互":"互","求":"求","解":"解",
+    "辞":"辭","万":"萬","岁":"歲","历":"曆","创":"創","业":"業","网":"網","络":"絡","设":"設"
+};
 
-let isTrad = localStorage.getItem('zc_lang') === 'trad';
+let isTrad = false;
 
+// 翻译执行器
 function t(str) {
     if (!str) return str;
     if (!isTrad) return str;
     return str.split('').map(c => s2t_map[c] || c).join('');
 }
 
-window.toggleLang = function() {
-    isTrad = !isTrad;
-    localStorage.setItem('zc_lang', isTrad ? 'trad' : 'simp');
-    document.getElementById('lang-btn').innerText = isTrad ? '简体' : '繁體';
-    
-    // 刷新静态 HTML 文本
-    document.querySelectorAll('[data-t]').forEach(el => {
-        el.innerText = t(el.getAttribute('data-t'));
-    });
-    
-    // 刷新动态排盘视图
-    if(currentYaos.length > 0) renderFinalResult();
-    initDateTime();
-    if(document.getElementById('interact-manual').style.display === 'block') renderManualRows();
+// ================= 全局语言嗅探器 (拦截 nav.js 的切换动作) =================
+function checkLangState() {
+    // 自动抓取系统的语言标识（兼容大部分 i18n 插件）
+    let lang = document.documentElement.lang || localStorage.getItem('lang') || localStorage.getItem('language') || 'zh-cn';
+    lang = lang.toLowerCase();
+    // 只有明确选择了繁体（TW/HK/TC 等），才开启繁体模式。英文韩文等自动维持简体
+    return lang.includes('tw') || lang.includes('hk') || lang.includes('hant') || lang === 'tc';
 }
+
+function updateLiuyaoLang() {
+    let newTrad = checkLangState();
+    if (isTrad !== newTrad) {
+        isTrad = newTrad;
+        
+        // 瞬间替换所有 HTML 静态文本
+        document.querySelectorAll('[data-t]').forEach(el => {
+            el.innerText = t(el.getAttribute('data-t'));
+        });
+        
+        // 如果当前有排好的盘，瞬间重绘排盘数据
+        if(currentYaos.length > 0) renderFinalResult();
+        initDateTime();
+        if(document.getElementById('interact-manual').style.display === 'block') renderManualRows();
+    }
+}
+
+// 启动嗅探与静默监听
+document.addEventListener('DOMContentLoaded', () => {
+    isTrad = checkLangState();
+    document.querySelectorAll('[data-t]').forEach(el => el.innerText = t(el.getAttribute('data-t')));
+    initDateTime();
+    
+    // 监听：一旦导航栏改变了 <html> 的 lang 属性，立即执行翻译
+    const observer = new MutationObserver(updateLiuyaoLang);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'class'] });
+    
+    // 兜底监听：如果你点击了导航栏的任何按钮，延时检查一次语言状态
+    document.addEventListener('click', () => {
+        setTimeout(updateLiuyaoLang, 100);
+        setTimeout(updateLiuyaoLang, 300); // 防抖
+    });
+});
 
 // ================= 数据初始化 =================
 let currentYaos = [];
@@ -86,7 +129,6 @@ function getShensha(tgIdx, dzIdx) {
     const wenMap = {0:"巳", 1:"午", 2:"申", 3:"酉", 4:"申", 5:"酉", 6:"亥", 7:"子", 8:"寅", 9:"卯"};
     tg_ss.push(t("文昌")+"-" + wenMap[tgIdx]);
     
-    // 【修改点】：利用 flex 自动折行，在手机端不撑破屏幕
     return `
         <div class="shensha-row"><span class="shensha-label">【${t("日干神煞")}】</span> <span style="word-break: break-word;">${tg_ss.join(" &nbsp; ")}</span></div>
         <div class="shensha-row" style="margin-bottom:0;"><span class="shensha-label">【${t("日支神煞")}】</span> <span style="word-break: break-word;">${dz_ss.join(" &nbsp; ")}</span></div>
@@ -401,7 +443,7 @@ window.renderFinalResult = function() {
         let mLine = gua.main.lines[i];
         let mPos = (i === gua.main.shi) ? t('世') : (i === gua.main.ying) ? t('应') : '';
 
-        // 【修改点】：手机端节省空间的超级上标格式
+        // 手机端节省空间的超级上标格式
         let stateHtml = `<span style="font-size:0.6rem; opacity:0.7; margin-left:2px; vertical-align: super;">(${mLine.state})</span>`;
 
         mainContainer.insertAdjacentHTML('beforeend', `
@@ -434,10 +476,3 @@ window.renderFinalResult = function() {
         }
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 初始加载繁简记忆状态
-    document.getElementById('lang-btn').innerText = isTrad ? '简体' : '繁體';
-    document.querySelectorAll('[data-t]').forEach(el => el.innerText = t(el.getAttribute('data-t')));
-    initDateTime();
-});
