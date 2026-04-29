@@ -1,10 +1,40 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (包含静卦自动识别布局)
+ * ZenCode - 六爻排盘核心逻辑 (神煞与变爻六亲版)
  */
 
 let currentYaos = [];
 let currentDayTgIdx = 0; 
 let manualYaos = [];     
+
+// ================= 神煞计算算法 =================
+const DZ_ARR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+function getShensha(tgIdx, dzIdx) {
+    let ss = [];
+    // 1. 驿马 (申子辰马在寅...)
+    if ([2,6,10].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[8]);
+    else if ([8,0,4].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[2]);
+    else if ([5,9,1].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[11]);
+    else if ([11,3,7].includes(dzIdx)) ss.push("驿马-" + DZ_ARR[5]);
+    
+    // 2. 桃花 (寅午戌桃花在卯...)
+    if ([2,6,10].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[3]);
+    else if ([8,0,4].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[9]);
+    else if ([5,9,1].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[6]);
+    else if ([11,3,7].includes(dzIdx)) ss.push("桃花-" + DZ_ARR[0]);
+    
+    // 3. 贵人 (甲戊庚牛羊...)
+    if ([0,4,6].includes(tgIdx)) ss.push("贵人-丑,未");
+    else if ([1,5].includes(tgIdx)) ss.push("贵人-子,申");
+    else if ([2,3].includes(tgIdx)) ss.push("贵人-亥,酉");
+    else if ([8,9].includes(tgIdx)) ss.push("贵人-卯,巳");
+    else if (tgIdx === 7) ss.push("贵人-午,寅");
+    
+    // 4. 日禄 (甲禄在寅...)
+    const luMap = {0:"寅", 1:"卯", 2:"巳", 3:"午", 4:"巳", 5:"午", 6:"申", 7:"酉", 8:"亥", 9:"子"};
+    ss.push("日禄-" + luMap[tgIdx]);
+    
+    return ss.join("　");
+}
 
 // ================= 1. 初始化历法与时间 =================
 function initDateTime() {
@@ -16,7 +46,7 @@ function initDateTime() {
     const now = new Date();
     const d = Lunar.fromDate(now);
     currentDayTgIdx = d.getDayGanIndex(); 
-
+    
     const solarDate = d.getSolar().toYmdHms();
     const gzYear = d.getYearInGanZhi();
     const gzMonth = d.getMonthInGanZhi();
@@ -24,10 +54,16 @@ function initDateTime() {
     const gzTime = d.getTimeInGanZhi(); 
     const xunKong = d.getDayXunKong();
 
+    // 获取当天神煞
+    const shenshaStr = getShensha(currentDayTgIdx, d.getDayZhiIndex());
+
     const html = `
         <span class="info-highlight">当前推演：</span>ZenCode 命運檔案<br>
         <span class="info-highlight">公历时间：</span>${solarDate}<br>
-        <span class="info-highlight">干支历法：</span>${gzYear}年 ${gzMonth}月 ${gzDay}日 ${gzTime}时 <span style="color:var(--zc-text-muted)">（旬空：${xunKong}）</span>
+        <span class="info-highlight">干支历法：</span>${gzYear}年 ${gzMonth}月 ${gzDay}日 ${gzTime}时 <span style="color:var(--zc-text-muted)">（旬空：${xunKong}）</span><br>
+        <div style="font-size: 0.9rem; color: var(--zc-gold-dark); margin-top: 6px; letter-spacing: 1px;">
+            神煞：${shenshaStr}
+        </div>
     `;
     
     const infoDiv = document.getElementById('dynamic-info');
@@ -43,7 +79,6 @@ function showScreen(screenId) {
 function resetFlow() {
     currentYaos = [];
     showScreen('screen-choice');
-    // 恢复布局
     const panel = document.getElementById('main-panel');
     const layout = document.getElementById('gua-layout');
     panel.style.maxWidth = '850px';
@@ -232,11 +267,10 @@ window.renderFinalResult = function() {
     const gua = calcGua(currentYaos);
     const hasChange = currentYaos.some(v => v === 6 || v === 9);
 
-    // --- 静卦处理逻辑 ---
     if (!hasChange) {
         changeCol.style.display = 'none';
         guaLayout.style.gridTemplateColumns = '60px 1fr';
-        panel.style.maxWidth = '520px'; // 缩窄面板使其居中更美观
+        panel.style.maxWidth = '520px'; 
     } else {
         changeCol.style.display = 'block';
         guaLayout.style.gridTemplateColumns = '60px 1fr 1fr';
@@ -268,13 +302,21 @@ window.renderFinalResult = function() {
             let isChangeYang = val === 9 ? false : (val === 6 ? true : isMainYang);
             let isChangingLine = (val === 6 || val === 9);
             let cLine = gua.change.lines[i];
+            
+            // 变卦显示结构优化：图标 + 完整信息（含六亲）
+            let changeHtml = '';
+            if (isChangingLine) {
+                changeHtml = `
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <span class="yao-shishen" style="color:var(--zc-text-muted); width: 40px; text-align: right;">${cLine.k}</span>
+                    <span class="yao-text">${cLine.tg}${cLine.dz}${cLine.wx}</span>
+                </div>`;
+            }
+
             changeContainer.insertAdjacentHTML('beforeend', `
-                <div class="yao-row" style="justify-content: flex-start; gap: 15px;">
+                <div class="yao-row" style="justify-content: flex-start; gap: 20px;">
                     <div class="yao-symbol ${isChangeYang ? 'yao-yang' : 'yao-yin'}">${isChangeYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
-                    <div style="display:flex; gap:10px; width:120px; justify-content:flex-end;">
-                        <span class="yao-text" style="width: auto;">${isChangingLine ? cLine.tg + cLine.dz + cLine.wx : ''}</span>
-                        <span class="yao-shishen" style="width: 30px; text-align:right;">${isChangingLine ? cLine.k : ''}</span>
-                    </div>
+                    ${changeHtml}
                 </div>`);
         }
     }
