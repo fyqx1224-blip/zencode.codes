@@ -32,9 +32,8 @@
         .page-subtitle { color: var(--zc-gold-dark); font-size: 0.9rem; letter-spacing: 4px; }
 
         .zencode-panel {
-            max-width: 720px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
+            max-width: 800px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
             border: 1px solid var(--zc-border); padding: 2.5rem; position: relative;
-            transition: max-width 0.4s ease;
         }
         .zencode-panel::before, .zencode-panel::after {
             content: ''; position: absolute; width: 15px; height: 15px; border: 1px solid var(--zc-gold-dark);
@@ -77,25 +76,26 @@
         }
         .btn-dong.active { background: var(--zc-gold-dark); color: #050505; border-color: var(--zc-gold-light); box-shadow: 0 0 12px rgba(212, 168, 67, 0.4); font-weight: bold; }
 
-        /* ════════ 终极居中排版网格 ════════ */
+        /* ════════ 终极紧凑居中网格 (完全修复宽屏撕裂) ════════ */
         .gua-grid {
-            display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px;
+            display: grid; 
+            /* 【核心修复】废除 1fr，改为 auto 紧贴内容，靠 gap 控制距离 */
+            grid-template-columns: 45px auto auto; 
+            gap: 45px; 
+            justify-content: center; /* 整个网格绝对居中 */
             font-family: "Courier New", Courier, monospace; font-size: 1.05rem; transition: all 0.4s ease;
         }
-        .is-jing-gua { grid-template-columns: 50px 1fr !important; max-width: 440px; margin: 0 auto; }
+        .is-jing-gua { grid-template-columns: 45px auto !important; }
         
-        /* 标题区 */
         .gua-label { color: var(--zc-text-muted); font-size: 0.85rem; text-align: center; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.7;}
         .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
         
-        /* 六兽栏：改为与爻象像素级对齐 */
         .beast-column { padding-top: 55px; color: var(--zc-text-muted); font-size: 0.95rem; }
-        .beast-column span { display: flex; align-items: center; justify-content: flex-end; height: 36px; margin-bottom: 8px; padding-right: 10px; }
+        .beast-column span { display: flex; align-items: center; justify-content: flex-end; height: 36px; margin-bottom: 8px; padding-right: 8px; }
 
-        /* 每一爻的行：取消 space-between，改为居中抱团 */
+        /* 每一爻的行：居中抱团 */
         .yao-row { display: flex; align-items: center; justify-content: center; height: 36px; margin-bottom: 8px; gap: 12px; }
         
-        /* 元素宽度严格固定，保证垂直对齐极度工整 */
         .yao-shishen { color: var(--zc-text-muted); width: 40px; flex-shrink: 0; text-align: right; }
         .yao-text { color: var(--zc-text-main); width: 60px; white-space: nowrap; flex-shrink: 0; text-align: center; }
         .yao-symbol { width: 65px; height: 10px; display: flex; justify-content: space-between; flex-shrink: 0; }
@@ -105,7 +105,7 @@
         .yao-yang .line { width: 100%; height: 100%; background-color: var(--zc-gold-light); }
         .yao-yin .line { width: 42%; height: 100%; background-color: var(--zc-text-main); }
         
-        /* 变卦行：同样居中抱团 */
+        /* 变卦行：紧密抱团 */
         .change-row { justify-content: center; gap: 12px; }
         .change-info { display: flex; gap: 12px; align-items: center; }
         
@@ -122,8 +122,8 @@
             .page-title { font-size: 1.8rem; }
             .divination-info { font-size: 0.85rem; line-height: 1.6; }
             
-            .gua-grid { grid-template-columns: 35px 1fr 1fr; gap: 2px; }
-            .is-jing-gua { grid-template-columns: 35px 1fr !important; }
+            .gua-grid { grid-template-columns: 28px auto auto; gap: 6px; }
+            .is-jing-gua { grid-template-columns: 28px auto !important; }
             
             .beast-column { font-size: 0.75rem; padding-top: 48px; }
             .beast-column span { height: 30px; margin-bottom: 8px; justify-content: center; padding-right: 0;}
@@ -131,16 +131,15 @@
             .gua-label { font-size: 0.75rem; margin-bottom: 4px;}
             .gua-title { font-size: 0.85rem; margin-bottom: 10px; letter-spacing: 0; }
             
-            /* 手机端间距压缩 */
-            .yao-row { height: 30px; gap: 4px; }
-            .yao-shishen { width: 28px; font-size: 0.75rem; }
-            .yao-text { width: 45px; font-size: 0.75rem; letter-spacing: -0.5px; }
-            .yao-symbol { width: 45px; height: 8px; }
-            .changing-mark { width: 14px; font-size: 0.7rem; }
-            .yao-position { width: 14px; font-size: 0.7rem; }
+            .yao-row { height: 30px; gap: 3px; }
+            .yao-shishen { width: 28px; font-size: 0.7rem; }
+            .yao-text { width: 42px; font-size: 0.7rem; letter-spacing: -0.5px; }
+            .yao-symbol { width: 42px; height: 8px; }
+            .changing-mark { width: 14px; font-size: 0.65rem; }
+            .yao-position { width: 14px; font-size: 0.65rem; }
             
-            .change-row { gap: 4px; }
-            .change-info { gap: 4px; }
+            .change-row { gap: 3px; }
+            .change-info { gap: 3px; }
             
             .manual-row-interactive { padding: 10px 12px; }
             .yao-interactive { width: 60px; }
