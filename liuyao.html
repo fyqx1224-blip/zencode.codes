@@ -22,38 +22,85 @@
             color: var(--zc-text-main);
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             margin: 0; padding: 0;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #050505 80%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .page-header { text-align: center; padding: 4rem 0 2rem; }
-        .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; }
+        /* ════════ 纯 CSS 动态流光背景 (阴阳交缠特效) ════════ */
+        .flowing-light-bg {
+            position: fixed; inset: 0; z-index: -2; background-color: var(--zc-bg-main); overflow: hidden;
+        }
+        
+        /* 流光基础属性：极度模糊、半透明、混合模式 */
+        .light-orb {
+            position: absolute; border-radius: 50%; filter: blur(90px); -webkit-filter: blur(90px);
+            opacity: 0.4; mix-blend-mode: screen; animation: orb-flow infinite alternate ease-in-out;
+        }
+        
+        /* 阳气流光：亮金色，从左上往右下流转 */
+        .orb-yang {
+            width: 55vw; height: 55vw; top: -10%; left: -10%;
+            background: radial-gradient(circle, rgba(230,197,135,0.25) 0%, transparent 70%);
+            animation-duration: 22s;
+        }
+        
+        /* 阴气流光：暗金色，从右下往左上流转 */
+        .orb-yin {
+            width: 65vw; height: 65vw; bottom: -20%; right: -10%;
+            background: radial-gradient(circle, rgba(138,115,66,0.3) 0%, transparent 70%);
+            animation-duration: 26s; animation-delay: -5s;
+        }
+        
+        /* 核心流光：在中央呼吸交融 */
+        .orb-core {
+            width: 45vw; height: 80vw; top: 10%; left: 30%;
+            background: radial-gradient(ellipse, rgba(212,168,67,0.15) 0%, transparent 60%);
+            animation-duration: 30s; animation-delay: -12s;
+        }
+
+        /* 阴阳交缠的流转动画路径 */
+        @keyframes orb-flow {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(15vw, 10vh) scale(1.1) rotate(45deg); }
+            66% { transform: translate(-10vw, 20vh) scale(0.9) rotate(90deg); }
+            100% { transform: translate(10vw, -15vh) scale(1.2) rotate(135deg); }
+        }
+
+        /* 粒子星空 Canvas 层 */
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.7; }
+
+        /* 标题与版式 */
+        .page-header { text-align: center; padding: 4rem 0 2rem; position: relative; z-index: 10; }
+        .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; text-shadow: 0 0 15px rgba(212, 168, 67, 0.3); }
         .page-subtitle { color: var(--zc-gold-dark); font-size: 0.9rem; letter-spacing: 4px; }
 
+        /* 面板容器 (带有毛玻璃效果，流光在底下透出) */
         .zencode-panel {
-            max-width: 720px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
-            border: 1px solid var(--zc-border); padding: 2.5rem; position: relative;
-            transition: max-width 0.4s ease;
+            max-width: 720px; margin: 0 auto 3rem; 
+            background-color: rgba(13, 12, 17, 0.75); /* 半透明底色 */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); /* 高级毛玻璃 */
+            border: 1px solid rgba(138, 115, 66, 0.3); padding: 2.5rem; position: relative;
+            transition: max-width 0.4s ease; box-shadow: 0 10px 50px rgba(0,0,0,0.8);
         }
         .zencode-panel::before, .zencode-panel::after { content: ''; position: absolute; width: 15px; height: 15px; border: 1px solid var(--zc-gold-dark); }
         .zencode-panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
         .zencode-panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
         .divination-info {
-            border-bottom: 1px dashed var(--zc-gold-dark); padding-bottom: 1.5rem; margin-bottom: 2rem;
+            border-bottom: 1px dashed rgba(138, 115, 66, 0.5); padding-bottom: 1.5rem; margin-bottom: 2rem;
             font-family: "Courier New", Courier, monospace; line-height: 2; color: var(--zc-text-main); font-size: 1.05rem;
         }
         .info-highlight { color: var(--zc-gold-light); }
 
         .zc-btn {
-            background: transparent; border: 1px solid var(--zc-gold-dark); color: var(--zc-gold-light);
-            padding: 12px 30px; cursor: pointer; transition: all 0.3s; font-family: inherit;
+            background: rgba(138, 115, 66, 0.1); border: 1px solid var(--zc-gold-dark); color: var(--zc-gold-light);
+            padding: 12px 30px; cursor: pointer; transition: all 0.3s; font-family: inherit; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
             font-size: 1.1rem; border-radius: 2px; width: 280px; letter-spacing: 2px;
         }
-        .zc-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); }
-        .zc-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--zc-border); color: var(--zc-text-muted); background: transparent; }
+        .zc-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); box-shadow: 0 0 15px rgba(212, 168, 67, 0.4); }
+        .zc-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--zc-border); color: var(--zc-text-muted); background: transparent; box-shadow: none;}
         .zc-btn-text { background: none; border: none; color: var(--zc-text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
-        .zc-btn-text:hover { color: var(--zc-gold-light); }
+        .zc-btn-text:hover { color: var(--zc-gold-light); text-shadow: 0 0 8px rgba(212, 168, 67, 0.6); }
 
         /* 3D 铜钱强力兼容样式 */
         .coins-container { display: flex; justify-content: center; gap: 25px; margin: 40px 0 30px; perspective: 1000px; -webkit-perspective: 1000px; }
@@ -66,7 +113,7 @@
             color: #3b2f15; font-family: "STZhongsong", serif; font-weight: bold;
         }
         .coin-back { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
-        .coin-hole { width: 16px; height: 16px; background: var(--zc-bg-panel); border: 2px solid #5a4b2a; position: absolute; z-index: 2; }
+        .coin-hole { width: 16px; height: 16px; background: rgba(13, 12, 17, 0.9); border: 2px solid #5a4b2a; position: absolute; z-index: 2; }
         .char-top { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); -webkit-transform: translateX(-50%); font-size: 12px;}
         .char-bottom { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); -webkit-transform: translateX(-50%); font-size: 12px;}
         .char-left { position: absolute; left: 3px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); font-size: 12px;}
@@ -82,49 +129,48 @@
 
         /* 手工排盘动态交互样式 */
         .manual-row-interactive {
-            display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--zc-border); padding: 14px 24px;
-            margin-bottom: 8px; background: rgba(0,0,0,0.3); border-radius: 2px; max-width: 400px; margin-left: auto; margin-right: auto;
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(138, 115, 66, 0.3); padding: 14px 24px;
+            margin-bottom: 8px; background: rgba(0,0,0,0.5); border-radius: 2px; max-width: 400px; margin-left: auto; margin-right: auto;
         }
         .yao-interactive { width: 100px; height: 14px; cursor: pointer; display: flex; justify-content: space-between; transition: all 0.2s ease; }
         .yao-interactive:hover { filter: brightness(1.2); transform: scale(1.05); }
         .yao-dashed .line { width: 100%; height: 100%; border: 1px dashed rgba(212, 168, 67, 0.4); background: transparent; }
 
         .btn-dong {
-            width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--zc-border); background: rgba(0,0,0,0.5); color: var(--zc-text-muted); 
+            width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--zc-border); background: rgba(0,0,0,0.6); color: var(--zc-text-muted); 
             font-size: 0.85rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; user-select: none;
         }
         .btn-dong.active { background: var(--zc-gold-dark); color: #050505; border-color: var(--zc-gold-light); box-shadow: 0 0 12px rgba(212, 168, 67, 0.4); font-weight: bold; }
 
-        /* ════════ 排版网格 ════════ */
+        /* 排版网格 */
         .gua-grid {
             display: grid; grid-template-columns: 45px auto auto; gap: 40px; justify-content: center;
             font-family: "Courier New", Courier, monospace; font-size: 1.05rem; transition: all 0.4s ease;
         }
         .is-jing-gua { grid-template-columns: 45px auto !important; }
         
-        .gua-label { color: var(--zc-text-muted); font-size: 0.85rem; text-align: center; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.7;}
-        .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
+        .gua-label { color: var(--zc-text-muted); font-size: 0.85rem; text-align: center; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.8;}
+        .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 8px rgba(212, 168, 67, 0.3); }
         
-        .beast-column { padding-top: 55px; color: var(--zc-text-muted); font-size: 0.95rem; }
+        .beast-column { padding-top: 55px; color: var(--zc-gold-dark); opacity: 0.8; font-size: 0.95rem; font-weight: bold; }
         .beast-column span { display: flex; align-items: center; justify-content: flex-end; height: 36px; margin-bottom: 8px; padding-right: 8px; }
 
         .yao-row { display: flex; align-items: center; justify-content: center; height: 36px; margin-bottom: 8px; gap: 12px; }
         
         .yao-shishen { color: var(--zc-text-muted); width: 40px; flex-shrink: 0; text-align: right; }
-        /* 增加宽度以容纳 (旺相休囚死) 状态字眼 */
         .yao-text { color: var(--zc-text-main); width: 85px; white-space: nowrap; flex-shrink: 0; text-align: left; padding-left: 5px;}
-        .yao-symbol { width: 65px; height: 10px; display: flex; justify-content: space-between; flex-shrink: 0; }
+        .yao-symbol { width: 65px; height: 10px; display: flex; justify-content: space-between; flex-shrink: 0; filter: drop-shadow(0 0 4px rgba(212, 168, 67, 0.2));}
         .changing-mark { color: var(--zc-gold-dark); width: 25px; text-align: center; font-weight: bold; flex-shrink: 0; }
         .yao-position { color: var(--zc-gold-dark); width: 20px; text-align: center; flex-shrink: 0; }
 
-        .yao-yang .line { width: 100%; height: 100%; background-color: var(--zc-gold-light); }
+        .yao-yang .line { width: 100%; height: 100%; background-color: var(--zc-gold-light); box-shadow: 0 0 5px rgba(212, 168, 67, 0.3);}
         .yao-yin .line { width: 42%; height: 100%; background-color: var(--zc-text-main); }
         
         .change-row { justify-content: center; gap: 12px; }
         .change-info { display: flex; gap: 12px; align-items: center; }
         
-        .is-active-line .yao-shishen { color: var(--zc-gold-dark); font-weight: bold; opacity: 1; }
-        .is-active-line .yao-text { color: var(--zc-gold-light); font-weight: bold; opacity: 1; }
+        .is-active-line .yao-shishen { color: var(--zc-gold-dark); font-weight: bold; opacity: 1; text-shadow: 0 0 8px rgba(138, 115, 66, 0.4); }
+        .is-active-line .yao-text { color: var(--zc-gold-light); font-weight: bold; opacity: 1; text-shadow: 0 0 8px rgba(212, 168, 67, 0.4); }
         .is-static-line .yao-shishen { opacity: 0.35; }
         .is-static-line .yao-text { opacity: 0.35; }
 
@@ -145,7 +191,6 @@
             
             .yao-row { height: 30px; gap: 4px; }
             .yao-shishen { width: 28px; font-size: 0.7rem; }
-            /* 手机端同步加宽 */
             .yao-text { width: 65px; font-size: 0.7rem; letter-spacing: -0.5px; padding-left: 2px;}
             .yao-symbol { width: 42px; height: 8px; }
             .changing-mark { width: 14px; font-size: 0.65rem; }
@@ -160,6 +205,14 @@
     </style>
 </head>
 <body>
+
+    <div class="flowing-light-bg">
+        <div class="light-orb orb-yang"></div>
+        <div class="light-orb orb-yin"></div>
+        <div class="light-orb orb-core"></div>
+    </div>
+    
+    <canvas id="bg-canvas"></canvas>
 
     <div id="nav-container"></div>
 
@@ -241,6 +294,31 @@
         </div>
 
     </div>
+
+    <script>
+    (function(){
+        const c=document.getElementById('bg-canvas'), ctx=c.getContext('2d');
+        let W,H,stars=[];
+        function resize(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+        resize(); addEventListener('resize', resize);
+        function init(){
+            stars=[];
+            for(let i=0,n=Math.floor(W*H/2000);i<n;i++)
+                stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,a:Math.random()*.5+.1,sp:Math.random()*.002+.0005,ph:Math.random()*Math.PI*2,col:Math.random()>.85?'200,200,240':'232,211,153'});
+        }
+        init(); let t=0;
+        function draw(){
+            ctx.clearRect(0,0,W,H); t+=.005;
+            stars.forEach(s=>{
+                const a=s.a*(.3+.7*Math.sin(t*s.sp*100+s.ph));
+                ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+                ctx.fillStyle=`rgba(${s.col},${a})`; ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
 
     <script src="i18n.js"></script>
     <script src="nav.js"></script>
