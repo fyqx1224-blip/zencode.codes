@@ -1,5 +1,5 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (去内联样式纯净版)
+ * ZenCode - 六爻排盘核心逻辑
  */
 
 let currentYaos = [];
@@ -58,8 +58,8 @@ window.resetFlow = function() {
     showScreen('screen-choice');
     const panel = document.getElementById('main-panel');
     const layout = document.getElementById('gua-layout');
-    panel.style.maxWidth = '850px';
-    layout.className = 'gua-grid'; // 清除静卦类名
+    panel.style.maxWidth = '720px'; // 恢复初始设定
+    layout.className = 'gua-grid';
     initDateTime();
 }
 
@@ -196,7 +196,9 @@ function getPalaceAndShi(b, t) {
     return { p: 7, shi: 0 };
 }
 
-function getKinship(palaceWx, lineWx) { return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5]; }
+function getKinship(palaceWx, lineWx) {
+    return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5];
+}
 
 function calcGua(yaos) {
     let mY = [], cY = [];
@@ -229,7 +231,7 @@ function calcGua(yaos) {
     };
 }
 
-// ================= 5. 最终渲染 (纯CSS类控制) =================
+// ================= 5. 最终渲染 =================
 window.renderFinalResult = function() {
     showScreen('screen-result');
     const mainContainer = document.getElementById('dynamic-main-gua');
@@ -247,11 +249,11 @@ window.renderFinalResult = function() {
     if (!hasChange) {
         changeCol.style.display = 'none';
         guaLayout.classList.add('is-jing-gua');
-        panel.style.maxWidth = '520px'; 
+        panel.style.maxWidth = '460px'; // 静卦时再缩窄一点居中
     } else {
         changeCol.style.display = 'block';
         guaLayout.classList.remove('is-jing-gua');
-        panel.style.maxWidth = '850px';
+        panel.style.maxWidth = '720px'; // 动卦时使用控制后的紧凑宽度
     }
 
     document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
@@ -281,7 +283,6 @@ window.renderFinalResult = function() {
             let cLine = gua.change.lines[i];
             let cPos = (i === gua.change.shi) ? '世' : (i === gua.change.ying) ? '应' : '';
             
-            // 使用 CSS 类来控制颜色和透明度，绝对杜绝内联 style 宽度
             let stateClass = isChangingLine ? 'is-active-line' : 'is-static-line';
 
             changeContainer.insertAdjacentHTML('beforeend', `
