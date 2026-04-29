@@ -1,99 +1,114 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (完整神煞与衰旺推演版)
+ * ZenCode - 六爻排盘核心逻辑 (繁简切换 + 移动端自适应重构)
  */
 
+// ================= 繁简翻译引擎 =================
+const s2t_map = {"阴":"陰","阳":"陽","动":"動","变":"變","宫":"宮","财":"財","孙":"孫","龙":"龍","陈":"陳","复":"復","师":"師","临":"臨","谦":"謙","归":"歸","丰":"豐","恒":"恆","济":"濟","随":"隨","兑":"兌","过":"過","剥":"剝","颐":"頤","损":"損","贲":"賁","蛊":"蠱","晋":"晉","观":"觀","涣":"渙","渐":"漸","无":"無","讼":"訟","门":"門","档":"檔","历":"歷","时":"時","间":"間","马":"馬","华":"華","盖":"蓋","煞":"煞","灾":"災","贵":"貴","禄":"祿","测":"測","选":"選","择":"擇","推":"推","演":"演","盘":"盤","点":"點","击":"擊","铜":"銅","钱":"錢","摇":"搖","会":"會","联":"聯","系":"系","们":"們","预":"預","约":"約","师":"師","态":"態","掷":"擲","线":"線","冲":"沖","游":"遊", "应":"應", "当":"當", "前":"前", "法":"法", "旬":"旬", "空":"空", "日":"日", "干":"干", "支":"支", "驿":"驛", "花":"花", "将":"將", "刃":"刃", "文":"文", "昌":"昌", "旺":"旺", "相":"相", "休":"休", "囚":"囚", "死":"死", "老":"老", "少":"少", "分":"分", "出":"出", "次":"次", "转":"轉", "中":"中", "生":"生", "成":"成", "排":"排", "定":"定", "初":"初", "二":"二", "三":"三", "四":"四", "五":"五", "上":"上", "合":"合", "魂":"魂", "本":"本", "不":"不", "我":"我", "方":"方", "式":"式", "重":"重", "新":"新", "网":"網", "络":"絡", "设":"設", "备":"備", "买":"買", "卖":"賣", "加":"加", "载":"載", "繁":"繁", "体":"體", "简":"簡", "宝":"寶"};
+
+let isTrad = localStorage.getItem('zc_lang') === 'trad';
+
+function t(str) {
+    if (!str) return str;
+    if (!isTrad) return str;
+    return str.split('').map(c => s2t_map[c] || c).join('');
+}
+
+window.toggleLang = function() {
+    isTrad = !isTrad;
+    localStorage.setItem('zc_lang', isTrad ? 'trad' : 'simp');
+    document.getElementById('lang-btn').innerText = isTrad ? '简体' : '繁體';
+    
+    // 刷新静态 HTML 文本
+    document.querySelectorAll('[data-t]').forEach(el => {
+        el.innerText = t(el.getAttribute('data-t'));
+    });
+    
+    // 刷新动态排盘视图
+    if(currentYaos.length > 0) renderFinalResult();
+    initDateTime();
+    if(document.getElementById('interact-manual').style.display === 'block') renderManualRows();
+}
+
+// ================= 数据初始化 =================
 let currentYaos = [];
 let currentDayTgIdx = 0; 
-let currentMonthZhiIdx = 0; // 新增：保存月支，用于推算五行衰旺
+let currentMonthZhiIdx = 0; 
 let manualYaos = [];     
 
-// ================= 神煞计算算法全家桶 =================
+// ================= 神煞计算算法 =================
 const DZ_ARR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 function getShensha(tgIdx, dzIdx) {
     let tg_ss = [];
     let dz_ss = [];
     
-    // ---------------- 1. 日支神煞 ----------------
-    // 驿马: 申子辰马在寅, 亥卯未马在巳, 寅午戌马在申, 巳酉丑马在亥
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("驿马-寅");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("驿马-巳");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("驿马-申");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("驿马-亥");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("驿马")+"-寅");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("驿马")+"-巳");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("驿马")+"-申");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("驿马")+"-亥");
     
-    // 桃花: 申子辰见酉, 亥卯未见子, 寅午戌见卯, 巳酉丑见午
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("桃花-酉");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("桃花-子");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("桃花-卯");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("桃花-午");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("桃花")+"-酉");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("桃花")+"-子");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("桃花")+"-卯");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("桃花")+"-午");
 
-    // 将星: 申子辰见子, 亥卯未见卯, 寅午戌见午, 巳酉丑见酉
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("将星-子");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("将星-卯");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("将星-午");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("将星-酉");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("将星")+"-子");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("将星")+"-卯");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("将星")+"-午");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("将星")+"-酉");
 
-    // 华盖: 申子辰见辰, 亥卯未见未, 寅午戌见戌, 巳酉丑见丑
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("华盖-辰");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("华盖-未");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("华盖-戌");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("华盖-丑");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("华盖")+"-辰");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("华盖")+"-未");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("华盖")+"-戌");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("华盖")+"-丑");
 
-    // 劫煞: 申子辰见巳, 亥卯未见申, 寅午戌见亥, 巳酉丑见寅
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("劫煞-巳");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("劫煞-申");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("劫煞-亥");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("劫煞-寅");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("劫煞")+"-巳");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("劫煞")+"-申");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("劫煞")+"-亥");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("劫煞")+"-寅");
 
-    // 灾煞: 申子辰见午, 亥卯未见酉, 寅午戌见子, 巳酉丑见卯
-    if ([8,0,4].includes(dzIdx)) dz_ss.push("灾煞-午");
-    else if ([11,3,7].includes(dzIdx)) dz_ss.push("灾煞-酉");
-    else if ([2,6,10].includes(dzIdx)) dz_ss.push("灾煞-子");
-    else if ([5,9,1].includes(dzIdx)) dz_ss.push("灾煞-卯");
+    if ([8,0,4].includes(dzIdx)) dz_ss.push(t("灾煞")+"-午");
+    else if ([11,3,7].includes(dzIdx)) dz_ss.push(t("灾煞")+"-酉");
+    else if ([2,6,10].includes(dzIdx)) dz_ss.push(t("灾煞")+"-子");
+    else if ([5,9,1].includes(dzIdx)) dz_ss.push(t("灾煞")+"-卯");
 
-    // ---------------- 2. 日干神煞 ----------------
-    // 贵人: 甲戊庚牛羊, 乙己鼠猴乡, 丙丁猪鸡位, 壬癸兔蛇藏, 六辛逢马虎
-    if ([0,4,6].includes(tgIdx)) tg_ss.push("贵人-丑,未");
-    else if ([1,5].includes(tgIdx)) tg_ss.push("贵人-子,申");
-    else if ([2,3].includes(tgIdx)) tg_ss.push("贵人-亥,酉");
-    else if ([8,9].includes(tgIdx)) tg_ss.push("贵人-卯,巳");
-    else if (tgIdx === 7) tg_ss.push("贵人-午,寅");
+    if ([0,4,6].includes(tgIdx)) tg_ss.push(t("贵人")+"-丑,未");
+    else if ([1,5].includes(tgIdx)) tg_ss.push(t("贵人")+"-子,申");
+    else if ([2,3].includes(tgIdx)) tg_ss.push(t("贵人")+"-亥,酉");
+    else if ([8,9].includes(tgIdx)) tg_ss.push(t("贵人")+"-卯,巳");
+    else if (tgIdx === 7) tg_ss.push(t("贵人")+"-午,寅");
     
-    // 日禄: 甲禄在寅, 乙禄在卯, 丙戊在巳, 丁己在午, 庚在申, 辛在酉, 壬在亥, 癸在子
     const luMap = {0:"寅", 1:"卯", 2:"巳", 3:"午", 4:"巳", 5:"午", 6:"申", 7:"酉", 8:"亥", 9:"子"};
-    tg_ss.push("日禄-" + luMap[tgIdx]);
+    tg_ss.push(t("日禄")+"-" + luMap[tgIdx]);
 
-    // 羊刃: 禄前一辰
     const renMap = {0:"卯", 1:"辰", 2:"午", 3:"未", 4:"午", 5:"未", 6:"酉", 7:"戌", 8:"子", 9:"丑"};
-    tg_ss.push("羊刃-" + renMap[tgIdx]);
+    tg_ss.push(t("羊刃")+"-" + renMap[tgIdx]);
 
-    // 文昌: 甲巳, 乙午, 丙戊申, 丁己酉, 庚亥, 辛子, 壬寅, 癸卯
     const wenMap = {0:"巳", 1:"午", 2:"申", 3:"酉", 4:"申", 5:"酉", 6:"亥", 7:"子", 8:"寅", 9:"卯"};
-    tg_ss.push("文昌-" + wenMap[tgIdx]);
+    tg_ss.push(t("文昌")+"-" + wenMap[tgIdx]);
     
+    // 【修改点】：利用 flex 自动折行，在手机端不撑破屏幕
     return `
-        <div style="margin-bottom:6px;"><b>【日干神煞】</b> ${tg_ss.join(" &nbsp; ")}</div>
-        <div><b>【日支神煞】</b> ${dz_ss.join(" &nbsp; ")}</div>
+        <div class="shensha-row"><span class="shensha-label">【${t("日干神煞")}】</span> <span style="word-break: break-word;">${tg_ss.join(" &nbsp; ")}</span></div>
+        <div class="shensha-row" style="margin-bottom:0;"><span class="shensha-label">【${t("日支神煞")}】</span> <span style="word-break: break-word;">${dz_ss.join(" &nbsp; ")}</span></div>
     `;
 }
 
 // ================= 五行旺相休囚死算法 =================
 function getWangXiang(monthZhiIdx, yaoWx) {
-    let monthWx = "土"; // 辰(4),戌(10),丑(1),未(7)
-    if ([0, 11].includes(monthZhiIdx)) monthWx = "水"; // 子, 亥
-    if ([2, 3].includes(monthZhiIdx)) monthWx = "木";  // 寅, 卯
-    if ([5, 6].includes(monthZhiIdx)) monthWx = "火";  // 巳, 午
-    if ([8, 9].includes(monthZhiIdx)) monthWx = "金";  // 申, 酉
+    let monthWx = "土";
+    if ([0, 11].includes(monthZhiIdx)) monthWx = "水"; 
+    if ([2, 3].includes(monthZhiIdx)) monthWx = "木";  
+    if ([5, 6].includes(monthZhiIdx)) monthWx = "火";  
+    if ([8, 9].includes(monthZhiIdx)) monthWx = "金";  
 
-    // 五行生克流转规则
     const gen = {"木":"火", "火":"土", "土":"金", "金":"水", "水":"木"};
     const res = {"木":"土", "土":"水", "水":"火", "火":"金", "金":"木"};
 
-    if (yaoWx === monthWx) return "旺";         // 同我者旺
-    if (gen[monthWx] === yaoWx) return "相";    // 我生者相 (月建生该爻)
-    if (gen[yaoWx] === monthWx) return "休";    // 生我者休 (该爻生月建)
-    if (res[yaoWx] === monthWx) return "囚";    // 克我者囚 (该爻克月建)
-    if (res[monthWx] === yaoWx) return "死";    // 我克者死 (月建克该爻)
-
+    if (yaoWx === monthWx) return t("旺");         
+    if (gen[monthWx] === yaoWx) return t("相");    
+    if (gen[yaoWx] === monthWx) return t("休");    
+    if (res[yaoWx] === monthWx) return t("囚");    
+    if (res[monthWx] === yaoWx) return t("死");    
     return "";
 }
 
@@ -102,13 +117,13 @@ function initDateTime() {
     const now = new Date();
     const d = Lunar.fromDate(now);
     currentDayTgIdx = d.getDayGanIndex(); 
-    currentMonthZhiIdx = d.getMonthZhiIndex(); // 保存当前月支索引
+    currentMonthZhiIdx = d.getMonthZhiIndex(); 
     
     const html = `
-        <span class="info-highlight">当前推演：</span>ZenCode 命運檔案<br>
-        <span class="info-highlight">公历时间：</span>${d.getSolar().toYmdHms()}<br>
-        <span class="info-highlight">干支历法：</span>${d.getYearInGanZhi()}年 ${d.getMonthInGanZhi()}月 ${d.getDayInGanZhi()}日 ${d.getTimeInGanZhi()}时 <span style="color:var(--zc-text-muted)">（旬空：${d.getDayXunKong()}）</span><br>
-        <div style="font-size: 0.9rem; color: var(--zc-gold-dark); margin-top: 10px; letter-spacing: 1px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 4px; border: 1px solid rgba(138, 115, 66, 0.2);">
+        <span class="info-highlight">${t("当前推演")}：</span>ZenCode ${t("命运档案")}<br>
+        <span class="info-highlight">${t("公历时间")}：</span>${d.getSolar().toYmdHms()}<br>
+        <span class="info-highlight">${t("干支历法")}：</span>${d.getYearInGanZhi()}${t("年")} ${d.getMonthInGanZhi()}${t("月")} ${d.getDayInGanZhi()}${t("日")} ${d.getTimeInGanZhi()}${t("时")} <span style="color:var(--zc-text-muted)">（${t("旬空")}：${d.getDayXunKong()}）</span><br>
+        <div style="font-size: 0.85rem; color: var(--zc-gold-dark); margin-top: 10px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 4px; border: 1px solid rgba(138, 115, 66, 0.2);">
             ${getShensha(currentDayTgIdx, d.getDayZhiIndex())}
         </div>
     `;
@@ -117,17 +132,14 @@ function initDateTime() {
 
 function showScreen(screenId) {
     const screens = document.querySelectorAll('.flow-screen');
-    for(let i=0; i<screens.length; i++) {
-        screens[i].style.display = 'none';
-    }
+    for(let i=0; i<screens.length; i++) screens[i].style.display = 'none';
     document.getElementById(screenId).style.display = 'block';
 }
 
 window.resetFlow = function() {
     currentYaos = [];
     showScreen('screen-choice');
-    const layout = document.getElementById('gua-layout');
-    layout.className = 'gua-grid';
+    document.getElementById('gua-layout').className = 'gua-grid';
     initDateTime();
 }
 
@@ -147,14 +159,14 @@ function executeTimeMethod() {
 
 function setupShakeMethod() {
     showScreen('screen-interact');
-    document.getElementById('interact-title').innerText = "心诚则灵 · 掷铜钱排盘";
+    document.getElementById('interact-title').innerText = t("心诚则灵 · 掷铜钱排盘");
     document.getElementById('interact-manual').style.display = 'none';
     document.getElementById('interact-shake').style.display = 'block';
     
     const progressDiv = document.getElementById('shake-progress');
     progressDiv.innerHTML = ''; 
     const btn = document.getElementById('btn-shake');
-    btn.innerText = "掷出铜钱 (第1次)";
+    btn.innerText = t("掷出铜钱 (第1次)");
     btn.disabled = false;
     
     const coins = document.querySelectorAll('.coin');
@@ -167,19 +179,11 @@ function setupShakeMethod() {
     btn.onclick = function() {
         if (currentYaos.length >= 6) return;
         btn.disabled = true;
-        btn.innerText = "铜钱翻转中...";
+        btn.innerText = t("铜钱翻转中...");
 
-        let sum = 0;
-        let results = [];
-        for(let i = 0; i < 3; i++) {
-            let isFront = Math.random() > 0.5;
-            results.push(isFront);
-            sum += isFront ? 3 : 2;
-        }
-
-        for (let i = 0; i < coins.length; i++) {
-            coins[i].style.animation = 'none';
-        }
+        let sum = 0; let results = [];
+        for(let i = 0; i < 3; i++) { let isFront = Math.random() > 0.5; results.push(isFront); sum += isFront ? 3 : 2; }
+        for (let i = 0; i < coins.length; i++) coins[i].style.animation = 'none';
 
         setTimeout(() => {
             for (let i = 0; i < coins.length; i++) {
@@ -191,25 +195,25 @@ function setupShakeMethod() {
         setTimeout(() => {
             currentYaos.push(sum);
             let isYang = (sum === 7 || sum === 9);
-            let mark = sum === 9 ? '○ (动)' : (sum === 6 ? '× (动)' : '');
-            let yaoName = sum === 9 ? '老阳' : (sum === 8 ? '少阴' : (sum === 7 ? '少阳' : '老阴'));
+            let mark = sum === 9 ? t('○ (动)') : (sum === 6 ? t('× (动)') : '');
+            let yaoName = sum === 9 ? t('老阳') : (sum === 8 ? t('少阴') : (sum === 7 ? t('少阳') : t('老阴')));
             
             let yaoHtml = isYang ? `<div class="yao-symbol yao-yang"><div class="line"></div></div>` : `<div class="yao-symbol yao-yin"><div class="line"></div><div class="line"></div></div>`;
             
             progressDiv.insertAdjacentHTML('beforeend', `
                 <div style="display:flex; align-items:center; gap: 15px; opacity: 0; animation: fadeInYao 0.5s forwards; -webkit-animation: fadeInYao 0.5s forwards;">
                     <span style="color:var(--zc-gold-dark); width: 100px; text-align:right; font-size:0.85rem; letter-spacing: 1px;">
-                        ${sum}分 ${yaoName} <span style="color:var(--zc-gold-light)">${mark}</span>
+                        ${sum}${t('分')} ${yaoName} <span style="color:var(--zc-gold-light)">${mark}</span>
                     </span>
                     ${yaoHtml}
                 </div>
             `);
 
             if (currentYaos.length === 6) {
-                btn.innerText = "排定八宫纳甲...";
+                btn.innerText = t("排定八宫纳甲...");
                 setTimeout(renderFinalResult, 800);
             } else {
-                btn.innerText = `掷出铜钱 (第${currentYaos.length + 1}次)`;
+                btn.innerText = t(`掷出铜钱 (第${currentYaos.length + 1}次)`);
                 btn.disabled = false;
             }
         }, 1100);
@@ -218,14 +222,12 @@ function setupShakeMethod() {
 
 function setupManualMethod() {
     showScreen('screen-interact');
-    document.getElementById('interact-title').innerText = "点按虚线排定阴阳";
+    document.getElementById('interact-title').innerText = t("点按虚线排定阴阳");
     document.getElementById('interact-shake').style.display = 'none';
     document.getElementById('interact-manual').style.display = 'block';
     
     manualYaos = [];
-    for(let i=0; i<6; i++) {
-        manualYaos.push({ set: false, isYang: true, isChanging: false });
-    }
+    for(let i=0; i<6; i++) manualYaos.push({ set: false, isYang: true, isChanging: false });
     renderManualRows();
 }
 
@@ -247,7 +249,7 @@ window.toggleManualDong = function(idx) {
 function renderManualRows() {
     const container = document.getElementById('manual-rows');
     container.innerHTML = '';
-    const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+    const names = [t('初爻'), t('二爻'), t('三爻'), t('四爻'), t('五爻'), t('上爻')];
     
     for(let i=5; i>=0; i--) {
         let y = manualYaos[i];
@@ -259,7 +261,7 @@ function renderManualRows() {
             <div class="manual-row-interactive">
                 <span style="color: var(--zc-gold-light); width: 60px; font-weight: bold; letter-spacing:2px;">${names[i]}</span>
                 ${yaoHtml}
-                <div class="${dongClass}" onclick="toggleManualDong(${i})">动</div>
+                <div class="${dongClass}" onclick="toggleManualDong(${i})">${t("动")}</div>
             </div>`;
     }
 }
@@ -268,7 +270,7 @@ window.generateManualGua = function() {
     currentYaos = [];
     for(let i=0; i<6; i++) {
         let y = manualYaos[i];
-        if (!y.set) { alert("请先点按排定所有六个爻的阴阳！"); return; }
+        if (!y.set) { alert(t("请先点按排定所有六个爻的阴阳！")); return; }
         currentYaos.push(y.isYang ? (y.isChanging ? 9 : 7) : (y.isChanging ? 6 : 8));
     }
     renderFinalResult();
@@ -301,34 +303,32 @@ const NA_JIA_DZ = {
 };
 const NA_JIA_TG = { 0:["乙","癸"], 1:["庚","庚"], 2:["戊","戊"], 3:["丁","丁"], 4:["丙","丙"], 5:["己","己"], 6:["辛","辛"], 7:["甲","壬"] };
 
-function getGuaTags(b, t, name) {
+function getGuaTags(b, t_val, name) {
     let tags = [];
-    let x = b ^ t;
-    if (x === 5) tags.push("游魂");
-    if (x === 2) tags.push("归魂");
-    if (x === 0 || name === "天雷无妄" || name === "雷天大壮") tags.push("六冲");
+    let x = b ^ t_val;
+    if (x === 5) tags.push(t("游魂"));
+    if (x === 2) tags.push(t("归魂"));
+    if (x === 0 || name === "天雷无妄" || name === "雷天大壮") tags.push(t("六冲"));
     const liuHe = ["天地否", "地天泰", "水泽节", "泽水困", "火山旅", "山火贲", "雷地豫", "地雷复"];
-    if (liuHe.includes(name)) tags.push("六合");
+    if (liuHe.includes(name)) tags.push(t("六合"));
     
     return tags.length > 0 ? `<span style="font-size:0.75rem; color:var(--zc-gold-dark); font-weight:normal; margin-left:8px; opacity:0.8;">[${tags.join("·")}]</span>` : "";
 }
 
-function getPalaceAndShi(b, t) {
-    let x = b ^ t;
+function getPalaceAndShi(b, t_val) {
+    let x = b ^ t_val;
     if (x === 0) return { p: b, shi: 5 };
-    if (x === 1) return { p: t, shi: 0 };
-    if (x === 3) return { p: t, shi: 1 };
-    if (x === 7) return { p: t, shi: 2 };
-    if (x === 6) return { p: t ^ 1, shi: 3 };
-    if (x === 4) return { p: t ^ 3, shi: 4 };
-    if (x === 5) return { p: t ^ 2, shi: 3 }; 
+    if (x === 1) return { p: t_val, shi: 0 };
+    if (x === 3) return { p: t_val, shi: 1 };
+    if (x === 7) return { p: t_val, shi: 2 };
+    if (x === 6) return { p: t_val ^ 1, shi: 3 };
+    if (x === 4) return { p: t_val ^ 3, shi: 4 };
+    if (x === 5) return { p: t_val ^ 2, shi: 3 }; 
     if (x === 2) return { p: b, shi: 2 };     
     return { p: 7, shi: 0 };
 }
 
-function getKinship(palaceWx, lineWx) {
-    return KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5];
-}
+function getKinship(palaceWx, lineWx) { return t(KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5]); }
 
 function calcGua(yaos) {
     let mY = [], cY = [];
@@ -343,28 +343,26 @@ function calcGua(yaos) {
     let infoC = getPalaceAndShi(bC, tC); 
     let pWx = PALACE_WX[infoM.p]; 
 
-    function buildLines(b, t) {
+    function buildLines(b, t_val) {
         let lines = [];
         for(let i=0; i<3; i++) {
-            let dzIdx = NA_JIA_DZ[b][0][i];
-            let wxStr = DZ_WX[dzIdx];
-            lines.push({tg:NA_JIA_TG[b][0], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
+            let dzIdx = NA_JIA_DZ[b][0][i]; let wxStr = DZ_WX[dzIdx];
+            lines.push({tg:t(NA_JIA_TG[b][0]), dz:t(DZ[dzIdx]), wx:t(wxStr), k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
         }
         for(let i=0; i<3; i++) {
-            let dzIdx = NA_JIA_DZ[t][1][i];
-            let wxStr = DZ_WX[dzIdx];
-            lines.push({tg:NA_JIA_TG[t][1], dz:DZ[dzIdx], wx:wxStr, k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
+            let dzIdx = NA_JIA_DZ[t_val][1][i]; let wxStr = DZ_WX[dzIdx];
+            lines.push({tg:t(NA_JIA_TG[t_val][1]), dz:t(DZ[dzIdx]), wx:t(wxStr), k:getKinship(pWx, wxStr), state: getWangXiang(currentMonthZhiIdx, wxStr)});
         }
         return lines;
     }
     
     let bIdx = (currentDayTgIdx <= 1) ? 0 : (currentDayTgIdx <= 3) ? 1 : (currentDayTgIdx === 4) ? 2 : (currentDayTgIdx === 5) ? 3 : (currentDayTgIdx <= 7) ? 4 : 5;
     let beasts = [];
-    for (let i=0; i<6; i++) beasts.push(BEASTS[(bIdx + i) % 6]);
+    for (let i=0; i<6; i++) beasts.push(t(BEASTS[(bIdx + i) % 6]));
     
     return {
-        main: { name: HEX_NAMES[tM][bM], tag: getGuaTags(bM, tM, HEX_NAMES[tM][bM]), palaceName: PALACE_NAME[infoM.p], shi: infoM.shi, ying: (infoM.shi+3)%6, lines: buildLines(bM, tM) },
-        change: { name: HEX_NAMES[tC][bC], tag: getGuaTags(bC, tC, HEX_NAMES[tC][bC]), palaceName: PALACE_NAME[infoC.p], shi: infoC.shi, ying: (infoC.shi+3)%6, lines: buildLines(bC, tC) },
+        main: { name: t(HEX_NAMES[tM][bM]), tag: getGuaTags(bM, tM, HEX_NAMES[tM][bM]), palaceName: t(PALACE_NAME[infoM.p]), shi: infoM.shi, ying: (infoM.shi+3)%6, lines: buildLines(bM, tM) },
+        change: { name: t(HEX_NAMES[tC][bC]), tag: getGuaTags(bC, tC, HEX_NAMES[tC][bC]), palaceName: t(PALACE_NAME[infoC.p]), shi: infoC.shi, ying: (infoC.shi+3)%6, lines: buildLines(bC, tC) },
         beasts: beasts
     };
 }
@@ -391,8 +389,8 @@ window.renderFinalResult = function() {
         guaLayout.classList.remove('is-jing-gua');
     }
 
-    document.getElementById('main-gua-title').innerHTML = `${gua.main.palaceName}宫：${gua.main.name}${gua.main.tag}`;
-    if (hasChange) document.getElementById('change-gua-title').innerHTML = `${gua.change.palaceName}宫：${gua.change.name}${gua.change.tag}`;
+    document.getElementById('main-gua-title').innerHTML = `${gua.main.palaceName}${t("宫")}：${gua.main.name}${gua.main.tag}`;
+    if (hasChange) document.getElementById('change-gua-title').innerHTML = `${gua.change.palaceName}${t("宫")}：${gua.change.name}${gua.change.tag}`;
     
     for(let i=5; i>=0; i--) beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
 
@@ -401,10 +399,10 @@ window.renderFinalResult = function() {
         let isMainYang = (val === 7 || val === 9);
         let mark = val === 9 ? '○→' : (val === 6 ? '×→' : '');
         let mLine = gua.main.lines[i];
-        let mPos = (i === gua.main.shi) ? '世' : (i === gua.main.ying) ? '应' : '';
+        let mPos = (i === gua.main.shi) ? t('世') : (i === gua.main.ying) ? t('应') : '';
 
-        // 新增的五行状态附着在文字后面
-        let stateHtml = `<span style="font-size:0.7rem; opacity:0.6; margin-left:2px;">(${mLine.state})</span>`;
+        // 【修改点】：手机端节省空间的超级上标格式
+        let stateHtml = `<span style="font-size:0.6rem; opacity:0.7; margin-left:2px; vertical-align: super;">(${mLine.state})</span>`;
 
         mainContainer.insertAdjacentHTML('beforeend', `
             <div class="yao-row">
@@ -419,10 +417,10 @@ window.renderFinalResult = function() {
             let isChangeYang = val === 9 ? false : (val === 6 ? true : isMainYang);
             let isChangingLine = (val === 6 || val === 9);
             let cLine = gua.change.lines[i];
-            let cPos = (i === gua.change.shi) ? '世' : (i === gua.change.ying) ? '应' : '';
+            let cPos = (i === gua.change.shi) ? t('世') : (i === gua.change.ying) ? t('应') : '';
             
             let stateClass = isChangingLine ? 'is-active-line' : 'is-static-line';
-            let cStateHtml = `<span style="font-size:0.7rem; opacity:0.6; margin-left:2px;">(${cLine.state})</span>`;
+            let cStateHtml = `<span style="font-size:0.6rem; opacity:0.7; margin-left:2px; vertical-align: super;">(${cLine.state})</span>`;
 
             changeContainer.insertAdjacentHTML('beforeend', `
                 <div class="yao-row change-row ${stateClass}">
@@ -437,4 +435,9 @@ window.renderFinalResult = function() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initDateTime);
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始加载繁简记忆状态
+    document.getElementById('lang-btn').innerText = isTrad ? '简体' : '繁體';
+    document.querySelectorAll('[data-t]').forEach(el => el.innerText = t(el.getAttribute('data-t')));
+    initDateTime();
+});
