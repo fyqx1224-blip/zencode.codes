@@ -1,5 +1,5 @@
 /**
- * ZenCode - 六爻排盘核心逻辑
+ * ZenCode - 六爻排盘核心逻辑 (强力防卡死版)
  */
 
 let currentYaos = [];
@@ -49,7 +49,10 @@ function initDateTime() {
 }
 
 function showScreen(screenId) {
-    document.querySelectorAll('.flow-screen').forEach(el => el.style.display = 'none');
+    const screens = document.querySelectorAll('.flow-screen');
+    for(let i=0; i<screens.length; i++) {
+        screens[i].style.display = 'none';
+    }
     document.getElementById(screenId).style.display = 'block';
 }
 
@@ -75,7 +78,7 @@ function executeTimeMethod() {
     renderFinalResult();
 }
 
-// ════════════ 3D 铜钱摇卦算法 ════════════
+// ════════ 3D 铜钱引擎防卡死重构 ════════
 function setupShakeMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = "心诚则灵 · 掷铜钱排盘";
@@ -88,36 +91,40 @@ function setupShakeMethod() {
     btn.innerText = "掷出铜钱 (第1次)";
     btn.disabled = false;
     
-    // 复位铜钱状态
     const coins = document.querySelectorAll('.coin');
-    coins.forEach(c => {
-        c.style.animation = 'none';
-        c.style.transform = 'rotateY(0deg)'; // 默认正面
-    });
+    for (let i = 0; i < coins.length; i++) {
+        coins[i].style.animation = 'none';
+        coins[i].style.transform = 'rotateY(0deg)';
+        coins[i].style.webkitTransform = 'rotateY(0deg)';
+    }
     
     btn.onclick = function() {
         if (currentYaos.length >= 6) return;
         btn.disabled = true;
         btn.innerText = "铜钱翻转中...";
 
-        let results = [];
         let sum = 0;
-        // 抛掷逻辑：正面(花纹)=3分, 反面(字)=2分
-        for(let i=0; i<3; i++) {
+        let results = [];
+        for(let i = 0; i < 3; i++) {
             let isFront = Math.random() > 0.5;
             results.push(isFront);
             sum += isFront ? 3 : 2;
         }
 
-        // 触发动画
-        coins.forEach((c, idx) => {
-            c.style.animation = 'none';
-            void c.offsetWidth; // 触发重绘
-            // true 为正面 (flip-heads), false 为反面 (flip-tails)
-            c.style.animation = results[idx] ? 'flip-heads 1s ease-out forwards' : 'flip-tails 1s ease-out forwards';
-        });
+        // 清除旧动画
+        for (let i = 0; i < coins.length; i++) {
+            coins[i].style.animation = 'none';
+        }
 
-        // 等待动画结束后渲染该爻
+        // 强行延迟 20ms 等待浏览器注册样式，避免动画丢帧
+        setTimeout(() => {
+            for (let i = 0; i < coins.length; i++) {
+                let animName = results[i] ? 'flip-heads' : 'flip-tails';
+                coins[i].style.animation = animName + ' 1s ease-out forwards';
+            }
+        }, 20);
+
+        // 无论动画是否成功，1100ms后绝对执行 DOM 更新
         setTimeout(() => {
             currentYaos.push(sum);
             let isYang = (sum === 7 || sum === 9);
@@ -127,7 +134,7 @@ function setupShakeMethod() {
             let yaoHtml = isYang ? `<div class="yao-symbol yao-yang"><div class="line"></div></div>` : `<div class="yao-symbol yao-yin"><div class="line"></div><div class="line"></div></div>`;
             
             progressDiv.insertAdjacentHTML('beforeend', `
-                <div style="display:flex; align-items:center; gap: 15px; opacity: 0; animation: fadeInYao 0.5s forwards;">
+                <div style="display:flex; align-items:center; gap: 15px; opacity: 0; animation: fadeInYao 0.5s forwards; -webkit-animation: fadeInYao 0.5s forwards;">
                     <span style="color:var(--zc-gold-dark); width: 100px; text-align:right; font-size:0.85rem; letter-spacing: 1px;">
                         ${sum}分 ${yaoName} <span style="color:var(--zc-gold-light)">${mark}</span>
                     </span>
@@ -151,7 +158,12 @@ function setupManualMethod() {
     document.getElementById('interact-title').innerText = "点按虚线排定阴阳";
     document.getElementById('interact-shake').style.display = 'none';
     document.getElementById('interact-manual').style.display = 'block';
-    manualYaos = Array(6).fill(null).map(() => ({ set: false, isYang: true, isChanging: false }));
+    
+    // 初始化 6 个手选状态
+    manualYaos = [];
+    for(let i=0; i<6; i++) {
+        manualYaos.push({ set: false, isYang: true, isChanging: false });
+    }
     renderManualRows();
 }
 
@@ -199,7 +211,6 @@ window.generateManualGua = function() {
     renderFinalResult();
 }
 
-// 核心八宫纳甲算法
 const DZ = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
 const DZ_WX = ["水","土","木","木","土","火","火","土","金","金","土","水"];
 const PALACE_WX = {7:"金", 6:"金", 5:"火", 4:"木", 3:"木", 2:"水", 1:"土", 0:"土"};
@@ -290,4 +301,46 @@ window.renderFinalResult = function() {
         guaLayout.classList.remove('is-jing-gua');
     }
 
-    document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${
+    document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
+    if (hasChange) document.getElementById('change-gua-title').innerText = `${gua.change.palaceName}宫：${gua.change.name}`;
+    
+    for(let i=5; i>=0; i--) beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
+
+    for(let i=5; i>=0; i--) {
+        let val = currentYaos[i];
+        let isMainYang = (val === 7 || val === 9);
+        let mark = val === 9 ? '○→' : (val === 6 ? '×→' : '');
+        let mLine = gua.main.lines[i];
+        let mPos = (i === gua.main.shi) ? '世' : (i === gua.main.ying) ? '应' : '';
+
+        mainContainer.insertAdjacentHTML('beforeend', `
+            <div class="yao-row">
+                <span class="yao-shishen">${mLine.k}</span>
+                <span class="yao-text">${mLine.tg}${mLine.dz}${mLine.wx}</span>
+                <div class="yao-symbol ${isMainYang ? 'yao-yang' : 'yao-yin'}">${isMainYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
+                <span class="changing-mark">${mark}</span>
+                <span class="yao-position">${mPos}</span>
+            </div>`);
+        
+        if (hasChange) {
+            let isChangeYang = val === 9 ? false : (val === 6 ? true : isMainYang);
+            let isChangingLine = (val === 6 || val === 9);
+            let cLine = gua.change.lines[i];
+            let cPos = (i === gua.change.shi) ? '世' : (i === gua.change.ying) ? '应' : '';
+            
+            let stateClass = isChangingLine ? 'is-active-line' : 'is-static-line';
+
+            changeContainer.insertAdjacentHTML('beforeend', `
+                <div class="yao-row change-row ${stateClass}">
+                    <div class="yao-symbol ${isChangeYang ? 'yao-yang' : 'yao-yin'}">${isChangeYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>'}</div>
+                    <div class="change-info">
+                        <span class="yao-shishen">${cLine.k}</span>
+                        <span class="yao-text">${cLine.tg}${cLine.dz}${cLine.wx}</span>
+                        <span class="yao-position">${cPos}</span>
+                    </div>
+                </div>`);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initDateTime);
