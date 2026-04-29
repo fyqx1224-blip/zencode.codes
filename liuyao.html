@@ -34,7 +34,8 @@
 
         /* 面板容器 */
         .zencode-panel {
-            max-width: 850px; margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
+            max-width: 720px; /* 缩小面板最大宽度，让电脑端更紧凑 */
+            margin: 0 auto 3rem; background-color: var(--zc-bg-panel);
             border: 1px solid var(--zc-border); padding: 2.5rem; position: relative;
             transition: max-width 0.4s ease;
         }
@@ -81,15 +82,17 @@
         }
         .btn-dong.active { background: var(--zc-gold-dark); color: #050505; border-color: var(--zc-gold-light); box-shadow: 0 0 12px rgba(212, 168, 67, 0.4); font-weight: bold; }
 
-        /* ════════ 纯 CSS 终极排盘网格布局 (告别内联样式) ════════ */
+        /* ════════ 纯 CSS 终极排盘网格布局 ════════ */
         .gua-grid {
-            display: grid; grid-template-columns: 40px 1fr 1fr; gap: 15px;
+            display: grid; grid-template-columns: 50px 1fr 1fr; gap: 30px;
             font-family: "Courier New", Courier, monospace; font-size: 1rem; transition: all 0.4s ease;
         }
-        .is-jing-gua { grid-template-columns: 40px 1fr !important; max-width: 480px; margin: 0 auto; }
+        .is-jing-gua { grid-template-columns: 50px 1fr !important; max-width: 440px; margin: 0 auto; }
         
-        .beast-column { display: flex; flex-direction: column; justify-content: space-between; padding-top: 36px; padding-bottom: 4px; color: var(--zc-text-muted); font-size: 0.95rem; }
-        .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 12px; font-weight: bold; letter-spacing: 1px; }
+        .beast-column { display: flex; flex-direction: column; justify-content: space-between; padding-top: 54px; /* 增加头部留白以对齐标题 */ padding-bottom: 4px; color: var(--zc-text-muted); font-size: 0.95rem; }
+        
+        .gua-label { color: var(--zc-text-muted); font-size: 0.85rem; text-align: center; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.7;}
+        .gua-title { color: var(--zc-gold-light); text-align: center; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
         
         .yao-row { display: flex; align-items: center; justify-content: space-between; height: 36px; margin-bottom: 8px; gap: 4px; }
         
@@ -113,17 +116,18 @@
         .is-static-line .yao-shishen { opacity: 0.4; }
         .is-static-line .yao-text { opacity: 0.4; }
 
-        /* ════════ 手机端 100% 不溢出优化 ════════ */
+        /* ════════ 手机端适配 ════════ */
         @media (max-width: 768px) {
-            .zencode-panel { padding: 1.2rem 0.6rem; margin: 0 10px 2rem; } /* 缩小内边距留出空间 */
+            .zencode-panel { padding: 1.2rem 0.6rem; margin: 0 10px 2rem; }
             .page-header { padding: 2rem 0 1rem; }
             .page-title { font-size: 1.8rem; }
             .divination-info { font-size: 0.85rem; line-height: 1.6; }
             
-            .gua-grid { grid-template-columns: 20px 1fr 1fr; gap: 4px; } /* 极度压缩栏间距 */
+            .gua-grid { grid-template-columns: 20px 1fr 1fr; gap: 4px; }
             .is-jing-gua { grid-template-columns: 20px 1fr !important; }
             
-            .beast-column { font-size: 0.7rem; padding-top: 28px; }
+            .beast-column { font-size: 0.7rem; padding-top: 48px; }
+            .gua-label { font-size: 0.75rem; margin-bottom: 4px;}
             .gua-title { font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 0; }
             
             .yao-row { height: 30px; gap: 2px; }
@@ -183,10 +187,12 @@
             <div class="gua-grid" id="gua-layout">
                 <div class="beast-column" id="dynamic-beasts"></div>
                 <div id="main-gua-col">
+                    <div class="gua-label">【 本卦 】</div>
                     <div class="gua-title" id="main-gua-title"></div>
                     <div id="dynamic-main-gua"></div>
                 </div>
                 <div id="change-gua-col">
+                    <div class="gua-label">【 变卦 】</div>
                     <div class="gua-title" id="change-gua-title"></div>
                     <div id="dynamic-change-gua"></div>
                 </div>
