@@ -26,35 +26,37 @@
             overflow-x: hidden;
         }
 
-        /* ════════ 纯 CSS 动态流光背景 (阴阳交缠特效) ════════ */
+        /* ════════ 纯 CSS 动态流光背景 (强化显色版) ════════ */
         .flowing-light-bg {
             position: fixed; inset: 0; z-index: -2; background-color: var(--zc-bg-main); overflow: hidden;
         }
         
-        /* 流光基础属性：极度模糊、半透明、混合模式 */
+        /* 流光基础属性：降低模糊度让轮廓更清晰，大幅提升透明度 */
         .light-orb {
-            position: absolute; border-radius: 50%; filter: blur(90px); -webkit-filter: blur(90px);
-            opacity: 0.4; mix-blend-mode: screen; animation: orb-flow infinite alternate ease-in-out;
+            position: absolute; border-radius: 50%; 
+            filter: blur(60px); -webkit-filter: blur(60px); /* 模糊度降低，强化光斑感 */
+            opacity: 0.85; /* 全局透明度大幅拉高 */
+            mix-blend-mode: screen; animation: orb-flow infinite alternate ease-in-out;
         }
         
-        /* 阳气流光：亮金色，从左上往右下流转 */
+        /* 阳气流光：明亮真金 */
         .orb-yang {
             width: 55vw; height: 55vw; top: -10%; left: -10%;
-            background: radial-gradient(circle, rgba(230,197,135,0.25) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 215, 100, 0.6) 0%, rgba(212, 168, 67, 0.2) 50%, transparent 80%);
             animation-duration: 22s;
         }
         
-        /* 阴气流光：暗金色，从右下往左上流转 */
+        /* 阴气流光：深邃暗金 */
         .orb-yin {
             width: 65vw; height: 65vw; bottom: -20%; right: -10%;
-            background: radial-gradient(circle, rgba(138,115,66,0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.5) 0%, rgba(138, 115, 66, 0.2) 50%, transparent 80%);
             animation-duration: 26s; animation-delay: -5s;
         }
         
-        /* 核心流光：在中央呼吸交融 */
+        /* 核心流光：交融处的爆耀 */
         .orb-core {
             width: 45vw; height: 80vw; top: 10%; left: 30%;
-            background: radial-gradient(ellipse, rgba(212,168,67,0.15) 0%, transparent 60%);
+            background: radial-gradient(ellipse, rgba(255, 230, 150, 0.4) 0%, transparent 70%);
             animation-duration: 30s; animation-delay: -12s;
         }
 
@@ -67,19 +69,19 @@
         }
 
         /* 粒子星空 Canvas 层 */
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.7; }
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.9; }
 
         /* 标题与版式 */
         .page-header { text-align: center; padding: 4rem 0 2rem; position: relative; z-index: 10; }
-        .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; text-shadow: 0 0 15px rgba(212, 168, 67, 0.3); }
+        .page-title { color: var(--zc-gold-light); font-size: 2.5rem; font-family: "STZhongsong", serif; letter-spacing: 6px; margin: 0 0 10px 0; text-shadow: 0 0 15px rgba(212, 168, 67, 0.5); }
         .page-subtitle { color: var(--zc-gold-dark); font-size: 0.9rem; letter-spacing: 4px; }
 
-        /* 面板容器 (带有毛玻璃效果，流光在底下透出) */
+        /* 面板容器 */
         .zencode-panel {
             max-width: 720px; margin: 0 auto 3rem; 
-            background-color: rgba(13, 12, 17, 0.75); /* 半透明底色 */
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); /* 高级毛玻璃 */
-            border: 1px solid rgba(138, 115, 66, 0.3); padding: 2.5rem; position: relative;
+            background-color: rgba(13, 12, 17, 0.6); /* 调低面板底色，让底下的强光透上来 */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid rgba(138, 115, 66, 0.4); padding: 2.5rem; position: relative;
             transition: max-width 0.4s ease; box-shadow: 0 10px 50px rgba(0,0,0,0.8);
         }
         .zencode-panel::before, .zencode-panel::after { content: ''; position: absolute; width: 15px; height: 15px; border: 1px solid var(--zc-gold-dark); }
@@ -87,7 +89,7 @@
         .zencode-panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
         .divination-info {
-            border-bottom: 1px dashed rgba(138, 115, 66, 0.5); padding-bottom: 1.5rem; margin-bottom: 2rem;
+            border-bottom: 1px dashed rgba(138, 115, 66, 0.6); padding-bottom: 1.5rem; margin-bottom: 2rem;
             font-family: "Courier New", Courier, monospace; line-height: 2; color: var(--zc-text-main); font-size: 1.05rem;
         }
         .info-highlight { color: var(--zc-gold-light); }
@@ -97,10 +99,10 @@
             padding: 12px 30px; cursor: pointer; transition: all 0.3s; font-family: inherit; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
             font-size: 1.1rem; border-radius: 2px; width: 280px; letter-spacing: 2px;
         }
-        .zc-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); box-shadow: 0 0 15px rgba(212, 168, 67, 0.4); }
+        .zc-btn:hover { background: var(--zc-gold-dark); color: var(--zc-bg-main); box-shadow: 0 0 15px rgba(212, 168, 67, 0.6); }
         .zc-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--zc-border); color: var(--zc-text-muted); background: transparent; box-shadow: none;}
         .zc-btn-text { background: none; border: none; color: var(--zc-text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
-        .zc-btn-text:hover { color: var(--zc-gold-light); text-shadow: 0 0 8px rgba(212, 168, 67, 0.6); }
+        .zc-btn-text:hover { color: var(--zc-gold-light); text-shadow: 0 0 8px rgba(212, 168, 67, 0.8); }
 
         /* 3D 铜钱强力兼容样式 */
         .coins-container { display: flex; justify-content: center; gap: 25px; margin: 40px 0 30px; perspective: 1000px; -webkit-perspective: 1000px; }
