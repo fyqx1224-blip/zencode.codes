@@ -1,5 +1,5 @@
 /**
- * ZenCode - 六爻排盘核心逻辑 (强力防卡死 + 初爻在底修正版)
+ * ZenCode - 六爻排盘核心逻辑 (强力防卡死 + 特殊卦象识别版)
  */
 
 let currentYaos = [];
@@ -111,12 +111,10 @@ function setupShakeMethod() {
             sum += isFront ? 3 : 2;
         }
 
-        // 清除旧动画
         for (let i = 0; i < coins.length; i++) {
             coins[i].style.animation = 'none';
         }
 
-        // 强行延迟 20ms 等待浏览器注册样式，避免动画丢帧
         setTimeout(() => {
             for (let i = 0; i < coins.length; i++) {
                 let animName = results[i] ? 'flip-heads' : 'flip-tails';
@@ -124,7 +122,6 @@ function setupShakeMethod() {
             }
         }, 20);
 
-        // 无论动画是否成功，1100ms后绝对执行 DOM 更新
         setTimeout(() => {
             currentYaos.push(sum);
             let isYang = (sum === 7 || sum === 9);
@@ -186,7 +183,6 @@ function renderManualRows() {
     container.innerHTML = '';
     const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
     
-    // 【核心修复】改为倒序渲染：i=5（上爻）最先渲染在顶部，i=0（初爻）最后渲染在底部
     for(let i=5; i>=0; i--) {
         let y = manualYaos[i];
         let yaoHtml = !y.set ? `<div class="yao-interactive yao-dashed" onclick="toggleManualYao(${i})"><div class="line"></div></div>`
@@ -239,7 +235,25 @@ const NA_JIA_DZ = {
 };
 const NA_JIA_TG = { 0:["乙","癸"], 1:["庚","庚"], 2:["戊","戊"], 3:["丁","丁"], 4:["丙","丙"], 5:["己","己"], 6:["辛","辛"], 7:["甲","壬"] };
 
-// 二进制异或寻世诀
+// 特殊卦象识别算法
+function getGuaTags(b, t, name) {
+    let tags = [];
+    let x = b ^ t;
+    
+    // 游魂、归魂通过异或值精准判断
+    if (x === 5) tags.push("游魂");
+    if (x === 2) tags.push("归魂");
+    
+    // 六冲：八纯卦(x===0) + 另外两个特殊卦
+    if (x === 0 || name === "天雷无妄" || name === "雷天大壮") tags.push("六冲");
+    
+    // 六合：必须通过名字比对
+    const liuHe = ["天地否", "地天泰", "水泽节", "泽水困", "火山旅", "山火贲", "雷地豫", "地雷复"];
+    if (liuHe.includes(name)) tags.push("六合");
+    
+    return tags.length > 0 ? `<span style="font-size:0.75rem; color:var(--zc-gold-dark); font-weight:normal; margin-left:8px; opacity:0.8;">[${tags.join("·")}]</span>` : "";
+}
+
 function getPalaceAndShi(b, t) {
     let x = b ^ t;
     if (x === 0) return { p: b, shi: 5 };
@@ -291,8 +305,8 @@ function calcGua(yaos) {
     for (let i=0; i<6; i++) beasts.push(BEASTS[(bIdx + i) % 6]);
     
     return {
-        main: { name: HEX_NAMES[tM][bM], palaceName: PALACE_NAME[infoM.p], shi: infoM.shi, ying: (infoM.shi+3)%6, lines: buildLines(bM, tM) },
-        change: { name: HEX_NAMES[tC][bC], palaceName: PALACE_NAME[infoC.p], shi: infoC.shi, ying: (infoC.shi+3)%6, lines: buildLines(bC, tC) },
+        main: { name: HEX_NAMES[tM][bM], tag: getGuaTags(bM, tM, HEX_NAMES[tM][bM]), palaceName: PALACE_NAME[infoM.p], shi: infoM.shi, ying: (infoM.shi+3)%6, lines: buildLines(bM, tM) },
+        change: { name: HEX_NAMES[tC][bC], tag: getGuaTags(bC, tC, HEX_NAMES[tC][bC]), palaceName: PALACE_NAME[infoC.p], shi: infoC.shi, ying: (infoC.shi+3)%6, lines: buildLines(bC, tC) },
         beasts: beasts
     };
 }
@@ -319,8 +333,9 @@ window.renderFinalResult = function() {
         guaLayout.classList.remove('is-jing-gua');
     }
 
-    document.getElementById('main-gua-title').innerText = `${gua.main.palaceName}宫：${gua.main.name}`;
-    if (hasChange) document.getElementById('change-gua-title').innerText = `${gua.change.palaceName}宫：${gua.change.name}`;
+    // 将 tag 注入到标题中显示
+    document.getElementById('main-gua-title').innerHTML = `${gua.main.palaceName}宫：${gua.main.name}${gua.main.tag}`;
+    if (hasChange) document.getElementById('change-gua-title').innerHTML = `${gua.change.palaceName}宫：${gua.change.name}${gua.change.tag}`;
     
     for(let i=5; i>=0; i--) beastContainer.insertAdjacentHTML('beforeend', `<span>${gua.beasts[i]}</span>`);
 
