@@ -6,119 +6,52 @@
 <title>ZenCode · 3D 立體天球儀</title>
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #D4A843; --gold-b: #F0C96A; --blue: #63A3ED; --bg: #06050A;
-  }
-  body {
-    margin: 0; overflow: hidden; background: var(--bg); color: #F0EAD6;
-    font-family: 'Noto Sans TC', sans-serif;
-    user-select: none; -webkit-user-select: none;
-  }
-  #canvas-container {
-    width: 100vw; height: 100vh; display: block; position: absolute; top: 0; left: 0; z-index: 1;
-  }
-  
-  /* ─── UI 覆蓋層 ─── */
-  #ui-layer {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;
-  }
-  
-  .top-left-panel {
-    position: absolute; top: 30px; left: 30px; pointer-events: auto;
-  }
-  .btn-back {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px; border-radius: 50%;
-    background: rgba(99, 163, 237, 0.08); border: 1px solid rgba(99, 163, 237, 0.3);
-    color: var(--blue); text-decoration: none; font-size: 1.2rem;
-    transition: all 0.3s; margin-bottom: 20px;
-  }
-  .btn-back:hover {
-    background: rgba(99, 163, 237, 0.2); border-color: var(--blue); box-shadow: 0 0 15px rgba(99, 163, 237, 0.4);
-  }
-  
-  .info-card {
-    background: rgba(6, 5, 10, 0.6); backdrop-filter: blur(12px);
-    border-left: 2px solid var(--blue); padding: 16px 20px;
-    opacity: 0; transform: translateX(-20px); transition: all 0.8s ease;
-  }
-  .info-card.show {
-    opacity: 1; transform: translateX(0);
-  }
-  .info-name {
-    font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--gold);
-    letter-spacing: 0.1em; margin-bottom: 4px;
-  }
-  .info-date {
-    font-size: 0.75rem; color: rgba(240, 234, 214, 0.7); letter-spacing: 0.1em; font-family: 'Noto Serif TC', serif;
-  }
+  :root { --gold: #D4A843; --gold-b: #F0C96A; --blue: #63A3ED; --bg: #06050A; }
+  body { margin: 0; overflow: hidden; background: var(--bg); color: #F0EAD6; font-family: 'Noto Sans TC', sans-serif; user-select: none; -webkit-user-select: none; }
+  #canvas-container { width: 100vw; height: 100vh; display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+  #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+  .top-left-panel { position: absolute; top: 30px; left: 30px; pointer-events: auto; }
+  .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(99, 163, 237, 0.08); border: 1px solid rgba(99, 163, 237, 0.3); color: var(--blue); text-decoration: none; font-size: 1.2rem; transition: all 0.3s; margin-bottom: 20px; }
+  .btn-back:hover { background: rgba(99, 163, 237, 0.2); border-color: var(--blue); box-shadow: 0 0 15px rgba(99, 163, 237, 0.4); }
+  .info-card { background: rgba(6, 5, 10, 0.6); backdrop-filter: blur(12px); border-left: 2px solid var(--blue); padding: 16px 20px; opacity: 0; transform: translateX(-20px); transition: all 0.8s ease; }
+  .info-card.show { opacity: 1; transform: translateX(0); }
+  .info-name { font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 4px; }
+  .info-date { font-size: 0.75rem; color: rgba(240, 234, 214, 0.7); letter-spacing: 0.1em; font-family: 'Noto Serif TC', serif; }
   .info-geo { font-size: 0.65rem; color: rgba(99, 163, 237, 0.6); margin-top: 6px; letter-spacing: 0.05em; }
 
-  /* ─── 數據輸入彈窗 ─── */
-  #data-modal {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(12, 11, 20, 0.85); backdrop-filter: blur(24px);
-    border: 1px solid rgba(99, 163, 237, 0.3); padding: 40px; border-radius: 4px;
-    width: 90%; max-width: 420px; box-shadow: 0 32px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 163, 237, 0.1);
-    pointer-events: auto; display: none; 
-    flex-direction: column; gap: 16px; z-index: 20;
-    opacity: 0; transition: opacity 0.5s;
-  }
+  #data-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(12, 11, 20, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(99, 163, 237, 0.3); padding: 40px; border-radius: 4px; width: 90%; max-width: 420px; box-shadow: 0 32px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 163, 237, 0.1); pointer-events: auto; display: none; flex-direction: column; gap: 16px; z-index: 20; opacity: 0; transition: opacity 0.5s; }
   #data-modal.show { display: flex; opacity: 1; }
-  .modal-title {
-    font-family: 'Ma Shan Zheng', cursive; font-size: 2.2rem; color: var(--blue);
-    text-align: center; margin-bottom: 10px; text-shadow: 0 0 20px rgba(99, 163, 237, 0.4);
-  }
+  .modal-title { font-family: 'Ma Shan Zheng', cursive; font-size: 2.2rem; color: var(--blue); text-align: center; margin-bottom: 10px; text-shadow: 0 0 20px rgba(99, 163, 237, 0.4); }
   .modal-hint { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.6; margin-bottom: 10px; }
   .input-row { display: flex; gap: 8px; }
   .label-hint { font-size: 0.55rem; color: rgba(99, 163, 237, 0.5); margin-bottom: 4px; padding-left: 2px; text-transform: uppercase; letter-spacing: 0.2em;}
   
   .iw { position: relative; }
-  .zc-input {
-    width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(99, 163, 237, 0.2);
-    color: #fff; font-family: 'Noto Sans TC', sans-serif; font-size: 0.9rem; outline: none; border-radius: 2px;
-  }
+  .zc-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(99, 163, 237, 0.2); color: #fff; font-family: 'Noto Sans TC', sans-serif; font-size: 0.9rem; outline: none; border-radius: 2px; }
   .zc-input:focus { border-color: var(--blue); background: rgba(99, 163, 237, 0.05); }
-  .zc-input::placeholder { color: rgba(255,255,255,0.15); }
 
-  /* 真太陽時校正提示 */
   #solar-hint { font-size: 0.65rem; color: rgba(212,168,67,0.55); letter-spacing: 0.08em; margin-top: 4px; padding: 7px 10px; background: rgba(212,168,67,0.05); border-left: 2px solid rgba(212,168,67,0.3); display: none;}
   #solar-hint.show { display: block; }
   #geo-hint { font-size: 0.65rem; margin-top: 4px; padding: 7px 10px; display: none; color: rgba(90,184,108,0.65); border-left: 2px solid rgba(90,184,108,0.3); background: rgba(90,184,108,0.04); }
   #geo-hint.show { display: block; }
 
-  .zc-btn {
-    width: 100%; padding: 16px; background: rgba(99, 163, 237, 0.1); border: 1px solid var(--blue);
-    color: var(--blue); font-family: 'Noto Sans TC', sans-serif; font-size: 0.95rem; letter-spacing: 0.3em;
-    cursor: pointer; transition: all 0.3s; margin-top: 15px; border-radius: 2px;
-  }
+  .zc-btn { width: 100%; padding: 16px; background: rgba(99, 163, 237, 0.1); border: 1px solid var(--blue); color: var(--blue); font-family: 'Noto Sans TC', sans-serif; font-size: 0.95rem; letter-spacing: 0.3em; cursor: pointer; transition: all 0.3s; margin-top: 15px; border-radius: 2px; }
   .zc-btn:hover { background: var(--blue); color: #000; box-shadow: 0 0 20px rgba(99, 163, 237, 0.5); }
-  
-  #modal-lang-toggle { position: absolute; top: 15px; right: 15px; display: flex; gap: 8px; pointer-events: auto;}
-  .modal-lang-btn { background: none; border: none; font-size: 0.6rem; color: rgba(255,255,255,0.25); cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em;}
-  .modal-lang-btn:hover, .modal-lang-btn.active { color: var(--gold); }
-
-  /* 載入轉圈圈 */
   #geo-spinner { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; border: 1.5px solid rgba(99,163,237,0.2); border-top-color: rgba(99,163,237,0.7); border-radius: 50%; animation: spin 0.8s linear infinite;}
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* 3D 標註文字樣式 */
-  .label-container { display: flex; flex-direction: column; align-items: center; transform: translateY(-5px); font-family: 'Noto Sans TC', sans-serif;}
-  .label-text { font-size: 0.6rem; color: rgba(240,234,214,0.6); text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.1em; text-shadow: 0 0 4px rgba(0,0,0,0.8);}
-  .label-zh { font-size: 0.75rem; font-weight: 500;}
-  .l-ecliptic { color: rgba(212,168,67,0.8); }
-  .l-equator { color: rgba(99,163,237,0.8); }
-  .l-mansion { color: rgba(240,234,214,0.7); }
+  /* 3D 標註文字樣式優化 */
+  .label-container { display: flex; flex-direction: column; align-items: center; font-family: 'Noto Sans TC', sans-serif;}
+  .label-text { font-size: 0.55rem; color: rgba(240,234,214,0.4); text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.1em;}
+  .label-zh { font-size: 0.75rem; font-weight: 500; text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9);}
+  
+  /* 區分不同層級的文字顏色 */
+  .l-ecliptic { color: #D4A843; font-size: 0.65rem;}
+  .l-equator { color: #63A3ED; font-size: 0.65rem;}
+  .l-mansion { color: rgba(255,255,255,0.85); font-size: 0.7rem; }
+  .l-zodiac { color: rgba(212,168,67,0.9); font-size: 0.85rem; font-weight: 700; text-shadow: 0 0 10px rgba(212,168,67,0.4), 0 0 5px #000; }
+  .l-planet { font-family: 'Ma Shan Zheng', cursive; font-size: 1.2rem; }
 </style>
-
-<script>
-  window.addEventListener('error', function(e) {
-    const errDiv = document.createElement('div');
-    errDiv.style.cssText = 'position:fixed;top:80px;left:20px;z-index:9999;background:rgba(255,0,0,0.8);color:white;padding:15px;border-radius:4px;font-family:monospace;max-width:80%;word-wrap:break-word;';
-    errDiv.innerHTML = `<strong>CRITICAL ERROR:</strong><br>${e.message}<br><small>File: ${e.filename}:${e.lineno}</small>`;
-    document.body.appendChild(errDiv);
-  });
-</script>
 
 <script type="importmap">
   {
@@ -144,18 +77,12 @@
   </div>
 
   <div id="data-modal">
-    <div id="modal-lang-toggle">
-      <button class="modal-lang-btn active" onclick="if(typeof ZCI18n!=='undefined') ZCI18n.setLang('zh-TW')">繁</button>
-      <button class="modal-lang-btn" onclick="if(typeof ZCI18n!=='undefined') ZCI18n.setLang('zh-CN')">简</button>
-      <button class="modal-lang-btn" onclick="if(typeof ZCI18n!=='undefined') ZCI18n.setLang('en')">EN</button>
-    </div>
-    
     <div class="modal-title" data-i18n="astro.title">星象座標系</div>
     <div class="modal-hint" data-i18n-html="astro.sub">未檢測到緩存資料<br>請輸入公曆出生時間以生成立體天球儀</div>
     
     <div class="iw">
       <div class="label-hint" data-i18n="form.name">命主姓名</div>
-      <input type="text" id="m-name" class="zc-input" placeholder="請輸入姓名" data-i18n-ph="form.name.ph">
+      <input type="text" id="m-name" class="zc-input" placeholder="請輸入姓名">
     </div>
 
     <div class="iw">
@@ -178,7 +105,7 @@
     <div class="iw">
       <div class="label-hint" data-i18n="form.place">出生地點</div>
       <div class="iw">
-        <input type="text" id="m-place" class="zc-input" placeholder="如：四川省成都市" data-i18n-ph="form.place.ph" oninput="window.onPlaceInput()">
+        <input type="text" id="m-place" class="zc-input" placeholder="如：四川省成都市" oninput="window.onPlaceInput()">
         <div id="geo-spinner"></div>
       </div>
       <div id="solar-hint"></div>
@@ -189,16 +116,16 @@
   </div>
 </div>
 
-<script src="/i18n.js"></script>
+<script src="./i18n.js"></script>
 
 <script type="module">
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-  import { ZenAstro } from '/zen_astro.js';
+  import { ZenAstro } from './zen_astro.js';
 
   // ==========================================
-  // 1. Three.js 視覺基建
+  // 1. 核心視覺基建
   // ==========================================
   const container = document.getElementById('canvas-container');
   const scene = new THREE.Scene();
@@ -206,7 +133,7 @@
   scene.fog = new THREE.FogExp2(0x06050A, 0.015);
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 30, 80); 
+  camera.position.set(0, 40, 90); // 抬高視角以便看清軌道
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -227,61 +154,173 @@
   controls.minDistance = 20; 
   controls.maxDistance = 150;
 
+  // 🌍 中心地球
   const earthGroup = new THREE.Group();
   scene.add(earthGroup);
   const earthGeo = new THREE.SphereGeometry(2, 32, 32);
-  const earthMat = new THREE.MeshBasicMaterial({ color: 0x1A3B7C, wireframe: true, transparent: true, opacity: 0.8, depthWrite: false });
-  const earthMesh = new THREE.Mesh(earthGeo, earthMat);
-  const coreGlowGeo = new THREE.SphereGeometry(1.9, 16, 16);
-  const coreGlowMat = new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.1 });
-  earthGroup.add(new THREE.Mesh(coreGlowGeo, coreGlowMat));
-  earthGroup.add(earthMesh);
+  const earthMat = new THREE.MeshBasicMaterial({ color: 0x1A3B7C, wireframe: true, transparent: true, opacity: 0.8 });
+  earthGroup.add(new THREE.Mesh(earthGeo, earthMat));
+  earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.9, 16, 16), new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.15 })));
   earthGroup.add(new THREE.PointLight(0x63A3ED, 2, 50));
 
-  const equator = new THREE.Mesh(new THREE.TorusGeometry(30, 0.05, 16, 100), new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.45 }));
-  equator.rotation.x = Math.PI / 2;
-  scene.add(equator);
-  addAnnotationLabel(equator, 'equator', '赤道', 'l-equator', 30.5);
+  // ─── 創建獨立坐標系 Group ───
+  // 這樣我們可以統一管理黃道上的所有星體和宮位
+  const eclipticObliquity = THREE.MathUtils.degToRad(23.44);
 
-  const ecliptic = new THREE.Mesh(new THREE.TorusGeometry(30, 0.08, 16, 100), new THREE.MeshBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.7 }));
-  ecliptic.rotation.x = Math.PI / 2;
-  ecliptic.rotation.y = THREE.MathUtils.degToRad(23.44);
-  scene.add(ecliptic);
-  addAnnotationLabel(ecliptic, 'ecliptic', '黃道', 'l-ecliptic', 30.5);
+  // 1. 赤道坐標系 (平放)
+  const equatorPlane = new THREE.Group();
+  equatorPlane.rotation.x = Math.PI / 2;
+  scene.add(equatorPlane);
+  
+  const equatorRing = new THREE.Mesh(new THREE.TorusGeometry(32, 0.05, 16, 100), new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.4 }));
+  equatorPlane.add(equatorRing);
+  addLabel(equatorPlane, 'EQUATOR', '赤道', 'l-equator', 32.5);
 
+  // 2. 黃道坐標系 (傾斜)
+  const eclipticPlane = new THREE.Group();
+  eclipticPlane.rotation.x = Math.PI / 2;
+  eclipticPlane.rotation.y = eclipticObliquity;
+  scene.add(eclipticPlane);
+
+  const eclipticRing = new THREE.Mesh(new THREE.TorusGeometry(32, 0.08, 16, 100), new THREE.MeshBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.6 }));
+  eclipticPlane.add(eclipticRing);
+  addLabel(eclipticPlane, 'ECLIPTIC', '黃道', 'l-ecliptic', 32.5);
+
+  // ==========================================
+  // 3. 繪製十二宮 (黃道帶 Zodiac) 
+  // ==========================================
+  const zodiacSigns = ['白羊', '金牛', '雙子', '巨蟹', '獅子', '處女', '天秤', '天蠍', '射手', '摩羯', '水瓶', '雙魚'];
+  // 春分點 (0度) 起始，逆時針劃分 12 等份
+  zodiacSigns.forEach((sign, i) => {
+    const angleStart = THREE.MathUtils.degToRad(i * 30);
+    const angleEnd = THREE.MathUtils.degToRad((i + 1) * 30);
+    
+    // 繪製宮位高亮邊界線 (從半徑 28 到 32)
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.3 });
+    const points = [
+      new THREE.Vector3(Math.cos(angleStart)*28, Math.sin(angleStart)*28, 0),
+      new THREE.Vector3(Math.cos(angleStart)*32, Math.sin(angleStart)*32, 0)
+    ];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    eclipticPlane.add(new THREE.Line(lineGeo, lineMat));
+
+    // 添加宮位名稱
+    const labelAngle = angleStart + THREE.MathUtils.degToRad(15);
+    addLabel(eclipticPlane, '', sign, 'l-zodiac', 30, labelAngle);
+  });
+
+  // ==========================================
+  // 4. 繪製二十八宿 (極亮縫線)
+  // ==========================================
   const mansions = [
-    {n:"角",s:12,c:0xdfd495},{n:"亢",s:9,c:0xccb893},{n:"氐",s:15,c:0xb6a291},{n:"房",s:5,c:0xa3918a},{n:"心",s:5,c:0x8e8379},{n:"尾",s:18,c:0x7d7768},{n:"箕",s:11,c:0x6b695e},
-    {n:"斗",s:26,c:0x595d52},{n:"牛",s:8,c:0x495246},{n:"女",s:12,c:0x39483f},{n:"虛",s:10,c:0x2c3d36},{n:"危",s:17,c:0x1d342f},{n:"室",s:16,c:0x122926},{n:"壁",s:9,c:0x081d1e},
-    {n:"奎",s:16,c:0x2a403d},{n:"婁",s:12,c:0x3d4f4e},{n:"胃",s:14,c:0x4f5e5f},{n:"昴",s:11,c:0x5e6e6f},{n:"畢",s:16,c:0x6e7e7f},{n:"觜",s:2,c:0x7e8e8f},{n:"參",s:9,c:0x8e9e9f},
-    {n:"井",s:33,c:0x6b8d86},{n:"鬼",s:4,c:0x597f7a},{n:"柳",s:15,c:0x49716e},{n:"星",s:7,c:0x396362},{n:"張",s:18,c:0x2c5556},{n:"翼",s:18,c:0x1d474a},{n:"軫",s:17,c:0x123a3d}
+    {n:"角",s:12},{n:"亢",s:9},{n:"氐",s:15},{n:"房",s:5},{n:"心",s:5},{n:"尾",s:18},{n:"箕",s:11},
+    {n:"斗",s:26},{n:"牛",s:8},{n:"女",s:12},{n:"虛",s:10},{n:"危",s:17},{n:"室",s:16},{n:"壁",s:9},
+    {n:"奎",s:16},{n:"婁",s:12},{n:"胃",s:14},{n:"昴",s:11},{n:"畢",s:16},{n:"觜",s:2},{n:"參",s:9},
+    {n:"井",s:33},{n:"鬼",s:4},{n:"柳",s:15},{n:"星",s:7},{n:"張",s:18},{n:"翼",s:18},{n:"軫",s:17}
   ];
-  const mansionGroup = new THREE.Group();
   let currentAngle = 0;
   mansions.forEach((m) => {
     const rad = THREE.MathUtils.degToRad(m.s);
-    const ringGeo = new THREE.RingGeometry(35, 38, 16, 1, currentAngle, rad);
-    const slice = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: m.c, side: THREE.DoubleSide, transparent: true, opacity: 0.15, depthWrite: false, blend: THREE.AdditiveBlending }));
-    slice.add(new THREE.LineSegments(new THREE.EdgesGeometry(ringGeo), new THREE.LineBasicMaterial({ color: m.c, transparent: true, opacity: 0.25 })));
-    mansionGroup.add(slice);
+    // 半透明色塊
+    const ringGeo = new THREE.RingGeometry(35, 39, 16, 1, currentAngle, rad);
+    const slice = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0x4a90e2, side: THREE.DoubleSide, transparent: true, opacity: 0.08, depthWrite: false }));
     
-    addMansionLabel(slice, m.n, currentAngle + rad / 2);
+    // 🔥 高亮邊緣縫線 (亮白色)
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+    slice.add(new THREE.LineSegments(new THREE.EdgesGeometry(ringGeo), edgeMat));
+    equatorPlane.add(slice);
+    
+    // 添加宿名標註
+    addLabel(equatorPlane, '', m.n + '宿', 'l-mansion', 40.5, currentAngle + rad / 2);
     currentAngle += rad;
   });
-  mansionGroup.rotation.x = Math.PI / 2;
-  scene.add(mansionGroup);
 
+  // 背景星辰
   const starsGeo = new THREE.BufferGeometry();
   const posArray = new Float32Array(3000);
   for(let i = 0; i < 3000; i++) posArray[i] = (Math.random() - 0.5) * 200;
   starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
   scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({ size: 0.5, color: 0xffffff, transparent: true, opacity: 0.8 })));
 
+  // ==========================================
+  // 5. 動態行星系統 (The Real Deal)
+  // ==========================================
+  const planetGroup = new THREE.Group();
+  eclipticPlane.add(planetGroup); // 行星附著在黃道面上
+
+  // 天文學簡易轉換函數：根據日期推算近似黃經 (供視覺展示)
+  function calculateApproxPlanets(year, month, day) {
+    // 基準日 J2000.0 (2000-01-01 12:00 UTC)
+    const targetDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+    const daysSinceJ2000 = (targetDate - new Date(Date.UTC(2000, 0, 1, 12))) / 86400000;
+    
+    // 簡易週期計算 (平均黃經 = 基點 + 每日運行度數 * 天數)
+    // 僅作 3D 視覺示意，專業排盤仍需依賴後端 swisseph
+    const normalize = (deg) => ((deg % 360) + 360) % 360;
+    return [
+      { name: '太陽', id: 'sun', icon: '☉', color: 0xff5500, lon: normalize(280.460 + 0.9856474 * daysSinceJ2000) },
+      { name: '月亮', id: 'moon', icon: '☽', color: 0xeeeeee, lon: normalize(218.316 + 13.176396 * daysSinceJ2000) },
+      { name: '水星', id: 'mercury', icon: '☿', color: 0x88ccff, lon: normalize(252.250 + 4.092317 * daysSinceJ2000) },
+      { name: '金星', id: 'venus', icon: '♀', color: 0xffd700, lon: normalize(181.979 + 1.602130 * daysSinceJ2000) },
+      { name: '火星', id: 'mars', icon: '♂', color: 0xff3333, lon: normalize(355.453 + 0.524020 * daysSinceJ2000) },
+      { name: '木星', id: 'jupiter', icon: '♃', color: 0xffaa55, lon: normalize(34.404 + 0.083085 * daysSinceJ2000) },
+      { name: '土星', id: 'saturn', icon: '♄', color: 0xeeddaa, lon: normalize(50.077 + 0.033444 * daysSinceJ2000) }
+    ];
+  }
+
+  // 繪製行星到黃道面上
+  function renderPlanets(dateData) {
+    planetGroup.clear(); // 清空舊的
+    const planets = calculateApproxPlanets(dateData.year, dateData.month, dateData.day);
+    
+    planets.forEach(p => {
+      // 1. 將黃經(0-360)轉為弧度
+      const rad = THREE.MathUtils.degToRad(p.lon);
+      const radius = 28; // 行星軌道半徑 (放在黃道十二宮內側)
+      
+      // 2. 在黃道面(xy面)計算 x, y
+      const x = Math.cos(rad) * radius;
+      const y = Math.sin(rad) * radius;
+
+      // 3. 創建 3D 球體
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.8, 16, 16),
+        new THREE.MeshBasicMaterial({ color: p.color })
+      );
+      sphere.position.set(x, y, 0);
+      planetGroup.add(sphere);
+
+      // 4. 添加符號/文字標註
+      const el = document.createElement('div');
+      el.className = 'label-container';
+      el.innerHTML = `<div class="label-zh l-planet" style="color:#${p.color.toString(16)}">${p.icon}</div><div class="label-text">${p.name}</div>`;
+      const label = new CSS2DObject(el);
+      label.position.set(x, y, 0);
+      planetGroup.add(label);
+    });
+  }
+
+  // ==========================================
+  // 動畫與標籤輔助函數
+  // ==========================================
+  function addLabel(parent, labelEn, labelZh, zhClass, radius, angleRad = 0) {
+    const el = document.createElement('div');
+    el.className = 'label-container';
+    el.innerHTML = labelEn ? `<div class="label-text">${labelEn}</div><div class="label-zh ${zhClass}">${labelZh}</div>` : `<div class="label-zh ${zhClass}">${labelZh}</div>`;
+    const label = new CSS2DObject(el);
+    label.position.set(Math.cos(angleRad)*radius, Math.sin(angleRad)*radius, 0); 
+    parent.add(label);
+  }
+
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
-    scene.rotation.y += 0.0005; 
+    // 讓整個宇宙(黃道+赤道)一起自轉
+    equatorPlane.rotation.z += 0.0003;
+    eclipticPlane.rotation.z += 0.0003;
+    
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera); 
+    labelRenderer.render(scene, camera);
   }
   animate();
 
@@ -292,39 +331,16 @@
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  function addAnnotationLabel(parent, labelEn, labelZh, zhClass, radius) {
-    const el = document.createElement('div');
-    el.className = 'label-container';
-    el.innerHTML = `<div class="label-text">${labelEn}</div><div class="label-zh ${zhClass}">${labelZh}</div>`;
-    const label = new CSS2DObject(el);
-    label.position.set(radius, 0, 0); 
-    parent.add(label);
-    label.lookAt(camera.position); 
-  }
-  
-  function addMansionLabel(parent, labelZh, angleRad) {
-    const el = document.createElement('div');
-    el.className = 'label-container l-mansion';
-    el.innerHTML = `<div class="label-zh">${labelZh}宿</div>`;
-    const label = new CSS2DObject(el);
-    const radius = 39.5; 
-    label.position.set(Math.cos(angleRad) * radius, Math.sin(angleRad) * radius, 0);
-    parent.add(label);
-    label.lookAt(camera.position);
-  }
-
   // ==========================================
-  // 2. 邏輯切換與真太陽時輸入
+  // 數據與表單邏輯
   // ==========================================
   let astroData = null;
   const astroDataStr = sessionStorage.getItem('zc_astro_target');
   
   if (astroDataStr) {
-    try { astroData = JSON.parse(astroDataStr); } catch (e) { console.error(e); }
+    try { astroData = JSON.parse(astroDataStr); } catch (e) {}
   }
   
-  if(typeof ZCI18n !== 'undefined') ZCI18n.applyDOM();
-
   if (astroData && astroData.year) {
     injectDataToUI(astroData);
   } else {
@@ -342,12 +358,9 @@
           (data) => {
             document.getElementById('geo-spinner').style.display = 'none';
             const diffMin = Math.round((data.lng - 120) * 4);
-            const sign    = diffMin >= 0 ? '+' : '';
-            const src     = data.label ? `📍 ${data.label.slice(0,30)}` : '📍 字典估算';
             const hintEl = document.getElementById('geo-hint');
-            hintEl.textContent = `✦ 經度 ${data.lng.toFixed(2)}° → 真太陽時偏差 ${sign}${diffMin} 分　${src}`;
+            hintEl.textContent = `✦ 經度 ${data.lng.toFixed(2)}° → 真太陽時偏差 ${diffMin >= 0 ? '+' : ''}${diffMin} 分`;
             hintEl.style.display = 'block';
-            hintEl.classList.add('show');
             window.odc(); 
           },
           () => document.getElementById('geo-spinner').style.display = 'none'
@@ -358,50 +371,34 @@
   }
 
   window.odc = function() {
-    let y=parseInt(document.getElementById('m-year').value)||0;
-    let m=parseInt(document.getElementById('m-month').value)||0;
-    let d=parseInt(document.getElementById('m-day').value)||0;
-    let h=parseInt(document.getElementById('m-hour').value)||0;
-    let mn=parseInt(document.getElementById('m-min').value)||0;
+    let y=parseInt(document.getElementById('m-year').value)||0, m=parseInt(document.getElementById('m-month').value)||0, d=parseInt(document.getElementById('m-day').value)||0;
+    let h=parseInt(document.getElementById('m-hour').value)||0, mn=parseInt(document.getElementById('m-min').value)||0;
     const placeLng = ZenAstro.getLng();
     const stHint=document.getElementById('solar-hint');
     if(placeLng !== null && y && m && d){
       const st=ZenAstro.correctSolarTime(h,mn,placeLng,8); 
       if(st.adjusted){
-        const sign=st.diffMin>=0?'+':'';
-        stHint.textContent=`✦ 真太陽時偏差：${sign}${st.diffMin} 分 → 實際時辰 ${String(st.hour).padStart(2,'0')}:${String(st.minute).padStart(2,'0')}`;
+        stHint.textContent=`✦ 實際時辰 ${String(st.hour).padStart(2,'0')}:${String(st.minute).padStart(2,'0')}`;
         stHint.classList.add('show');
       } else { stHint.style.display = 'none'; }
     } else { stHint.style.display = 'none'; }
   }
 
   document.getElementById('btn-generate').addEventListener('click', () => {
-    const y = parseInt(document.getElementById('m-year').value);
-    const m = parseInt(document.getElementById('m-month').value);
-    const d = parseInt(document.getElementById('m-day').value);
-    const h = parseInt(document.getElementById('m-hour').value) || 12;
-    const min = parseInt(document.getElementById('m-min').value) || 0;
+    const y = parseInt(document.getElementById('m-year').value), m = parseInt(document.getElementById('m-month').value), d = parseInt(document.getElementById('m-day').value);
+    const h = parseInt(document.getElementById('m-hour').value) || 12, min = parseInt(document.getElementById('m-min').value) || 0;
     const name = document.getElementById('m-name').value.trim() || '命主';
-    const placeLng = ZenAstro.getLng();
-    const placeLat = ZenAstro.getLat();
-    const placeLabel = ZenAstro.getLabel();
-
+    
     if(!y || !m || !d) { alert("請輸入完整的年月日"); return; }
     
+    const placeLng = ZenAstro.getLng(), placeLat = ZenAstro.getLat(), placeLabel = ZenAstro.getLabel();
     const st=ZenAstro.correctSolarTime(h,min,placeLng,8);
 
-    astroData = {
-      name: name, year: y, month: m, day: d, hour: st.hour, minute: st.minute,
-      lng: placeLng !== null ? placeLng : 120.2, lat: placeLat !== undefined ? placeLat : 30.2,
-      tzOffset: 8, placeLabel: placeLabel
-    };
-
+    astroData = { name, year: y, month: m, day: d, hour: st.hour, minute: st.minute, lng: placeLng || 120.2, lat: placeLat || 30.2, placeLabel };
     sessionStorage.setItem('zc_astro_target', JSON.stringify(astroData));
+    
     document.getElementById('data-modal').style.opacity = '0';
-    setTimeout(() => {
-      document.getElementById('data-modal').classList.remove('show');
-      injectDataToUI(astroData);
-    }, 500);
+    setTimeout(() => { document.getElementById('data-modal').classList.remove('show'); injectDataToUI(astroData); }, 500);
   });
 
   function injectDataToUI(data) {
@@ -409,8 +406,10 @@
     document.getElementById('ui-date').textContent = `${data.year}.${String(data.month).padStart(2,'0')}.${String(data.day).padStart(2,'0')} ${String(data.hour).padStart(2,'0')}:${String(data.minute).padStart(2,'0')}`;
     document.getElementById('ui-geo').textContent = data.placeLabel ? `經度 ${data.lng.toFixed(2)}° · 緯度 ${data.lat.toFixed(2)}°　📍 ${data.placeLabel.split(',')[0]}` : `經度 ${data.lng.toFixed(2)}° · 緯度 ${data.lat.toFixed(2)}°`;
     const card = document.getElementById('user-info-card');
-    card.style.display = 'block';
-    setTimeout(() => card.classList.add('show'), 50);
+    card.style.display = 'block'; setTimeout(() => card.classList.add('show'), 50);
+
+    // 核心：根據輸入的時間，動態生成真實行星位置！
+    renderPlanets(data);
   }
 </script>
 </body>
