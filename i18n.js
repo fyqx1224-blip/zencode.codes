@@ -15,19 +15,15 @@ const ZCI18n = (function () {
        繁體中文（原版，基準語言）
     ══════════════════════════════════ */
     'zh-TW': {
-      // 導航
       'nav.reading':   '命盤推演',
       'nav.about':     '關於我們',
       'nav.privacy':   '隱私政策',
       'nav.terms':     '使用條款',
-      // 主頁 Hero
       'hero.tag':      'ZenCode · 命理推演系統',
       'hero.title':    '開啟命運檔案',
       'hero.sub':      '深度流年 · 八字鑑定 · 大運解讀',
-      // 日曆切換
       'cal.solar':     '公曆（西曆）',
       'cal.lunar':     '農曆（陰曆）',
-      // 表單
       'form.name':     '命主姓名',
       'form.name.ph':  '請輸入姓名',
       'form.gender':   '命主性別',
@@ -47,14 +43,10 @@ const ZCI18n = (function () {
       'form.min':      '分（可選）',
       'form.place':    '出生地點',
       'form.place.ph': '如：四川省成都市',
-      // 命盤預覽
       'prev.title':    '命盤預覽（已校正真太陽時）',
-      // 提交按鈕
       'btn.submit':    '觀測星象能量',
-      // Loading
       'load.sub':      '觀測星象能量 · 推算命盤格局',
       'load.phases':   ['正在校對真太陽時','排布四柱八字','推演大運流年','鑑定格局強弱','觀測五行流通','解析天干地支','計算神煞吉凶'],
-      // 錯誤
       'err.lunar':     '農曆換算失敗，請檢查日期',
       'err.fail':      '觀測失敗，請稍後重試',
       'err.ratelimit.wait':   '系統繁忙，觀星隊列等候中…',
@@ -62,24 +54,19 @@ const ZCI18n = (function () {
       'err.ratelimit.title':  '星象觀測隊列已滿',
       'err.ratelimit.desc':   '目前請求較多，已自動重試但未能完成。\n請稍待片刻後再次點擊「觀測星象能量」。',
       'err.ratelimit.reload': '重新測算',
-      // Footer
       'footer.copy':   '© 2025 ZenCode · 命運檔案 · 僅供娛樂參考',
       'footer.about':  '關於我們',
       'footer.privacy':'隱私政策',
       'footer.terms':  '使用條款',
-      // 關於頁
       'about.tag':     'About · ZenCode · 命理推演系統',
       'about.title':   '關於我們',
       'about.sub':     '以演算法之精，承千年命學之道',
-      // 隱私頁
       'privacy.tag':   'Privacy Policy · 隱私政策',
       'privacy.title': '隱私政策',
       'privacy.sub':   '我們如何收集、使用及保護您的資料',
-      // 條款頁
       'terms.tag':     'Terms of Service · 使用條款',
       'terms.title':   '使用條款',
       'terms.sub':     '使用本平台即表示您同意以下條款',
-      // 夏令時
       'form.dst.label':       '夏令時 DST',
       'form.dst.sub':         '出生時當地是否正在實行夏令時（+1小時）',
       'form.dst.panel.title': '主要國家／地區夏令時參考',
@@ -96,7 +83,6 @@ const ZCI18n = (function () {
       'form.dst.kr.name':     '韓國 / 日本',
       'form.dst.kr.detail':   '韓國 1948–1960、日本 1948–1951 曾短暫實行，現均不再實行',
       'form.dst.note':        '✦ 開啟後系統將在時辰計算前自動減去 1 小時，還原為標準時。如不確定是否在夏令時期間出生，請查閱出生地當年曆法。',
-      // 反饋頁
       'fb.tag':              'ZenCode · 命盤反饋 · Feedback',
       'fb.title':            '命盤校準',
       'fb.sub':              '您的每一條反饋<br>都將幫助命理推演系統更趨精準',
@@ -139,7 +125,6 @@ const ZCI18n = (function () {
       'fb.success.title':    '反饋已記錄',
       'fb.success.sub':      '感謝您的校準貢獻<br>每一條記錄都讓命盤推演更趨精準',
       'fb.success.back':     '返回命盤推演',
-      // 導航（反饋入口）
       'nav.feedback':        '命盤校準',
       'nav.liuyao':          '六爻排盤',
       'nav.astrolabe':       '立體天球儀',
@@ -149,7 +134,6 @@ const ZCI18n = (function () {
       'form.tz':             '出生時當地時區',
       'form.tz.hint':        '✦ 請選擇出生當時當地使用的標準時間（夏令時期間請選夏令時對應的時區）',
       'form.jq.hint':        '✦ 節氣換月精確至分鐘（資料來源：天文年曆）· 採早子時流派（23:00 起為當天子時）',
-      // VIP 私人定制彈窗
       'vip.eyebrow':         '命盤已生成 · 深度服務開放中',
       'vip.title':           '一對一私人命理定制',
       'vip.sub':             '您的命盤揭示了獨特的命運密碼，算法之外，還有更深的解讀等待開啟',
@@ -165,6 +149,9 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '回覆通常在 24 小時內 · 全程保密 · 僅接受少量預約',
       'vip.close':           '暫不需要，繼續瀏覽',
+      // ✅ 3D 天球儀專屬
+      'astro.title':         '星象座標系',
+      'astro.sub':           '未檢測到緩存資料<br>請輸入公曆出生時間以生成立體天球儀',
     },
 
     /* ══════════════════════════════════
@@ -223,7 +210,6 @@ const ZCI18n = (function () {
       'terms.tag':     'Terms of Service · 使用条款',
       'terms.title':   '使用条款',
       'terms.sub':     '使用本平台即表示您同意以下条款',
-      // 夏令时
       'form.dst.label':       '夏令时 DST',
       'form.dst.sub':         '出生时当地是否正在实行夏令时（+1小时）',
       'form.dst.panel.title': '主要国家／地区夏令时参考',
@@ -240,7 +226,6 @@ const ZCI18n = (function () {
       'form.dst.kr.name':     '韩国 / 日本',
       'form.dst.kr.detail':   '韩国 1948–1960、日本 1948–1951 曾短暂实行，现均不再实行',
       'form.dst.note':        '✦ 开启后系统将在时辰计算前自动减去 1 小时，还原为标准时。如不确定是否在夏令时期间出生，请查阅出生地当年历法。',
-      // 反馈页
       'fb.tag':              'ZenCode · 命盘反馈 · Feedback',
       'fb.title':            '命盘校准',
       'fb.sub':              '您的每一条反馈<br>都将帮助命理推演系统更趋精准',
@@ -292,7 +277,6 @@ const ZCI18n = (function () {
       'form.tz':             '出生时当地时区',
       'form.tz.hint':        '✦ 请选择出生当时当地使用的标准时间（夏令时期间请选夏令时对应的时区）',
       'form.jq.hint':        '✦ 节气换月精确至分钟（数据来源：天文年历）· 采早子时流派（23:00 起为当天子时）',
-      // VIP 私人定制弹窗
       'vip.eyebrow':         '命盘已生成 · 深度服务开放中',
       'vip.title':           '一对一私人命理定制',
       'vip.sub':             '您的命盘揭示了独特的命运密码，算法之外，还有更深的解读等待开启',
@@ -308,12 +292,13 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '回复通常在 24 小时内 · 全程保密 · 仅接受少量预约',
       'vip.close':           '暂不需要，继续浏览',
+      // ✅ 3D 天球仪专属
+      'astro.title':         '星象坐标系',
+      'astro.sub':           '未检测到缓存资料<br>请输入公历出生时间以生成立体天球仪',
     },
 
     /* ══════════════════════════════════
        English
-       策略：术语保留汉字 + 括号英文注释
-       难以直译的命理词用 transliteration
     ══════════════════════════════════ */
     'en': {
       'nav.reading':   'Chart Reading',
@@ -368,7 +353,6 @@ const ZCI18n = (function () {
       'terms.tag':     'Terms of Service · ZenCode',
       'terms.title':   'Terms of Service',
       'terms.sub':     'By using this platform you agree to the following terms',
-      // DST
       'form.dst.label':       'Daylight Saving Time',
       'form.dst.sub':         'Was DST in effect at your place of birth? (+1 hour)',
       'form.dst.panel.title': 'DST Reference by Country / Region',
@@ -385,7 +369,6 @@ const ZCI18n = (function () {
       'form.dst.kr.name':     'South Korea / Japan',
       'form.dst.kr.detail':   'Korea observed DST 1948–1960; Japan 1948–1951. Neither observes DST today.',
       'form.dst.note':        '✦ When enabled, the system subtracts 1 hour from the clock time before calculating the BaZi chart, restoring it to standard time. If unsure, consult a historical DST calendar for the birth location.',
-      // Feedback page
       'fb.tag':              'ZenCode · Chart Feedback',
       'fb.title':            'Calibrate',
       'fb.sub':              'Every piece of feedback<br>helps the chart system grow more accurate',
@@ -437,7 +420,6 @@ const ZCI18n = (function () {
       'form.tz':             'Local Timezone at Birth',
       'form.tz.hint':        '✦ Select the standard time in use at your birthplace. If born during Daylight Saving Time, pick the DST offset.',
       'form.jq.hint':        '✦ Solar term transitions accurate to the minute (source: astronomical almanac) · Early-zi convention: 23:00–00:59 belongs to the current day',
-      // VIP modal
       'vip.eyebrow':         'Your Chart is Ready · Exclusive Service Now Open',
       'vip.title':           'One-on-One Personal Destiny Consultation',
       'vip.sub':             'Your chart reveals a unique cosmic blueprint. Beyond the algorithm, a deeper reading awaits.',
@@ -453,11 +435,13 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            'Reply within 24 hours · Strictly confidential · Limited appointments only',
       'vip.close':           'Not now, continue reading',
+      // ✅ 3D Astrolabe 專屬
+      'astro.title':         'Astrolabe Coordinates',
+      'astro.sub':           'No cached data detected.<br>Please enter your solar birth time to generate the 3D Astrolabe.',
     },
 
     /* ══════════════════════════════════
        한국어 (Korean)
-       전략：술어는 한자 유지 + 괄호 한국어 설명
     ══════════════════════════════════ */
     'ko': {
       'nav.reading':   '운명 차트',
@@ -512,7 +496,6 @@ const ZCI18n = (function () {
       'terms.tag':     'Terms of Service · ZenCode',
       'terms.title':   '이용약관',
       'terms.sub':     '본 플랫폼을 이용하면 아래 약관에 동의하는 것으로 간주합니다',
-      // 일광절약시간
       'form.dst.label':       '일광절약시간 DST',
       'form.dst.sub':         '출생 당시 해당 지역에서 서머타임이 시행 중이었나요? (+1시간)',
       'form.dst.panel.title': '국가별 서머타임 시행 참고',
@@ -529,7 +512,6 @@ const ZCI18n = (function () {
       'form.dst.kr.name':     '한국 / 일본',
       'form.dst.kr.detail':   '한국 1948–1960년, 일본 1948–1951년 시행. 현재 두 나라 모두 미시행.',
       'form.dst.note':        '✦ 활성화하면 시스템이 입력된 시각에서 1시간을 빼 표준시로 복원한 후 사주를 계산합니다. 확실하지 않은 경우 출생지의 해당 연도 서머타임 기록을 확인하거나 이 옵션을 끄세요.',
-      // 피드백 페이지
       'fb.tag':              'ZenCode · 차트 피드백',
       'fb.title':            '차트 교정',
       'fb.sub':              '보내주신 모든 피드백이<br>명리 추연 시스템의 정확도를 높여줍니다',
@@ -581,7 +563,6 @@ const ZCI18n = (function () {
       'form.tz':             '출생 당시 현지 시간대',
       'form.tz.hint':        '✦ 출생 당시 현지에서 사용하던 표준시를 선택하세요. 서머타임 중에 태어났다면 서머타임 오프셋을 선택하세요.',
       'form.jq.hint':        '✦ 절기 교체 시각은 분 단위로 정확합니다（출처: 천문 연감）· 조자시 기준: 23:00부터 당일 자시로 계산',
-      // VIP 모달
       'vip.eyebrow':         '사주 차트 완성 · 프리미엄 서비스 오픈',
       'vip.title':           '1:1 맞춤형 명리 컨설팅',
       'vip.sub':             '당신의 사주는 고유한 운명의 코드를 담고 있습니다. 알고리즘 너머, 더 깊은 해석이 기다립니다.',
@@ -597,13 +578,15 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '24시간 이내 답변 · 엄격한 비밀 보장 · 소수 예약만 수락',
       'vip.close':           '괜찮습니다, 계속 볼게요',
+      // ✅ 3D Astrolabe 전용
+      'astro.title':         '천구의 좌표계',
+      'astro.sub':           '캐시된 데이터가 없습니다.<br>입체 천구의를 생성하려면 양력 생년월일을 입력해 주세요.',
     },
   };
 
   // ── AI Prompt 語言指令 ──────────────────────────────
-  // 告訴後端 analyze.js 用哪個語言生成報告
   const PROMPT_LANG = {
-    'zh-TW': null, // 不改，原版繁體
+    'zh-TW': null, 
     'zh-CN': '语言要求：请全程使用简体中文撰写报告，包括所有分析内容、标题和说明。不得使用繁体字。',
     'en': `LANGUAGE INSTRUCTION: Write the entire reading in English.
 For Chinese cosmological terms that have no direct English equivalent, keep the original Chinese characters and add an English explanation in parentheses.
@@ -617,7 +600,6 @@ Examples of required format:
 - 長生 (Cháng Shēng · Emerging Life) — the birth stage of elemental strength
 Apply this bilingual annotation consistently throughout ALL sections of the report.
 The Four Pillars (四柱) themselves — the Chinese characters 甲子, 乙丑 etc. — must always be shown as Chinese characters, never romanised.`,
-
     'ko': `언어 지침: 보고서 전체를 한국어로 작성하세요.
 한국어로 직역하기 어려운 중국 명리학 술어는 한자를 그대로 유지하고 괄호 안에 한국어 설명을 추가하세요.
 필수 형식 예시:
@@ -635,7 +617,6 @@ The Four Pillars (四柱) themselves — the Chinese characters 甲子, 乙丑 e
   const STORAGE_KEY = 'zc_lang';
   const SUPPORTED   = ['zh-TW', 'zh-CN', 'en', 'ko'];
 
-  // 偵測預設語言：localStorage → 瀏覽器語言 → zh-TW
   function detectLang() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && SUPPORTED.includes(saved)) return saved;
@@ -650,84 +631,61 @@ The Four Pillars (四柱) themselves — the Chinese characters 甲子, 乙丑 e
   let currentLang = detectLang();
 
   // ── 核心方法 ─────────────────────────────────────────
-
-  // 取翻譯字串
   function t(key) {
     return (DB[currentLang] && DB[currentLang][key]) ||
            (DB['zh-TW'][key]) ||
            key;
   }
 
-  // 取 loading phrases（回傳陣列）
-  function phases() {
-    return t('load.phases');
-  }
-
-  // 取 AI prompt 語言指令（英韓才有，中文回傳 null）
-  function promptLang() {
-    return PROMPT_LANG[currentLang] || null;
-  }
-
-  // 取當前語言碼
+  function phases() { return t('load.phases'); }
+  function promptLang() { return PROMPT_LANG[currentLang] || null; }
   function lang() { return currentLang; }
 
-  // ── 套用翻譯到 DOM ────────────────────────────────────
   function applyDOM() {
-    // 1. data-i18n="key" → textContent
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
-      const val = t(key);
+      const val = t(el.dataset.i18n);
       if (val) el.textContent = val;
     });
 
-    // 2. data-i18n-ph="key" → placeholder
     document.querySelectorAll('[data-i18n-ph]').forEach(el => {
       const val = t(el.dataset.i18nPh);
       if (val) el.placeholder = val;
     });
 
-    // 3. data-i18n-html="key" → innerHTML（少數需要 HTML 的場景）
     document.querySelectorAll('[data-i18n-html]').forEach(el => {
       const val = t(el.dataset.i18nHtml);
       if (val) el.innerHTML = val;
     });
 
-    // 4. <html lang=""> 屬性
     document.documentElement.lang =
       currentLang === 'zh-CN' ? 'zh-Hans' :
       currentLang === 'zh-TW' ? 'zh-Hant' :
       currentLang;
 
-    // 5. 英文/韓文時調整 letter-spacing，避免過寬
     const isLatinLike = currentLang === 'en';
     document.querySelectorAll('.zc-nav-link, .zc-mobile-link').forEach(el => {
       el.style.letterSpacing = isLatinLike ? '0.06em' : '';
     });
 
-    // 6. 更新語言切換器高亮
     document.querySelectorAll('[data-lang-btn]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.langBtn === currentLang);
     });
   }
 
-  // ── 切換語言 ─────────────────────────────────────────
   function setLang(code) {
     if (!SUPPORTED.includes(code)) return;
     currentLang = code;
     localStorage.setItem(STORAGE_KEY, code);
     applyDOM();
-    // 觸發自定義事件，讓頁面 JS 可以監聽並更新動態內容
     document.dispatchEvent(new CustomEvent('zc:langchange', { detail: { lang: code } }));
   }
 
-  // ── DOMContentLoaded 後自動套用 ──────────────────────
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applyDOM);
   } else {
     applyDOM();
   }
 
-  // 公開 API
   return { t, phases, promptLang, lang, setLang, applyDOM };
 
 })();
