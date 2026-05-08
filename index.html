@@ -261,8 +261,24 @@ select.inp option{background:#0C0B14;color:var(--text);}
 
 @media (max-width: 768px) {
   .floating-liuyao { right: 15px; top: auto; bottom: 120px; transform: none; }
-  .floating-liuyao:hover { transform: scale(1.05); }
+.floating-liuyao:hover { transform: scale(1.05); }
 }
+
+/* ===== 在这里粘贴我刚刚给你的【3D 天球仪 星空悬浮入口】的完整 CSS 代码 ===== */
+.floating-astrolabe {
+  position: fixed;
+/* ... (中间代码省略) ... */
+.floating-astrolabe:hover .astrolabe-text {
+  color: #90C4FF;
+  text-shadow: 0 0 15px rgba(99, 163, 237, 0.6);
+  letter-spacing: 0.5em;
+}
+@media (max-width: 768px) {
+  .floating-astrolabe { left: 15px; top: auto; bottom: 120px; transform: none; }
+  .floating-astrolabe:hover { transform: scale(1.05); }
+}
+/* ========================================================================= */
+
 </style>
 <script src="/i18n.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
@@ -283,8 +299,22 @@ select.inp option{background:#0C0B14;color:var(--text);}
       <circle cx="50" cy="50" r="49" fill="none" stroke="#D4A843" stroke-width="1" opacity="0.6"/>
     </svg>
   </div>
-  <span class="liuyao-text" data-i18n="nav.liuyao">六爻排盤</span>
+<span class="liuyao-text" data-i18n="nav.liuyao">六爻排盤</span>
 </a>
+
+<a href="#" id="btn-astrolabe" class="floating-astrolabe" aria-label="3D 立体天球仪">
+  <div class="astrolabe-wrapper">
+    <svg viewBox="0 0 100 100" width="82%" height="82%" style="filter: drop-shadow(0 0 4px rgba(99,163,237,0.3));">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#63A3ED" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <ellipse cx="50" cy="50" rx="42" ry="14" fill="none" stroke="#63A3ED" stroke-width="1.5" class="astro-orbit" transform="rotate(30 50 50)"/>
+      <ellipse cx="50" cy="50" rx="42" ry="14" fill="none" stroke="#63A3ED" stroke-width="1.5" class="astro-orbit-reverse" transform="rotate(-45 50 50)"/>
+      <circle cx="50" cy="50" r="8" fill="#63A3ED"/>
+      <circle cx="20" cy="28" r="3" fill="#D4A843" class="astro-orbit"/>
+    </svg>
+  </div>
+  <span class="astrolabe-text">立體天球儀</span>
+</a>
+<div id="vip-overlay" role="dialog" aria-modal="true">
 
 <div id="vip-overlay" role="dialog" aria-modal="true">
   <div class="vip-box">
@@ -931,6 +961,7 @@ async function geocodePlace(place) {
     if (data && data.length > 0) {
       const item = data[0];
       _geoLng   = parseFloat(item.lon);
+      window._geoLat = parseFloat(item.lat);
       _geoLabel = item.display_name.split(',').slice(0,3).join(',');
     } else {
       // Nominatim 查無結果，fallback 到字典
@@ -1323,6 +1354,32 @@ function closeVip(){
 
 document.getElementById('vip-overlay').addEventListener('click', function(e){
   if(e.target===this) closeVip();
+});
+  document.getElementById('btn-astrolabe').addEventListener('click', function(e) {
+  e.preventDefault(); 
+  let y = parseInt(document.getElementById('by').value) || 0;
+  let m = parseInt(document.getElementById('bm').value) || 0;
+  let d = parseInt(document.getElementById('bd').value) || 0;
+  let h = parseInt(document.getElementById('bh').value) || 12;
+  let min = parseInt(document.getElementById('bmin').value) || 0;
+  
+  if(calType === 'lunar' && y && m && d) {
+    const s = lunarToSolar(y, m, d, document.getElementById('ilp').checked);
+    if(s) { y = s.year; m = s.month; d = s.day; }
+  }
+
+  const lat = window._geoLat !== undefined ? window._geoLat : 30.2; 
+  const lng = window._geoLng !== null ? window._geoLng : 120.2;
+  const tzOffset = parseFloat(document.getElementById('utz')?.value || '8');
+
+  const astroData = {
+    year: y, month: m, day: d, hour: h, minute: min,
+    lng: lng, lat: lat, tzOffset: tzOffset,
+    name: document.getElementById('un').value.trim() || '命主'
+  };
+
+  sessionStorage.setItem('zc_astro_target', JSON.stringify(astroData));
+  window.location.href = '/astrolabe-3d.html'; 
 });
 </script>
 
