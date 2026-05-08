@@ -54,7 +54,7 @@
   }
   .info-geo { font-size: 0.65rem; color: rgba(99, 163, 237, 0.6); margin-top: 6px; letter-spacing: 0.05em; }
 
-  /* ─── 數據輸入彈窗 (當沒有緩存時顯示) ─── */
+  /* ─── 數據輸入彈窗 ─── */
   #data-modal {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     background: rgba(12, 11, 20, 0.85); backdrop-filter: blur(24px);
@@ -149,8 +149,9 @@
       <button class="modal-lang-btn" onclick="if(typeof ZCI18n!=='undefined') ZCI18n.setLang('zh-CN')">简</button>
       <button class="modal-lang-btn" onclick="if(typeof ZCI18n!=='undefined') ZCI18n.setLang('en')">EN</button>
     </div>
-    <div class="modal-title" data-i18n="fb.title">命盤校準</div>
-    <div class="modal-hint" data-i18n="fb.sub">✦ 您的每一條反饋<br>都將幫助命理推演系統更趨精準</div>
+    
+    <div class="modal-title" data-i18n="astro.title">星象座標系</div>
+    <div class="modal-hint" data-i18n-html="astro.sub">未檢測到緩存資料<br>請輸入公曆出生時間以生成立體天球儀</div>
     
     <div class="iw">
       <div class="label-hint" data-i18n="form.name">命主姓名</div>
@@ -207,19 +208,17 @@
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 30, 80); 
 
-  // 初始化 WebGL 渲染器
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
-  // 🟢 徹底修復：初始化 CSS2D 文字渲染器 (加上了 .domElement)
   const labelRenderer = new CSS2DRenderer();
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.domElement.style.position = 'absolute';
   labelRenderer.domElement.style.top = '0px';
-  labelRenderer.domElement.style.pointerEvents = 'none'; // 文字不阻擋鼠標拖曳
-  labelRenderer.domElement.style.zIndex = '5'; // 放在 WebGL 畫布之上
+  labelRenderer.domElement.style.pointerEvents = 'none'; 
+  labelRenderer.domElement.style.zIndex = '5'; 
   container.appendChild(labelRenderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -228,7 +227,6 @@
   controls.minDistance = 20; 
   controls.maxDistance = 150;
 
-  // 地球與中心光
   const earthGroup = new THREE.Group();
   scene.add(earthGroup);
   const earthGeo = new THREE.SphereGeometry(2, 32, 32);
@@ -240,20 +238,17 @@
   earthGroup.add(earthMesh);
   earthGroup.add(new THREE.PointLight(0x63A3ED, 2, 50));
 
-  // 赤道 (Equator) 
   const equator = new THREE.Mesh(new THREE.TorusGeometry(30, 0.05, 16, 100), new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.45 }));
   equator.rotation.x = Math.PI / 2;
   scene.add(equator);
   addAnnotationLabel(equator, 'equator', '赤道', 'l-equator', 30.5);
 
-  // 黃道 (Ecliptic)
   const ecliptic = new THREE.Mesh(new THREE.TorusGeometry(30, 0.08, 16, 100), new THREE.MeshBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.7 }));
   ecliptic.rotation.x = Math.PI / 2;
   ecliptic.rotation.y = THREE.MathUtils.degToRad(23.44);
   scene.add(ecliptic);
   addAnnotationLabel(ecliptic, 'ecliptic', '黃道', 'l-ecliptic', 30.5);
 
-  // 二十八宿外環
   const mansions = [
     {n:"角",s:12,c:0xdfd495},{n:"亢",s:9,c:0xccb893},{n:"氐",s:15,c:0xb6a291},{n:"房",s:5,c:0xa3918a},{n:"心",s:5,c:0x8e8379},{n:"尾",s:18,c:0x7d7768},{n:"箕",s:11,c:0x6b695e},
     {n:"斗",s:26,c:0x595d52},{n:"牛",s:8,c:0x495246},{n:"女",s:12,c:0x39483f},{n:"虛",s:10,c:0x2c3d36},{n:"危",s:17,c:0x1d342f},{n:"室",s:16,c:0x122926},{n:"壁",s:9,c:0x081d1e},
@@ -275,20 +270,18 @@
   mansionGroup.rotation.x = Math.PI / 2;
   scene.add(mansionGroup);
 
-  // 背景星辰
   const starsGeo = new THREE.BufferGeometry();
   const posArray = new Float32Array(3000);
   for(let i = 0; i < 3000; i++) posArray[i] = (Math.random() - 0.5) * 200;
   starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
   scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({ size: 0.5, color: 0xffffff, transparent: true, opacity: 0.8 })));
 
-  // 動畫循環
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
-    scene.rotation.y += 0.0005; // 緩慢自轉
+    scene.rotation.y += 0.0005; 
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera); // 渲染 2D 文字
+    labelRenderer.render(scene, camera); 
   }
   animate();
 
@@ -299,7 +292,6 @@
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // 添加文字標籤的函數
   function addAnnotationLabel(parent, labelEn, labelZh, zhClass, radius) {
     const el = document.createElement('div');
     el.className = 'label-container';
@@ -327,7 +319,6 @@
   let astroData = null;
   const astroDataStr = sessionStorage.getItem('zc_astro_target');
   
-  // 安全解析 JSON
   if (astroDataStr) {
     try { astroData = JSON.parse(astroDataStr); } catch (e) { console.error(e); }
   }
@@ -335,14 +326,11 @@
   if(typeof ZCI18n !== 'undefined') ZCI18n.applyDOM();
 
   if (astroData && astroData.year) {
-    // 有緩存：直接注入
     injectDataToUI(astroData);
   } else {
-    // 無緩存：顯示表單
     document.getElementById('data-modal').classList.add('show');
   }
 
-  // 地理編碼與時區計算
   window.onPlaceInput = function() {
     clearTimeout(window._geoTimer);
     document.getElementById('geo-hint').style.display = 'none';
@@ -416,7 +404,6 @@
     }, 500);
   });
 
-  // 數據注入 UI
   function injectDataToUI(data) {
     document.getElementById('ui-name').textContent = data.name;
     document.getElementById('ui-date').textContent = `${data.year}.${String(data.month).padStart(2,'0')}.${String(data.day).padStart(2,'0')} ${String(data.hour).padStart(2,'0')}:${String(data.minute).padStart(2,'0')}`;
