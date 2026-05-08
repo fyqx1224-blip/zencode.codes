@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ZenCode · 3D 立體天球儀</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A843; --gold-b: #F0C96A; --blue: #63A3ED; --bg: #06050A;
+  }
+  body {
+    margin: 0; overflow: hidden; background: var(--bg); color: #F0EAD6;
+    font-family: 'Noto Sans TC', sans-serif;
+    /* 屏蔽文本选中，提升 3D 拖拽体验 */
+    user-select: none; -webkit-user-select: none;
+  }
+  #canvas-container {
+    width: 100vw; height: 100vh; display: block;
+  }
+  
+  /* ─── UI 覆蓋層 ─── */
+  #ui-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;
+  }
+  
+  /* 左上角：返回按鈕與命主資訊 */
+  .top-left-panel {
+    position: absolute; top: 30px; left: 30px; pointer-events: auto;
+  }
+  .btn-back {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(99, 163, 237, 0.08); border: 1px solid rgba(99, 163, 237, 0.3);
+    color: var(--blue); text-decoration: none; font-size: 1.2rem;
+    transition: all 0.3s; margin-bottom: 20px;
+  }
+  .btn-back:hover {
+    background: rgba(99, 163, 237, 0.2); border-color: var(--blue); box-shadow: 0 0 15px rgba(99, 163, 237, 0.4);
+  }
+  
+  .info-card {
+    background: rgba(6, 5, 10, 0.6); backdrop-filter: blur(12px);
+    border-left: 2px solid var(--blue); padding: 16px 20px;
+  }
+  .info-name {
+    font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--gold);
+    letter-spacing: 0.1em; margin-bottom: 4px;
+  }
+  .info-date {
+    font-size: 0.75rem; color: rgba(240, 234, 214, 0.7); letter-spacing: 0.1em;
+    font-family: 'Noto Serif TC', serif;
+  }
+  .info-geo {
+    font-size: 0.65rem; color: rgba(99, 163, 237, 0.6); margin-top: 6px; letter-spacing: 0.05em;
+  }
+
+  /* 底部：星體解讀彈窗 (預設隱藏) */
+  #planet-popup {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(6, 5, 10, 0.85); backdrop-filter: blur(16px);
+    border: 1px solid rgba(212, 168, 67, 0.3); padding: 24px;
+    border-radius: 4px; width: 90%; max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 168, 67, 0.1);
+    opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  #planet-popup.show {
+    opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
+  }
+  .popup-close {
+    position: absolute; top: 12px; right: 12px; background: none; border: none;
+    color: rgba(255,255,255,0.4); cursor: pointer; font-size: 1.2rem;
+  }
+  .popup-close:hover { color: var(--gold); }
+  .p-title { font-family: 'Ma Shan Zheng', cursive; font-size: 1.5rem; color: var(--gold); margin-bottom: 8px;}
+  .p-meta { font-size: 0.7rem; color: var(--blue); letter-spacing: 0.1em; border-bottom: 1px solid rgba(99, 163, 237, 0.2); padding-bottom: 10px; margin-bottom: 10px;}
+  .p-desc { font-size: 0.75rem; color: rgba(240, 234, 214, 0.8); line-height: 1.8; letter-spacing: 0.05em; }
+
+  /* 載入遮罩 */
+  #loading {
+    position: fixed; inset: 0; background: var(--bg); z-index: 100;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.8s;
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 2px solid rgba(99, 163, 237, 0.2);
+    border-top-color: var(--blue); border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+</style>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="font-size: 0.8rem; letter-spacing: 0.3em; color: var(--blue);">正在初始化立體星空...</div>
+</div>
+
+<div id="ui-layer">
+  <div class="top-left-panel">
+    <a href="/" class="btn-back" title="返回主頁">⟨</a>
+    <div class="info-card" id="user-info-card" style="display:none;">
+      <div class="info-name" id="ui-name">命主</div>
+      <div class="info-date" id="ui-date">1994.05.15 08:30</div>
+      <div class="info-geo" id="ui-geo">經度 120.2° · 緯度 30.2°</div>
+    </div>
+  </div>
+
+  <div id="planet-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="p-title" id="p-title">木星 (Jupiter)</div>
+    <div class="p-meta" id="p-meta">落入：角宿 3° · 雙子座 15°</div>
+    <div class="p-desc" id="p-desc">此處將接入七政四餘與西洋占星的具體星體解釋文案。</div>
+  </div>
+</div>
+
+<div id="canvas-container"></div>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // 1. 獲取緩存數據
+  const astroDataStr = sessionStorage.getItem('zc_astro_target');
+  let astroData = null;
+
+  if (!astroDataStr) {
+    alert("未檢測到命主時間數據，即將返回首頁。");
+    window.location.href = '/';
+  } else {
+    astroData = JSON.parse(astroDataStr);
+    // 渲染 UI 數據
+    document.getElementById('ui-name').textContent = astroData.name;
+    document.getElementById('ui-date').textContent = `${astroData.year}.${String(astroData.month).padStart(2,'0')}.${String(astroData.day).padStart(2,'0')} ${String(astroData.hour).padStart(2,'0')}:${String(astroData.minute).padStart(2,'0')}`;
+    document.getElementById('ui-geo').textContent = `經度 ${astroData.lng.toFixed(2)}° · 緯度 ${astroData.lat.toFixed(2)}°`;
+    document.getElementById('user-info-card').style.display = 'block';
+  }
+
+  // 2. Three.js 基礎設置
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  // 添加極淡的星空背景色
+  scene.background = new THREE.Color(0x06050A); 
+  scene.fog = new THREE.FogExp2(0x06050A, 0.015); // 邊緣迷霧，增加深邃感
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 30, 80); // 初始視角稍微俯視
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+
+  // 鼠標控制
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; // 絲滑阻尼
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 20; // 限制縮放，防止穿模
+  controls.maxDistance = 150;
+
+  // 3. 幾何體構造：中心地球
+  const earthGroup = new THREE.Group();
+  scene.add(earthGroup);
+
+  const earthGeo = new THREE.SphereGeometry(2, 32, 32);
+  const earthMat = new THREE.MeshBasicMaterial({ 
+    color: 0x2A4B7C, wireframe: true, transparent: true, opacity: 0.6 
+  });
+  const earth = new THREE.Mesh(earthGeo, earthMat);
+  earthGroup.add(earth);
+
+  // 中心發光點
+  const coreLight = new THREE.PointLight(0x63A3ED, 2, 50);
+  earthGroup.add(coreLight);
+
+  // 4. 幾何體構造：軌道環
+  // 赤道環 (Equator) - 幽藍色
+  const equatorGeo = new THREE.TorusGeometry(30, 0.05, 16, 100);
+  const equatorMat = new THREE.MeshBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.3 });
+  const equator = new THREE.Mesh(equatorGeo, equatorMat);
+  equator.rotation.x = Math.PI / 2;
+  scene.add(equator);
+
+  // 黃道環 (Ecliptic) - 金色，傾斜 23.44 度
+  const eclipticGeo = new THREE.TorusGeometry(30, 0.08, 16, 100);
+  const eclipticMat = new THREE.MeshBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.5 });
+  const ecliptic = new THREE.Mesh(eclipticGeo, eclipticMat);
+  ecliptic.rotation.x = Math.PI / 2;
+  ecliptic.rotation.y = THREE.MathUtils.degToRad(23.44); // 黃赤交角
+  scene.add(ecliptic);
+
+  // 5. 幾何體構造：28宿不均勻刻度環 (簡化數據演示)
+  // 這裡使用的是近似跨度，總和 360 度。後續需接入精確歷元數據。
+  const mansions = [
+    {n:"角",s:12},{n:"亢",s:9},{n:"氐",s:15},{n:"房",s:5},{n:"心",s:5},{n:"尾",s:18},{n:"箕",s:11},
+    {n:"斗",s:26},{n:"牛",s:8},{n:"女",s:12},{n:"虛",s:10},{n:"危",s:17},{n:"室",s:16},{n:"壁",s:9},
+    {n:"奎",s:16},{n:"婁",s:12},{n:"胃",s:14},{n:"昴",s:11},{n:"畢",s:16},{n:"觜",s:2},{n:"參",s:9},
+    {n:"井",s:33},{n:"鬼",s:4},{n:"柳",s:15},{n:"星",s:7},{n:"張",s:18},{n:"翼",s:18},{n:"軫",s:17}
+  ];
+
+  const mansionGroup = new THREE.Group();
+  let currentAngle = 0;
+  
+  mansions.forEach((m) => {
+    const rad = THREE.MathUtils.degToRad(m.s);
+    // 繪製扇形切片
+    const ringGeo = new THREE.RingGeometry(35, 38, 16, 1, currentAngle, rad);
+    const ringMat = new THREE.MeshBasicMaterial({ 
+      color: 0x4a90e2, side: THREE.DoubleSide, transparent: true, opacity: 0.1, depthWrite: false
+    });
+    const slice = new THREE.Mesh(ringGeo, ringMat);
+    
+    // 繪製分割線
+    const edges = new THREE.EdgesGeometry(ringGeo);
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x63A3ED, transparent: true, opacity: 0.3 }));
+    slice.add(line);
+
+    mansionGroup.add(slice);
+    currentAngle += rad;
+  });
+  mansionGroup.rotation.x = Math.PI / 2;
+  scene.add(mansionGroup);
+
+  // 6. 點綴一些背景隨機星辰
+  const starsGeo = new THREE.BufferGeometry();
+  const starsCount = 1000;
+  const posArray = new Float32Array(starsCount * 3);
+  for(let i = 0; i < starsCount * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 200;
+  }
+  starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+  const starsMat = new THREE.PointsMaterial({ size: 0.5, color: 0xffffff, transparent: true, opacity: 0.8 });
+  const starMesh = new THREE.Points(starsGeo, starsMat);
+  scene.add(starMesh);
+
+  // 7. 渲染與動畫循環
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    
+    // 讓場景緩慢自轉，增加神秘感
+    scene.rotation.y += 0.0005;
+    
+    renderer.render(scene, camera);
+  }
+
+  // 處理窗口縮放
+  window.addEventListener('resize', onWindowResize, false);
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  // 移除載入遮罩
+  setTimeout(() => {
+    document.getElementById('loading').style.opacity = '0';
+    setTimeout(() => document.getElementById('loading').style.display = 'none', 800);
+    animate(); // 啟動渲染
+  }, 1000);
+
+</script>
+
+<script>
+  // 關閉彈窗邏輯
+  function closePopup() {
+    document.getElementById('planet-popup').classList.remove('show');
+  }
+</script>
+</body>
+</html>
