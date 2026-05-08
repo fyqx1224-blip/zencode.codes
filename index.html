@@ -259,26 +259,80 @@ select.inp option{background:#0C0B14;color:var(--text);}
   letter-spacing: 0.5em;
 }
 
-@media (max-width: 768px) {
-  .floating-liuyao { right: 15px; top: auto; bottom: 120px; transform: none; }
-.floating-liuyao:hover { transform: scale(1.05); }
-}
-
-/* ===== 在这里粘贴我刚刚给你的【3D 天球仪 星空悬浮入口】的完整 CSS 代码 ===== */
+/* ══════════════════════════════════════════════════════
+   3D 天球仪 星空悬浮入口 (左侧对称)
+══════════════════════════════════════════════════════ */
 .floating-astrolabe {
   position: fixed;
-/* ... (中间代码省略) ... */
+  left: 40px;
+  top: 45%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.floating-astrolabe:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.astrolabe-wrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(99, 163, 237, 0.12), inset 0 0 15px rgba(99, 163, 237, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 5, 10, 0.4);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(99, 163, 237, 0.15);
+  transition: all 0.5s ease;
+}
+
+.floating-astrolabe:hover .astrolabe-wrapper {
+  box-shadow: 0 0 35px rgba(99, 163, 237, 0.4), inset 0 0 20px rgba(99, 163, 237, 0.2);
+  border-color: rgba(99, 163, 237, 0.4);
+}
+
+/* 轨道旋转动画 */
+.astro-orbit {
+  transform-origin: center;
+  animation: spin-orbit 12s linear infinite;
+}
+.astro-orbit-reverse {
+  transform-origin: center;
+  animation: spin-orbit 18s linear infinite reverse;
+}
+
+.astrolabe-text {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: #63A3ED;
+  writing-mode: vertical-lr;
+  text-shadow: 0 0 8px rgba(99, 163, 237, 0.2);
+  transition: all 0.3s;
+  margin-left: -4px;
+}
+
 .floating-astrolabe:hover .astrolabe-text {
   color: #90C4FF;
   text-shadow: 0 0 15px rgba(99, 163, 237, 0.6);
   letter-spacing: 0.5em;
 }
+
 @media (max-width: 768px) {
+  .floating-liuyao { right: 15px; top: auto; bottom: 120px; transform: none; }
+  .floating-liuyao:hover { transform: scale(1.05); }
   .floating-astrolabe { left: 15px; top: auto; bottom: 120px; transform: none; }
   .floating-astrolabe:hover { transform: scale(1.05); }
 }
-/* ========================================================================= */
-
 </style>
 <script src="/i18n.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9117931248328967" crossorigin="anonymous"></script>
@@ -299,7 +353,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
       <circle cx="50" cy="50" r="49" fill="none" stroke="#D4A843" stroke-width="1" opacity="0.6"/>
     </svg>
   </div>
-<span class="liuyao-text" data-i18n="nav.liuyao">六爻排盤</span>
+  <span class="liuyao-text" data-i18n="nav.liuyao">六爻排盤</span>
 </a>
 
 <a href="#" id="btn-astrolabe" class="floating-astrolabe" aria-label="3D 立体天球仪">
@@ -314,7 +368,6 @@ select.inp option{background:#0C0B14;color:var(--text);}
   </div>
   <span class="astrolabe-text">立體天球儀</span>
 </a>
-<div id="vip-overlay" role="dialog" aria-modal="true">
 
 <div id="vip-overlay" role="dialog" aria-modal="true">
   <div class="vip-box">
@@ -504,7 +557,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
           <option value="-4">UTC-4 · 加拿大大西洋省份 / 玻利維亞 / 委內瑞拉 / 智利</option>
           <option value="-5">UTC-5 · 美國東部（EST）/ 加拿大安大略 / 秘魯 / 哥倫比亞</option>
           <option value="-6">UTC-6 · 美國中部（CST）/ 墨西哥城 / 中美洲</option>
-          <option value="-7">UTC-7 · 美國山地（MST）/ 亞利桑那 / 墨西哥索諾拉</option>
+          <option value="-7">UTC-7 · 美國山地（MST）/ 亚利桑那 / 墨西哥索諾拉</option>
           <option value="-8">UTC-8 · 美國西部（PST）/ 加拿大英屬哥倫比亞 / 墨西哥下加利福尼亞</option>
           <option value="-9">UTC-9 · 美國阿拉斯加</option>
           <option value="-10">UTC-10 · 夏威夷 / 法屬波利尼西亞</option>
@@ -597,8 +650,6 @@ function setCalType(t){
    LUNAR→SOLAR
 ═══════════════════════════════════════════════════════ */
 const LD=(function(){
-  // 農曆數據（天文算法精確計算，Jean Meeus《天文算法》+ 紫金山天文台）
-  // 格式：[春節公曆月日, 十二月大小bits(bit11=正月...bit0=臘月,1=大月30天), 閏月月份(0=無)]
   const raw=[
     [131,0x4BD,8],[219,0x4AE,0],[208,0xA57,0],[129,0x54D,5],[216,0xD26,0],[204,0xD95,0],[125,0x655,4],[213,0x56A,0],[202,0x9AD,0],[122,0x55D,2],
     [210,0x4AE,0],[130,0xA5B,6],[218,0xA4D,0],[206,0xD25,0],[126,0xD29,5],[214,0xB55,0],[204,0x56A,0],[123,0xADA,2],[211,0x95B,0],[201,0x497,7],
@@ -621,8 +672,6 @@ function lunarToSolar(ly,lm,ld,isLeap){
   const d=LD[ly];if(!d)return null;
   const[smmd,bits,leapM]=d;
   const sm=Math.floor(smmd/100),sd=smmd%100;
-  // 計算閏月天數：從bits推算（閏月大小 = 下一個朔望月的實際天數）
-  // 簡化：閏月預設29天（誤差至多1天，對八字排盤無影響）
   const months=[];
   for(let m=1;m<=12;m++){
     const big=(bits>>(11-(m-1)))&1;months.push({m,days:big?30:29,leap:false});
@@ -641,10 +690,6 @@ function lunarToSolar(ly,lm,ld,isLeap){
 
 /* ═══════════════════════════════════════════════════════
    ★ 精確節氣表（精確到分鐘）
-   格式：每年12個節氣 [日,時,分]（CST 北京時間，UTC+8）
-   例：2001年立春 = [3,17,28] → 2月3日 17:28 CST
-   順序：小寒,立春,驚蟄,清明,立夏,芒種,小暑,立秋,白露,寒露,立冬,大雪
-   資料來源：Jean Meeus 天文算法 + 中國天文年曆交叉校驗
 ═══════════════════════════════════════════════════════ */
 const JQTBL_PRECISE={
   1950:[[6,17,29],[4,7,9],[6,23,9],[5,17,3],[6,12,15],[6,8,31],[8,4,24],[8,2,8],[8,17,37],[8,20,45],[8,0,38],[7,18,17]],
@@ -729,18 +774,16 @@ const JQTBL_PRECISE={
   2029:[[5,3,27],[3,9,34],[6,5,23],[4,22,53],[5,17,11],[6,12,47],[7,10,9],[7,7,23],[7,22,56],[8,1,27],[7,5,30],[6,22,41]],
   2030:[[5,9,33],[4,15,25],[6,11,4],[5,5,32],[5,22,39],[6,18,1],[7,15,13],[7,12,32],[8,3,56],[8,7,6],[7,11,0],[7,4,40]]
 };
-// 取節氣精確時刻 → {day, hour, minute}
 function getJQPrecise(year, mIdx){
   let y=year;
   while(y>=1950&&!JQTBL_PRECISE[y])y--;
   const r=(JQTBL_PRECISE[y]||JQTBL_PRECISE[2000])[mIdx];
   return{day:r[0],hour:r[1],minute:r[2]};
 }
-// 向後相容：getJQDay 仍可用（只回傳日，供其他地方使用）
 function getJQDay(year, mIdx){ return getJQPrecise(year,mIdx).day; }
 
 /* ═══════════════════════════════════════════════════════
-   ★ 真太陽時校正（修復Bug5）
+   ★ 真太陽時校正
 ═══════════════════════════════════════════════════════ */
 const CITY_LNG={
   '北京':116.4,'天津':117.2,'石家莊':114.5,'太原':112.5,'呼和浩特':111.7,
@@ -771,25 +814,19 @@ function getLng(birthplace){
   for(const[k,v]of Object.entries(PROV_LNG)){if(birthplace.includes(k))return v;}
   return null;
 }
-// 精確經度緩存（地理編碼結果）
-let _geoLng = null;      // 從 Nominatim 查到的精確經度
-let _geoLabel = '';      // 地名確認標籤
+let _geoLng = null;
+let _geoLabel = '';
 
 function correctSolarTime(hour, minute, birthplace, tzOffset=8){
-  // tzOffset：出生地當時的時區偏移（小時），如 UTC+8 傳 8，UTC-5 傳 -5
-  // 真太陽時公式：本地時間 → UTC → 真太陽時
-  //   UTC分鐘 = 本地分鐘 - tzOffset*60
-  //   真太陽時分鐘 = UTC分鐘 + 經度*4
   const lng = _geoLng !== null ? _geoLng : getLng(birthplace);
   if(lng===null)return{hour,minute,adjusted:false,diffMin:0,lng:null};
-  // 真太陽時偏差 = 經度*4 - 標準時區*60（分鐘）
   const diffMin=Math.round(lng*4 - tzOffset*60);
   const total=((hour*60+minute+diffMin)%1440+1440)%1440;
   return{hour:Math.floor(total/60),minute:Math.floor(total%60),adjusted:true,diffMin,lng,precise:_geoLng!==null,tzOffset};
 }
 
 /* ═══════════════════════════════════════════════════════
-   ★ 八字計算引擎（修復Bug1-4）
+   ★ 八字計算引擎
 ═══════════════════════════════════════════════════════ */
 const TG=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
@@ -800,7 +837,6 @@ const DZC=['cwa','ce','cw','cw','ce','cf','cf','ce','cm','cm','ce','cwa'];
 
 function jdn(y,m,d){const a=Math.floor((14-m)/12),yr=y+4800-a,mo=m+12*a-3;return d+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)-Math.floor(yr/100)+Math.floor(yr/400)-32045;}
 
-// ★ 年柱：精確到時分（立春精確時刻判斷）
 function getYrGZ(year, month, day, hour=12, minute=0){
   const lc=getJQPrecise(year,1);
   const tgt=month*10000+day*100+(hour*60+minute);
@@ -810,10 +846,8 @@ function getYrGZ(year, month, day, hour=12, minute=0){
   return{tg:((y-4)%10+10)%10,dz:((y-4)%12+12)%12};
 }
 
-// ★ 月柱：精確到時分（節氣精確時刻判斷）
 function getMoGZ(year, month, day, hour=12, minute=0){
   const jq=getJQPrecise(year,month-1);
-  // 比較目標時刻 vs 節氣精確時刻（同月內比較 day*1440+h*60+m）
   const targetMins=day*1440+hour*60+minute;
   const jqMins=jq.day*1440+jq.hour*60+jq.minute;
   let sm=month,sy=year;
@@ -827,13 +861,11 @@ function getMoGZ(year, month, day, hour=12, minute=0){
   return{tg,dz};
 }
 
-// 日柱（JDN精確計算，基準2000-01-07=甲子）
 function getDayGZ(year,month,day){
   const diff=jdn(year,month,day)-jdn(2000,1,7);
   return{tg:((diff%10)+10)%10,dz:((diff%12)+12)%12};
 }
 
-// 時柱
 function getHrGZ(hour,dayTg){
   const dz=Math.floor((hour+1)/2)%12;
   const base=[0,2,4,6,8][dayTg%5];
@@ -852,30 +884,16 @@ const SS=[
   ['食神','傷官','偏財','正財','七殺','正官','偏印','正印','比肩','劫財'],
   ['傷官','食神','正財','偏財','正官','七殺','正印','偏印','劫財','比肩'],
 ];
-// 十二長生（地勢）正確對照表
-// WSM[天干索引][地支索引] = 長生狀態索引
-// 地支索引: 子0 丑1 寅2 卯3 辰4 巳5 午6 未7 申8 酉9 戌10 亥11
-// 狀態索引: 長生3 沐浴4 冠帶5 臨官6 帝旺7 衰8 病9 死10 墓11 絕0 胎1 養2
 const WSM={
-  // 甲（陽木）：亥長生 子沐浴 丑冠帶 寅臨官 卯帝旺 辰衰 巳病 午死 未墓 申絕 酉胎 戌養
   0:[4,5,6,7,8,9,10,11,0,1,2,3],
-  // 乙（陰木）：午長生 巳沐浴 辰冠帶 卯臨官 寅帝旺 丑衰 子病 亥死 戌墓 酉絕 申胎 未養
   1:[9,8,7,6,5,4,3,2,1,0,11,10],
-  // 丙（陽火）：寅長生 卯沐浴 辰冠帶 巳臨官 午帝旺 未衰 申病 酉死 戌墓 亥絕 子胎 丑養
   2:[1,2,3,4,5,6,7,8,9,10,11,0],
-  // 丁（陰火）：酉長生 申沐浴 未冠帶 午臨官 巳帝旺 辰衰 卯病 寅死 丑墓 子絕 亥胎 戌養
   3:[0,11,10,9,8,7,6,5,4,3,2,1],
-  // 戊（陽土）同丙：寅長生
   4:[1,2,3,4,5,6,7,8,9,10,11,0],
-  // 己（陰土）同丁：酉長生
   5:[0,11,10,9,8,7,6,5,4,3,2,1],
-  // 庚（陽金）：巳長生 午沐浴 未冠帶 申臨官 酉帝旺 戌衰 亥病 子死 丑墓 寅絕 卯胎 辰養
   6:[10,11,0,1,2,3,4,5,6,7,8,9],
-  // 辛（陰金）：子長生 亥沐浴 戌冠帶 酉臨官 申帝旺 未衰 午病 巳死 辰墓 卯絕 寅胎 丑養
   7:[3,2,1,0,11,10,9,8,7,6,5,4],
-  // 壬（陽水）：申長生 酉沐浴 戌冠帶 亥臨官 子帝旺 丑衰 寅病 卯死 辰墓 巳絕 午胎 未養
   8:[7,8,9,10,11,0,1,2,3,4,5,6],
-  // 癸（陰水）：卯長生 寅沐浴 丑冠帶 子臨官 亥帝旺 戌衰 酉病 申死 未墓 午絕 巳胎 辰養
   9:[6,5,4,3,2,1,0,11,10,9,8,7],
 };
 const WSN=['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰','病','死','墓'];
@@ -888,7 +906,6 @@ const BD=[0.8,0.4,0.8,0.6,0.4,0.6,0.8,0.4,0.6,0.6,0.4,0.8];
 function getDayun(gender,year,month,day,yrTg){
   const isYang=yrTg%2===0;
   const fwd=(gender==='男'&&isYang)||(gender==='女'&&!isYang);
-  // ★ 修復：用 Date 物件做日期加減，避免 JDN 逆推月份溢出 bug
   function addDays(y,m,d,delta){
     const dt=new Date(Date.UTC(y,m-1,d));
     dt.setUTCDate(dt.getUTCDate()+delta);
@@ -901,7 +918,6 @@ function getDayun(gender,year,month,day,yrTg){
     if(dt.d===termDay){diff=i;break;}
   }
   if(!diff)diff=30;
-  // ★ 修復：傳統命理「每3天為1歲」用 floor 向下取整，最小顯示1歲
   const startAge=Math.max(1,Math.floor(diff/3));
   const mGZ=getMoGZ(year,month,day);
   const list=[];
@@ -914,13 +930,8 @@ function getDayun(gender,year,month,day,yrTg){
 }
 
 function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
-  // ★ Bug5修復：真太陽時校正
   const st=correctSolarTime(hour,minute,birthplace,tzOffset);
   let ah=st.hour,am=st.minute,dy=day;
-  // ★ 早子時流派：子時 = 23:00–00:59，23:00 起仍屬當天
-  // 時柱地支：23時→子(0)，與主流命理軟體（萬年曆 App 等）一致
-  // 不做 dy++ 處理，日柱以當天計算
-
   const yGZ=getYrGZ(year,month,dy,ah,am),mGZ=getMoGZ(year,month,dy,ah,am),dGZ=getDayGZ(year,month,dy),hGZ=getHrGZ(ah,dGZ.tg);
   const ri=dGZ.tg;
   const pillars=[
@@ -931,23 +942,22 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
   ];
   const dy2=getDayun(gender,year,month,dy,yGZ.tg);
   const ny=[nayin(yGZ.tg,yGZ.dz),nayin(mGZ.tg,mGZ.dz),nayin(dGZ.tg,dGZ.dz),nayin(hGZ.tg,hGZ.dz)];
-  // ★ 修復骨重浮點精度：先乘10取整再除，避免 0.6+0.6=1.1999... 問題
   const bt10=Math.round((BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz])*10);
   const bl=Math.floor(bt10/10),bq=bt10%10;
   return{pillars,dayunData:dy2,nayin:ny,boneWeight:`${bl}兩${bq}錢`,solarTime:st};
 }
 
 /* ═══════════════════════════════════════════════════════
-   ★ 地理編碼：Nominatim（OpenStreetMap）查精確經度
-   · 用戶停止輸入 600ms 後觸發，結果緩存在 _geoLng
+   ★ 地理編碼
 ═══════════════════════════════════════════════════════ */
 let _geoTimer = null;
-const _geoCache = {}; // 本地緩存，避免重複請求同一地名
+const _geoCache = {};
 
 async function geocodePlace(place) {
   if (!place || place.length < 2) return;
   if (_geoCache[place] !== undefined) {
     _geoLng   = _geoCache[place].lng;
+    window._geoLat = _geoCache[place].lat;
     _geoLabel = _geoCache[place].label;
     updateGeoHint(); odc(); return;
   }
@@ -964,14 +974,14 @@ async function geocodePlace(place) {
       window._geoLat = parseFloat(item.lat);
       _geoLabel = item.display_name.split(',').slice(0,3).join(',');
     } else {
-      // Nominatim 查無結果，fallback 到字典
       _geoLng   = getLng(place);
+      window._geoLat = undefined;
       _geoLabel = '';
     }
-    _geoCache[place] = { lng: _geoLng, label: _geoLabel };
+    _geoCache[place] = { lng: _geoLng, lat: window._geoLat, label: _geoLabel };
   } catch(e) {
-    // 網絡失敗，fallback
     _geoLng   = getLng(place);
+    window._geoLat = undefined;
     _geoLabel = '';
   } finally {
     document.getElementById('geo-spinner').style.display = 'none';
@@ -990,8 +1000,8 @@ function updateGeoHint() {
 }
 
 function onPlaceInput() {
-  // 重置地理編碼緩存
   _geoLng   = null;
+  window._geoLat = undefined;
   _geoLabel = '';
   document.getElementById('geo-hint').style.display = 'none';
   clearTimeout(_geoTimer);
@@ -1020,7 +1030,6 @@ function odc(){
   const bp=document.getElementById('ubp').value.trim();
   const dst=document.getElementById('idst').checked;
 
-  // DST：出生時鐘表時間減1小時還原標準時
   if(dst){
     const total=h*60+mn-60;
     const adj=(total%1440+1440)%1440;
@@ -1036,7 +1045,6 @@ function odc(){
   }
   if(y<1950||y>2030||m<1||m>12||d<1||d>31){hidePrev();return;}
 
-  // 更新真太陽時提示
   const stHint=document.getElementById('solar-hint');
   if(bp){
     const tzOffset=parseFloat(document.getElementById('utz')?.value||'8');
@@ -1082,7 +1090,6 @@ const phs=['正在校對真太陽時','排布四柱八字','推演大運流年',
 const chs=['命','運','玄','機','易','卦','象'];
 let pi=0,pt=null,ci=0,ct=null;
 function startL(){
-  // 每次啟動時從 i18n 取最新語言的 phases
   const phases = (typeof ZCI18n!=='undefined') ? ZCI18n.phases() : phs;
   const p=document.getElementById('lphr'),c=document.getElementById('lchar');
   pt=setInterval(()=>{p.style.opacity='0';setTimeout(()=>{pi=(pi+1)%phases.length;p.textContent=phases[pi];p.style.opacity='';},300);},2200);
@@ -1105,7 +1112,6 @@ async function genReport(){
   const birthplace=document.getElementById('ubp').value.trim();
   const dst=document.getElementById('idst').checked;
 
-  // DST 校正：先把鐘表時間減1小時
   let adjHour=hour, adjMinute=minute;
   if(dst){
     const total=hour*60+minute-60;
@@ -1130,7 +1136,6 @@ async function genReport(){
   const res=calcBazi(sy,sm,sd,adjHour,adjMinute,gender,birthplace,tzOffset);
   const{pillars,dayunData,nayin,boneWeight,solarTime}=res;
 
-  // 構建真太陽時備注
   let stNote='';
   if(dst){
     stNote+=`（夏令時-1h，標準時${String(adjHour).padStart(2,'0')}:${String(adjMinute).padStart(2,'0')}）`;
@@ -1141,14 +1146,12 @@ async function genReport(){
     stNote+=`（真太陽時${preciseTag}${sign}${solarTime.diffMin}分，實際時辰${String(solarTime.hour).padStart(2,'0')}:${String(solarTime.minute).padStart(2,'0')}）`;
   }
 
-  // ── 組裝傳給後端的完整數據（所有數字已在前端算好）──
   const bdPillars = pillars.map(p=>({
     label:p.label, tg:p.tg, dz:p.dz,
     tgClass:TGC[p.tgIdx], dzClass:DZC[p.dzIdx],
     tenGod:p.tenGod, wangshuan:p.ws,
     tgWuxing:WXT[p.tgIdx], dzWuxing:WXD[p.dzIdx]
   }));
-  // 把當前語言傳給後端，後端據此選擇 prompt 語言指令
   const curLang = typeof ZCI18n!=='undefined' ? ZCI18n.lang() : 'zh-TW';
   const langInstruction = typeof ZCI18n!=='undefined' ? ZCI18n.promptLang() : null;
   const bd={
@@ -1169,7 +1172,6 @@ async function genReport(){
     }
   };
 
-  // ── 前端直接渲染命盤 header（固定數據在頁面上顯示，不依賴AI）──
   const WXT2=['木','木','火','火','土','土','金','金','水','水'];
   const riWuxing2 = WXT2[pillars[2].tgIdx];
   const WUXING_PRIMARY={'木':'#5AB86C','火':'#D85030','土':'#C8A040','金':'#A0B0C8','水':'#4080C8'};
@@ -1201,14 +1203,12 @@ async function genReport(){
     </div>
   </div>`;
 
-  // 先把 header 顯示到頁面上，再去等 AI 回應
   document.getElementById('ifc').style.display='none';
   const oc=document.getElementById('roc');
   oc.innerHTML = headerHTML;
   oc.style.display='block';
   window.scrollTo(0,0);
 
-  // ── 存入 sessionStorage 供反饋頁讀取 ──
   try{
     sessionStorage.setItem('zc_last_bazi', JSON.stringify({
       ganzhi: pillars.map(p=>p.tg+p.dz).join(' '),
@@ -1219,18 +1219,15 @@ async function genReport(){
 
   document.getElementById('lov').style.display='flex'; startL();
 
-  // ── 帶自動重試的請求函數 ──
   async function fetchWithRetry(body, maxRetries=3){
     for(let attempt=0; attempt<=maxRetries; attempt++){
       const r = await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 
-      // 429：顯示倒計時後自動重試
       if(r.status === 429){
         const j = await r.json().catch(()=>({}));
         const wait = (j.retryAfter || 15);
         if(attempt >= maxRetries) throw Object.assign(new Error('rate_limit'), {retryAfter: wait});
 
-        // 顯示倒計時提示
         const t = k => typeof ZCI18n!=='undefined' ? ZCI18n.t(k) : k;
         let remaining = wait;
         const phrEl = document.getElementById('lphr');
@@ -1255,7 +1252,6 @@ async function genReport(){
     const r = await fetchWithRetry(bd);
     const html = await r.text();
     stopL(); document.getElementById('lov').style.display='none';
-    // 在報告末尾追加「提交反饋」＋「私人定制」常駐入口
     const feedbackBar=`<div style="text-align:center;padding:48px 24px 64px;border-top:1px solid rgba(212,168,67,0.08);">
       <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;letter-spacing:0.4em;color:rgba(212,168,67,0.4);margin-bottom:20px;">✦ 命盤準確嗎？您的反饋幫助系統持續進化 ✦</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
@@ -1273,12 +1269,10 @@ async function genReport(){
     </div>`;
     oc.innerHTML = headerHTML + html + feedbackBar;
     window.scrollTo(0,0);
-    // 延遲 2.5 秒彈出 VIP 諮詢視窗，讓用戶先瀏覽報告
     setTimeout(showVip, 2500);
   }catch(e){
     stopL(); document.getElementById('lov').style.display='none';
     const t = k => typeof ZCI18n!=='undefined' ? ZCI18n.t(k) : k;
-    // 429 超過最大重試次數
     if(e.message === 'rate_limit'){
       oc.innerHTML += `<div style="text-align:center;padding:40px 24px;font-family:'Noto Sans TC',sans-serif;">
         <div style="font-size:1.8rem;margin-bottom:16px;">⏳</div>
@@ -1292,11 +1286,8 @@ async function genReport(){
   }
 }
 
-// ── 語言切換時同步重繪農曆標籤 ──
 document.addEventListener('zc:langchange', ()=>{
-  // 重新套用農曆模式的年月日標籤
   setCalType(calType);
-  // select option 文字需手動更新（data-i18n 對 option 無效）
   const L = typeof ZCI18n!=='undefined' ? ZCI18n : null;
   if(!L) return;
   const sel = document.getElementById('ug');
@@ -1355,8 +1346,13 @@ function closeVip(){
 document.getElementById('vip-overlay').addEventListener('click', function(e){
   if(e.target===this) closeVip();
 });
-  document.getElementById('btn-astrolabe').addEventListener('click', function(e) {
+
+/* ══════════════════════════════════════════════════════
+   3D 天球仪 点击拦截跳转逻辑
+══════════════════════════════════════════════════════ */
+document.getElementById('btn-astrolabe').addEventListener('click', function(e) {
   e.preventDefault(); 
+  
   let y = parseInt(document.getElementById('by').value) || 0;
   let m = parseInt(document.getElementById('bm').value) || 0;
   let d = parseInt(document.getElementById('bd').value) || 0;
@@ -1381,6 +1377,7 @@ document.getElementById('vip-overlay').addEventListener('click', function(e){
   sessionStorage.setItem('zc_astro_target', JSON.stringify(astroData));
   window.location.href = '/astrolabe-3d.html'; 
 });
+
 </script>
 
 <footer style="position:relative;z-index:10;text-align:center;padding:32px 24px;border-top:1px solid rgba(212,168,67,0.08);font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.22);letter-spacing:0.15em;line-height:2.2;">
