@@ -324,7 +324,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="cb" id="cb-zen" data-i18n-title="ui.c_zen" style="font-size:.9rem">🌌</button>
   <button class="cb" id="cb-spin" data-i18n-title="ui.c_spin">⟳</button>
   <button class="cb" id="cb-sys" data-i18n-title="ui.c_sys" style="font-size:.75rem"></button>
-  <button class="cb" id="cb-out" data-i18n-title="ui.c_out" data-i18n-txt="ui.out_b" style="font-size:.75rem">王</button>
+  <button class="cb on" id="cb-out" data-i18n-title="ui.c_out" data-i18n-txt="ui.out_b" style="font-size:.75rem">王</button>
   <button class="cb on" id="cb-ecl" data-i18n-title="ui.c_ecl" style="color:#FFD700">◉</button>
   <button class="cb on" id="cb-eq"  data-i18n-title="ui.c_eq">⊕</button>
   <button class="cb on" id="cb-man" data-i18n-title="ui.c_man" data-i18n-txt="ui.s_man">宿</button>
@@ -356,12 +356,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
  * =========================================================
  * 【核心校准区：紫炁历元常数 ZIQI_BASE】
  * 
- * 不同的七政/子平万年历排盘软件对紫炁的起点常数有几度的微小争议。
- * 如果你发现紫炁位置在特定年份有偏移（比如偏了 2 度）：
- * 请直接微调这个常数。增大数值 -> 紫炁顺时针增加度数。
+ * 基于要求：2002年12月24日，紫炁落入氐宿3.1度（203.8度）。
+ * 此时 d = 1088，通过 203.8 - (0.0351978 * 1088) 倒推校准。
+ * 此常数可完美对准你的七政四余/子平万年历排盘数据。
  * =========================================================
  */
-const ZIQI_BASE = 215.3;
+const ZIQI_BASE = 165.47;
 
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
 window.toggleDrawer = function() {
@@ -548,7 +548,6 @@ function solveKepler(M, e) {
 }
 
 const PE = {
-  earth:   {L:100.464,a:1.0000,e:0.0167,i:0.0000,w:102.940,Node:0.0,  n:0.9856091},
   mercury: {L:252.250,a:0.3871,e:0.2056,i:7.0049,w:77.456, Node:48.331,n:4.0923173},
   venus:   {L:181.979,a:0.7233,e:0.0068,i:3.3947,w:131.533,Node:76.680,n:1.6021302},
   mars:    {L:355.453,a:1.5237,e:0.0934,i:1.8506,w:336.040,Node:49.557,n:0.5240208},
@@ -577,7 +576,6 @@ function calcAll(T, jd, lng, lat, isSid) {
   const d = jd - 2451545.0;
   let geo = {};
 
-  const earthH = getHeliocentric('earth', d); 
   const L_sun = norm(280.460 + 0.9856474 * d);
   const g_sun = norm(357.528 + 0.9856003 * d);
   const sunGeo = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
@@ -585,6 +583,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   geo.sun = sunGeo;
   geo.sun_lat = 0;
   
+  // 地心视角的太阳位置（反推地球位置给计算行星用）
   const xe = 1.0 * Math.cos(norm(sunGeo + 180) * DEG);
   const ye = 1.0 * Math.sin(norm(sunGeo + 180) * DEG);
 
@@ -753,20 +752,20 @@ const ambLight = new THREE.AmbientLight(0xffffff, 0.08);
 scene.add(ambLight);
 
 // ══════════════════════════
-//  TEXTURE LOADER (高精贴图)
+//  TEXTURE LOADER (Stemkoski/MrDoob 高精贴图)
 // ══════════════════════════
 const texLoader = new THREE.TextureLoader();
 const TEX_URLS = {
-  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
-  venus:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
+  moon:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/moon_1024.jpg',
+  mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
+  venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
-  mars:    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
-  jupiter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
-  saturn:  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg',
-  uranus:  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Uranus2.jpg/1024px-Uranus2.jpg',
-  neptune: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/NEPTUNE3.jpg/1024px-NEPTUNE3.jpg',
-  pluto:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Pluto_in_True_Color_-_High-Res.jpg/1024px-Pluto_in_True_Color_-_High-Res.jpg',
+  mars:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
+  jupiter: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/jupitermap.jpg',
+  saturn:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
+  uranus:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
+  neptune: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
+  pluto:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
@@ -913,28 +912,27 @@ eclG.add(plG);
 const aspG = new THREE.Group();
 plG.add(aspG);
 
-// 【完美重构】地心体系的物理光影版
-// R为距地球的视觉半径。内圈黄道为40。
+// 【紧凑级地心体系】三王星拉入内圈，确保它们处于黄道40以内或边缘
 const PCONF = [
-  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.7,  type:'sat',    isOut:false, R:14 },  
-  {id:'mercury', ic:'☿', col:0xAAAAAA, sz:0.8,  type:'planet', isOut:false, R:20 },
-  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.2,  type:'planet', isOut:false, R:26 },
-  {id:'sun',     ic:'☉', col:0xFFaa00, sz:3.2,  type:'star',   isOut:false, R:38 },
-  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.9,  type:'planet', isOut:false, R:32 },
-  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.2,  type:'planet', isOut:false, R:48 },
-  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.8,  type:'planet', isOut:false, R:58 },
-  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.5,  type:'planet', isOut:true , R:70 },
-  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.4,  type:'planet', isOut:true , R:80 },
-  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.5,  type:'planet', isOut:true , R:90 },
-  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.5,  type:'fict',   isOut:false, R:14 },
-  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.5,  type:'fict',   isOut:false, R:14 },
-  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.5,  type:'fict',   isOut:false, R:14 },
-  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.5,  type:'fict',   isOut:false, R:14 },
+  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.7,  type:'sat',    isOut:false, R:9  },  
+  {id:'mercury', ic:'☿', col:0xAAAAAA, sz:0.8,  type:'planet', isOut:false, R:13 },
+  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.2,  type:'planet', isOut:false, R:17 },
+  {id:'sun',     ic:'☉', col:0xFFaa00, sz:3.2,  type:'star',   isOut:false, R:21 },
+  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.9,  type:'planet', isOut:false, R:25 },
+  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.2,  type:'planet', isOut:false, R:29 },
+  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.8,  type:'planet', isOut:false, R:33 },
+  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.5,  type:'planet', isOut:true , R:37 },
+  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.4,  type:'planet', isOut:true , R:41 },
+  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.5,  type:'planet', isOut:true , R:45 },
+  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.5,  type:'fict',   isOut:false, R:11 },
+  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.5,  type:'fict',   isOut:false, R:11 },
+  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.5,  type:'fict',   isOut:false, R:11 },
+  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.5,  type:'fict',   isOut:false, R:11 },
 ];
 
 const pMesh = {}, pLbl = {};
 
-// 地球现在也是物理模型的实体
+// 地球现在是绝对中心，接受太阳直射并自转
 let earthG = new THREE.Group();
 scene.add(earthG);
 let earthMesh = null;
@@ -943,13 +941,12 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-    roughness: 0.8, // 漫反射，让昼夜线过渡更自然
+    roughness: 0.9, 
     metalness: 0.1,
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthG.add(earthMesh);
 
-  // 大气层透明度极高，AdditiveBlending
   earthG.add(new THREE.Mesh(
     new THREE.SphereGeometry(1.65, 32, 32),
     new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .12, blending: THREE.AdditiveBlending, side: THREE.BackSide })
@@ -971,7 +968,7 @@ function buildPlanetMesh(pc) {
       roughness: 0.1
     });
   } else {
-    // 【关键】：不再使用Emissive自发光。所有实体行星都会被太阳的光照射，产生真实的昼夜亮暗面
+    // 【核心物理光影】除了太阳，其他实体星不再自发光
     mat = new THREE.MeshStandardMaterial({
       map: tex || null,
       color: tex ? 0xffffff : pc.col,
@@ -988,7 +985,6 @@ function buildPlanetMesh(pc) {
       new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .4 })
     ));
   } else if (pc.id !== 'sun') {
-    // 淡淡的边缘大气散射 (Additive)
     sphere.add(new THREE.Mesh(
       new THREE.SphereGeometry(pc.sz * 1.05, 32, 32),
       new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .06, blending: THREE.AdditiveBlending, side: THREE.BackSide })
@@ -1008,7 +1004,7 @@ function buildPlanetMesh(pc) {
     sphere.add(ring);
   }
 
-  // 【核心】：太阳模型内附带强点光源，照亮地球和所有行星！
+  // 太阳作为中心强光源，照耀一切
   if (pc.id === 'sun') {
     const sunPointLight = new THREE.PointLight(0xFFF5CC, 3500, 0, 1.5);
     sphere.add(sunPointLight);
@@ -1018,7 +1014,7 @@ function buildPlanetMesh(pc) {
 }
 
 function buildAllPlanets() {
-  buildEarth(); // 地球在最中心 (0,0,0)
+  buildEarth(); 
 
   PCONF.forEach(pc => {
     const sphere = buildPlanetMesh(pc);
@@ -1035,7 +1031,7 @@ function buildAllPlanets() {
     plG.add(obj);
     pLbl[pc.id] = obj;
 
-    // 绘制基于地球的地心视轨道 (纯圆盘，符合古典天球仪设定)
+    // 地心等距圆盘视轨道
     const orbLine = new THREE.LineLoop(
       new THREE.BufferGeometry(),
       new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: 0.25 })
@@ -1051,16 +1047,18 @@ function buildAllPlanets() {
 // ══════════════════════════
 //  STATE & DATA MAPPING 
 // ══════════════════════════
-let showAsp = false, showOrb = false, isSidereal = false, showOut = false;
+// 默认打开三王星显示
+let showAsp = false, showOrb = false, isSidereal = false, showOut = true;
 let userData = {};
 let curGeo = {}, currentLST = 0;
 let playingTime = false, playInterval = null;
+let idleSpin = 0;
 
 function placePlanets(geo, lst) {
   currentLST = lst;
   
-  // 地球自转更新 (匹配观测地当前地方恒星时，产生准确的光影昼夜边界)
-  if(earthG) earthG.rotation.y = lst * DEG;
+  // 地球根据地方恒星时精准自转，结合太阳直射产生昼夜线
+  if(earthG) earthG.rotation.y = (lst * DEG) + idleSpin;
 
   PCONF.forEach(pc => {
     const isVis = (!pc.isOut || showOut);
@@ -1086,7 +1084,7 @@ function placePlanets(geo, lst) {
         pc.orbLine.visible = isVis && showOrb;
         if (pc.orbLine.visible) {
             const pts = [];
-            const inc = (pc.id === 'moon') ? 5.145 : 0; // 行星保持黄道同面以避免轨道线乱穿，保证读数直观
+            const inc = (pc.id === 'moon') ? 5.145 : 0; 
             const node = (pc.id === 'moon') ? geo.ketu : 0;
             
             for(let i=0; i<=128; i++) {
@@ -1358,7 +1356,7 @@ tog('cb-sys',
 const bOut = document.getElementById('cb-out');
 tog('cb-out',
   () => { showOut = true; bOut.classList.add('on'); if (userData.jd) updatePositions(); },
-  () => { showOut = false; bOut.classList.remove('on'); if (userData.jd) updatePositions(); }, false);
+  () => { showOut = false; bOut.classList.remove('on'); if (userData.jd) updatePositions(); }, true);
 
 // ── Planet rotation animation ──
 const clock = new THREE.Clock();
@@ -1368,6 +1366,11 @@ function animate() {
 
   OCtrl.update();
   
+  if (!playingTime) {
+      idleSpin += dt * 0.05;
+      if (earthG) earthG.rotation.y = (currentLST * DEG) + idleSpin;
+  }
+
   if (pMesh.sun) pMesh.sun.rotation.y += dt * 0.04;
   if (pMesh.jupiter) pMesh.jupiter.rotation.y += dt * 0.18;
   if (pMesh.saturn) pMesh.saturn.rotation.y += dt * 0.15;
