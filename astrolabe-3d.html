@@ -211,7 +211,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <!-- Loading overlay -->
 <div id="loading-overlay">
   <div class="loading-spinner"></div>
-  <div class="loading-text">載入星象引擎…</div>
+  <div class="loading-text">載入日心星象引擎…</div>
 </div>
 
 <div class="top-left-panel">
@@ -358,7 +358,7 @@ window.toggleDrawer = function() {
 };
 
 // ══════════════════════════
-//  I18N (南罗北计修正)
+//  I18N
 // ══════════════════════════
 const LANGS = {
   'zh-TW': {
@@ -514,7 +514,7 @@ window.switchLang = function(l) {
 };
 
 // ══════════════════════════
-//  ASTRONOMY ENGINE
+//  ASTRONOMY ENGINE (Heliocentric Core)
 // ══════════════════════════
 const DEG = Math.PI / 180, R2D = 180 / Math.PI;
 const norm = d => ((d % 360) + 360) % 360;
@@ -537,7 +537,7 @@ function solveKepler(M, e) {
 }
 
 const PE = {
-  sun:     {L:280.460,a:1.0000,e:0.0167,i:0.0000,w:282.940,Node:0.0,  n:0.9856091},
+  sun:     {L:280.460,a:1.0000,e:0.0167,i:0.0000,w:282.940,Node:0.0,  n:0.9856091}, // Technically Earth's orbit params
   mercury: {L:252.250,a:0.3871,e:0.2056,i:7.0049,w:77.456, Node:48.331,n:4.0923173},
   venus:   {L:181.979,a:0.7233,e:0.0068,i:3.3947,w:131.533,Node:76.680,n:1.6021302},
   mars:    {L:355.453,a:1.5237,e:0.0934,i:1.8506,w:336.040,Node:49.557,n:0.5240208},
@@ -556,23 +556,23 @@ function getHeliocentric(id, d) {
   const yv = p.a * (Math.sqrt(1 - p.e * p.e) * Math.sin(E));
   const r = Math.sqrt(xv * xv + yv * yv);
   const l = norm(Math.atan2(yv, xv) * R2D + p.w);
-  // Heliocentric latitude approximation for visually tilted orbit
   const lat = p.i * Math.sin((l - p.Node) * DEG);
-  const z = r * Math.sin(lat * DEG);
-  const r_xy = r * Math.cos(lat * DEG);
-  return { l, r: r_xy, z };
+  return { l, r: r * Math.cos(lat * DEG), z: r * Math.sin(lat * DEG), lat };
 }
 
 function calcAll(T, jd, lng, lat, isSid) {
   const d = jd - 2451545.0;
   let res = {};
 
-  const earth = getHeliocentric('sun', d);
-  const sunGeo = norm(earth.l);
-  res.sun = sunGeo;
-  res.sun_lat = 0;
-  const xe = earth.r * Math.cos((sunGeo + 180) * DEG);
-  const ye = earth.r * Math.sin((sunGeo + 180) * DEG);
+  // Earth's Heliocentric Position (Derived from Sun's apparent geocentric)
+  const e_helio = getHeliocentric('sun', d);
+  res.earth_hl = norm(e_helio.l + 180);
+  res.earth_hlat = 0;
+  const xe = e_helio.r * Math.cos((e_helio.l + 180) * DEG);
+  const ye = e_helio.r * Math.sin((e_helio.l + 180) * DEG);
+  const ze = 0;
+
+  res.sun = norm(e_helio.l); // Geocentric Longitude of Sun
 
   const D  = norm(297.85036 + 12.190749 * d);
   const M  = norm(357.52772 + 0.985600 * d);
@@ -587,34 +587,25 @@ function calcAll(T, jd, lng, lat, isSid) {
     - 0.114 * Math.sin(2 * F * DEG));
 
   ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
-    const h = getHeliocentric(id, d);
-    const xp = h.r * Math.cos(h.l * DEG);
-    const yp = h.r * Math.sin(h.l * DEG);
-    const X = xp - xe;
-    const Y = yp - ye;
-    const Z = h.z;
-    res[id] = norm(Math.atan2(Y, X) * R2D);
-    res[id+'_lat'] = Math.atan2(Z, Math.sqrt(X*X + Y*Y)) * R2D;
+    const p = getHeliocentric(id, d);
+    res[id+'_hl'] = p.l;
+    res[id+'_hlat'] = p.lat;
+    
+    // Geocentric calculation for astrology panels
+    const xp = p.r * Math.cos(p.l * DEG);
+    const yp = p.r * Math.sin(p.l * DEG);
+    res[id] = norm(Math.atan2(yp - ye, xp - xe) * R2D);
   });
 
-  // 南罗北计 (South Rahu, North Ketu) 
-  // ascNode is the Ascending (North) Node -> Ketu
+  // Lunar Nodes
   const ascNode = norm(125.04452 - 0.0529538 * d);
   res.ketu = ascNode;          
   res.rahu = norm(ascNode + 180); 
 
-  // 月球及交点的地心纬度 (黄白交角 5.145度)
-  res.moon_lat = 5.145 * Math.sin((res.moon - res.ketu) * DEG);
-  res.rahu_lat = 0;
-  res.ketu_lat = 0;
-
-  // 月孛 (Yapo / Lunar Apogee)
   res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
-  res.yapo_lat = 5.145 * Math.sin((res.yapo - res.ketu) * DEG);
-
-  // 紫炁 (Ziqi) 精确修正：周期28年，基准常数微调至215.3
-  res.ziqi = norm(215.3 + 0.035195 * d); 
-  res.ziqi_lat = 0;
+  
+  // 紫炁 Ziqi 精确校正 (J2000历元基准 221.7°, 日行 0.035222°)
+  res.ziqi = norm(221.7 + 0.035222 * d); 
 
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
@@ -686,14 +677,24 @@ function analyzeChart(lons, isSid, jd) {
 }
 
 // ══════════════════════════
-//  THREE.JS SCENE
+//  THREE.JS SCENE (Heliocentric Dual-Core)
 // ══════════════════════════
 const wrap = document.getElementById('three-canvas');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x03020A);
 
-const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 2000);
-camera.position.set(0, 50, 115);
+// Sun is at (0,0,0)
+const sunG = new THREE.Group();
+scene.add(sunG);
+
+// Earth group orbits Sun. Astrolabe rings are attached to Earth.
+const earthG = new THREE.Group();
+scene.add(earthG);
+const astrolabeG = new THREE.Group();
+earthG.add(astrolabeG);
+
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 3000);
+camera.position.set(0, 80, 160);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -710,8 +711,7 @@ wrap.appendChild(lblR.domElement);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-// Bloom 泛光：Threshold 设置为 0.55，确保只有高自发光的太阳会极度耀眼，普通行星微光
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.35, 0.5, 0.55);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.45, 0.6, 0.65);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -719,9 +719,9 @@ const OCtrl = new OrbitControls(camera, renderer.domElement);
 OCtrl.enableDamping = true;
 OCtrl.dampingFactor = 0.055;
 OCtrl.minDistance = 5;  
-OCtrl.maxDistance = 230;
-OCtrl.autoRotate = false;
-OCtrl.autoRotateSpeed = 0.45;
+OCtrl.maxDistance = 600;
+// Focus camera on Sun
+OCtrl.target.set(0, 0, 0);
 
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
@@ -730,22 +730,17 @@ function mkStars(n, sz, sp, col, op) {
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   return new THREE.Points(g, new THREE.PointsMaterial({ size: sz, color: col, transparent: true, opacity: op, sizeAttenuation: true }));
 }
-scene.add(mkStars(4000, .44, 620, 0xCCDDFF, .55));
-scene.add(mkStars(1200, .88, 510, 0xFFFFFF, .36));
-scene.add(mkStars(400, 1.35, 460, 0xFFEEDD, .30));
-
-scene.add(new THREE.Mesh(
-  new THREE.TorusGeometry(215, 30, 8, 128),
-  new THREE.MeshBasicMaterial({ color: 0x100828, transparent: true, opacity: .2, side: THREE.DoubleSide })
-));
+scene.add(mkStars(4000, .44, 900, 0xCCDDFF, .55));
+scene.add(mkStars(1200, .88, 700, 0xFFFFFF, .36));
+scene.add(mkStars(400, 1.35, 600, 0xFFEEDD, .30));
 
 // ══════════════════════════
-//  TEXTURE LOADER (精细贴图)
+//  HIGH RES TEXTURES
 // ══════════════════════════
 const texLoader = new THREE.TextureLoader();
 const TEX_URLS = {
   sun:     'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg/1024px-The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg',
-  moon:    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1024px-FullMoon2010.jpg',
+  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
   mercury: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
   venus:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
@@ -765,6 +760,7 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const tex = new THREE.Texture(img);
+      tex.colorSpace = THREE.SRGBColorSpace;
       tex.needsUpdate = true;
       loadedTex[k] = tex;
       resolve();
@@ -774,80 +770,51 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
   })
 );
 
-// Procedural Saturn Ring Texture
 function getSaturnRingTexture() {
     const canvas = document.createElement('canvas');
-    canvas.width = 512; canvas.height = 512;
+    canvas.width = 1024; canvas.height = 1024;
     const ctx = canvas.getContext('2d');
-    const cx = 256, cy = 256;
-    const grad = ctx.createRadialGradient(cx, cy, 100, cx, cy, 250);
+    const cx = 512, cy = 512;
+    const grad = ctx.createRadialGradient(cx, cy, 200, cx, cy, 500);
     grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(0.1, 'rgba(180,160,130,0.85)');
-    grad.addColorStop(0.3, 'rgba(210,190,160,0.95)');
+    grad.addColorStop(0.1, 'rgba(190,170,140,0.85)');
+    grad.addColorStop(0.3, 'rgba(220,200,170,0.95)');
     grad.addColorStop(0.5, 'rgba(0,0,0,0)'); // Cassini division
     grad.addColorStop(0.55, 'rgba(230,210,180,0.9)');
     grad.addColorStop(0.8, 'rgba(180,160,130,0.6)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 512, 512);
+    ctx.fillRect(0, 0, 1024, 1024);
     const tex = new THREE.CanvasTexture(canvas);
     return tex;
 }
 const saturnRingProcedural = getSaturnRingTexture();
 
-// ── Earth group ──
-const earthG = new THREE.Group();
-scene.add(earthG);
-let earthMesh = null;
-
-function buildEarth() {
-  const mat = new THREE.MeshPhongMaterial({
-    map: loadedTex.earth || null,
-    color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-    shininess: 12,
-    specular: new THREE.Color(0x224488),
-    emissive: new THREE.Color(0x1a4a9a),
-    emissiveIntensity: 0.1
-  });
-  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2, 48, 48), mat);
-  earthG.add(earthMesh);
-
-  // 大气层透明度极高，不遮挡地表
-  earthG.add(new THREE.Mesh(
-    new THREE.SphereGeometry(1.35, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, side: THREE.BackSide })
-  ));
-}
-
-scene.add(new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -72, 0), new THREE.Vector3(0, 72, 0)]),
-  new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .15 })
-));
-
-const ambLight = new THREE.AmbientLight(0x202030, 1.2); 
+const ambLight = new THREE.AmbientLight(0x202030, 2.5); 
 scene.add(ambLight);
-const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.8); 
-sunLight.position.set(50, 20, 30);
+const sunLight = new THREE.PointLight(0xFFF5CC, 8.0, 800); 
+sunLight.position.set(0, 0, 0);
 scene.add(sunLight);
 
 const OBL = 23.4365 * DEG;
+const ASTRO_R = 100; // Astrolabe Ring Radius
 
 // ── Equator ──
 const eqG = new THREE.Group();
 eqG.rotation.x = Math.PI / 2;
-scene.add(eqG);
+astrolabeG.add(eqG);
 eqG.add(new THREE.Mesh(
-  new THREE.TorusGeometry(40, .06, 16, 200),
-  new THREE.MeshBasicMaterial({ color: 0x5599DD, transparent: true, opacity: .72 })
+  new THREE.TorusGeometry(ASTRO_R, .15, 16, 200),
+  new THREE.MeshBasicMaterial({ color: 0x5599DD, transparent: true, opacity: .4 })
 ));
 for (let i = 0; i < 36; i++) {
   const a = i / 36 * Math.PI * 2, isH = i % 9 === 0;
   eqG.add(new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(Math.cos(a) * (isH ? 38.5 : 39.2), Math.sin(a) * (isH ? 38.5 : 39.2), 0),
-      new THREE.Vector3(Math.cos(a) * 40.9, Math.sin(a) * 40.9, 0)
+      new THREE.Vector3(Math.cos(a) * (isH ? ASTRO_R-2 : ASTRO_R-1), Math.sin(a) * (isH ? ASTRO_R-2 : ASTRO_R-1), 0),
+      new THREE.Vector3(Math.cos(a) * ASTRO_R+1, Math.sin(a) * ASTRO_R+1, 0)
     ]),
-    new THREE.LineBasicMaterial({ color: 0x5599DD, transparent: true, opacity: isH ? .85 : .32 })
+    new THREE.LineBasicMaterial({ color: 0x5599DD, transparent: true, opacity: isH ? .6 : .2 })
   ));
 }
 function lbl2D(parent, cls, r, angle, type, id) {
@@ -865,28 +832,28 @@ function lbl2D(parent, cls, r, angle, type, id) {
   o.position.set(Math.cos(angle) * r, Math.sin(angle) * r, 0);
   parent.add(o);
 }
-lbl2D(eqG, 'leq', 42, 0.4, 'ui', 'eq');
+lbl2D(eqG, 'leq', ASTRO_R+3, 0.4, 'ui', 'eq');
 
 // ── Ecliptic ──
 const eclG = new THREE.Group();
 eclG.rotation.x = Math.PI / 2;
 eclG.rotation.y = OBL;
-scene.add(eclG);
+astrolabeG.add(eclG);
 eclG.add(new THREE.Mesh(
-  new THREE.TorusGeometry(40, .09, 16, 200),
-  new THREE.MeshBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .88 })
+  new THREE.TorusGeometry(ASTRO_R, .2, 16, 200),
+  new THREE.MeshBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .5 })
 ));
 for (let i = 0; i < 36; i++) {
   const a = i / 36 * Math.PI * 2, isH = i % 9 === 0;
   eclG.add(new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(Math.cos(a) * (isH ? 38.5 : 39.2), Math.sin(a) * (isH ? 38.5 : 39.2), 0),
-      new THREE.Vector3(Math.cos(a) * 40.9, Math.sin(a) * 40.9, 0)
+      new THREE.Vector3(Math.cos(a) * (isH ? ASTRO_R-2 : ASTRO_R-1), Math.sin(a) * (isH ? ASTRO_R-2 : ASTRO_R-1), 0),
+      new THREE.Vector3(Math.cos(a) * ASTRO_R+1, Math.sin(a) * ASTRO_R+1, 0)
     ]),
-    new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: isH ? .9 : .38 })
+    new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: isH ? .7 : .3 })
   ));
 }
-lbl2D(eclG, 'lecl', 42, 1.5, 'ui', 'ecl');
+lbl2D(eclG, 'lecl', ASTRO_R+3, 1.5, 'ui', 'ecl');
 
 // ── Zodiac ──
 const zodG = new THREE.Group();
@@ -895,12 +862,12 @@ for (let i = 0; i < 12; i++) {
   const a = i / 12 * Math.PI * 2;
   zodG.add(new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(Math.cos(a) * 35, Math.sin(a) * 35, 0),
-      new THREE.Vector3(Math.cos(a) * 40.5, Math.sin(a) * 40.5, 0)
+      new THREE.Vector3(Math.cos(a) * (ASTRO_R-8), Math.sin(a) * (ASTRO_R-8), 0),
+      new THREE.Vector3(Math.cos(a) * ASTRO_R, Math.sin(a) * ASTRO_R, 0)
     ]),
-    new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .5 })
+    new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .4 })
   ));
-  lbl2D(zodG, 'lzod', 43.5, a + Math.PI / 12, 'zod', i);
+  lbl2D(zodG, 'lzod', ASTRO_R+5, a + Math.PI / 12, 'zod', i);
 }
 const houseG = new THREE.Group();
 eclG.add(houseG);
@@ -908,12 +875,12 @@ eclG.add(houseG);
 // ── 二十八宿 ──
 const manG = new THREE.Group();
 manG.rotation.x = Math.PI / 2;
-scene.add(manG);
-const mR = 54, mO = 57.5;
+astrolabeG.add(manG);
+const mR = ASTRO_R+14, mO = ASTRO_R+18;
 {
   const pts = [];
   for (let i = 0; i <= 200; i++) { const a = i / 200 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * mR, Math.sin(a) * mR, 0)); }
-  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x3A8C5C, transparent: true, opacity: .38 })));
+  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x3A8C5C, transparent: true, opacity: .3 })));
 }
 MANS.forEach(m => {
   const a0 = m.s * DEG, a1 = (m.s + m.w) * DEG;
@@ -922,42 +889,32 @@ MANS.forEach(m => {
       new THREE.Vector3(Math.cos(a0) * mR, Math.sin(a0) * mR, 0),
       new THREE.Vector3(Math.cos(a0) * mO, Math.sin(a0) * mO, 0)
     ]),
-    new THREE.LineBasicMaterial({ color: 0x7DE09A, transparent: true, opacity: .62 })
+    new THREE.LineBasicMaterial({ color: 0x7DE09A, transparent: true, opacity: .5 })
   ));
   const arc = [];
   for (let t = 0; t <= 20; t++) { const aa = a0 + (a1 - a0) * t / 20; arc.push(new THREE.Vector3(Math.cos(aa) * (mR + .5), Math.sin(aa) * (mR + .5), 0)); }
-  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc), new THREE.LineBasicMaterial({ color: 0x7DE09A, transparent: true, opacity: .5 })));
+  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc), new THREE.LineBasicMaterial({ color: 0x7DE09A, transparent: true, opacity: .4 })));
   const mid = a0 + (a1 - a0) / 2;
-  lbl2D(manG, 'lman', 61, mid, 'man', m.id);
+  lbl2D(manG, 'lman', mR+6, mid, 'man', m.id);
 });
-{
-  const pts = [];
-  for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * 32, Math.sin(a) * 32, 0)); }
-  eclG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .07 })));
-}
 
-// ── Planet Groups ──
-const plG = new THREE.Group();
-eclG.add(plG);
-const aspG = new THREE.Group();
-plG.add(aspG);
-
-// Physical sizes normalized for Astrolabe visual hierarchy
+// ── Planet Config (Heliocentric Radii Scale) ──
 const PCONF = [
-  {id:'sun',     ic:'☉', col:0xFF5500, sz:2.8,  isY:false, isOut:false, R:27},
-  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.6,  isY:false, isOut:false, R:14},  // Closest
-  {id:'mercury', ic:'☿', col:0x55CCFF, sz:0.7,  isY:false, isOut:false, R:23},
-  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.1,  isY:false, isOut:false, R:25},
-  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.8,  isY:false, isOut:false, R:29},
-  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.0,  isY:false, isOut:false, R:31},
-  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.7,  isY:false, isOut:false, R:34},
-  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.5,  isY:false, isOut:true,  R:36},
-  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.4,  isY:false, isOut:true,  R:38},
-  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.4,  isY:false, isOut:true,  R:39.5},
-  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.4,  isY:true,  isOut:false, R:14},
-  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.4,  isY:true,  isOut:false, R:14},
-  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.4,  isY:true,  isOut:false, R:14},
-  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.4,  isY:true,  isOut:false, R:14},
+  {id:'sun',     ic:'☉', col:0xFF5500, sz:4.5, isY:false, isOut:false, R:0,   type:'sun'},
+  {id:'mercury', ic:'☿', col:0x55CCFF, sz:1.0, isY:false, isOut:false, R:14,  type:'helio'},
+  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.6, isY:false, isOut:false, R:22,  type:'helio'},
+  {id:'earth',   ic:'⊕', col:0x63A3ED, sz:1.8, isY:false, isOut:false, R:32,  type:'helio'},
+  {id:'mars',    ic:'♂', col:0xFF4040, sz:1.3, isY:false, isOut:false, R:44,  type:'helio'},
+  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:3.2, isY:false, isOut:false, R:60,  type:'helio'},
+  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:2.8, isY:false, isOut:false, R:78,  type:'helio'},
+  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:2.2, isY:false, isOut:true,  R:94,  type:'helio'},
+  {id:'neptune', ic:'♆', col:0x3366FF, sz:2.1, isY:false, isOut:true,  R:108, type:'helio'},
+  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.8, isY:false, isOut:true,  R:120, type:'helio'},
+  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.7, isY:false, isOut:false, R:6,   type:'geo'},
+  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.5, isY:true,  isOut:false, R:6,   type:'geo'},
+  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.5, isY:true,  isOut:false, R:6,   type:'geo'},
+  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.5, isY:true,  isOut:false, R:6,   type:'geo'},
+  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.5, isY:true,  isOut:false, R:6,   type:'geo'},
 ];
 
 const pMesh = {}, pLbl = {};
@@ -965,78 +922,82 @@ const TRAIL_N = 80;
 const trails = {};
 
 function buildPlanetMesh(pc) {
-  const texKey = pc.id; 
-  const tex = loadedTex[texKey];
+  const tex = loadedTex[pc.id];
   let mat;
 
   if (pc.isY) {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
-    mat = new THREE.MeshPhongMaterial({
+    mat = new THREE.MeshStandardMaterial({
       map: tex || null,
-      color: 0xFFFFFF,
-      emissive: new THREE.Color(0xFFaa44),
-      emissiveIntensity: 3.5, // 绝对耀眼
+      emissive: new THREE.Color(0xFFaa22),
+      emissiveIntensity: 6.0,
+      roughness: 1.0,
     });
   } else {
-    mat = new THREE.MeshPhongMaterial({
+    mat = new THREE.MeshStandardMaterial({
       map: tex || null,
       color: tex ? 0xffffff : pc.col,
-      shininess: pc.id === 'moon' ? 5 : 12,
+      roughness: pc.id === 'earth' ? 0.6 : 0.8,
+      metalness: pc.id === 'earth' ? 0.2 : 0.1,
       emissive: new THREE.Color(pc.col),
-      emissiveIntensity: 0.35, // 普通行星微弱反光
+      emissiveIntensity: 0.15, 
     });
   }
 
-  const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 48, 48), mat);
+  const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 64, 64), mat);
 
-  // 大气层透明度加高 (Opacity大幅降低) -> 呈现精细贴图
-  sphere.add(new THREE.Mesh(
-    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.6), 16, 16),
-    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .08 : .02, blending: THREE.AdditiveBlending })
-  ));
-
-  if (pc.isY) {
+  if (pc.id !== 'sun' && pc.id !== 'moon' && !pc.isY) {
     sphere.add(new THREE.Mesh(
-      new THREE.TorusGeometry(pc.sz * 1.85, .1, 8, 32),
-      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .4 })
+      new THREE.SphereGeometry(pc.sz * 1.35, 32, 32),
+      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .04, blending: THREE.AdditiveBlending })
     ));
   }
 
-  // 精细化土星环带
+  if (pc.isY) {
+    sphere.add(new THREE.Mesh(
+      new THREE.TorusGeometry(pc.sz * 1.8, .1, 8, 32),
+      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .6 })
+    ));
+  }
+
   if (pc.id === 'saturn') {
-    const ringMat = new THREE.MeshBasicMaterial({
+    const ringMat = new THREE.MeshStandardMaterial({
       map: saturnRingProcedural,
       color: 0xFFFFFF,
       transparent: true,
       opacity: 0.95,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      emissive: new THREE.Color(0x332211),
+      emissiveIntensity: 0.5
     });
-    const ring = new THREE.Mesh(new THREE.PlaneGeometry(pc.sz * 5, pc.sz * 5), ringMat);
+    const ring = new THREE.Mesh(new THREE.PlaneGeometry(pc.sz * 4.5, pc.sz * 4.5), ringMat);
     ring.rotation.x = Math.PI / 2 + 0.38;
     sphere.add(ring);
   }
 
-  // 太阳专属爆发现象光晕
   if (pc.id === 'sun') {
     sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 1.6, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .1, blending: THREE.AdditiveBlending })
+      new THREE.SphereGeometry(pc.sz * 1.4, 32, 32),
+      new THREE.MeshBasicMaterial({ color: 0xFF6600, transparent: true, opacity: .15, blending: THREE.AdditiveBlending })
     ));
-    const sl = new THREE.PointLight(0xFFF5CC, 2.5, 300);
-    sphere.add(sl);
+    sphere.add(new THREE.Mesh(
+      new THREE.SphereGeometry(pc.sz * 2.2, 32, 32),
+      new THREE.MeshBasicMaterial({ color: 0xFFaa00, transparent: true, opacity: .08, blending: THREE.AdditiveBlending })
+    ));
   }
 
   return sphere;
 }
 
 function buildAllPlanets() {
-  buildEarth();
-
   PCONF.forEach(pc => {
     const sphere = buildPlanetMesh(pc);
     if (pc.isOut) sphere.visible = false;
-    plG.add(sphere);
+    
+    if (pc.type === 'helio' || pc.type === 'sun') sunG.add(sphere);
+    else if (pc.type === 'geo') earthG.add(sphere);
+    
     pMesh[pc.id] = sphere;
 
     const hex = '#' + pc.col.toString(16).padStart(6, '0');
@@ -1045,53 +1006,86 @@ function buildAllPlanets() {
     el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}</div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
     const obj = new CSS2DObject(el);
     if (pc.isOut) obj.element.style.display = 'none';
-    plG.add(obj);
+    
+    if (pc.type === 'helio' || pc.type === 'sun') sunG.add(obj);
+    else if (pc.type === 'geo') earthG.add(obj);
+    
     pLbl[pc.id] = obj;
 
     const orbLine = new THREE.Line(
       new THREE.BufferGeometry(),
-      new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: pc.id==='moon'? 0.45 : 0.25 })
+      new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: pc.id==='moon'? 0.6 : 0.35 })
     );
     orbLine.visible = false;
-    plG.add(orbLine);
+    
+    if (pc.type === 'helio') sunG.add(orbLine);
+    else if (pc.type === 'geo') earthG.add(orbLine);
+    
     pc.orbLine = orbLine;
 
     const buf = new Float32Array(TRAIL_N * 3);
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(buf, 3));
-    const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: pc.col, transparent: true, opacity: .32 }));
+    const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: pc.col, transparent: true, opacity: .4 }));
     line.visible = false;
-    plG.add(line);
+    
+    if (pc.type === 'helio') sunG.add(line);
+    else if (pc.type === 'geo') earthG.add(line);
+    
     trails[pc.id] = { geo, buf, ptr: 0, full: false, line };
   });
 
   window.switchLang(currLang);
 }
 
-// ══════════════════════════
-//  STATE & DATA MAPPING
-// ══════════════════════════
 let showAsp = false, showOrb = false, isSidereal = false, showOut = false, showTrails = false;
 let userData = {};
 let curLons = {};
-let playingTime = false, playInterval = null;
+let playingTime = false;
+let currentDayOffset = 0;
 
 function placePlanets(lons) {
+  // Earth
+  if (pMesh['earth']) {
+    const el = lons.earth_hl * DEG;
+    const ex = Math.cos(el) * PCONF.find(p=>p.id==='earth').R;
+    const ey = Math.sin(el) * PCONF.find(p=>p.id==='earth').R;
+    pMesh['earth'].position.set(ex, ey, 0);
+    pLbl['earth'].position.set(ex, ey, 0);
+    earthG.position.set(ex, ey, 0); // Move Earth local space to Helio coordinates
+  }
+
   PCONF.forEach(pc => {
-    const lon = lons[pc.id];
+    if (pc.id === 'earth' || pc.id === 'sun') return;
     const isVis = (!pc.isOut || showOut);
     
-    if (lon !== undefined) {
-      const a = lon * DEG;
-      const beta = (lons[pc.id+'_lat'] || 0) * DEG;
+    if (lons[pc.id] !== undefined) {
+      let x, y, z = 0;
       
-      const rProj = Math.cos(beta) * pc.R;
-      const x = Math.cos(a) * rProj;
-      const y = Math.sin(a) * rProj;
-      const z = Math.sin(beta) * pc.R;
+      if (pc.type === 'helio') {
+        const hl = lons[pc.id+'_hl'] * DEG;
+        const hlat = (lons[pc.id+'_hlat'] || 0) * DEG;
+        const rProj = Math.cos(hlat) * pc.R;
+        x = Math.cos(hl) * rProj;
+        y = Math.sin(hl) * rProj;
+        z = Math.sin(hlat) * pc.R;
+      } else if (pc.type === 'geo') {
+        // Geocentric bodies relative to Earth
+        const gl = lons[pc.id] * DEG;
+        if (pc.id === 'moon' || pc.isY) {
+          const lat = (pc.id === 'moon' || pc.id === 'yapo') ? 5.145 * Math.sin((lons[pc.id] - lons.ketu) * DEG) : 0;
+          const rProj = Math.cos(lat * DEG) * pc.R;
+          x = Math.cos(gl) * rProj;
+          y = Math.sin(gl) * rProj;
+          z = Math.sin(lat * DEG) * pc.R;
+        } else {
+          x = Math.cos(gl) * pc.R;
+          y = Math.sin(gl) * pc.R;
+        }
+      }
 
-      if (pMesh[pc.id]) pMesh[pc.id].position.set(x, y, z);
-      if (pLbl[pc.id]) pLbl[pc.id].position.set(x, y, z);
+      pMesh[pc.id].position.set(x, y, z);
+      pLbl[pc.id].position.set(x, y, z);
 
       if (isVis && showTrails && trails[pc.id]) {
         const t = trails[pc.id]; const i = t.ptr * 3;
@@ -1103,23 +1097,39 @@ function placePlanets(lons) {
       }
     }
 
-    if (pMesh[pc.id]) pMesh[pc.id].visible = isVis;
-    if (pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
+    pMesh[pc.id].visible = isVis;
+    pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
     if (pc.orbLine) pc.orbLine.visible = isVis && showOrb;
     if (!isVis && trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
   });
 
-  // Generate mathematically tilted orbit rings
+  // Orbital Rings
   PCONF.forEach(pc => {
     if (pc.orbLine && pc.orbLine.visible) {
-      const node = (pc.id === 'moon') ? lons.ketu : (PE[pc.id] ? PE[pc.id].Node : 0);
-      const inc  = (pc.id === 'moon') ? 5.145 : (PE[pc.id] ? PE[pc.id].i : 0);
       const pts = [];
-      for (let i = 0; i <= 128; i++) {
-        const ang = (i / 128) * Math.PI * 2;
-        const lat = inc * Math.sin(ang - node * DEG) * DEG;
-        const rp = Math.cos(lat) * pc.R;
-        pts.push(new THREE.Vector3(Math.cos(ang)*rp, Math.sin(ang)*rp, Math.sin(lat)*pc.R));
+      if (pc.type === 'geo' && pc.id === 'moon') {
+        // 渲染带有黄白交角的真实月球倾斜轨道
+        for (let i = 0; i <= 128; i++) {
+          const ang = (i / 128) * Math.PI * 2;
+          const lat = 5.145 * Math.sin(ang - lons.ketu * DEG) * DEG;
+          const rp = Math.cos(lat) * pc.R;
+          pts.push(new THREE.Vector3(Math.cos(ang)*rp, Math.sin(ang)*rp, Math.sin(lat)*pc.R));
+        }
+      } else if (pc.type === 'helio' || pc.id === 'earth') {
+        const node = PE[pc.id] ? PE[pc.id].Node : 0;
+        const inc  = PE[pc.id] ? PE[pc.id].i : 0;
+        for (let i = 0; i <= 128; i++) {
+          const ang = (i / 128) * Math.PI * 2;
+          const lat = inc * Math.sin(ang - node * DEG) * DEG;
+          const rp = Math.cos(lat) * pc.R;
+          pts.push(new THREE.Vector3(Math.cos(ang)*rp, Math.sin(ang)*rp, Math.sin(lat)*pc.R));
+        }
+      } else {
+        // Circular for nodes
+        for (let i = 0; i <= 128; i++) {
+          const ang = (i / 128) * Math.PI * 2;
+          pts.push(new THREE.Vector3(Math.cos(ang)*pc.R, Math.sin(ang)*pc.R, 0));
+        }
       }
       pc.orbLine.geometry.setFromPoints(pts);
     }
@@ -1139,33 +1149,41 @@ function placePlanets(lons) {
     const col = i === 0 ? 0xFF4444 : (i === 6 ? 0x4488FF : 0xFFFFFF);
     houseG.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(Math.cos(a) * 18, Math.sin(a) * 18, 0),
-        new THREE.Vector3(Math.cos(a) * (isAngle ? 42.5 : 40), Math.sin(a) * (isAngle ? 42.5 : 40), 0)
+        new THREE.Vector3(Math.cos(a) * 35, Math.sin(a) * 35, 0),
+        new THREE.Vector3(Math.cos(a) * (isAngle ? ASTRO_R+5 : ASTRO_R+2), Math.sin(a) * (isAngle ? ASTRO_R+5 : ASTRO_R+2), 0)
       ]),
       new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: isAngle ? .8 : .15 })
     ));
-    if (i === 0) lbl2D(houseG, 'lasc', 45, a, 'ui', 'asc');
-    else if (i === 6) lbl2D(houseG, 'ldsc', 45, a, 'ui', 'dsc');
-    else lbl2D(houseG, 'lax', 42.5, a, 'raw', i + 1);
+    if (i === 0) lbl2D(houseG, 'lasc', ASTRO_R+8, a, 'ui', 'asc');
+    else if (i === 6) lbl2D(houseG, 'ldsc', ASTRO_R+8, a, 'ui', 'dsc');
+    else lbl2D(houseG, 'lax', ASTRO_R+5, a, 'raw', i + 1);
   }
 }
 
 const ASP_A = [0, 60, 90, 120, 150, 180];
 const ASP_C = [0xFFFF00, 0x44FF88, 0xFF4444, 0x44AAFF, 0xFF8844, 0xFF4444];
+const aspG = new THREE.Group();
+astrolabeG.add(aspG);
 
 function buildAspects(lons) {
   aspG.clear();
   const base_asp = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
   if (showOut) base_asp.push('uranus','neptune','pluto');
+  
+  // 相位连线：占星学是基于地心黄经，所以在地心坐标系下绘制连线
   for (let i = 0; i < base_asp.length; i++) for (let j = i + 1; j < base_asp.length; j++) {
     const id1 = base_asp[i], id2 = base_asp[j];
     const diff = Math.min(norm(lons[id1] - lons[id2]), norm(lons[id2] - lons[id1]));
     for (let k = 0; k < ASP_A.length; k++) {
       if (Math.abs(diff - ASP_A[k]) < 8) {
-        const p1 = pMesh[id1] ? pMesh[id1].position.clone() : new THREE.Vector3();
-        const p2 = pMesh[id2] ? pMesh[id2].position.clone() : new THREE.Vector3();
+        // 在占星环内绘制代表相位的连线
+        const a1 = lons[id1] * DEG, a2 = lons[id2] * DEG;
+        const R = ASTRO_R - 10;
         aspG.add(new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([p1, p2]),
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(a1)*R, Math.sin(a1)*R, 0),
+            new THREE.Vector3(Math.cos(a2)*R, Math.sin(a2)*R, 0)
+          ]),
           new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: .45 })
         ));
         break;
@@ -1178,7 +1196,7 @@ function renderPlanetList(lons, isSid, jd, suffix = '') {
   const el = document.getElementById('plist' + suffix);
   if (!el) return;
   el.innerHTML = '';
-  PCONF.filter(pc => !pc.isOut || showOut).forEach(pc => {
+  PCONF.filter(pc => pc.id!=='earth' && (!pc.isOut || showOut)).forEach(pc => {
     const lon = lons[pc.id]; if (lon === undefined) return;
     const z = zodiac(lon), man = getMansion(lon, isSid, jd);
     const hex = '#' + pc.col.toString(16).padStart(6, '0');
@@ -1200,7 +1218,7 @@ function renderHouseGrid(lons, suffix = '') {
   const asc = lons.asc;
   for (let i = 0; i < 12; i++) {
     const cLon = norm(asc + i * 30), z = zodiac(cLon);
-    const ph = PCONF.filter(pc => (!pc.isOut || showOut) && lons[pc.id] !== undefined && Math.floor(norm(lons[pc.id] - asc) / 30) === i)
+    const ph = PCONF.filter(pc => pc.id!=='earth' && (!pc.isOut || showOut) && lons[pc.id] !== undefined && Math.floor(norm(lons[pc.id] - asc) / 30) === i)
       .map(p => `<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
     const cell = document.createElement('div'); cell.className = 'hc';
     cell.innerHTML = `<div class="hc-n">${i + 1}</div><div class="hc-s">${z.sym}${z.s}</div>${ph ? `<div class="hc-p">${ph}</div>` : ''}`;
@@ -1267,6 +1285,8 @@ window.submitForm = function() {
   const st = applyST(h, mn, stCorr(lng, tz * 15));
 
   userData = { name, y, m, d, h: st.h, mn: st.m, lng, lat, tz, jd: jd_utc };
+  currentDayOffset = 0;
+  document.getElementById('time-range').value = 0;
   launch();
 };
 
@@ -1279,8 +1299,7 @@ window.loadDemo = function() {
 
 function updatePositions() {
   if (!userData.jd) return;
-  const off = parseInt(document.getElementById('time-range').value) || 0;
-  const targetJD = userData.jd + off;
+  const targetJD = userData.jd + currentDayOffset;
   const T = T_jd(targetJD);
 
   curLons = calcAll(T, targetJD, userData.lng, userData.lat, isSidereal);
@@ -1289,9 +1308,6 @@ function updatePositions() {
   const aya = 24.03 + (targetJD - 2451545.0) / 365.25 * (50.29 / 3600);
   manG.rotation.z = isSidereal ? 0 : aya * DEG;
 
-  const sunAngle = curLons.sun * DEG;
-  sunLight.position.set(Math.cos(sunAngle) * 80, 20, Math.sin(sunAngle) * 80);
-
   renderPlanetList(curLons, isSidereal, targetJD, '');
   renderHouseGrid(curLons, '');
   renderAnalysis(curLons, isSidereal, targetJD, '');
@@ -1299,6 +1315,9 @@ function updatePositions() {
   renderHouseGrid(curLons, '-m');
   renderAnalysis(curLons, isSidereal, targetJD, '-m');
 
+  const bd = new Date(Date.UTC(userData.y, userData.m - 1, userData.d));
+  bd.setUTCDate(bd.getUTCDate() + Math.floor(currentDayOffset));
+  document.getElementById('time-lbl').textContent = `${bd.getUTCFullYear()}.${String(bd.getUTCMonth()+1).padStart(2,'0')}.${String(bd.getUTCDate()).padStart(2,'0')}`;
   document.getElementById('tb-place').textContent = `lng ${userData.lng.toFixed(1)}° · lat ${userData.lat.toFixed(1)}° · ${isSidereal ? LANGS[currLang].al.sid : LANGS[currLang].al.trop}`;
 }
 
@@ -1320,40 +1339,31 @@ function launch() {
     mw.style.transition = 'opacity .7s';
     mw.style.opacity = '0';
     setTimeout(() => { mw.style.display = 'none'; }, 700);
-    OCtrl.autoRotate = true;
-    setTimeout(() => OCtrl.autoRotate = false, 5500);
   }
 }
 
 // ── Time Scrubber ──
 const tRange = document.getElementById('time-range');
-const tLbl = document.getElementById('time-lbl');	
 tRange.addEventListener('input', () => {
   if (!userData.jd) return;
+  currentDayOffset = parseFloat(tRange.value);
   updatePositions();
-  const off = parseInt(tRange.value);
-  const bd = new Date(Date.UTC(userData.y, userData.m - 1, userData.d));
-  bd.setUTCDate(bd.getUTCDate() + off);
-  tLbl.textContent = `${bd.getUTCFullYear()}.${String(bd.getUTCMonth()+1).padStart(2,'0')}.${String(bd.getUTCDate()).padStart(2,'0')}`;
 });
 
 const tbPlay = document.getElementById('tb-play');
 tbPlay.addEventListener('click', function() {
   if (playingTime) {
-    clearInterval(playInterval); playingTime = false;
-    this.textContent = LANGS[currLang].ui.t_play; return;
+    playingTime = false;
+    this.textContent = LANGS[currLang].ui.t_play;
+  } else {
+    playingTime = true; 
+    this.textContent = LANGS[currLang].ui.t_pause;
   }
-  playingTime = true; this.textContent = LANGS[currLang].ui.t_pause;
-  playInterval = setInterval(() => {
-    const v = Math.min(parseInt(tRange.value) + 3, 3650);
-    tRange.value = v; tRange.dispatchEvent(new Event('input'));
-    if (v >= 3650) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].ui.t_play; }
-  }, 55);
 });
 
 window.resetTime = function() {
-  clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].ui.t_play;
-  tRange.value = 0; tRange.dispatchEvent(new Event('input')); tLbl.textContent = LANGS[currLang].ui.t_curr;
+  playingTime = false; tbPlay.textContent = LANGS[currLang].ui.t_play;
+  currentDayOffset = 0; tRange.value = 0; updatePositions();
 };
 
 // ── Controls ──
@@ -1367,7 +1377,20 @@ tog('cb-spin', () => OCtrl.autoRotate = true, () => OCtrl.autoRotate = false, fa
 tog('cb-ecl', () => eclG.visible = true, () => eclG.visible = false);
 tog('cb-eq',  () => eqG.visible = true,  () => eqG.visible = false);
 tog('cb-man', () => manG.visible = true,  () => manG.visible = false);
-tog('cb-pl',  () => plG.visible = true,   () => plG.visible = false);
+tog('cb-pl',  () => {
+    PCONF.forEach(pc => {
+      const isVis = (!pc.isOut || showOut);
+      pMesh[pc.id].visible = isVis;
+      pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
+      if (pc.orbLine) pc.orbLine.visible = isVis && showOrb;
+    });
+  }, () => {
+    PCONF.forEach(pc => {
+      pMesh[pc.id].visible = false;
+      pLbl[pc.id].element.style.display = 'none';
+      if (pc.orbLine) pc.orbLine.visible = false;
+    });
+  });
 tog('cb-asp', () => { showAsp = true; buildAspects(curLons); }, () => { showAsp = false; aspG.clear(); }, false);
 tog('cb-tm',  () => document.getElementById('time-bar').classList.add('show'), () => { document.getElementById('time-bar').classList.remove('show'); resetTime(); }, false);
 tog('cb-orb', () => { showOrb = true; PCONF.forEach(pc => { if (pc.orbLine) pc.orbLine.visible = !pc.isOut || showOut; }); },
@@ -1388,10 +1411,10 @@ const meteors = [];
 function spawnMeteor() {
   if (meteors.length > 5) return;
   const th = Math.random() * Math.PI * 2, ph = Math.random() * Math.PI * .55;
-  const r = 88 + Math.random() * 35;
+  const r = 180 + Math.random() * 80;
   const pos = new THREE.Vector3(Math.sin(ph) * Math.cos(th) * r, Math.cos(ph) * r, Math.sin(ph) * Math.sin(th) * r);
-  const dir = pos.clone().normalize().negate().multiplyScalar(.38 + Math.random() * .28);
-  const pts = [pos.clone(), pos.clone().add(dir.clone().multiplyScalar(9 + Math.random() * 14))];
+  const dir = pos.clone().normalize().negate().multiplyScalar(1.2 + Math.random() * 1.5);
+  const pts = [pos.clone(), pos.clone().add(dir.clone().multiplyScalar(18 + Math.random() * 20))];
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(pts),
     new THREE.LineBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: .88 })
@@ -1403,16 +1426,23 @@ setInterval(spawnMeteor, 2400);
 
 // ── Planet rotation animation ──
 let animTime = 0;
-
 const clock = new THREE.Clock();
+
 function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
   animTime += dt;
 
-  OCtrl.update();
-  if (earthMesh) earthG.rotation.y += dt * .12;
+  if (playingTime && userData.jd) {
+    currentDayOffset += 2.0; // 控制公转丝滑速度，每帧跨越天数
+    if (currentDayOffset > 3650) currentDayOffset = -3650;
+    tRange.value = currentDayOffset;
+    updatePositions();
+  }
 
+  OCtrl.update();
+
+  if (pMesh.earth) pMesh.earth.rotation.y += dt * 0.4;
   if (pMesh.sun) pMesh.sun.rotation.y += dt * 0.04;
   if (pMesh.jupiter) pMesh.jupiter.rotation.y += dt * 0.18;
   if (pMesh.saturn) pMesh.saturn.rotation.y += dt * 0.15;
