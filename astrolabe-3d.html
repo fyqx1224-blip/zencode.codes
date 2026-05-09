@@ -135,7 +135,7 @@ body{overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Noto S
   display:flex;align-items:center;justify-content:center;transition:opacity .6s}
 #modal{
   background:rgba(5,3,18,.97);border:1px solid rgba(99,163,237,.3);
-  border-radius:14px;padding:38px 34px;width:92%;max-width:420px;
+  border-radius:14px;padding:38px 34px;width:92%;max-width:406px;
   box-shadow:0 48px 96px rgba(0,0,0,.92),0 0 80px rgba(99,163,237,.1),
              inset 0 0 30px rgba(99,163,237,.03)
 }
@@ -168,12 +168,16 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .lbl{pointer-events:none;font-family:'Noto Sans TC',sans-serif}
 .lecl{color:#FFD700;font-size:.72rem;font-weight:600;text-shadow:0 0 14px #D4A843,0 0 5px #000}
 .leq{color:#90C4FF;font-size:.72rem;font-weight:500;text-shadow:0 0 12px #63A3ED,0 0 5px #000}
-.lman{color:rgba(180,255,200,.88);font-size:.61rem;text-shadow:0 0 8px rgba(125,224,154,.5),0 0 3px #000}
+.lman{color:rgba(180,255,200,.88);font-size:.61rem;text-shadow:0 0 8px rgba(125,224,154,.5),0 0 3px #000; letter-spacing:0.05em;}
 .lzod{color:#F0C96A;font-size:.86rem;font-weight:700;text-shadow:0 0 16px #D4A843,0 0 5px #000}
 .lpl{display:flex;flex-direction:column;align-items:center;gap:1px}
 .lpl-ic{font-family:'Ma Shan Zheng',cursive;font-size:1.52rem;text-shadow:0 0 16px currentColor}
 .lpl-nm{font-size:.5rem;opacity:.88;text-shadow:0 0 8px currentColor}
 .lax{color:rgba(255,255,255,.42);font-size:.57rem;letter-spacing:.12em;text-shadow:0 0 5px #000}
+
+/* 專屬高亮 ASC / DSC */
+.lasc{color:var(--red);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--red),0 0 5px #000; letter-spacing:0.1em;}
+.ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000; letter-spacing:0.1em;}
 </style>
 
 <script type="importmap">
@@ -250,11 +254,11 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <!-- LEGEND -->
 <div id="legend">
-  <div class="li"><div class="ld" style="background:#FFD700"></div>黃道</div>
+  <div class="li"><div class="ld" style="background:#FFD700"></div>黃道星座</div>
   <div class="li"><div class="ld" style="background:#63A3ED"></div>赤道</div>
   <div class="li"><div class="ld" style="background:#7DE09A"></div>二十八宿</div>
-  <div class="li"><div class="ld" style="background:#C084FC"></div>四余</div>
-  <div class="li"><div class="ld" style="background:#FF5500"></div>七政</div>
+  <div class="li"><div class="ld" style="background:#FF6B6B"></div>ASC/十二宮</div>
+  <div class="li"><div class="ld" style="background:#FF5500"></div>七政四余</div>
 </div>
 
 <!-- CTRL BAR -->
@@ -299,7 +303,6 @@ const norm=d=>((d%360)+360)%360;
 function jdn(y,m,d,h=12,mn=0){
   if(m<=2){y--;m+=12}
   const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
-  // 完全修复时间减去小数的逻辑问题
   return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+(h+mn/60)/24;
 }
 function T_jd(jd){return(jd-2451545.0)/36525}
@@ -337,12 +340,10 @@ function ziqiLon(T) {return norm(yapLon(T)+90)}
 // 核心修复：计算 Ascendant (上升点)
 function calcASC(jd, lng, lat) {
   const T = (jd - 2451545.0) / 36525.0;
-  // 格林威治平恒星时 (GMST) 算法
   const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
   const e = (23.4392911 - 0.0130042 * T) * DEG; // 黄赤交角
   const lat_rad = lat * DEG;
-  // 通过球面三角学计算上升点黄经
   const asc_rad = Math.atan2(Math.cos(lst), -(Math.sin(lst)*Math.cos(e) + Math.tan(lat_rad)*Math.sin(e)));
   return norm(asc_rad * R2D);
 }
@@ -369,21 +370,33 @@ function calcAll(T, jd, lng, lat, isSid){
 function stCorr(lng,std=120){return Math.round((lng-std)*4)}
 function applyST(h,mn,c){let m=mn+c;while(m>=60){h++;m-=60}while(m<0){h--;m+=60}return{h:((h%24)+24)%24,m:((m%60)+60)%60}}
 
-// 宮位/宿
+// 宮位/宿 (全称专业名词 + 经典宽度校准)
 const ZCN=['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
 const ZSYM=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 function zodiac(lon){return{s:ZCN[Math.floor(lon/30)],sym:ZSYM[Math.floor(lon/30)],d:(lon%30).toFixed(1)}}
 
-const MANS=[
-  {n:'角',s:0,  w:12},{n:'亢',s:12, w:9}, {n:'氐',s:21, w:15},{n:'房',s:36, w:5},
-  {n:'心',s:41, w:5}, {n:'尾',s:46, w:18},{n:'箕',s:64, w:11},{n:'斗',s:75, w:26},
-  {n:'牛',s:101,w:8}, {n:'女',s:109,w:12},{n:'虛',s:121,w:10},{n:'危',s:131,w:17},
-  {n:'室',s:148,w:16},{n:'壁',s:164,w:9}, {n:'奎',s:173,w:16},{n:'婁',s:189,w:12},
-  {n:'胃',s:201,w:14},{n:'昴',s:215,w:11},{n:'畢',s:226,w:16},{n:'觜',s:242,w:2},
-  {n:'參',s:244,w:9}, {n:'井',s:253,w:33},{n:'鬼',s:286,w:4}, {n:'柳',s:290,w:15},
-  {n:'星',s:305,w:7}, {n:'張',s:312,w:18},{n:'翼',s:330,w:18},{n:'軫',s:348,w:12},
+const MANS_NAMES = [
+  "角木蛟","亢金龍","氐土貉","房日兔","心月狐","尾火虎","箕水豹",
+  "斗木獬","牛金牛","女土蝠","虛日鼠","危月燕","室火豬","壁水貐",
+  "奎木狼","婁金狗","胃土雉","昴日雞","畢月烏","觜火猴","參水猿",
+  "井木犴","鬼金羊","柳土獐","星日馬","張月鹿","翼火蛇","軫水蚓"
 ];
-function getMansion(lon){for(const m of MANS){if(lon>=m.s&&lon<m.s+m.w)return m.n}return MANS[0].n}
+// 古法 365 度的绝对宽度
+const klass_w = [12, 9, 15, 5, 5, 18, 11, 26, 8, 12, 10, 17, 16, 9, 16, 12, 14, 11, 16, 2, 9, 33, 4, 15, 7, 18, 18, 17];
+const MANS = [];
+let _acc = 0;
+for(let i=0; i<28; i++){
+  let w = klass_w[i] * 360 / 365; // 等比例缩放到 360 度圆周
+  MANS.push({ n: MANS_NAMES[i], short: MANS_NAMES[i].charAt(0), s: _acc, w: w });
+  _acc += w;
+}
+
+function getMansion(lon){
+  for(const m of MANS){
+    if(lon >= m.s && lon < m.s + m.w) return m.short;
+  }
+  return MANS[0].short;
+}
 
 const WUXING={
   '太陽':'陽火 · 父 · 君主','月亮':'陰水 · 母 · 情感',
@@ -475,8 +488,6 @@ earthG.add(new THREE.Mesh(new THREE.SphereGeometry(2.0,24,24),
   new THREE.MeshBasicMaterial({color:0x0E3A8A,wireframe:true,transparent:true,opacity:.48})));
 earthG.add(new THREE.Mesh(new THREE.SphereGeometry(3.1,24,24),
   new THREE.MeshBasicMaterial({color:0x2255BB,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,side:THREE.BackSide})));
-earthG.add(new THREE.Mesh(new THREE.SphereGeometry(2.55,24,24),
-  new THREE.MeshBasicMaterial({color:0x4488FF,transparent:true,opacity:.1,blending:THREE.AdditiveBlending})));
 
 scene.add(new THREE.Line(
   new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-72,0),new THREE.Vector3(0,72,0)]),
@@ -503,7 +514,7 @@ for(let i=0;i<36;i++){
     new THREE.LineBasicMaterial({color:0x5599DD,transparent:true,opacity:isH?.85:.32})));
 }
 function lbl2D(parent,text,cls,r,angle){
-  const el=document.createElement('div');el.className='lbl '+cls;el.textContent=text;
+  const el=document.createElement('div');el.className='lbl '+cls;el.innerHTML=text;
   const o=new CSS2DObject(el);
   o.position.set(Math.cos(angle)*r,Math.sin(angle)*r,0);
   parent.add(o);
@@ -532,6 +543,18 @@ lbl2D(eclG,'黃道 ECLIPTIC','lecl',42,1.5);
     new THREE.MeshBasicMaterial({color:0xFFFFAA,transparent:true,opacity:.3,blending:THREE.AdditiveBlending})));
 }
 
+// ── Zodiac (黃道十二星座) ──
+const zodG=new THREE.Group();eclG.add(zodG);
+for(let i=0;i<12;i++){
+  const a=i/12*Math.PI*2;
+  zodG.add(new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(Math.cos(a)*35,Math.sin(a)*35,0),
+      new THREE.Vector3(Math.cos(a)*40.5,Math.sin(a)*40.5,0)]),
+    new THREE.LineBasicMaterial({color:0xFFD700,transparent:true,opacity:.5})));
+  lbl2D(zodG, ZCN[i], 'lzod', 43.5, a+Math.PI/12);
+}
+
 // 宫位系统 (Equal Houses 基于 ASC)
 const houseG=new THREE.Group();eclG.add(houseG);
 
@@ -544,6 +567,7 @@ const manG=new THREE.Group();manG.rotation.x=Math.PI/2;scene.add(manG);
 const mR=52,mO=55.5;
 {const pts=[];for(let i=0;i<=200;i++){const a=i/200*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*mR,Math.sin(a)*mR,0))}
 manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x3A8C5C,transparent:true,opacity:.38})));}
+
 MANS.forEach(m=>{
   const a0=m.s*DEG,a1=(m.s+m.w)*DEG;
   manG.add(new THREE.Line(
@@ -554,7 +578,7 @@ MANS.forEach(m=>{
   const arc=[];for(let t=0;t<=20;t++){const aa=a0+(a1-a0)*t/20;arc.push(new THREE.Vector3(Math.cos(aa)*(mR+.5),Math.sin(aa)*(mR+.5),0))}
   manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc),new THREE.LineBasicMaterial({color:0x7DE09A,transparent:true,opacity:.5})));
   const mid=a0+(a1-a0)/2;
-  lbl2D(manG,m.n+'宿','lman',59,mid);
+  lbl2D(manG, m.n, 'lman', 59, mid);
 });
 
 {const pts=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*32,Math.sin(a)*32,0))}
@@ -657,20 +681,21 @@ function placePlanets(lons){
   for(let i=0; i<12; i++){
     const a = norm(asc + i*30) * DEG;
     const isAngle = (i===0 || i===6);
+    // 高亮 ASC(红色) 和 DSC(蓝色)，其他宫位白色透明
     const col = i===0 ? 0xFF4444 : (i===6 ? 0x4488FF : 0xFFFFFF);
     const op = isAngle ? 0.8 : 0.15;
-    const R_in = 20, R_out = isAngle ? 38 : 32;
+    const R_in = 20, R_out = isAngle ? 38 : 31;
     
     houseG.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(Math.cos(a)*R_in, Math.sin(a)*R_in, 0),
         new THREE.Vector3(Math.cos(a)*R_out, Math.sin(a)*R_out, 0)
       ]),
-      new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op})
+      new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op, linewidth: isAngle? 2 : 1})
     ));
     
-    if(i===0) lbl2D(houseG, 'ASC', 'lecl', R_out+2, a);
-    else if(i===6) lbl2D(houseG, 'DSC', 'leq', R_out+2, a);
+    if(i===0) lbl2D(houseG, 'ASC', 'lasc', R_out+2, a);
+    else if(i===6) lbl2D(houseG, 'DSC', 'ldsc', R_out+2, a);
     else lbl2D(houseG, (i+1)+'宮', 'lax', R_out+1.5, a);
   }
 }
@@ -771,13 +796,13 @@ window.submitForm=function(){
   let mn=parseInt(document.getElementById('f-mi').value)||0;
   
   const lng=parseFloat(document.getElementById('f-lg').value)||120;
-  const lat=parseFloat(document.getElementById('f-lat').value)||39.9; // 默认北京纬度
+  const lat=parseFloat(document.getElementById('f-lat').value)||39.9; // 默认北纬
   const tz=parseInt(document.getElementById('f-tz').value)||8; // 获取时区
   
   if(!y||!m||!d){alert('請輸入完整的年月日！');return}
   
   const st=applyST(h,mn,stCorr(lng, tz*15));
-  // 核心修复：直接减去时区偏差，推算精准的 UTC 儒略日
+  // 核心修复：直接减去时区偏差，推算精准的 UTC 儒略日，解决上升点错位问题
   const jd_utc=jdn(y,m,d,h - tz,mn); 
   
   userData={name,y,m,d,h:st.h,mn:st.m,lng,lat,jd:jd_utc};
@@ -881,8 +906,8 @@ tog('cb-tr',  ()=>{showTrails=true;Object.values(trails).forEach(t=>t.line.visib
 // 归/恒 切换
 const bSys = document.getElementById('cb-sys');
 tog('cb-sys', 
-    () => { isSidereal=true; bSys.textContent='恆'; if(userData.jd) updatePositions(); }, 
-    () => { isSidereal=false; bSys.textContent='歸'; if(userData.jd) updatePositions(); }, 
+    () => { isSidereal=true; bSys.textContent='恆'; bSys.classList.add('on'); if(userData.jd) updatePositions(); }, 
+    () => { isSidereal=false; bSys.textContent='歸'; bSys.classList.remove('on'); if(userData.jd) updatePositions(); }, 
     false
 );
 
