@@ -585,8 +585,15 @@ function calcAll(T, jd, lng, lat, isSid) {
   const ascNode = norm(125.04452 - 0.0529538 * d);
   res.ketu = ascNode;
   res.rahu = norm(ascNode + 180);
-  res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
-  res.ziqi = norm(231.14 + 0.0351996 * d);
+
+  // 月孛 (Apogee / Black Moon Lilith) — Meeus mean lunar apogee formula
+  // J2000 epoch mean apogee longitude = 83.3532465°, daily motion = +0.11140353°/day
+  res.yapo = norm(83.3532465 + 0.11140353 * d);
+
+  // 紫炁 (Purple Qi) — traditional Chinese fictitious planet
+  // Defined as the point 90° ahead of the ascending node (ketu + 90°)
+  // i.e. it completes one revolution in the same ~18.6-year nodal cycle
+  res.ziqi = norm(ascNode + 90);
 
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
@@ -671,7 +678,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 0.78;  // was 1.15 — softer overall exposure
 wrap.appendChild(renderer.domElement);
 
 const lblR = new CSS2DRenderer();
@@ -681,7 +688,8 @@ wrap.appendChild(lblR.domElement);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.2, 0.65, 0.15);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.5, 0.28);
+// strength=0.55 (was 1.2), radius=0.5 (was 0.65), threshold=0.28 (was 0.15)
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -731,7 +739,8 @@ const TEX_URLS = {
   moon:    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1024px-FullMoon2010.jpg',
   mercury: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
   venus:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
-  earth:   'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/1024px-The_Blue_Marble_%28remastered%29.jpg',
+  // Earth: use NASA's Blue Marble via a known-good Wikimedia thumb
+  earth:   'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/1024px-The_Earth_seen_from_Apollo_17.jpg',
   mars:    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
   jupiter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
   saturn:  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg',
@@ -743,13 +752,19 @@ const TEX_URLS = {
 
 // Preload textures, fallback to color if load fails
 const loadedTex = {};
+texLoader.crossOrigin = 'anonymous';
 const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
   new Promise(resolve => {
-    texLoader.load(url,
-      tex => { loadedTex[k] = tex; resolve(); },
-      undefined,
-      () => resolve() // silently fail
-    );
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const tex = new THREE.Texture(img);
+      tex.needsUpdate = true;
+      loadedTex[k] = tex;
+      resolve();
+    };
+    img.onerror = () => resolve(); // silently fail, use color fallback
+    img.src = url;
   })
 );
 
@@ -761,27 +776,26 @@ scene.add(earthG);
 let earthMesh = null, earthCloud = null;
 
 function buildEarth() {
-  // Earth sphere
-  const mat = loadedTex.earth
-    ? new THREE.MeshPhongMaterial({ map: loadedTex.earth, shininess: 25 })
-    : new THREE.MeshBasicMaterial({ color: 0x061840 });
+  // Earth sphere — MeshPhongMaterial always; if texture loaded use it, else deep blue
+  const mat = new THREE.MeshPhongMaterial({
+    map: loadedTex.earth || null,
+    color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
+    shininess: 18,
+    specular: new THREE.Color(0x224488),
+  });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.88, 48, 48), mat);
   earthG.add(earthMesh);
 
   // Atmosphere glow
   earthG.add(new THREE.Mesh(
-    new THREE.SphereGeometry(2.15, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0x2255BB, transparent: true, opacity: .18, blending: THREE.AdditiveBlending, side: THREE.BackSide })
+    new THREE.SphereGeometry(2.1, 24, 24),
+    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .14, blending: THREE.AdditiveBlending, side: THREE.BackSide })
   ));
-  // Wireframe overlay
+  // Subtle wireframe lat/lon grid
   earthG.add(new THREE.Mesh(
-    new THREE.SphereGeometry(1.92, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0x0E3A8A, wireframe: true, transparent: true, opacity: .22 })
+    new THREE.SphereGeometry(1.90, 18, 18),
+    new THREE.MeshBasicMaterial({ color: 0x2266AA, wireframe: true, transparent: true, opacity: .12 })
   ));
-
-  // Add a point light at earth center for planet illumination
-  const earthLight = new THREE.PointLight(0xFFFFFF, 0.8, 200);
-  earthG.add(earthLight);
 }
 
 // Axis line
@@ -790,10 +804,10 @@ scene.add(new THREE.Line(
   new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .15 })
 ));
 
-// Ambient light for textures
-const ambLight = new THREE.AmbientLight(0x404060, 1.2);
+// Ambient light for textures — kept low so planets show contrast
+const ambLight = new THREE.AmbientLight(0x303050, 0.7);  // was 0x404060, 1.2
 scene.add(ambLight);
-const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.8);
+const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.1);  // was 1.8
 sunLight.position.set(50, 20, 30);
 scene.add(sunLight);
 
@@ -972,10 +986,10 @@ function buildPlanetMesh(pc) {
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 32, 32), mat);
 
-  // Glow / atmosphere
+  // Glow / atmosphere — toned down
   sphere.add(new THREE.Mesh(
-    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.6 : 2.2), 16, 16),
-    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .26 : .22, blending: THREE.AdditiveBlending })
+    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.9), 16, 16),
+    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .16 : .12, blending: THREE.AdditiveBlending })
   ));
 
   // Virtual body ring
@@ -1006,18 +1020,18 @@ function buildPlanetMesh(pc) {
     sphere.add(ring2);
   }
 
-  // Sun corona/glow layers
+  // Sun corona/glow layers — reduced so bloom doesn't blow out
   if (pc.id === 'sun') {
     sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 2.2, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF6600, transparent: true, opacity: .12, blending: THREE.AdditiveBlending })
+      new THREE.SphereGeometry(pc.sz * 1.8, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .07, blending: THREE.AdditiveBlending })
     ));
     sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 3.2, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF9900, transparent: true, opacity: .06, blending: THREE.AdditiveBlending })
+      new THREE.SphereGeometry(pc.sz * 2.5, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xFF8800, transparent: true, opacity: .04, blending: THREE.AdditiveBlending })
     ));
-    // Sun is its own light source
-    const sl = new THREE.PointLight(0xFFF5CC, 2.5, 300);
+    // Sun is its own light source — keep moderate
+    const sl = new THREE.PointLight(0xFFF5CC, 1.2, 280);
     sphere.add(sl);
   }
 
