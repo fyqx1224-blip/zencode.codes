@@ -258,17 +258,19 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="li"><div class="ld" style="background:#63A3ED"></div>赤道</div>
   <div class="li"><div class="ld" style="background:#7DE09A"></div>二十八宿</div>
   <div class="li"><div class="ld" style="background:#FF6B6B"></div>ASC/十二宮</div>
-  <div class="li"><div class="ld" style="background:#FF5500"></div>七政四余</div>
+  <div class="li"><div class="ld" style="background:#FF5500"></div>星體</div>
 </div>
 
 <!-- CTRL BAR -->
 <div id="ctrl-bar">
   <button class="cb" id="cb-spin" title="自動旋轉">⟳</button>
   <button class="cb" id="cb-sys" title="切換回歸/恆星黃道" style="font-size:0.75rem;">歸</button>
+  <!-- 🟢 新增三王星控制按鈕 -->
+  <button class="cb" id="cb-out" title="三王星 (天海冥)" style="font-size:0.75rem;">王</button>
   <button class="cb on" id="cb-ecl" title="黃道環" style="color:#FFD700">◉</button>
   <button class="cb on" id="cb-eq"  title="赤道環">⊕</button>
   <button class="cb on" id="cb-man" title="二十八宿">宿</button>
-  <button class="cb on" id="cb-pl"  title="七政四余">政</button>
+  <button class="cb on" id="cb-pl"  title="星體顯示">政</button>
   <button class="cb"    id="cb-asp" title="相位連線">⋆</button>
   <button class="cb"    id="cb-tm"  title="時間推移">⏱</button>
   <button class="cb"    id="cb-tr"  title="行星軌跡">〜</button>
@@ -295,7 +297,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // ══════════════════════════
-//  ASTRONOMY ENGINE (完全重構地心座標系)
+//  ASTRONOMY ENGINE (包含三王星地心座標)
 // ══════════════════════════
 const DEG=Math.PI/180, R2D=180/Math.PI;
 const norm=d=>((d%360)+360)%360;
@@ -307,7 +309,6 @@ function jdn(y,m,d,h=12,mn=0){
 }
 function T_jd(jd){return(jd-2451545.0)/36525}
 
-// 日月地心黃經
 function sunLon(T){
   const L0=norm(280.46646+36000.76983*T+0.0003032*T*T);
   const M=norm(357.52911+35999.05029*T-0.0001537*T*T);
@@ -321,17 +322,19 @@ function moonLon(T){
   return norm(218.3165+481267.8813*T + 6.288774*Math.sin(Mp*DEG) + 1.274027*Math.sin((2*D-Mp)*DEG) + 0.658314*Math.sin(2*D*DEG));
 }
 
-// 🟢 核心修復：五大行星（日心轉地心坐標）
+// 🟢 新增三王星軌道參數 (J2000)
 const PE={
   mercury:{L:252.2509,dL:149472.6746,e:0.2056,w:77.457, a:0.3871},
   venus:  {L:181.9798,dL:58517.8156, e:0.0067,w:131.56, a:0.7233},
   mars:   {L:355.4332,dL:19140.2993, e:0.0934,w:336.04, a:1.5237},
   jupiter:{L:34.3515, dL:3034.9056,  e:0.0483,w:14.72,  a:5.2028},
   saturn: {L:50.0774, dL:1222.1137,  e:0.0541,w:92.86,  a:9.5366},
+  uranus: {L:313.23218,dL:428.4665,  e:0.0463,w:74.006, a:19.1819},
+  neptune:{L:304.88003,dL:218.46134, e:0.0089,w:131.784,a:30.0581},
+  pluto:  {L:238.92904,dL:145.20780, e:0.2488,w:224.066,a:39.4816}
 };
 function planetLonGeocentric(id, T) {
   const p = PE[id]; if(!p) return 0;
-  // 行星日心黃經與距離
   const Lp = norm(p.L + p.dL * T / 36525);
   const Mp = norm(Lp - p.w) * DEG;
   const Cp = (2 * p.e) * Math.sin(Mp);
@@ -340,26 +343,22 @@ function planetLonGeocentric(id, T) {
   const xp = Rp * Math.cos(Vp);
   const yp = Rp * Math.sin(Vp);
 
-  // 地球日心黃經與距離
   const Me = norm(357.52911 + 35999.05029 * T) * DEG;
   const Re = 1.00014 - 0.01671 * Math.cos(Me);
-  const Le = norm(sunLon(T) + 180) * DEG; // 地球相對於太陽的絕對位置
+  const Le = norm(sunLon(T) + 180) * DEG; 
   const xe = Re * Math.cos(Le);
   const ye = Re * Math.sin(Le);
 
-  // 向量相減：求地心黃經
   const xg = xp - xe;
   const yg = yp - ye;
   return norm(Math.atan2(yg, xg) * R2D);
 }
 
-// 四余計算
 function rahuLon(T) {return norm(125.04452-1934.136261*T)}
 function ketuLon(T) {return norm(rahuLon(T)+180)}
 function yapLon(T)  {return norm(83.3532+4069.0137*T)}
 function ziqiLon(T) {return norm(yapLon(T)+90)}
 
-// ASC 計算
 function calcASC(jd, lng, lat) {
   const T = (jd - 2451545.0) / 36525.0;
   const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T;
@@ -376,6 +375,7 @@ function calcAll(T, jd, lng, lat, isSid){
     sun:sunLon(T),moon:moonLon(T),
     mercury:planetLonGeocentric('mercury',T),venus:planetLonGeocentric('venus',T),
     mars:planetLonGeocentric('mars',T),jupiter:planetLonGeocentric('jupiter',T),saturn:planetLonGeocentric('saturn',T),
+    uranus:planetLonGeocentric('uranus',T), neptune:planetLonGeocentric('neptune',T), pluto:planetLonGeocentric('pluto',T),
     rahu:rahuLon(T),ketu:ketuLon(T),yapo:yapLon(T),ziqi:ziqiLon(T),
     asc: asc, dsc: norm(asc + 180)
   };
@@ -394,18 +394,16 @@ const ZCN=['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天�
 const ZSYM=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 function zodiac(lon){return{s:ZCN[Math.floor(lon/30)],sym:ZSYM[Math.floor(lon/30)],d:(lon%30).toFixed(1)}}
 
-// 🟢 核心修復：二十八宿單字名 + 精確寬度 + 錨定 180度
 const MANS_NAMES=['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'];
 const klass_w=[12,9,15,5,5,18,11, 26,8,12,10,17,16,9, 16,12,14,11,16,2,9, 33,4,15,7,18,18,17];
 const MANS=[];
-let _acc = 180; // 角宿起點精確綁定 180°（秋分點附近）
+let _acc = 180; 
 for(let i=0; i<28; i++){
   let w = klass_w[i] * 360 / 365; 
   MANS.push({ n: MANS_NAMES[i], s: _acc, w: w });
   _acc += w;
 }
 
-// 🟢 核心修復：統一星宿查詢邏輯 (自動剝離歲差)
 function getMansion(lon, isSid, jd){
   let sidLon = lon;
   if (!isSid && jd) {
@@ -431,6 +429,9 @@ const WUXING={
   '土星':'陰土 · 克制 · 責任',
   '羅睺':'陽火 · 北交點 · 未來業力','計都':'陰火 · 南交點 · 過去業力',
   '月孛':'陰水 · 月亮遠地點 · 隱藏','紫氣':'陽木 · 傳統假想星',
+  '天王星':'時代星 · 改革 · 突變',
+  '海王星':'時代星 · 夢幻 · 潛意識',
+  '冥王星':'時代星 · 毀滅 · 重生',
 };
 
 function analyzeChart(lons, isSid, jd){
@@ -466,13 +467,11 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.15;
 wrap.appendChild(renderer.domElement);
 
-// CSS2D
 const lblR=new CSS2DRenderer();
 lblR.setSize(innerWidth,innerHeight);
 Object.assign(lblR.domElement.style,{position:'absolute',top:'0',pointerEvents:'none',zIndex:'5'});
 wrap.appendChild(lblR.domElement);
 
-// Bloom合成
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),1.2,0.65,0.15);
@@ -483,7 +482,6 @@ const OCtrl=new OrbitControls(camera,renderer.domElement);
 OCtrl.enableDamping=true;OCtrl.dampingFactor=0.055;
 OCtrl.minDistance=28;OCtrl.maxDistance=230;OCtrl.autoRotate=false;OCtrl.autoRotateSpeed=0.45;
 
-// ── Stars ──
 function mkStars(n,sz,sp,col,op){
   const pos=new Float32Array(n*3);
   for(let i=0;i<n*3;i++)pos[i]=(Math.random()-.5)*sp;
@@ -614,18 +612,22 @@ eclG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.
 const plG=new THREE.Group();eclG.add(plG);
 const aspG=new THREE.Group();plG.add(aspG);
 
+// 🟢 核心擴展：加入三王星，定義 `isOut` 屬性
 const PCONF=[
-  {id:'sun',    n:'太陽',ic:'☉',col:0xFF5500,sz:1.5,  isY:false},
-  {id:'moon',   n:'月亮',ic:'☽',col:0xD8EEFF,sz:1.12, isY:false},
-  {id:'mercury',n:'水星',ic:'☿',col:0x55CCFF,sz:0.82, isY:false},
-  {id:'venus',  n:'金星',ic:'♀',col:0xFFDD44,sz:0.95, isY:false},
-  {id:'mars',   n:'火星',ic:'♂',col:0xFF4040,sz:0.9,  isY:false},
-  {id:'jupiter',n:'木星',ic:'♃',col:0xFFAA55,sz:1.25, isY:false},
-  {id:'saturn', n:'土星',ic:'♄',col:0xEEDDAA,sz:1.12, isY:false},
-  {id:'rahu',   n:'羅睺',ic:'☊',col:0xCC44FF,sz:0.68, isY:true},
-  {id:'ketu',   n:'計都',ic:'☋',col:0xAA22EE,sz:0.68, isY:true},
-  {id:'yapo',   n:'月孛',ic:'⚸',col:0x8899FF,sz:0.68, isY:true},
-  {id:'ziqi',   n:'紫氣',ic:'✦',col:0x44DDAA,sz:0.65, isY:true},
+  {id:'sun',    n:'太陽',ic:'☉',col:0xFF5500,sz:1.5,  isY:false, isOut:false},
+  {id:'moon',   n:'月亮',ic:'☽',col:0xD8EEFF,sz:1.12, isY:false, isOut:false},
+  {id:'mercury',n:'水星',ic:'☿',col:0x55CCFF,sz:0.82, isY:false, isOut:false},
+  {id:'venus',  n:'金星',ic:'♀',col:0xFFDD44,sz:0.95, isY:false, isOut:false},
+  {id:'mars',   n:'火星',ic:'♂',col:0xFF4040,sz:0.9,  isY:false, isOut:false},
+  {id:'jupiter',n:'木星',ic:'♃',col:0xFFAA55,sz:1.25, isY:false, isOut:false},
+  {id:'saturn', n:'土星',ic:'♄',col:0xEEDDAA,sz:1.12, isY:false, isOut:false},
+  {id:'uranus', n:'天王星',ic:'♅',col:0x66CCFF,sz:1.05, isY:false, isOut:true},
+  {id:'neptune',n:'海王星',ic:'♆',col:0x3366FF,sz:1.02, isY:false, isOut:true},
+  {id:'pluto',  n:'冥王星',ic:'♇',col:0xAAAAAA,sz:0.65, isY:false, isOut:true},
+  {id:'rahu',   n:'羅睺',ic:'☊',col:0xCC44FF,sz:0.68, isY:true,  isOut:false},
+  {id:'ketu',   n:'計都',ic:'☋',col:0xAA22EE,sz:0.68, isY:true,  isOut:false},
+  {id:'yapo',   n:'月孛',ic:'⚸',col:0x8899FF,sz:0.68, isY:true,  isOut:false},
+  {id:'ziqi',   n:'紫氣',ic:'✦',col:0x44DDAA,sz:0.65, isY:true,  isOut:false},
 ];
 
 const pMesh={},pLbl={};
@@ -657,11 +659,19 @@ PCONF.forEach(pc=>{
       new THREE.SphereGeometry(3.8,16,16),
       new THREE.MeshBasicMaterial({color:0xFF6600,transparent:true,opacity:.18,blending:THREE.AdditiveBlending})));
   }
+  
+  // 預設隱藏三王星
+  if(pc.isOut) sphere.visible = false;
+  
   plG.add(sphere);pMesh[pc.id]=sphere;
 
   const el=document.createElement('div');el.className='lbl lpl';
   el.innerHTML=`<div class="lpl-ic" style="color:${hex}">${pc.ic}</div><div class="lpl-nm" style="color:${hex}">${pc.n}</div>`;
-  const obj=new CSS2DObject(el);plG.add(obj);pLbl[pc.id]=obj;
+  const obj=new CSS2DObject(el);
+  
+  if(pc.isOut) obj.element.style.display = 'none';
+  
+  plG.add(obj);pLbl[pc.id]=obj;
 
   const buf=new Float32Array(TRAIL_N*3);
   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(buf,3));
@@ -673,7 +683,7 @@ PCONF.forEach(pc=>{
 // ══════════════════════════
 //  STATE & DATA MAPPING
 // ══════════════════════════
-let showAsp=false,showTrails=false,isSidereal=false;
+let showAsp=false,showTrails=false,isSidereal=false,showOut=false;
 let userData={};
 let curLons={};
 let playingTime=false,playInterval=null;
@@ -681,6 +691,16 @@ let playingTime=false,playInterval=null;
 function placePlanets(lons){
   const R=32;
   PCONF.forEach(pc=>{
+    const isVis = (!pc.isOut || showOut);
+    
+    if(pMesh[pc.id]) pMesh[pc.id].visible = isVis;
+    if(pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
+    
+    if(!isVis) {
+      if(trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
+      return; 
+    }
+      
     const lon=lons[pc.id];if(lon===undefined)return;
     const a=lon*DEG, x=Math.cos(a)*R, y=Math.sin(a)*R;
     if(pMesh[pc.id])pMesh[pc.id].position.set(x,y,0);
@@ -696,7 +716,6 @@ function placePlanets(lons){
   });
   if(showAsp)buildAspects(lons);else aspG.clear();
 
-  // 渲染 ASC/DSC 和 12 宫位分割线
   while(houseG.children.length > 0){
     const c = houseG.children[0];
     if(c.isCSS2DObject && c.element) c.element.remove();
@@ -707,7 +726,6 @@ function placePlanets(lons){
   for(let i=0; i<12; i++){
     const a = norm(asc + i*30) * DEG;
     const isAngle = (i===0 || i===6);
-    // 高亮 ASC(红色) 和 DSC(蓝色)，其他宫位白色透明
     const col = i===0 ? 0xFF4444 : (i===6 ? 0x4488FF : 0xFFFFFF);
     const op = isAngle ? 0.8 : 0.15;
     const R_in = 20, R_out = isAngle ? 38 : 31;
@@ -726,17 +744,21 @@ function placePlanets(lons){
   }
 }
 
+// 🟢 相位計算現在支援動態加入三王星
 const ASP_A=[0,60,90,120,150,180];
 const ASP_C=[0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
-const ASP_IDS=['sun','moon','mercury','venus','mars','jupiter','saturn'];
+
 function buildAspects(lons){
   aspG.clear();const R=32;
-  for(let i=0;i<ASP_IDS.length;i++)for(let j=i+1;j<ASP_IDS.length;j++){
-    const diff=Math.min(norm(lons[ASP_IDS[i]]-lons[ASP_IDS[j]]),
-                        norm(lons[ASP_IDS[j]]-lons[ASP_IDS[i]]));
+  const base_asp = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+  if(showOut) base_asp.push('uranus','neptune','pluto'); // 一鍵加入三王星相位
+  
+  for(let i=0;i<base_asp.length;i++)for(let j=i+1;j<base_asp.length;j++){
+    const diff=Math.min(norm(lons[base_asp[i]]-lons[base_asp[j]]),
+                        norm(lons[base_asp[j]]-lons[base_asp[i]]));
     for(let k=0;k<ASP_A.length;k++){
       if(Math.abs(diff-ASP_A[k])<8){
-        const a1=lons[ASP_IDS[i]]*DEG,a2=lons[ASP_IDS[j]]*DEG;
+        const a1=lons[base_asp[i]]*DEG,a2=lons[base_asp[j]]*DEG;
         aspG.add(new THREE.Line(
           new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(Math.cos(a1)*R,Math.sin(a1)*R,0),
@@ -753,7 +775,7 @@ function buildAspects(lons){
 // ══════════════════════════
 function renderPlanetList(lons, isSid, jd){
   const el=document.getElementById('plist');el.innerHTML='';
-  PCONF.forEach(pc=>{
+  PCONF.filter(pc => !pc.isOut || showOut).forEach(pc=>{
     const lon=lons[pc.id];if(lon===undefined)return;
     const z=zodiac(lon), man=getMansion(lon, isSid, jd);
     const hex='#'+pc.col.toString(16).padStart(6,'0');
@@ -770,10 +792,10 @@ function renderPlanetList(lons, isSid, jd){
 
 function renderHouseGrid(lons){
   const g=document.getElementById('hgrid');g.innerHTML='';
-  const asc=lons.asc; // 基于ASC推算等宫
+  const asc=lons.asc; 
   for(let i=0;i<12;i++){
     const cLon=norm(asc+i*30),z=zodiac(cLon);
-    const ph=PCONF.filter(pc=>lons[pc.id]!==undefined&&Math.floor(norm(lons[pc.id]-asc)/30)===i)
+    const ph=PCONF.filter(pc=> (!pc.isOut || showOut) && lons[pc.id]!==undefined && Math.floor(norm(lons[pc.id]-asc)/30)===i)
               .map(p=>`<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
     const cell=document.createElement('div');cell.className='hc';
     cell.innerHTML=`<div class="hc-n">第${i+1}宮</div><div class="hc-s">${z.sym}${z.s}</div>${ph?`<div class="hc-p">${ph}</div>`:''}`;
@@ -850,7 +872,6 @@ function updatePositions() {
   curLons = calcAll(T, targetJD, userData.lng, userData.lat, isSidereal);
   placePlanets(curLons);
   
-  // 歲差同步：若為回歸黃道，星宿盤面自動旋轉附加歲差偏移
   const aya = 24.03 + (targetJD - 2451545.0)/365.25 * (50.29/3600);
   manG.rotation.z = isSidereal ? 0 : aya * DEG;
 
@@ -928,11 +949,18 @@ tog('cb-tr',  ()=>{showTrails=true;Object.values(trails).forEach(t=>t.line.visib
                  t.line.visible=false;t.ptr=0;t.full=false;t.buf.fill(0);
                  t.geo.attributes.position.needsUpdate=true;t.geo.setDrawRange(0,0)})},false);
 
-// 归/恒 切换
 const bSys = document.getElementById('cb-sys');
 tog('cb-sys', 
     () => { isSidereal=true; bSys.textContent='恆'; bSys.classList.add('on'); if(userData.jd) updatePositions(); }, 
     () => { isSidereal=false; bSys.textContent='歸'; bSys.classList.remove('on'); if(userData.jd) updatePositions(); }, 
+    false
+);
+
+// 🟢 新增三王星 Toggle 邏輯
+const bOut = document.getElementById('cb-out');
+tog('cb-out', 
+    () => { showOut=true; bOut.classList.add('on'); if(userData.jd) updatePositions(); }, 
+    () => { showOut=false; bOut.classList.remove('on'); if(userData.jd) updatePositions(); }, 
     false
 );
 
