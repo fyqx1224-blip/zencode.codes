@@ -236,7 +236,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <!-- CTRL BAR -->
 <div id="ctrl-bar">
-  <!-- 🟢 沉浸星空按鈕 -->
   <button class="cb" id="cb-zen" data-title="沉浸星空" data-i18n-title="ui.c_zen" style="font-size:0.9rem;">🌌</button>
   <button class="cb" id="cb-spin" data-title="自動旋轉" data-i18n-title="ui.c_spin">⟳</button>
   <button class="cb" id="cb-sys" data-title="切換回歸/恆星黃道" data-i18n-title="ui.c_sys" style="font-size:0.75rem;" data-i18n="ui.sys_t">歸</button>
@@ -247,7 +246,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="cb on" id="cb-pl"  data-title="星體顯示" data-i18n-title="ui.c_pl" data-i18n="ui.s_pl">政</button>
   <button class="cb"    id="cb-asp" data-title="相位連線" data-i18n-title="ui.c_asp">⋆</button>
   <button class="cb"    id="cb-tm"  data-title="時間推移" data-i18n-title="ui.c_tm">⏱</button>
-  <button class="cb"    id="cb-tr"  data-title="行星軌跡" data-i18n-title="ui.c_tr">〜</button>
+  <button class="cb"    id="cb-orb" data-title="行星軌道" data-i18n-title="ui.c_orb">◎</button>
 </div>
 
 <!-- TIME BAR -->
@@ -275,7 +274,7 @@ const LANGS = {
   'zh-TW': {
     zod: ['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
     man: ['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
-    pl: { sun:'太陽', moon:'月亮', mercury:'水星', venus:'金星', mars:'火星', jupiter:'木星', saturn:'土星', uranus:'天王星', neptune:'海王星', pluto:'冥王星', rahu:'羅睺', ketu:'計都', yapo:'月孛', ziqi:'紫氣' },
+    pl: { sun:'太陽', moon:'月亮', mercury:'水星', venus:'金星', mars:'火星', jupiter:'木星', saturn:'土星', uranus:'天王星', neptune:'海王星', pluto:'冥王星', rahu:'羅睺', ketu:'計都', yapo:'月孛', ziqi:'紫炁' },
     ui: {
       title: '星象座標系', sub: '立體天球儀 · ASTROLABE · 二十八宿',
       name: '命主姓名', date: '出生日期（公曆）', time: '出生時間（24小時）', geo: '出生地經緯度與時區',
@@ -283,7 +282,7 @@ const LANGS = {
       btn: '觀 測 星 象 能 量', demo: '→ 載入演示資料（J2000 · 2000年元旦正午）',
       eq: '赤道', ecl: '黃道', asc: 'ASC 上升', dsc: 'DSC 下降', mansion: '宿',
       p_zod: '星象 · 黃道度數', p_sum: '命盤分析摘要', p_asc: '黃道十二宮 · 宮位星曜', p_pl: '星體', tb_t: '星象座標系 · 天球儀', tb_s: 'CELESTIAL SPHERE · 二十八宿 · 黃道十二宮',
-      c_zen: '沉浸星空', c_spin: '自動旋轉', c_sys: '切換回歸/恆星黃道', c_out: '三王星 (天海冥)', c_ecl: '黃道環', c_eq: '赤道環', c_man: '二十八宿', c_pl: '星體顯示', c_asp: '相位連線', c_tm: '時間推移', c_tr: '行星軌跡',
+      c_zen: '沉浸星空', c_spin: '自動旋轉', c_sys: '切換回歸/恆星黃道', c_out: '三王星 (天海冥)', c_ecl: '黃道環', c_eq: '赤道環', c_man: '二十八宿', c_pl: '星體顯示', c_asp: '相位連線', c_tm: '時間推移', c_orb: '行星軌道',
       t_play: '▶ 播放', t_pause: '⏸ 暫停', t_reset: '重置', t_curr: '當前時間', sys_t: '歸', sys_s: '恆', out_b: '王', s_man: '宿', s_pl: '政'
     },
     wx: {
@@ -300,7 +299,7 @@ const LANGS = {
   'zh-CN': {
     zod: ['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
     man: ['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
-    pl: { sun:'太阳', moon:'月亮', mercury:'水星', venus:'金星', mars:'火星', jupiter:'木星', saturn:'土星', uranus:'天王星', neptune:'海王星', pluto:'冥王星', rahu:'罗睺', ketu:'计都', yapo:'月孛', ziqi:'紫气' },
+    pl: { sun:'太阳', moon:'月亮', mercury:'水星', venus:'金星', mars:'火星', jupiter:'木星', saturn:'土星', uranus:'天王星', neptune:'海王星', pluto:'冥王星', rahu:'罗睺', ketu:'计都', yapo:'月孛', ziqi:'紫炁' },
     ui: {
       title: '星象坐标系', sub: '立体天球仪 · ASTROLABE · 二十八宿',
       name: '命主姓名', date: '出生日期（公历）', time: '出生时间（24小时）', geo: '出生地经纬度与时区',
@@ -308,7 +307,7 @@ const LANGS = {
       btn: '观 测 星 象 能 量', demo: '→ 载入演示资料（J2000 · 2000年元旦正午）',
       eq: '赤道', ecl: '黄道', asc: 'ASC 上升', dsc: 'DSC 下降', mansion: '宿',
       p_zod: '星象 · 黄道度数', p_sum: '命盘分析摘要', p_asc: '黄道十二宫 · 宫位星曜', p_pl: '星体', tb_t: '星象坐标系 · 天球仪', tb_s: 'CELESTIAL SPHERE · 二十八宿 · 黄道十二宫',
-      c_zen: '沉浸星空', c_spin: '自动旋转', c_sys: '切换回归/恒星黄道', c_out: '三王星 (天海冥)', c_ecl: '黄道环', c_eq: '赤道环', c_man: '二十八宿', c_pl: '星体显示', c_asp: '相位连线', c_tm: '时间推移', c_tr: '行星轨迹',
+      c_zen: '沉浸星空', c_spin: '自动旋转', c_sys: '切换回归/恒星黄道', c_out: '三王星 (天海冥)', c_ecl: '黄道环', c_eq: '赤道环', c_man: '二十八宿', c_pl: '星体显示', c_asp: '相位连线', c_tm: '时间推移', c_orb: '行星轨道',
       t_play: '▶ 播放', t_pause: '⏸ 暂停', t_reset: '重置', t_curr: '当前时间', sys_t: '归', sys_s: '恒', out_b: '王', s_man: '宿', s_pl: '政'
     },
     wx: {
@@ -333,7 +332,7 @@ const LANGS = {
       btn: 'R E A D   S T A R S', demo: '→ Load Demo (J2000 Noon)',
       eq: 'Equator', ecl: 'Ecliptic', asc: 'ASC', dsc: 'DSC', mansion: ' M.',
       p_zod: 'Zodiac Degrees', p_sum: 'Chart Summary', p_asc: 'Houses & Planets', p_pl: 'Planets', tb_t: 'Astrolabe 3D', tb_s: 'CELESTIAL SPHERE · 28 MANSIONS',
-      c_zen: 'Zen Mode', c_spin: 'Auto Spin', c_sys: 'Tropical/Sidereal', c_out: 'Outer Planets', c_ecl: 'Ecliptic', c_eq: 'Equator', c_man: 'Mansions', c_pl: 'Planets', c_asp: 'Aspects', c_tm: 'Time Scrubber', c_tr: 'Trails',
+      c_zen: 'Zen Mode', c_spin: 'Auto Spin', c_sys: 'Tropical/Sidereal', c_out: 'Outer Planets', c_ecl: 'Ecliptic', c_eq: 'Equator', c_man: 'Mansions', c_pl: 'Planets', c_asp: 'Aspects', c_tm: 'Time Scrubber', c_orb: 'Planet Orbits',
       t_play: '▶ Play', t_pause: '⏸ Pause', t_reset: 'Reset', t_curr: 'Current Time', sys_t: 'Tro', sys_s: 'Sid', out_b: 'Out', s_man: 'M', s_pl: 'P'
     },
     wx: {
@@ -358,7 +357,7 @@ const LANGS = {
       btn: '별 자 리  분 석', demo: '→ 데모 로드 (J2000 정오)',
       eq: '적도', ecl: '황도', asc: 'ASC 상승', dsc: 'DSC 하강', mansion: '수',
       p_zod: '황도수 및 행성', p_sum: '차트 요약', p_asc: '12궁 및 행성', p_pl: '행성', tb_t: '천구의 좌표계', tb_s: '입체 천구의 · 28수 · 황도 12궁',
-      c_zen: '몰입 모드', c_spin: '자동 회전', c_sys: '회귀/항성 황도', c_out: '외행성 (천해명)', c_ecl: '황도환', c_eq: '적도환', c_man: '28수', c_pl: '행성 표시', c_asp: '위상 연결', c_tm: '시간 이동', c_tr: '행성 궤적',
+      c_zen: '몰입 모드', c_spin: '자동 회전', c_sys: '회귀/항성 황도', c_out: '외행성 (천해명)', c_ecl: '황도환', c_eq: '적도환', c_man: '28수', c_pl: '행성 표시', c_asp: '위상 연결', c_tm: '시간 이동', c_orb: '행성 궤도',
       t_play: '▶ 재생', t_pause: '⏸ 일시정지', t_reset: '초기화', t_curr: '현재 시간', sys_t: '회', sys_s: '항', out_b: '외', s_man: '수', s_pl: '성'
     },
     wx: {
@@ -578,7 +577,7 @@ const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x03020A);
 
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,2000);
-camera.position.set(0,50,105);
+camera.position.set(0,50,115);
 
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -714,7 +713,7 @@ scene.add(new THREE.Line(
 
 // ── 二十八宿 ──
 const manG=new THREE.Group();manG.rotation.x=Math.PI/2;scene.add(manG);
-const mR=52,mO=55.5;
+const mR=54,mO=57.5; // 外擴一點避免與冥王星軌道重疊
 {const pts=[];for(let i=0;i<=200;i++){const a=i/200*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*mR,Math.sin(a)*mR,0))}
 manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x3A8C5C,transparent:true,opacity:.38})));}
 
@@ -728,36 +727,31 @@ MANS.forEach(m=>{
   const arc=[];for(let t=0;t<=20;t++){const aa=a0+(a1-a0)*t/20;arc.push(new THREE.Vector3(Math.cos(aa)*(mR+.5),Math.sin(aa)*(mR+.5),0))}
   manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc),new THREE.LineBasicMaterial({color:0x7DE09A,transparent:true,opacity:.5})));
   const mid=a0+(a1-a0)/2;
-  lbl2D(manG, 'lman', 59, mid, 'man', m.id);
+  lbl2D(manG, 'lman', 61, mid, 'man', m.id);
 });
 
-{const pts=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*32,Math.sin(a)*32,0))}
-eclG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xFFD700,transparent:true,opacity:.07})));}
-
-// ── Planets Group ──
+// ── Planets Group (同心軌道半徑佈局) ──
 const plG=new THREE.Group();eclG.add(plG);
 const aspG=new THREE.Group();plG.add(aspG);
 
 const PCONF=[
-  {id:'sun',    ic:'☉',col:0xFF5500,sz:1.5,  isY:false, isOut:false},
-  {id:'moon',   ic:'☽',col:0xD8EEFF,sz:1.12, isY:false, isOut:false},
-  {id:'mercury',ic:'☿',col:0x55CCFF,sz:0.82, isY:false, isOut:false},
-  {id:'venus',  ic:'♀',col:0xFFDD44,sz:0.95, isY:false, isOut:false},
-  {id:'mars',   ic:'♂',col:0xFF4040,sz:0.9,  isY:false, isOut:false},
-  {id:'jupiter',ic:'♃',col:0xFFAA55,sz:1.25, isY:false, isOut:false},
-  {id:'saturn', ic:'♄',col:0xEEDDAA,sz:1.12, isY:false, isOut:false},
-  {id:'uranus', ic:'♅',col:0x66CCFF,sz:1.05, isY:false, isOut:true},
-  {id:'neptune',ic:'♆',col:0x3366FF,sz:1.02, isY:false, isOut:true},
-  {id:'pluto',  ic:'♇',col:0xAAAAAA,sz:0.65, isY:false, isOut:true},
-  {id:'rahu',   ic:'☊',col:0xCC44FF,sz:0.68, isY:true,  isOut:false},
-  {id:'ketu',   ic:'☋',col:0xAA22EE,sz:0.68, isY:true,  isOut:false},
-  {id:'yapo',   ic:'⚸',col:0x8899FF,sz:0.68, isY:true,  isOut:false},
-  {id:'ziqi',   ic:'✦',col:0x44DDAA,sz:0.65, isY:true,  isOut:false},
+  {id:'sun',    ic:'☉',col:0xFF5500,sz:1.5,  isY:false, isOut:false, R:27},
+  {id:'moon',   ic:'☽',col:0xD8EEFF,sz:1.12, isY:false, isOut:false, R:21},
+  {id:'mercury',ic:'☿',col:0x55CCFF,sz:0.82, isY:false, isOut:false, R:23},
+  {id:'venus',  ic:'♀',col:0xFFDD44,sz:0.95, isY:false, isOut:false, R:25},
+  {id:'mars',   ic:'♂',col:0xFF4040,sz:0.9,  isY:false, isOut:false, R:29},
+  {id:'jupiter',ic:'♃',col:0xFFAA55,sz:1.25, isY:false, isOut:false, R:31},
+  {id:'saturn', ic:'♄',col:0xEEDDAA,sz:1.12, isY:false, isOut:false, R:33},
+  {id:'uranus', ic:'♅',col:0x66CCFF,sz:1.05, isY:false, isOut:true,  R:35},
+  {id:'neptune',ic:'♆',col:0x3366FF,sz:1.02, isY:false, isOut:true,  R:37},
+  {id:'pluto',  ic:'♇',col:0xAAAAAA,sz:0.65, isY:false, isOut:true,  R:39},
+  {id:'rahu',   ic:'☊',col:0xCC44FF,sz:0.68, isY:true,  isOut:false, R:22},
+  {id:'ketu',   ic:'☋',col:0xAA22EE,sz:0.68, isY:true,  isOut:false, R:22},
+  {id:'yapo',   ic:'⚸',col:0x8899FF,sz:0.68, isY:true,  isOut:false, R:21.5},
+  {id:'ziqi',   ic:'✦',col:0x44DDAA,sz:0.65, isY:true,  isOut:false, R:22.5},
 ];
 
-const pMesh={},pLbl={};
-const TRAIL_N=80;
-const trails={};
+const pMesh={}, pLbl={};
 
 PCONF.forEach(pc=>{
   const hex='#'+pc.col.toString(16).padStart(6,'0');
@@ -785,37 +779,43 @@ PCONF.forEach(pc=>{
       new THREE.MeshBasicMaterial({color:0xFF6600,transparent:true,opacity:.18,blending:THREE.AdditiveBlending})));
   }
   
-  // 🟢 初始就加入，保證座標能被計算，但透過可見性隱藏
+  if(pc.isOut) sphere.visible = false;
   plG.add(sphere);pMesh[pc.id]=sphere;
 
   const el=document.createElement('div');el.className='lbl lpl';
   el.innerHTML=`<div class="lpl-ic" style="color:${hex}">${pc.ic}</div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
   const obj=new CSS2DObject(el);
-  
+  if(pc.isOut) obj.element.style.display = 'none';
   plG.add(obj);pLbl[pc.id]=obj;
 
-  const buf=new Float32Array(TRAIL_N*3);
-  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(buf,3));
-  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:pc.col,transparent:true,opacity:.32}));
-  line.visible=false;plG.add(line);
-  trails[pc.id]={geo,buf,ptr:0,full:false,line};
+  // 🟢 繪製同心軌道環
+  const orbPts=[];
+  for(let i=0;i<=128;i++){
+      const a=i/128*Math.PI*2;
+      orbPts.push(new THREE.Vector3(Math.cos(a)*pc.R,Math.sin(a)*pc.R,0));
+  }
+  const orbLine=new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(orbPts),
+      new THREE.LineBasicMaterial({color:pc.col,transparent:true,opacity:.15})
+  );
+  orbLine.visible=false;
+  plG.add(orbLine);
+  pc.orbLine=orbLine;
 });
 
 // ══════════════════════════
 //  STATE & DATA MAPPING
 // ══════════════════════════
-let showAsp=false,showTrails=false,isSidereal=false,showOut=false;
+let showAsp=false, showOrb=false, isSidereal=false, showOut=false;
 let userData={};
 let curLons={};
 let playingTime=false,playInterval=null;
 
 function placePlanets(lons){
-  const R=32;
   PCONF.forEach(pc=>{
-    // 🔴 核心修復：無論是否隱藏，都必須先計算並設置正確的三維座標
     const lon=lons[pc.id];
     if(lon!==undefined){
-      const a=lon*DEG, x=Math.cos(a)*R, y=Math.sin(a)*R;
+      const a=lon*DEG, x=Math.cos(a)*pc.R, y=Math.sin(a)*pc.R;
       if(pMesh[pc.id])pMesh[pc.id].position.set(x,y,0);
       if(pLbl[pc.id])pLbl[pc.id].position.set(x,y,0);
     }
@@ -823,22 +823,9 @@ function placePlanets(lons){
     const isVis = (!pc.isOut || showOut);
     if(pMesh[pc.id]) pMesh[pc.id].visible = isVis;
     if(pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
-    
-    if(!isVis) {
-      if(trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
-      return; 
-    }
-      
-    if(lon!==undefined && showTrails&&trails[pc.id]){
-      const a=lon*DEG, x=Math.cos(a)*R, y=Math.sin(a)*R;
-      const t=trails[pc.id];const i=t.ptr*3;
-      t.buf[i]=x;t.buf[i+1]=y;t.buf[i+2]=0;
-      t.ptr=(t.ptr+1)%TRAIL_N;
-      if(!t.ptr)t.full=true;
-      t.geo.attributes.position.needsUpdate=true;
-      t.geo.setDrawRange(0,t.full?TRAIL_N:t.ptr);
-    }
+    if(pc.orbLine) pc.orbLine.visible = isVis && showOrb;
   });
+  
   if(showAsp)buildAspects(lons);else aspG.clear();
 
   while(houseG.children.length > 0){
@@ -853,7 +840,7 @@ function placePlanets(lons){
     const isAngle = (i===0 || i===6);
     const col = i===0 ? 0xFF4444 : (i===6 ? 0x4488FF : 0xFFFFFF);
     const op = isAngle ? 0.8 : 0.15;
-    const R_in = 20, R_out = isAngle ? 38 : 31;
+    const R_in = 18, R_out = isAngle ? 42.5 : 40; // 包覆所有行星軌道
     
     houseG.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
@@ -863,9 +850,8 @@ function placePlanets(lons){
       new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op, linewidth: isAngle? 2 : 1})
     ));
     
-    // 🔴 核心修復：強制使用英文簡稱 ASC/DSC + 動態數字宮位
-    if(i===0) lbl2D(houseG, 'lasc', R_out+2, a, 'raw', 'ASC');
-    else if(i===6) lbl2D(houseG, 'ldsc', R_out+2, a, 'raw', 'DSC');
+    if(i===0) lbl2D(houseG, 'lasc', R_out+2.5, a, 'raw', 'ASC');
+    else if(i===6) lbl2D(houseG, 'ldsc', R_out+2.5, a, 'raw', 'DSC');
     else lbl2D(houseG, 'lax', R_out+1.5, a, 'raw', i + 1); 
   }
 }
@@ -874,20 +860,22 @@ const ASP_A=[0,60,90,120,150,180];
 const ASP_C=[0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
 
 function buildAspects(lons){
-  aspG.clear();const R=32;
+  aspG.clear();
   const base_asp = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
   if(showOut) base_asp.push('uranus','neptune','pluto'); 
   
   for(let i=0;i<base_asp.length;i++)for(let j=i+1;j<base_asp.length;j++){
-    const diff=Math.min(norm(lons[base_asp[i]]-lons[base_asp[j]]),
-                        norm(lons[base_asp[j]]-lons[base_asp[i]]));
+    const id1 = base_asp[i], id2 = base_asp[j];
+    const diff=Math.min(norm(lons[id1]-lons[id2]), norm(lons[id2]-lons[id1]));
     for(let k=0;k<ASP_A.length;k++){
       if(Math.abs(diff-ASP_A[k])<8){
-        const a1=lons[base_asp[i]]*DEG,a2=lons[base_asp[j]]*DEG;
+        const a1=lons[id1]*DEG, a2=lons[id2]*DEG;
+        const r1 = PCONF.find(p=>p.id===id1).R;
+        const r2 = PCONF.find(p=>p.id===id2).R;
         aspG.add(new THREE.Line(
           new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(a1)*R,Math.sin(a1)*R,0),
-            new THREE.Vector3(Math.cos(a2)*R,Math.sin(a2)*R,0)]),
+            new THREE.Vector3(Math.cos(a1)*r1,Math.sin(a1)*r1,0),
+            new THREE.Vector3(Math.cos(a2)*r2,Math.sin(a2)*r2,0)]),
           new THREE.LineBasicMaterial({color:ASP_C[k],transparent:true,opacity:.2})));
         break;
       }
@@ -1076,10 +1064,13 @@ tog('cb-pl',  ()=>plG.visible=true,      ()=>plG.visible=false);
 tog('cb-asp', ()=>{showAsp=true;buildAspects(curLons)}, ()=>{showAsp=false;aspG.clear()},false);
 tog('cb-tm',  ()=>document.getElementById('time-bar').classList.add('show'),
                ()=>{document.getElementById('time-bar').classList.remove('show');resetTime()},false);
-tog('cb-tr',  ()=>{showTrails=true;Object.values(trails).forEach(t=>t.line.visible=true)},
-               ()=>{showTrails=false;Object.values(trails).forEach(t=>{
-                 t.line.visible=false;t.ptr=0;t.full=false;t.buf.fill(0);
-                 t.geo.attributes.position.needsUpdate=true;t.geo.setDrawRange(0,0)})},false);
+
+// 🟢 行星軌道
+tog('cb-orb', 
+    () => { showOrb=true; PCONF.forEach(pc=>{if(pc.orbLine)pc.orbLine.visible = (!pc.isOut||showOut);}); }, 
+    () => { showOrb=false; PCONF.forEach(pc=>{if(pc.orbLine)pc.orbLine.visible=false;}); }, 
+    false
+);
 
 const bSys = document.getElementById('cb-sys');
 tog('cb-sys', 
