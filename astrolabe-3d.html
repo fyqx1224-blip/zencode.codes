@@ -378,7 +378,7 @@ const LANGS = {
       ph_name:'姓名（可留空）',ph_y:'年',ph_m:'月',ph_d:'日',ph_h:'時 0-23',ph_mi:'分 0-59',ph_lg:'東經(116.4)',ph_lat:'北緯(39.9)',ph_tz:'時區(+8)',
       btn:'觀 測 星 象 能 量',demo:'→ 載入演示資料（J2000 · 2000年元旦正午）',
       eq:'赤道',ecl:'黃道',asc:'ASC 上升',dsc:'DSC 下降',mansion:'宿',house:'宮',
-      p_zod:'星象 · 黃道度數',p_sum:'命盤分析摘要',p_asc:'黃道十二宮 · 宮位星曜',p_pl:'星體',
+      p_zod:'星象 · 黃道度数',p_sum:'命盤分析摘要',p_asc:'黃道十二宮 · 宮位星曜',p_pl:'星體',
       tb_t:'星象座標系 · 天球儀',tb_s:'CELESTIAL SPHERE · 二十八宿 · 黃道十二宮',
       c_zen:'沉浸星空',c_spin:'自動旋轉',c_sys:'切換回歸/恆星',c_out:'三王星',c_ecl:'黃道環',c_eq:'赤道環',c_man:'二十八宿',c_pl:'星體顯示',c_asp:'相位連線',c_tm:'時間推移',c_orb:'行星軌道',
       t_play:'▶ 播放',t_pause:'⏸ 暫停',t_reset:'重置',t_curr:'當前時間',
@@ -586,14 +586,11 @@ function calcAll(T, jd, lng, lat, isSid) {
   res.ketu = ascNode;
   res.rahu = norm(ascNode + 180);
 
-  // 月孛 (Apogee / Black Moon Lilith) — Meeus mean lunar apogee formula
-  // J2000 epoch mean apogee longitude = 83.3532465°, daily motion = +0.11140353°/day
+  // 月孛 (Yapo / Lunar Apogee) — Mean daily motion ~0.11140353°/day
   res.yapo = norm(83.3532465 + 0.11140353 * d);
 
-  // 紫炁 (Purple Qi) — traditional Chinese fictitious planet
-  // Defined as the point 90° ahead of the ascending node (ketu + 90°)
-  // i.e. it completes one revolution in the same ~18.6-year nodal cycle
-  res.ziqi = norm(ascNode + 90);
+  // 紫炁 (Ziqi / Purple Qi) — 修正：独立运行，周期约28年（10227.18天），日行0.0352度
+  res.ziqi = norm(206.5 + 0.03520 * d); 
 
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
@@ -678,7 +675,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.78;  // was 1.15 — softer overall exposure
+renderer.toneMappingExposure = 0.95;  // 曝光稍微调亮，让星空更有感觉
 wrap.appendChild(renderer.domElement);
 
 const lblR = new CSS2DRenderer();
@@ -688,15 +685,15 @@ wrap.appendChild(lblR.domElement);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.5, 0.28);
-// strength=0.55 (was 1.2), radius=0.5 (was 0.65), threshold=0.28 (was 0.15)
+// 光效调整：增强泛光强度，降低阈值，使星星更容易发光，又不至于刺眼
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.05, 0.6, 0.2);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
 const OCtrl = new OrbitControls(camera, renderer.domElement);
 OCtrl.enableDamping = true;
 OCtrl.dampingFactor = 0.055;
-OCtrl.minDistance = 5;  // allow zoom in to see planet textures
+OCtrl.minDistance = 5;  
 OCtrl.maxDistance = 230;
 OCtrl.autoRotate = false;
 OCtrl.autoRotateSpeed = 0.45;
@@ -739,8 +736,8 @@ const TEX_URLS = {
   moon:    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1024px-FullMoon2010.jpg',
   mercury: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
   venus:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
-  // Earth: use NASA's Blue Marble via a known-good Wikimedia thumb
-  earth:   'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/1024px-The_Earth_seen_from_Apollo_17.jpg',
+  // 地球贴图更换为 GitHub Raw 源的 Three.js 官方范例高质量图片，避免 Wikipedia 阻截
+  earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
   mars:    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
   jupiter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
   saturn:  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg',
@@ -772,11 +769,9 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
 const earthG = new THREE.Group();
 scene.add(earthG);
 
-// Will be built after textures load
 let earthMesh = null, earthCloud = null;
 
 function buildEarth() {
-  // Earth sphere — MeshPhongMaterial always; if texture loaded use it, else deep blue
   const mat = new THREE.MeshPhongMaterial({
     map: loadedTex.earth || null,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
@@ -786,12 +781,11 @@ function buildEarth() {
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.88, 48, 48), mat);
   earthG.add(earthMesh);
 
-  // Atmosphere glow
+  // 地球大气层降低透明度，展现原贴图
   earthG.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.1, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .14, blending: THREE.AdditiveBlending, side: THREE.BackSide })
+    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .06, blending: THREE.AdditiveBlending, side: THREE.BackSide })
   ));
-  // Subtle wireframe lat/lon grid
   earthG.add(new THREE.Mesh(
     new THREE.SphereGeometry(1.90, 18, 18),
     new THREE.MeshBasicMaterial({ color: 0x2266AA, wireframe: true, transparent: true, opacity: .12 })
@@ -804,10 +798,9 @@ scene.add(new THREE.Line(
   new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .15 })
 ));
 
-// Ambient light for textures — kept low so planets show contrast
-const ambLight = new THREE.AmbientLight(0x303050, 0.7);  // was 0x404060, 1.2
+const ambLight = new THREE.AmbientLight(0x303050, 0.7); 
 scene.add(ambLight);
-const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.1);  // was 1.8
+const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.1); 
 sunLight.position.set(50, 20, 30);
 scene.add(sunLight);
 
@@ -966,12 +959,11 @@ const trails = {};
 
 // Build textured planet mesh
 function buildPlanetMesh(pc) {
-  const texKey = pc.id; // matches TEX_URLS keys
+  const texKey = pc.id; 
   const tex = loadedTex[texKey];
 
   let mat;
   if (pc.isY) {
-    // Virtual bodies: keep stylized look
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (tex) {
     mat = new THREE.MeshPhongMaterial({
@@ -986,21 +978,21 @@ function buildPlanetMesh(pc) {
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 32, 32), mat);
 
-  // Glow / atmosphere — toned down
+  // 大气层调整：降低透明度 (Opacity 从0.12减小到了0.04)，使行星本身贴图更清晰
   sphere.add(new THREE.Mesh(
     new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.9), 16, 16),
-    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .16 : .12, blending: THREE.AdditiveBlending })
+    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .08 : .04, blending: THREE.AdditiveBlending })
   ));
 
   // Virtual body ring
   if (pc.isY) {
     sphere.add(new THREE.Mesh(
       new THREE.TorusGeometry(pc.sz * 1.85, .1, 8, 32),
-      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .65 })
+      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .4 })
     ));
   }
 
-  // Saturn rings (textured)
+  // Saturn rings
   if (pc.id === 'saturn') {
     const ringTex = loadedTex.saturn_ring || null;
     const ringMat = new THREE.MeshBasicMaterial({
@@ -1013,29 +1005,25 @@ function buildPlanetMesh(pc) {
     const ring = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 2.6, pc.sz * 0.7, 3, 80), ringMat);
     ring.rotation.x = Math.PI * 0.38;
     sphere.add(ring);
-    // Second faint ring
     const ring2 = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 3.4, pc.sz * 0.3, 3, 80),
       new THREE.MeshBasicMaterial({ color: 0xCCBB99, transparent: true, opacity: .28, side: THREE.DoubleSide }));
     ring2.rotation.x = Math.PI * 0.38;
     sphere.add(ring2);
   }
 
-  // Sun corona/glow layers — reduced so bloom doesn't blow out
   if (pc.id === 'sun') {
     sphere.add(new THREE.Mesh(
       new THREE.SphereGeometry(pc.sz * 1.8, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .07, blending: THREE.AdditiveBlending })
+      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .04, blending: THREE.AdditiveBlending })
     ));
     sphere.add(new THREE.Mesh(
       new THREE.SphereGeometry(pc.sz * 2.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF8800, transparent: true, opacity: .04, blending: THREE.AdditiveBlending })
+      new THREE.MeshBasicMaterial({ color: 0xFF8800, transparent: true, opacity: .02, blending: THREE.AdditiveBlending })
     ));
-    // Sun is its own light source — keep moderate
     const sl = new THREE.PointLight(0xFFF5CC, 1.2, 280);
     sphere.add(sl);
   }
 
-  // Jupiter subtle bands highlight
   if (pc.id === 'jupiter' && !tex) {
     for (let b = 0; b < 5; b++) {
       const bMesh = new THREE.Mesh(
@@ -1050,7 +1038,6 @@ function buildPlanetMesh(pc) {
   return sphere;
 }
 
-// ── Build all planet meshes after textures load ──
 function buildAllPlanets() {
   buildEarth();
 
@@ -1069,7 +1056,6 @@ function buildAllPlanets() {
     plG.add(obj);
     pLbl[pc.id] = obj;
 
-    // Orbit circle
     const orbPts = [];
     for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; orbPts.push(new THREE.Vector3(Math.cos(a) * pc.R, Math.sin(a) * pc.R, 0)); }
     const orbLine = new THREE.Line(
@@ -1080,7 +1066,6 @@ function buildAllPlanets() {
     plG.add(orbLine);
     pc.orbLine = orbLine;
 
-    // Trail
     const buf = new Float32Array(TRAIL_N * 3);
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(buf, 3));
@@ -1090,7 +1075,6 @@ function buildAllPlanets() {
     trails[pc.id] = { geo, buf, ptr: 0, full: false, line };
   });
 
-  // Apply language labels
   window.switchLang(currLang);
 }
 
@@ -1236,7 +1220,7 @@ function showTip(e, h, p) {
 function hideTip() { document.getElementById('tip').style.display = 'none'; }
 
 // ══════════════════════════
-//  FORM & CALCULATION  ← BUG FIX HERE
+//  FORM & CALCULATION
 // ══════════════════════════
 window.hst = function() {
   const lng = parseFloat(document.getElementById('f-lg').value);
@@ -1260,7 +1244,6 @@ window.submitForm = function() {
   let h = parseInt(document.getElementById('f-h').value);
   let mn = parseInt(document.getElementById('f-mi').value);
 
-  // ── FIX: proper defaults and validation ──
   if (isNaN(h) || h < 0 || h > 23) h = 12;
   if (isNaN(mn) || mn < 0 || mn > 59) mn = 0;
 
@@ -1273,13 +1256,8 @@ window.submitForm = function() {
     return;
   }
 
-  // ── FIX: convert local time to UTC correctly ──
-  // Local time → UTC: subtract timezone offset
   const utcH = h - tz;
-  // jdn handles fractional day including hours
   const jd_utc = jdn(y, m, d, utcH, mn);
-
-  // Apply solar time correction for display only
   const st = applyST(h, mn, stCorr(lng, tz * 15));
 
   userData = { name, y, m, d, h: st.h, mn: st.m, lng, lat, tz, jd: jd_utc };
@@ -1305,11 +1283,9 @@ function updatePositions() {
   const aya = 24.03 + (targetJD - 2451545.0) / 365.25 * (50.29 / 3600);
   manG.rotation.z = isSidereal ? 0 : aya * DEG;
 
-  // Update sun light direction based on sun position
   const sunAngle = curLons.sun * DEG;
   sunLight.position.set(Math.cos(sunAngle) * 80, 20, Math.sin(sunAngle) * 80);
 
-  // Render to both desktop and mobile panels
   renderPlanetList(curLons, isSidereal, targetJD, '');
   renderHouseGrid(curLons, '');
   renderAnalysis(curLons, isSidereal, targetJD, '');
@@ -1326,7 +1302,6 @@ function launch() {
   document.getElementById('tb-date').textContent = `${userData.y}.${String(userData.m).padStart(2,'0')}.${String(userData.d).padStart(2,'0')} ${String(userData.h).padStart(2,'0')}:${String(userData.mn).padStart(2,'0')}`;
   document.getElementById('tb-info').style.display = 'block';
 
-  // Show correct panels based on device
   if (isMobile) {
     document.getElementById('mobile-drawer').style.display = 'flex';
   } else {
@@ -1433,7 +1408,6 @@ function animate() {
   OCtrl.update();
   if (earthMesh) earthG.rotation.y += dt * .12;
 
-  // Spin planets on their axes
   if (pMesh.sun) pMesh.sun.rotation.y += dt * 0.04;
   if (pMesh.jupiter) pMesh.jupiter.rotation.y += dt * 0.18;
   if (pMesh.saturn) pMesh.saturn.rotation.y += dt * 0.15;
@@ -1462,14 +1436,12 @@ function animate() {
 Promise.all(texPromises).then(() => {
   buildAllPlanets();
 
-  // Hide loading overlay
   const ov = document.getElementById('loading-overlay');
   ov.classList.add('hide');
   setTimeout(() => ov.style.display = 'none', 700);
 
   animate();
 }).catch(err => {
-  // Still start even if textures failed
   buildAllPlanets();
   document.getElementById('loading-overlay').style.display = 'none';
   animate();
