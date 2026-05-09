@@ -45,7 +45,7 @@ body.zen-mode #ctrl-bar:hover { opacity: 1; }
 .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(99, 163, 237, 0.08); border: 1px solid rgba(99, 163, 237, 0.4); color: var(--blue); text-decoration: none; font-size: 1.2rem; transition: all 0.3s; margin-bottom: 20px; box-shadow: 0 0 10px rgba(99, 163, 237, 0.2); }
 .btn-back:hover { background: rgba(99, 163, 237, 0.2); border-color: var(--blue-l); box-shadow: 0 0 20px rgba(99, 163, 237, 0.6); color: #fff;}
 
-/* 🟢 全局懸浮語言切換欄 (不受彈窗遮擋) */
+/* 🟢 全局懸浮語言切換欄 */
 #global-lang-toggle{position:fixed;top:20px;right:22px;z-index:100;display:flex;gap:10px;pointer-events:auto;}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 12px;border-radius:6px;font-family:'Noto Sans TC',sans-serif;}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
@@ -239,7 +239,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <!-- CTRL BAR -->
 <div id="ctrl-bar">
-  <!-- 🟢 沉浸星空按鈕 -->
   <button class="cb" id="cb-zen" data-title="沉浸星空" data-i18n-title="ui.c_zen" style="font-size:0.9rem;">🌌</button>
   <button class="cb" id="cb-spin" data-title="自動旋轉" data-i18n-title="ui.c_spin">⟳</button>
   <button class="cb" id="cb-sys" data-title="切換回歸/恆星黃道" data-i18n-title="ui.c_sys" style="font-size:0.75rem;" data-i18n="ui.sys_t">歸</button>
@@ -503,9 +502,11 @@ function calcAll(T, jd, lng, lat, isSid) {
     res.ketu = ascNode; 
     res.rahu = norm(ascNode + 180); 
     
-    // 🟢 核心修復：月孛 (Lilith/Apogee) = 近地點 + 180度
-    res.yapo = norm(83.3532 + 0.11140 * d + 180);
-    res.ziqi = norm(res.yapo + 90);
+    // 🟢 核心修復：高精度月孛 (Meeus 平遠地點公式)
+    res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
+
+    // 🟢 核心修復：紫炁解除綁定，遵循獨立 28 年週期 (0.0351996度/日)
+    res.ziqi = norm(231.14 + 0.0351996 * d);
 
     const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
     const lst = norm(gmst + lng) * DEG;
@@ -760,6 +761,8 @@ const PCONF=[
 ];
 
 const pMesh={}, pLbl={};
+const TRAIL_N=80;
+const trails={};
 
 PCONF.forEach(pc=>{
   const hex='#'+pc.col.toString(16).padStart(6,'0');
@@ -808,6 +811,12 @@ PCONF.forEach(pc=>{
   orbLine.visible=false;
   plG.add(orbLine);
   pc.orbLine=orbLine;
+
+  const buf=new Float32Array(TRAIL_N*3);
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(buf,3));
+  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:pc.col,transparent:true,opacity:.32}));
+  line.visible=false;plG.add(line);
+  trails[pc.id]={geo,buf,ptr:0,full:false,line};
 });
 
 // ══════════════════════════
@@ -831,6 +840,21 @@ function placePlanets(lons){
     if(pMesh[pc.id]) pMesh[pc.id].visible = isVis;
     if(pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
     if(pc.orbLine) pc.orbLine.visible = isVis && showOrb;
+    
+    if(!isVis) {
+      if(trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
+      return; 
+    }
+      
+    if(lon!==undefined && showTrails&&trails[pc.id]){
+      const a=lon*DEG, x=Math.cos(a)*pc.R, y=Math.sin(a)*pc.R;
+      const t=trails[pc.id];const i=t.ptr*3;
+      t.buf[i]=x;t.buf[i+1]=y;t.buf[i+2]=0;
+      t.ptr=(t.ptr+1)%TRAIL_N;
+      if(!t.ptr)t.full=true;
+      t.geo.attributes.position.needsUpdate=true;
+      t.geo.setDrawRange(0,t.full?TRAIL_N:t.ptr);
+    }
   });
   
   if(showAsp)buildAspects(lons);else aspG.clear();
@@ -857,7 +881,6 @@ function placePlanets(lons){
       new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op, linewidth: isAngle? 2 : 1})
     ));
     
-    // 🟢 強制使用 ASC/DSC 和純數字，跨語言通用
     if(i===0) lbl2D(houseG, 'lasc', R_out+2.5, a, 'ui', 'asc');
     else if(i===6) lbl2D(houseG, 'ldsc', R_out+2.5, a, 'ui', 'dsc');
     else lbl2D(houseG, 'lax', R_out+1.5, a, 'raw', i + 1); 
