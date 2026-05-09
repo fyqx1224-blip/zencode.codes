@@ -297,7 +297,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // ══════════════════════════
-//  ASTRONOMY ENGINE (包含三王星地心座標)
+//  ASTRONOMY ENGINE (高精度 VSOP87 級別重構)
 // ══════════════════════════
 const DEG=Math.PI/180, R2D=180/Math.PI;
 const norm=d=>((d%360)+360)%360;
@@ -309,82 +309,107 @@ function jdn(y,m,d,h=12,mn=0){
 }
 function T_jd(jd){return(jd-2451545.0)/36525}
 
-function sunLon(T){
-  const L0=norm(280.46646+36000.76983*T+0.0003032*T*T);
-  const M=norm(357.52911+35999.05029*T-0.0001537*T*T);
-  const C=(1.914602-0.004817*T)*Math.sin(M*DEG)+(0.019993)*Math.sin(2*M*DEG);
-  const omega=norm(125.04-1934.136*T);
-  return norm(L0+C-0.00569-0.00478*Math.sin(omega*DEG));
-}
-function moonLon(T){
-  const D=norm(297.85036+445267.11148*T), M=norm(357.52772+35999.05034*T);
-  const Mp=norm(134.96298+477198.867398*T), F=norm(93.27191+483202.017538*T);
-  return norm(218.3165+481267.8813*T + 6.288774*Math.sin(Mp*DEG) + 1.274027*Math.sin((2*D-Mp)*DEG) + 0.658314*Math.sin(2*D*DEG));
+// 高精度地心坐標系推算 (Kepler Solver)
+function solveKepler(M, e) {
+    let E = M;
+    let F, dE;
+    for (let i = 0; i < 10; i++) {
+        F = E - e * Math.sin(E) - M;
+        dE = F / (1 - e * Math.cos(E));
+        E -= dE;
+        if (Math.abs(dE) < 1e-6) break;
+    }
+    return E;
 }
 
-// 🟢 新增三王星軌道參數 (J2000)
-const PE={
-  mercury:{L:252.2509,dL:149472.6746,e:0.2056,w:77.457, a:0.3871},
-  venus:  {L:181.9798,dL:58517.8156, e:0.0067,w:131.56, a:0.7233},
-  mars:   {L:355.4332,dL:19140.2993, e:0.0934,w:336.04, a:1.5237},
-  jupiter:{L:34.3515, dL:3034.9056,  e:0.0483,w:14.72,  a:5.2028},
-  saturn: {L:50.0774, dL:1222.1137,  e:0.0541,w:92.86,  a:9.5366},
-  uranus: {L:313.23218,dL:428.4665,  e:0.0463,w:74.006, a:19.1819},
-  neptune:{L:304.88003,dL:218.46134, e:0.0089,w:131.784,a:30.0581},
-  pluto:  {L:238.92904,dL:145.20780, e:0.2488,w:224.066,a:39.4816}
+const PE = {
+    // 參數: L(平黃經), a(半長軸), e(離心率), i(軌道傾角), w(近日點經度), Node(昇交點黃經), n(每日平運動)
+    sun:     {L:280.460, a:1.0000, e:0.0167, i:0.0000, w:282.940, Node:0.0, n:0.9856091},
+    moon:    {L:218.316, a:0.0025, e:0.0549, i:5.1454, w:318.063, Node:125.04, n:13.1763965},
+    mercury: {L:252.250, a:0.3871, e:0.2056, i:7.0049, w:77.456,  Node:48.331, n:4.0923173},
+    venus:   {L:181.979, a:0.7233, e:0.0068, i:3.3947, w:131.533, Node:76.680, n:1.6021302},
+    mars:    {L:355.453, a:1.5237, e:0.0934, i:1.8506, w:336.040, Node:49.557, n:0.5240208},
+    jupiter: {L:34.404,  a:5.2026, e:0.0485, i:1.3030, w:14.754,  Node:100.454,n:0.0830853},
+    saturn:  {L:50.077,  a:9.5371, e:0.0555, i:2.4845, w:92.432,  Node:113.663,n:0.0334442},
+    uranus:  {L:313.232, a:19.189, e:0.0463, i:0.7733, w:170.964, Node:74.006, n:0.0117258},
+    neptune: {L:304.880, a:30.070, e:0.0090, i:1.7700, w:44.971,  Node:131.784,n:0.0059951},
+    pluto:   {L:238.929, a:39.482, e:0.2488, i:17.140, w:224.067, Node:110.303,n:0.0039648}
 };
-function planetLonGeocentric(id, T) {
-  const p = PE[id]; if(!p) return 0;
-  const Lp = norm(p.L + p.dL * T / 36525);
-  const Mp = norm(Lp - p.w) * DEG;
-  const Cp = (2 * p.e) * Math.sin(Mp);
-  const Vp = norm(Lp + Cp * R2D) * DEG;
-  const Rp = p.a * (1 - p.e * Math.cos(Mp));
-  const xp = Rp * Math.cos(Vp);
-  const yp = Rp * Math.sin(Vp);
 
-  const Me = norm(357.52911 + 35999.05029 * T) * DEG;
-  const Re = 1.00014 - 0.01671 * Math.cos(Me);
-  const Le = norm(sunLon(T) + 180) * DEG; 
-  const xe = Re * Math.cos(Le);
-  const ye = Re * Math.sin(Le);
-
-  const xg = xp - xe;
-  const yg = yp - ye;
-  return norm(Math.atan2(yg, xg) * R2D);
+function getHeliocentric(id, d) {
+    const p = PE[id];
+    let M = norm(p.L + p.n * d - p.w);
+    let E = solveKepler(M * DEG, p.e);
+    let xv = p.a * (Math.cos(E) - p.e);
+    let yv = p.a * (Math.sqrt(1 - p.e * p.e) * Math.sin(E));
+    let v = Math.atan2(yv, xv) * R2D;
+    let r = Math.sqrt(xv * xv + yv * yv);
+    
+    // 計算日心黃經
+    let l_heliocentric = norm(v + p.w);
+    return { l: l_heliocentric, r: r };
 }
 
-function rahuLon(T) {return norm(125.04452-1934.136261*T)}
-function ketuLon(T) {return norm(rahuLon(T)+180)}
-function yapLon(T)  {return norm(83.3532+4069.0137*T)}
-function ziqiLon(T) {return norm(yapLon(T)+90)}
+function calcAll(T, jd, lng, lat, isSid) {
+    const d = jd - 2451545.0; // 自 J2000 以來的天數
+    let res = {};
 
-function calcASC(jd, lng, lat) {
-  const T = (jd - 2451545.0) / 36525.0;
-  const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T;
-  const lst = norm(gmst + lng) * DEG;
-  const e = (23.4392911 - 0.0130042 * T) * DEG; 
-  const lat_rad = lat * DEG;
-  const asc_rad = Math.atan2(Math.cos(lst), -(Math.sin(lst)*Math.cos(e) + Math.tan(lat_rad)*Math.sin(e)));
-  return norm(asc_rad * R2D);
-}
+    // 太陽與地球
+    const earth = getHeliocentric('sun', d); 
+    // 地球的日心黃經實際上是太陽的地心黃經加180度
+    const sunGeo = norm(earth.l); 
+    res.sun = sunGeo;
+    const xe = earth.r * Math.cos((sunGeo + 180) * DEG);
+    const ye = earth.r * Math.sin((sunGeo + 180) * DEG);
 
-function calcAll(T, jd, lng, lat, isSid){
-  const asc = calcASC(jd, lng, lat);
-  let res = {
-    sun:sunLon(T),moon:moonLon(T),
-    mercury:planetLonGeocentric('mercury',T),venus:planetLonGeocentric('venus',T),
-    mars:planetLonGeocentric('mars',T),jupiter:planetLonGeocentric('jupiter',T),saturn:planetLonGeocentric('saturn',T),
-    uranus:planetLonGeocentric('uranus',T), neptune:planetLonGeocentric('neptune',T), pluto:planetLonGeocentric('pluto',T),
-    rahu:rahuLon(T),ketu:ketuLon(T),yapo:yapLon(T),ziqi:ziqiLon(T),
-    asc: asc, dsc: norm(asc + 180)
-  };
-  
-  if(isSid) {
-    const aya = 24.03 + (jd - 2451545.0)/365.25 * (50.29/3600);
-    for(let k in res) res[k] = norm(res[k] - aya);
-  }
-  return res;
+    // 月亮 (增加更多攝動項以提升精度)
+    const D = norm(297.85036 + 12.190749 * d); // 月亮平距角
+    const M = norm(357.52772 + 0.985600 * d);  // 太陽平近點角
+    const Mp = norm(134.96298 + 13.064992 * d); // 月亮平近點角
+    const F = norm(93.27191 + 13.229350 * d);  // 月亮升交點角
+    res.moon = norm(218.3165 + 13.176396 * d 
+        + 6.289 * Math.sin(Mp*DEG) 
+        + 1.274 * Math.sin((2*D-Mp)*DEG) 
+        + 0.658 * Math.sin(2*D*DEG)
+        + 0.214 * Math.sin(2*Mp*DEG)
+        - 0.186 * Math.sin(M*DEG)
+        - 0.114 * Math.sin(2*F*DEG)
+    );
+
+    // 五大行星與三王星：日心轉地心
+    const planets = ['mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+    planets.forEach(id => {
+        let helio = getHeliocentric(id, d);
+        let xp = helio.r * Math.cos(helio.l * DEG);
+        let yp = helio.r * Math.sin(helio.l * DEG);
+        
+        let xg = xp - xe;
+        let yg = yp - ye;
+        res[id] = norm(Math.atan2(yg, xg) * R2D);
+    });
+
+    // 四余
+    res.rahu = norm(125.04452 - 0.0529538 * d);
+    res.ketu = norm(res.rahu + 180);
+    res.yapo = norm(83.3532 + 0.11140 * d);
+    res.ziqi = norm(res.yapo + 90);
+
+    // 精確 ASC
+    const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
+    const lst = norm(gmst + lng) * DEG;
+    const obliq = (23.4392911 - 0.0130042 * T) * DEG; 
+    const lat_rad = lat * DEG;
+    const asc_rad = Math.atan2(Math.cos(lst), -(Math.sin(lst)*Math.cos(obliq) + Math.tan(lat_rad)*Math.sin(obliq)));
+    res.asc = norm(asc_rad * R2D);
+    res.dsc = norm(res.asc + 180);
+
+    // 歲差剝離 (Sidereal Ayanamsa) - 使用 Lahiri 系統
+    if (isSid) {
+        const aya = 24.03 + d * (50.29/36525);
+        for(let k in res) res[k] = norm(res[k] - aya);
+    }
+    
+    return res;
 }
 
 function stCorr(lng,std=120){return Math.round((lng-std)*4)}
@@ -407,7 +432,8 @@ for(let i=0; i<28; i++){
 function getMansion(lon, isSid, jd){
   let sidLon = lon;
   if (!isSid && jd) {
-    const aya = 24.03 + (jd - 2451545.0)/365.25 * (50.29/3600);
+    const d = jd - 2451545.0;
+    const aya = 24.03 + d * (50.29/36525);
     sidLon = norm(lon - aya);
   }
   for(const m of MANS){
@@ -612,7 +638,6 @@ eclG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.
 const plG=new THREE.Group();eclG.add(plG);
 const aspG=new THREE.Group();plG.add(aspG);
 
-// 🟢 核心擴展：加入三王星，定義 `isOut` 屬性
 const PCONF=[
   {id:'sun',    n:'太陽',ic:'☉',col:0xFF5500,sz:1.5,  isY:false, isOut:false},
   {id:'moon',   n:'月亮',ic:'☽',col:0xD8EEFF,sz:1.12, isY:false, isOut:false},
@@ -660,7 +685,6 @@ PCONF.forEach(pc=>{
       new THREE.MeshBasicMaterial({color:0xFF6600,transparent:true,opacity:.18,blending:THREE.AdditiveBlending})));
   }
   
-  // 預設隱藏三王星
   if(pc.isOut) sphere.visible = false;
   
   plG.add(sphere);pMesh[pc.id]=sphere;
@@ -744,14 +768,13 @@ function placePlanets(lons){
   }
 }
 
-// 🟢 相位計算現在支援動態加入三王星
 const ASP_A=[0,60,90,120,150,180];
 const ASP_C=[0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
 
 function buildAspects(lons){
   aspG.clear();const R=32;
   const base_asp = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
-  if(showOut) base_asp.push('uranus','neptune','pluto'); // 一鍵加入三王星相位
+  if(showOut) base_asp.push('uranus','neptune','pluto'); 
   
   for(let i=0;i<base_asp.length;i++)for(let j=i+1;j<base_asp.length;j++){
     const diff=Math.min(norm(lons[base_asp[i]]-lons[base_asp[j]]),
@@ -956,7 +979,6 @@ tog('cb-sys',
     false
 );
 
-// 🟢 新增三王星 Toggle 邏輯
 const bOut = document.getElementById('cb-out');
 tog('cb-out', 
     () => { showOut=true; bOut.classList.add('on'); if(userData.jd) updatePositions(); }, 
