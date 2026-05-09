@@ -45,7 +45,8 @@ body.zen-mode #ctrl-bar:hover { opacity: 1; }
 .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(99, 163, 237, 0.08); border: 1px solid rgba(99, 163, 237, 0.4); color: var(--blue); text-decoration: none; font-size: 1.2rem; transition: all 0.3s; margin-bottom: 20px; box-shadow: 0 0 10px rgba(99, 163, 237, 0.2); }
 .btn-back:hover { background: rgba(99, 163, 237, 0.2); border-color: var(--blue-l); box-shadow: 0 0 20px rgba(99, 163, 237, 0.6); color: #fff;}
 
-#global-lang-toggle{display:flex;gap:10px;pointer-events:auto;justify-content:flex-end;margin-bottom:12px}
+/* 🟢 全局懸浮語言切換欄 (不受彈窗遮擋) */
+#global-lang-toggle{position:fixed;top:20px;right:22px;z-index:100;display:flex;gap:10px;pointer-events:auto;}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 12px;border-radius:6px;font-family:'Noto Sans TC',sans-serif;}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
 
@@ -154,21 +155,23 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <a href="/" class="btn-back" title="返回主頁">⟨</a>
 </div>
 
+<!-- 🟢 懸浮全局語言切換 (永遠在最上層) -->
+<div id="global-lang-toggle">
+  <button class="mlbtn" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
+  <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
+  <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
+  <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
+</div>
+
 <div id="three-canvas"></div>
 
-<!-- 頂部資訊與語言切換 -->
+<!-- 頂部資訊 -->
 <div id="topbar">
   <div>
     <div id="tb-title" data-i18n="ui.tb_t">星象座標系 · 天球儀</div>
     <div id="tb-sub" data-i18n="ui.tb_s">CELESTIAL SPHERE · 二十八宿 · 黃道十二宮</div>
   </div>
   <div class="tb-right">
-    <div id="global-lang-toggle">
-      <button class="mlbtn" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
-      <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
-      <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
-      <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
-    </div>
     <div id="tb-info" style="display:none">
       <div id="tb-name"></div>
       <div id="tb-date"></div>
@@ -177,7 +180,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL 表單 -->
 <div id="mw">
 <div id="modal">
   <div class="ml" data-i18n="ui.title">星象座標系</div>
@@ -236,6 +239,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <!-- CTRL BAR -->
 <div id="ctrl-bar">
+  <!-- 🟢 沉浸星空按鈕 -->
   <button class="cb" id="cb-zen" data-title="沉浸星空" data-i18n-title="ui.c_zen" style="font-size:0.9rem;">🌌</button>
   <button class="cb" id="cb-spin" data-title="自動旋轉" data-i18n-title="ui.c_spin">⟳</button>
   <button class="cb" id="cb-sys" data-title="切換回歸/恆星黃道" data-i18n-title="ui.c_sys" style="font-size:0.75rem;" data-i18n="ui.sys_t">歸</button>
@@ -499,7 +503,8 @@ function calcAll(T, jd, lng, lat, isSid) {
     res.ketu = ascNode; 
     res.rahu = norm(ascNode + 180); 
     
-    res.yapo = norm(83.3532 + 0.11140 * d);
+    // 🟢 核心修復：月孛 (Lilith/Apogee) = 近地點 + 180度
+    res.yapo = norm(83.3532 + 0.11140 * d + 180);
     res.ziqi = norm(res.yapo + 90);
 
     const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
@@ -713,7 +718,7 @@ scene.add(new THREE.Line(
 
 // ── 二十八宿 ──
 const manG=new THREE.Group();manG.rotation.x=Math.PI/2;scene.add(manG);
-const mR=54,mO=57.5; // 外擴一點避免與冥王星軌道重疊
+const mR=54,mO=57.5; 
 {const pts=[];for(let i=0;i<=200;i++){const a=i/200*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*mR,Math.sin(a)*mR,0))}
 manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x3A8C5C,transparent:true,opacity:.38})));}
 
@@ -730,7 +735,10 @@ MANS.forEach(m=>{
   lbl2D(manG, 'lman', 61, mid, 'man', m.id);
 });
 
-// ── Planets Group (同心軌道半徑佈局) ──
+{const pts=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*32,Math.sin(a)*32,0))}
+eclG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xFFD700,transparent:true,opacity:.07})));}
+
+// ── Planets Group ──
 const plG=new THREE.Group();eclG.add(plG);
 const aspG=new THREE.Group();plG.add(aspG);
 
@@ -788,7 +796,6 @@ PCONF.forEach(pc=>{
   if(pc.isOut) obj.element.style.display = 'none';
   plG.add(obj);pLbl[pc.id]=obj;
 
-  // 🟢 繪製同心軌道環
   const orbPts=[];
   for(let i=0;i<=128;i++){
       const a=i/128*Math.PI*2;
@@ -840,7 +847,7 @@ function placePlanets(lons){
     const isAngle = (i===0 || i===6);
     const col = i===0 ? 0xFF4444 : (i===6 ? 0x4488FF : 0xFFFFFF);
     const op = isAngle ? 0.8 : 0.15;
-    const R_in = 18, R_out = isAngle ? 42.5 : 40; // 包覆所有行星軌道
+    const R_in = 18, R_out = isAngle ? 42.5 : 40; 
     
     houseG.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
@@ -850,8 +857,9 @@ function placePlanets(lons){
       new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op, linewidth: isAngle? 2 : 1})
     ));
     
-    if(i===0) lbl2D(houseG, 'lasc', R_out+2.5, a, 'raw', 'ASC');
-    else if(i===6) lbl2D(houseG, 'ldsc', R_out+2.5, a, 'raw', 'DSC');
+    // 🟢 強制使用 ASC/DSC 和純數字，跨語言通用
+    if(i===0) lbl2D(houseG, 'lasc', R_out+2.5, a, 'ui', 'asc');
+    else if(i===6) lbl2D(houseG, 'ldsc', R_out+2.5, a, 'ui', 'dsc');
     else lbl2D(houseG, 'lax', R_out+1.5, a, 'raw', i + 1); 
   }
 }
@@ -1065,7 +1073,7 @@ tog('cb-asp', ()=>{showAsp=true;buildAspects(curLons)}, ()=>{showAsp=false;aspG.
 tog('cb-tm',  ()=>document.getElementById('time-bar').classList.add('show'),
                ()=>{document.getElementById('time-bar').classList.remove('show');resetTime()},false);
 
-// 🟢 行星軌道
+// 行星軌道
 tog('cb-orb', 
     () => { showOrb=true; PCONF.forEach(pc=>{if(pc.orbLine)pc.orbLine.visible = (!pc.isOut||showOut);}); }, 
     () => { showOrb=false; PCONF.forEach(pc=>{if(pc.orbLine)pc.orbLine.visible=false;}); }, 
