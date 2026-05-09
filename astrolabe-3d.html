@@ -307,7 +307,6 @@ function jdn(y,m,d,h=12,mn=0){
 }
 function T_jd(jd){return(jd-2451545.0)/36525}
 
-// 太阳/月亮/五星/四余计算 (基于 J2000 历元)
 function sunLon(T){
   const L0=norm(280.46646+36000.76983*T+0.0003032*T*T);
   const M=norm(357.52911+35999.05029*T-0.0001537*T*T);
@@ -337,12 +336,11 @@ function ketuLon(T) {return norm(rahuLon(T)+180)}
 function yapLon(T)  {return norm(83.3532+4069.0137*T)}
 function ziqiLon(T) {return norm(yapLon(T)+90)}
 
-// 核心修复：计算 Ascendant (上升点)
 function calcASC(jd, lng, lat) {
   const T = (jd - 2451545.0) / 36525.0;
   const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
-  const e = (23.4392911 - 0.0130042 * T) * DEG; // 黄赤交角
+  const e = (23.4392911 - 0.0130042 * T) * DEG; 
   const lat_rad = lat * DEG;
   const asc_rad = Math.atan2(Math.cos(lst), -(Math.sin(lst)*Math.cos(e) + Math.tan(lat_rad)*Math.sin(e)));
   return norm(asc_rad * R2D);
@@ -358,44 +356,50 @@ function calcAll(T, jd, lng, lat, isSid){
     asc: asc, dsc: norm(asc + 180)
   };
   
-  // 恒星黄道(Sidereal) 岁差计算 (Ayanamsa)
   if(isSid) {
-    const aya = 24.03 + (jd - 2451545.0)/365.25 * (50.29/3600); // 采用Lahiri相近值
+    const aya = 24.03 + (jd - 2451545.0)/365.25 * (50.29/3600);
     for(let k in res) res[k] = norm(res[k] - aya);
   }
   return res;
 }
 
-// 真太陽時计算辅助
 function stCorr(lng,std=120){return Math.round((lng-std)*4)}
 function applyST(h,mn,c){let m=mn+c;while(m>=60){h++;m-=60}while(m<0){h--;m+=60}return{h:((h%24)+24)%24,m:((m%60)+60)%60}}
 
-// 宮位/宿 (全称专业名词 + 经典宽度校准)
 const ZCN=['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
 const ZSYM=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 function zodiac(lon){return{s:ZCN[Math.floor(lon/30)],sym:ZSYM[Math.floor(lon/30)],d:(lon%30).toFixed(1)}}
 
-const MANS_NAMES = [
-  "角木蛟","亢金龍","氐土貉","房日兔","心月狐","尾火虎","箕水豹",
-  "斗木獬","牛金牛","女土蝠","虛日鼠","危月燕","室火豬","壁水貐",
-  "奎木狼","婁金狗","胃土雉","昴日雞","畢月烏","觜火猴","參水猿",
-  "井木犴","鬼金羊","柳土獐","星日馬","張月鹿","翼火蛇","軫水蚓"
-];
-// 古法 365 度的绝对宽度
-const klass_w = [12, 9, 15, 5, 5, 18, 11, 26, 8, 12, 10, 17, 16, 9, 16, 12, 14, 11, 16, 2, 9, 33, 4, 15, 7, 18, 18, 17];
-const MANS = [];
-let _acc = 0;
+// 🟢 核心修復 1：恢復乾淨的單字名稱，保留 365 度的精確寬度
+const MANS_NAMES=['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'];
+const klass_w=[12,9,15,5,5,18,11, 26,8,12,10,17,16,9, 16,12,14,11,16,2,9, 33,4,15,7,18,18,17];
+const MANS=[];
+// 🟢 核心修復 2：角宿起點精確錨定 180°（秋分點），修復星空顛倒！
+let _acc = 180; 
 for(let i=0; i<28; i++){
-  let w = klass_w[i] * 360 / 365; // 等比例缩放到 360 度圆周
-  MANS.push({ n: MANS_NAMES[i], short: MANS_NAMES[i].charAt(0), s: _acc, w: w });
+  let w = klass_w[i] * 360 / 365; // 映射至 360 度完美閉合
+  MANS.push({ n: MANS_NAMES[i], s: _acc, w: w });
   _acc += w;
 }
 
-function getMansion(lon){
-  for(const m of MANS){
-    if(lon >= m.s && lon < m.s + m.w) return m.short;
+// 🟢 核心修復 3：無論面板當前是否開啟恆星黃道，查星宿始終使用剝離歲差的絕對黃經
+function getMansion(lon, isSid, jd){
+  let sidLon = lon;
+  if (!isSid && jd) {
+    const aya = 24.03 + (jd - 2451545.0)/365.25 * (50.29/3600);
+    sidLon = norm(lon - aya);
   }
-  return MANS[0].short;
+  for(const m of MANS){
+    let s = m.s % 360;
+    let e = (m.s + m.w) % 360;
+    if(s < e) {
+      if(sidLon >= s && sidLon < e) return m.n;
+    } else {
+      // 處理跨越 360 度的縫隙
+      if(sidLon >= s || sidLon < e) return m.n;
+    }
+  }
+  return MANS[0].n;
 }
 
 const WUXING={
@@ -407,10 +411,10 @@ const WUXING={
   '月孛':'陰水 · 月亮遠地點 · 隱藏','紫氣':'陽木 · 傳統假想星',
 };
 
-function analyzeChart(lons){
+function analyzeChart(lons, isSid, jd){
   const lines=[];
   const sz=zodiac(lons.sun), mz=zodiac(lons.moon), az=zodiac(lons.asc);
-  const mm=getMansion(lons.moon);
+  const mm=getMansion(lons.moon, isSid, jd);
   const elong=norm(lons.moon-lons.sun);
   const phase=elong<45?'新月(朔)':elong<135?'上弦月':elong<225?'滿月(望)':elong<315?'下弦月':'晦日期';
   lines.push(`<span class="at">上升</span>命宮在<span class="av">${az.s}座 ${az.d}°</span>`);
@@ -578,7 +582,7 @@ MANS.forEach(m=>{
   const arc=[];for(let t=0;t<=20;t++){const aa=a0+(a1-a0)*t/20;arc.push(new THREE.Vector3(Math.cos(aa)*(mR+.5),Math.sin(aa)*(mR+.5),0))}
   manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc),new THREE.LineBasicMaterial({color:0x7DE09A,transparent:true,opacity:.5})));
   const mid=a0+(a1-a0)/2;
-  lbl2D(manG, m.n, 'lman', 59, mid);
+  lbl2D(manG, m.n+'宿', 'lman', 59, mid);
 });
 
 {const pts=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*32,Math.sin(a)*32,0))}
@@ -725,11 +729,11 @@ function buildAspects(lons){
 // ══════════════════════════
 //  UI DOM
 // ══════════════════════════
-function renderPlanetList(lons){
+function renderPlanetList(lons, isSid, jd){
   const el=document.getElementById('plist');el.innerHTML='';
   PCONF.forEach(pc=>{
     const lon=lons[pc.id];if(lon===undefined)return;
-    const z=zodiac(lon),man=getMansion(lon);
+    const z=zodiac(lon), man=getMansion(lon, isSid, jd);
     const hex='#'+pc.col.toString(16).padStart(6,'0');
     const row=document.createElement('div');row.className='pr';
     row.innerHTML=`<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
@@ -757,8 +761,8 @@ function renderHouseGrid(lons){
   }
 }
 
-function renderAnalysis(lons){
-  document.getElementById('abody').innerHTML=analyzeChart(lons).map(l=>`<div class="al">${l}</div>`).join('');
+function renderAnalysis(lons, isSid, jd){
+  document.getElementById('abody').innerHTML=analyzeChart(lons, isSid, jd).map(l=>`<div class="al">${l}</div>`).join('');
 }
 
 function showTip(e,h,p){
@@ -780,7 +784,7 @@ window.hst=function(){
   const mn=parseInt(document.getElementById('f-mi').value)||0;
   const hint=document.getElementById('st-hint');
   if(!isNaN(lng)){
-    const c=stCorr(lng, tz*15); // 根据当前时区计算偏差
+    const c=stCorr(lng, tz*15); 
     const st=applyST(h,mn,c);
     hint.textContent=`✦ 真太陽時：偏差${c>=0?'+':''}${c}分 → 校正後 ${String(st.h).padStart(2,'0')}:${String(st.m).padStart(2,'0')}`;
     hint.style.display='block';
@@ -796,13 +800,12 @@ window.submitForm=function(){
   let mn=parseInt(document.getElementById('f-mi').value)||0;
   
   const lng=parseFloat(document.getElementById('f-lg').value)||120;
-  const lat=parseFloat(document.getElementById('f-lat').value)||39.9; // 默认北纬
-  const tz=parseInt(document.getElementById('f-tz').value)||8; // 获取时区
+  const lat=parseFloat(document.getElementById('f-lat').value)||39.9; 
+  const tz=parseInt(document.getElementById('f-tz').value)||8; 
   
   if(!y||!m||!d){alert('請輸入完整的年月日！');return}
   
   const st=applyST(h,mn,stCorr(lng, tz*15));
-  // 核心修复：直接减去时区偏差，推算精准的 UTC 儒略日，解决上升点错位问题
   const jd_utc=jdn(y,m,d,h - tz,mn); 
   
   userData={name,y,m,d,h:st.h,mn:st.m,lng,lat,jd:jd_utc};
@@ -825,13 +828,13 @@ function updatePositions() {
   curLons = calcAll(T, targetJD, userData.lng, userData.lat, isSidereal);
   placePlanets(curLons);
   
-  // 岁差旋转二十八宿
+  // 歲差同步：若為回歸黃道，星宿盤面自動旋轉附加歲差偏移
   const aya = 24.03 + (targetJD - 2451545.0)/365.25 * (50.29/3600);
   manG.rotation.z = isSidereal ? 0 : aya * DEG;
 
-  renderPlanetList(curLons);
+  renderPlanetList(curLons, isSidereal, targetJD);
   renderHouseGrid(curLons);
-  renderAnalysis(curLons);
+  renderAnalysis(curLons, isSidereal, targetJD);
   
   document.getElementById('tb-place').textContent=`東經 ${userData.lng.toFixed(1)}° · 北緯 ${userData.lat.toFixed(1)}° · ${isSidereal?'恆星黃道 (Sidereal)':'回歸黃道 (Tropical)'}`;
 }
