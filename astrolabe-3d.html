@@ -114,21 +114,18 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
     -webkit-overflow-scrolling:touch;
   }
 
-  /* Mobile topbar smaller */
   #topbar{padding:10px 14px 24px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
   #global-lang-toggle{top:12px;right:10px;gap:5px}
   .mlbtn{padding:4px 8px;font-size:.52rem}
 
-  /* Legend scrollable horizontal */
   #legend{
     bottom:52px;left:8px;right:8px;transform:none;width:auto;
     overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;
     padding:5px 14px;gap:12px;
   }
   #ctrl-bar{bottom:52px;right:8px}
-
   #time-bar{bottom:100px;min-width:280px;width:90%}
 }
 
@@ -292,7 +289,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   </div>
 </div>
 
-<!-- Mobile Bottom Drawer (hidden on desktop) -->
+<!-- Mobile Bottom Drawer -->
 <div id="mobile-drawer" style="display:none">
   <div id="mobile-drawer-handle" onclick="toggleDrawer()">
     <div class="pill"></div>
@@ -324,24 +321,24 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </div>
 
 <div id="ctrl-bar">
-  <button class="cb" id="cb-zen" data-title="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-title="自動旋轉">⟳</button>
-  <button class="cb" id="cb-sys" data-title="切換回歸/恆星黃道" style="font-size:.75rem">歸</button>
-  <button class="cb" id="cb-out" data-title="三王星" style="font-size:.75rem">王</button>
-  <button class="cb on" id="cb-ecl" data-title="黃道環" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-title="赤道環">⊕</button>
-  <button class="cb on" id="cb-man" data-title="二十八宿">宿</button>
-  <button class="cb on" id="cb-pl"  data-title="星體顯示">政</button>
-  <button class="cb"    id="cb-asp" data-title="相位連線">⋆</button>
-  <button class="cb"    id="cb-tm"  data-title="時間推移">⏱</button>
-  <button class="cb"    id="cb-orb" data-title="行星軌道">◎</button>
+  <button class="cb" id="cb-zen" data-i18n-title="ui.c_zen" style="font-size:.9rem">🌌</button>
+  <button class="cb" id="cb-spin" data-i18n-title="ui.c_spin">⟳</button>
+  <button class="cb" id="cb-sys" data-i18n-title="ui.c_sys" style="font-size:.75rem"></button>
+  <button class="cb" id="cb-out" data-i18n-title="ui.c_out" data-i18n-txt="ui.out_b" style="font-size:.75rem">王</button>
+  <button class="cb on" id="cb-ecl" data-i18n-title="ui.c_ecl" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-i18n-title="ui.c_eq">⊕</button>
+  <button class="cb on" id="cb-man" data-i18n-title="ui.c_man" data-i18n-txt="ui.s_man">宿</button>
+  <button class="cb on" id="cb-pl"  data-i18n-title="ui.c_pl" data-i18n-txt="ui.s_pl">政</button>
+  <button class="cb"    id="cb-asp" data-i18n-title="ui.c_asp">⋆</button>
+  <button class="cb"    id="cb-tm"  data-i18n-title="ui.c_tm">⏱</button>
+  <button class="cb"    id="cb-orb" data-i18n-title="ui.c_orb">◎</button>
 </div>
 
 <div id="time-bar">
-  <button class="tbtn" id="tb-play">▶ 播放</button>
+  <button class="tbtn" id="tb-play" data-i18n="ui.t_play">▶ 播放</button>
   <input type="range" id="time-range" min="-3650" max="3650" value="0" step="1">
-  <div id="time-lbl">當前時間</div>
-  <button class="tbtn" onclick="resetTime()">重置</button>
+  <div id="time-lbl" data-i18n="ui.t_curr">當前時間</div>
+  <button class="tbtn" onclick="resetTime()" data-i18n="ui.t_reset">重置</button>
 </div>
 
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
@@ -355,13 +352,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-// ── Mobile detection ──
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
-
-// ── Drawer toggle ──
 window.toggleDrawer = function() {
-  const d = document.getElementById('mobile-drawer');
-  d.classList.toggle('open');
+  document.getElementById('mobile-drawer').classList.toggle('open');
 };
 
 // ══════════════════════════
@@ -386,11 +379,11 @@ const LANGS = {
     },
     wx: {
       sun:'陽火·父·君主',moon:'陰水·母·情感',mercury:'陰水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·責任',
-      rahu:'陰火·南交點·業力',ketu:'陽火·北交點·業力',yapo:'陰水·月遠地點',ziqi:'陽木·傳統假想星',
+      rahu:'升交點·北交點·业力',ketu:'降交點·南交點·业力',yapo:'陰水·月遠地点',ziqi:'陽木·傳統假想星',
       uranus:'時代星·改革·突變',neptune:'時代星·夢幻·潛意識',pluto:'時代星·毀滅·重生'
     },
     al: {
-      asc:'命宮在',sun:'太陽在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在',
+      asc:'命宮在',sun:'太陽在',moon:'月在',phase:'月相',rahu:'北交點在',jup:'福星在',sat:'剋星在',
       p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日期',deg:'距角',
       trop:'回歸黃道 (Tropical)',sid:'恆星黃道 (Sidereal)'
     }
@@ -413,11 +406,11 @@ const LANGS = {
     },
     wx: {
       sun:'阳火·父·君主',moon:'阴水·母·情感',mercury:'阴水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',
-      rahu:'阴火·南交点·业力',ketu:'阳火·北交点·业力',yapo:'阴水·月远地点',ziqi:'阳木·传统假想星',
+      rahu:'升交点·北交点·业力',ketu:'降交点·南交点·业力',yapo:'阴水·月远地点',ziqi:'阳木·传统假想星',
       uranus:'时代星·改革·突变',neptune:'时代星·梦幻·潜意识',pluto:'时代星·毁灭·重生'
     },
     al: {
-      asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在',
+      asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'北交点在',jup:'福星在',sat:'克星在',
       p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日期',deg:'距角',
       trop:'回归黄道 (Tropical)',sid:'恒星黄道 (Sidereal)'
     }
@@ -436,15 +429,15 @@ const LANGS = {
       tb_t:'Astrolabe 3D',tb_s:'CELESTIAL SPHERE · 28 MANSIONS',
       c_zen:'Zen Mode',c_spin:'Auto Spin',c_sys:'Tropical/Sidereal',c_out:'Outer Planets',c_ecl:'Ecliptic',c_eq:'Equator',c_man:'Mansions',c_pl:'Planets',c_asp:'Aspects',c_tm:'Time Scrubber',c_orb:'Planet Orbits',
       t_play:'▶ Play',t_pause:'⏸ Pause',t_reset:'Reset',t_curr:'Current Time',
-      sys_t:'Tro',sys_s:'Sid',out_b:'Out',s_man:'M',s_pl:'P'
+      sys_t:'Tro',sys_s:'Sid',out_b:'Out',s_man:'M.',s_pl:'P.'
     },
     wx: {
       sun:'Yang Fire · Father',moon:'Yin Water · Mother',mercury:'Yin Water · Mind',venus:'Yin Metal · Wealth',mars:'Yang Fire · Action',jupiter:'Yang Wood · Luck',saturn:'Yin Earth · Karma',
-      rahu:'Yin Fire · South Node',ketu:'Yang Fire · North Node',yapo:'Yin Water · Apogee',ziqi:'Yang Wood · Imaginary',
+      rahu:'Ascending Node · North',ketu:'Descending Node · South',yapo:'Yin Water · Apogee',ziqi:'Yang Wood · Imaginary',
       uranus:'Outer · Revolution',neptune:'Outer · Illusion',pluto:'Outer · Rebirth'
     },
     al: {
-      asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Luck in',sat:'Karma in',
+      asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'N.Node in',jup:'Luck in',sat:'Karma in',
       p1:'New Moon',p2:'First Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',
       trop:'Tropical Zodiac',sid:'Sidereal Zodiac'
     }
@@ -467,11 +460,11 @@ const LANGS = {
     },
     wx: {
       sun:'양화·아버지',moon:'음수·어머니',mercury:'음수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',
-      rahu:'음화·남교점',ketu:'양화·북교점',yapo:'음수·원지점',ziqi:'양목·가상성',
+      rahu:'승교점·북교점',ketu:'강교점·남교점',yapo:'음수·원지점',ziqi:'양목·가상성',
       uranus:'외행성·개혁',neptune:'외행성·환상',pluto:'외행성·재생'
     },
     al: {
-      asc:'명궁 위치:',sun:'태양 위치:',moon:'달 위치:',phase:'달의 위상',rahu:'남교점 위치:',jup:'복성 위치:',sat:'극성 위치:',
+      asc:'명궁 위치:',sun:'태양 위치:',moon:'달 위치:',phase:'달의 위상',rahu:'북교점 위치:',jup:'복성 위치:',sat:'극성 위치:',
       p1:'신월(삭)',p2:'상현달',p3:'만월(망)',p4:'하현달',p5:'그믐달',deg:'이각',
       trop:'회귀 황도 (Tropical)',sid:'항성 황도 (Sidereal)'
     }
@@ -487,14 +480,18 @@ window.switchLang = function(l) {
   localStorage.setItem('zc_lang', l);
   document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
   const d = LANGS[l];
+  
+  // 更新普通文本
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.innerHTML = d[k[0]][k[1]];
   });
+  // 更新占位符
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const k = el.getAttribute('data-i18n-ph').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.placeholder = d[k[0]][k[1]];
   });
+  // 更新 3D 悬浮标签
   document.querySelectorAll('[data-3d-type]').forEach(el => {
     const type = el.getAttribute('data-3d-type');
     const id = el.getAttribute('data-3d-id');
@@ -504,8 +501,20 @@ window.switchLang = function(l) {
     if (type === 'ui')  el.innerHTML = d.ui[id];
     if (type === 'raw') el.innerHTML = id;
   });
+  // 更新控制器 Title 悬浮提示
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const k = el.getAttribute('data-i18n-title').split('.');
+    if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.setAttribute('data-title', d[k[0]][k[1]]);
+  });
+  // 更新控制器内部文字
+  document.querySelectorAll('[data-i18n-txt]').forEach(el => {
+    const k = el.getAttribute('data-i18n-txt').split('.');
+    if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.innerHTML = d[k[0]][k[1]];
+  });
+  
   const bSys = document.getElementById('cb-sys');
   if (bSys) bSys.textContent = isSidereal ? d.ui.sys_s : d.ui.sys_t;
+  
   if (userData.jd) updatePositions();
 };
 
@@ -582,14 +591,15 @@ function calcAll(T, jd, lng, lat, isSid) {
     res[id] = norm(Math.atan2(yp - ye, xp - xe) * R2D);
   });
 
+  // 交点计算（七政四余中：罗睺是北交点/升交点，计都是南交点/降交点）
   const ascNode = norm(125.04452 - 0.0529538 * d);
-  res.ketu = ascNode;
-  res.rahu = norm(ascNode + 180);
+  res.rahu = ascNode; 
+  res.ketu = norm(ascNode + 180);
 
-  // 月孛 (Yapo / Lunar Apogee) — Mean daily motion ~0.11140353°/day
-  res.yapo = norm(83.3532465 + 0.11140353 * d);
+  // 月孛 (Yapo / Lunar Apogee) — 地球视角的远地点（近地点 + 180°）
+  res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
 
-  // 紫炁 (Ziqi / Purple Qi) — 修正：独立运行，周期约28年（10227.18天），日行0.0352度
+  // 紫炁 (Ziqi / Purple Qi) — 修正：独立运行，周期约28年（10227天），日行0.0352度
   res.ziqi = norm(206.5 + 0.03520 * d); 
 
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
@@ -674,8 +684,9 @@ camera.position.set(0, 50, 115);
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
+// 稍微提升曝光，让星空更震撼
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.95;  // 曝光稍微调亮，让星空更有感觉
+renderer.toneMappingExposure = 1.05;  
 wrap.appendChild(renderer.domElement);
 
 const lblR = new CSS2DRenderer();
@@ -685,8 +696,9 @@ wrap.appendChild(lblR.domElement);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-// 光效调整：增强泛光强度，降低阈值，使星星更容易发光，又不至于刺眼
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.05, 0.6, 0.2);
+
+// 泛光优化：提升阈值 (Threshold) 到 0.45，意味着只有极高亮度（如太阳）才会发出耀眼的光晕
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.2, 0.5, 0.45);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -729,14 +741,11 @@ scene.add(new THREE.Mesh(
 //  TEXTURE LOADER + PLANET TEXTURES
 // ══════════════════════════
 const texLoader = new THREE.TextureLoader();
-
-// NASA/public domain texture sources (CORS-friendly CDN)
 const TEX_URLS = {
   sun:     'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg/1024px-The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg',
   moon:    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1024px-FullMoon2010.jpg',
   mercury: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
   venus:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
-  // 地球贴图更换为 GitHub Raw 源的 Three.js 官方范例高质量图片，避免 Wikipedia 阻截
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
   mars:    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
   jupiter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
@@ -747,7 +756,6 @@ const TEX_URLS = {
   pluto:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Pluto_in_True_Color_-_High-Res.jpg/1024px-Pluto_in_True_Color_-_High-Res.jpg',
 };
 
-// Preload textures, fallback to color if load fails
 const loadedTex = {};
 texLoader.crossOrigin = 'anonymous';
 const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
@@ -760,28 +768,26 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
       loadedTex[k] = tex;
       resolve();
     };
-    img.onerror = () => resolve(); // silently fail, use color fallback
+    img.onerror = () => resolve(); 
     img.src = url;
   })
 );
 
-// ── Earth group (textured) ──
+// ── Earth group ──
 const earthG = new THREE.Group();
 scene.add(earthG);
-
 let earthMesh = null, earthCloud = null;
 
 function buildEarth() {
   const mat = new THREE.MeshPhongMaterial({
     map: loadedTex.earth || null,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-    shininess: 18,
+    shininess: 12,
     specular: new THREE.Color(0x224488),
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.88, 48, 48), mat);
   earthG.add(earthMesh);
 
-  // 地球大气层降低透明度，展现原贴图
   earthG.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.1, 24, 24),
     new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .06, blending: THREE.AdditiveBlending, side: THREE.BackSide })
@@ -792,15 +798,14 @@ function buildEarth() {
   ));
 }
 
-// Axis line
 scene.add(new THREE.Line(
   new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -72, 0), new THREE.Vector3(0, 72, 0)]),
   new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .15 })
 ));
 
-const ambLight = new THREE.AmbientLight(0x303050, 0.7); 
+const ambLight = new THREE.AmbientLight(0x202030, 0.8); 
 scene.add(ambLight);
-const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.1); 
+const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.4); 
 sunLight.position.set(50, 20, 30);
 scene.add(sunLight);
 
@@ -863,18 +868,6 @@ for (let i = 0; i < 36; i++) {
   ));
 }
 lbl2D(eclG, 'lecl', 42, 1.5, 'ui', 'ecl');
-{
-  const vp = new THREE.Mesh(
-    new THREE.SphereGeometry(.45, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0xFFFFAA })
-  );
-  vp.position.set(40, 0, 0);
-  eclG.add(vp);
-  vp.add(new THREE.Mesh(
-    new THREE.SphereGeometry(1.1, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0xFFFFAA, transparent: true, opacity: .3, blending: THREE.AdditiveBlending })
-  ));
-}
 
 // ── Zodiac ──
 const zodG = new THREE.Group();
@@ -957,7 +950,6 @@ const pMesh = {}, pLbl = {};
 const TRAIL_N = 80;
 const trails = {};
 
-// Build textured planet mesh
 function buildPlanetMesh(pc) {
   const texKey = pc.id; 
   const tex = loadedTex[texKey];
@@ -965,74 +957,68 @@ function buildPlanetMesh(pc) {
   let mat;
   if (pc.isY) {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
+  } else if (pc.id === 'sun') {
+    // 太阳是唯一发高光的主体
+    mat = new THREE.MeshPhongMaterial({
+      map: tex || null,
+      color: 0xFFFFFF,
+      emissive: new THREE.Color(0xFFaa44),
+      emissiveIntensity: 1.8, 
+    });
   } else if (tex) {
+    // 其他星球使用物理材质反光，剥夺 emissive
     mat = new THREE.MeshPhongMaterial({
       map: tex,
-      shininess: pc.id === 'sun' ? 0 : pc.id === 'moon' ? 5 : 18,
-      emissive: pc.id === 'sun' ? new THREE.Color(0xFF3300) : new THREE.Color(0x000000),
-      emissiveIntensity: pc.id === 'sun' ? 0.6 : 0,
+      shininess: pc.id === 'moon' ? 5 : 12,
+      emissive: new THREE.Color(0x000000),
+      emissiveIntensity: 0,
     });
   } else {
-    mat = new THREE.MeshPhongMaterial({ color: pc.col, shininess: 15 });
+    mat = new THREE.MeshPhongMaterial({ color: pc.col, shininess: 10 });
   }
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 32, 32), mat);
 
-  // 大气层调整：降低透明度 (Opacity 从0.12减小到了0.04)，使行星本身贴图更清晰
-  sphere.add(new THREE.Mesh(
-    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.9), 16, 16),
-    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .08 : .04, blending: THREE.AdditiveBlending })
-  ));
-
-  // Virtual body ring
+  // 虚拟星体的大气圈
   if (pc.isY) {
+    sphere.add(new THREE.Mesh(
+      new THREE.SphereGeometry(pc.sz * 2.2, 16, 16),
+      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .08, blending: THREE.AdditiveBlending })
+    ));
     sphere.add(new THREE.Mesh(
       new THREE.TorusGeometry(pc.sz * 1.85, .1, 8, 32),
       new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .4 })
     ));
   }
 
-  // Saturn rings
+  // 土星环亮度压暗，避免抢走焦点
   if (pc.id === 'saturn') {
     const ringTex = loadedTex.saturn_ring || null;
-    const ringMat = new THREE.MeshBasicMaterial({
+    const ringMat = new THREE.MeshPhongMaterial({
       map: ringTex || null,
-      color: ringTex ? 0xffffff : 0xDDCCAA,
+      color: ringTex ? 0xaaaaaa : 0xAA9977,
       transparent: true,
-      opacity: ringTex ? 0.72 : 0.52,
+      opacity: ringTex ? 0.8 : 0.6,
       side: THREE.DoubleSide,
+      shininess: 5
     });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 2.6, pc.sz * 0.7, 3, 80), ringMat);
     ring.rotation.x = Math.PI * 0.38;
     sphere.add(ring);
-    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 3.4, pc.sz * 0.3, 3, 80),
-      new THREE.MeshBasicMaterial({ color: 0xCCBB99, transparent: true, opacity: .28, side: THREE.DoubleSide }));
-    ring2.rotation.x = Math.PI * 0.38;
-    sphere.add(ring2);
   }
 
+  // 太阳独特高光与发光源
   if (pc.id === 'sun') {
     sphere.add(new THREE.Mesh(
       new THREE.SphereGeometry(pc.sz * 1.8, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .04, blending: THREE.AdditiveBlending })
+      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .12, blending: THREE.AdditiveBlending })
     ));
     sphere.add(new THREE.Mesh(
       new THREE.SphereGeometry(pc.sz * 2.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF8800, transparent: true, opacity: .02, blending: THREE.AdditiveBlending })
+      new THREE.MeshBasicMaterial({ color: 0xFFaa00, transparent: true, opacity: .06, blending: THREE.AdditiveBlending })
     ));
-    const sl = new THREE.PointLight(0xFFF5CC, 1.2, 280);
+    const sl = new THREE.PointLight(0xFFF5CC, 2.5, 300);
     sphere.add(sl);
-  }
-
-  if (pc.id === 'jupiter' && !tex) {
-    for (let b = 0; b < 5; b++) {
-      const bMesh = new THREE.Mesh(
-        new THREE.TorusGeometry(pc.sz * 1.01, pc.sz * 0.08, 4, 48),
-        new THREE.MeshBasicMaterial({ color: b % 2 === 0 ? 0xCC9966 : 0xFFDDAA, transparent: true, opacity: .3 })
-      );
-      bMesh.position.y = (b - 2) * pc.sz * 0.3;
-      sphere.add(bMesh);
-    }
   }
 
   return sphere;
@@ -1060,7 +1046,7 @@ function buildAllPlanets() {
     for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; orbPts.push(new THREE.Vector3(Math.cos(a) * pc.R, Math.sin(a) * pc.R, 0)); }
     const orbLine = new THREE.Line(
       new THREE.BufferGeometry().setFromPoints(orbPts),
-      new THREE.LineBasicMaterial({ color: pc.col, transparent: true, opacity: .15 })
+      new THREE.LineBasicMaterial({ color: pc.col, transparent: true, opacity: .2 })
     );
     orbLine.visible = false;
     plG.add(orbLine);
@@ -1089,29 +1075,50 @@ let playingTime = false, playInterval = null;
 function placePlanets(lons) {
   PCONF.forEach(pc => {
     const lon = lons[pc.id];
-    if (lon !== undefined) {
-      const a = lon * DEG, x = Math.cos(a) * pc.R, y = Math.sin(a) * pc.R;
-      if (pMesh[pc.id]) pMesh[pc.id].position.set(x, y, 0);
-      if (pLbl[pc.id]) pLbl[pc.id].position.set(x, y, 0);
-    }
     const isVis = (!pc.isOut || showOut);
+    
+    if (lon !== undefined) {
+      const a = lon * DEG;
+      let x, y, z = 0;
+      
+      // 处理月球的真实黄白交角轨道（倾斜 5.145度）
+      if (pc.id === 'moon' && lons.rahu !== undefined) {
+        // 白道纬度近似计算
+        const lat = 5.145 * Math.sin((lons.moon - lons.rahu) * DEG);
+        z = Math.sin(lat * DEG) * pc.R;
+        const rProj = Math.cos(lat * DEG) * pc.R;
+        x = Math.cos(a) * rProj;
+        y = Math.sin(a) * rProj;
+        
+        // 旋转月球轨道环，使其通过罗睺(升交点)交于黄道，并向上倾斜5.145度
+        if (pc.orbLine) {
+           pc.orbLine.rotation.set(0, 0, 0);
+           pc.orbLine.rotateZ(lons.rahu * DEG);
+           pc.orbLine.rotateX(5.145 * DEG);
+           pc.orbLine.rotateZ(-lons.rahu * DEG);
+        }
+      } else {
+        x = Math.cos(a) * pc.R;
+        y = Math.sin(a) * pc.R;
+      }
+
+      if (pMesh[pc.id]) pMesh[pc.id].position.set(x, y, z);
+      if (pLbl[pc.id]) pLbl[pc.id].position.set(x, y, z);
+
+      if (isVis && showTrails && trails[pc.id]) {
+        const t = trails[pc.id]; const i = t.ptr * 3;
+        t.buf[i] = x; t.buf[i + 1] = y; t.buf[i + 2] = z;
+        t.ptr = (t.ptr + 1) % TRAIL_N;
+        if (!t.ptr) t.full = true;
+        t.geo.attributes.position.needsUpdate = true;
+        t.geo.setDrawRange(0, t.full ? TRAIL_N : t.ptr);
+      }
+    }
+
     if (pMesh[pc.id]) pMesh[pc.id].visible = isVis;
     if (pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
     if (pc.orbLine) pc.orbLine.visible = isVis && showOrb;
-
-    if (!isVis) {
-      if (trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
-      return;
-    }
-    if (lon !== undefined && showTrails && trails[pc.id]) {
-      const a = lon * DEG, x = Math.cos(a) * pc.R, y = Math.sin(a) * pc.R;
-      const t = trails[pc.id]; const i = t.ptr * 3;
-      t.buf[i] = x; t.buf[i + 1] = y; t.buf[i + 2] = 0;
-      t.ptr = (t.ptr + 1) % TRAIL_N;
-      if (!t.ptr) t.full = true;
-      t.geo.attributes.position.needsUpdate = true;
-      t.geo.setDrawRange(0, t.full ? TRAIL_N : t.ptr);
-    }
+    if (!isVis && trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
   });
 
   if (showAsp) buildAspects(lons); else aspG.clear();
@@ -1151,15 +1158,13 @@ function buildAspects(lons) {
     const diff = Math.min(norm(lons[id1] - lons[id2]), norm(lons[id2] - lons[id1]));
     for (let k = 0; k < ASP_A.length; k++) {
       if (Math.abs(diff - ASP_A[k]) < 8) {
-        const a1 = lons[id1] * DEG, a2 = lons[id2] * DEG;
-        const r1 = PCONF.find(p => p.id === id1).R;
-        const r2 = PCONF.find(p => p.id === id2).R;
+        // Extract exact XYZ positions instead of assuming Z=0
+        const p1 = pMesh[id1] ? pMesh[id1].position.clone() : new THREE.Vector3();
+        const p2 = pMesh[id2] ? pMesh[id2].position.clone() : new THREE.Vector3();
+        
         aspG.add(new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(a1) * r1, Math.sin(a1) * r1, 0),
-            new THREE.Vector3(Math.cos(a2) * r2, Math.sin(a2) * r2, 0)
-          ]),
-          new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: .2 })
+          new THREE.BufferGeometry().setFromPoints([p1, p2]),
+          new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: .35 })
         ));
         break;
       }
@@ -1398,7 +1403,6 @@ setInterval(spawnMeteor, 2400);
 // ── Planet rotation animation ──
 let animTime = 0;
 
-// ── Render loop ──
 const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
@@ -1430,16 +1434,11 @@ function animate() {
   lblR.render(scene, camera);
 }
 
-// ══════════════════════════
-//  INIT: load textures → build scene → start
-// ══════════════════════════
 Promise.all(texPromises).then(() => {
   buildAllPlanets();
-
   const ov = document.getElementById('loading-overlay');
   ov.classList.add('hide');
   setTimeout(() => ov.style.display = 'none', 700);
-
   animate();
 }).catch(err => {
   buildAllPlanets();
