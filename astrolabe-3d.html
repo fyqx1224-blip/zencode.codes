@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>星象座標系 · 3D高精地心天球儀</title>
+<title>星象座標系 · 3D高精物理地心儀</title>
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#F0C96A;--gold-d:#D4A843;--blue:#63A3ED;--blue-l:#90C4FF;
-  --bg:#03020A;--red:#FF6B6B;--green:#7DE09A;--purple:#C084FC;--cream:#F0EAD6;
+  --bg:#020204;--red:#FF6B6B;--green:#7DE09A;--purple:#C084FC;--cream:#F0EAD6;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Noto Sans TC',sans-serif;user-select:none;-webkit-user-select:none}
@@ -30,7 +30,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 #topbar{
   position:absolute;top:0;left:0;right:0;z-index:30;pointer-events:none;
   padding:14px 22px 36px;
-  background:linear-gradient(to bottom,rgba(3,2,10,.95) 0%,transparent 100%);
+  background:linear-gradient(to bottom,rgba(2,2,4,.95) 0%,transparent 100%);
   display:flex;align-items:flex-start;gap:20px
 }
 #tb-title{font-family:'Ma Shan Zheng',cursive;font-size:1.6rem;color:var(--gold);text-shadow:0 0 28px rgba(240,201,106,.55);letter-spacing:.18em}
@@ -57,7 +57,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 #lp{left:14px}#rp{right:14px}
 
 .pc{
-  background:rgba(3,2,10,.87);backdrop-filter:blur(24px) saturate(1.5);
+  background:rgba(2,2,4,.87);backdrop-filter:blur(24px) saturate(1.5);
   border:1px solid rgba(99,163,237,.16);border-radius:10px;padding:13px 15px
 }
 .pc:hover{border-color:rgba(99,163,237,.32)}
@@ -87,10 +87,9 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 /* ── MOBILE Bottom Drawer ── */
 @media (max-width:768px){
   .side-panel{display:none!important}
-
   #mobile-drawer{
     position:fixed;bottom:0;left:0;right:0;z-index:25;
-    background:rgba(3,2,10,.96);backdrop-filter:blur(28px);
+    background:rgba(2,2,4,.96);backdrop-filter:blur(28px);
     border-top:1px solid rgba(99,163,237,.22);
     border-radius:18px 18px 0 0;
     transform:translateY(calc(100% - 48px));
@@ -113,13 +112,11 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
     overflow-y:auto;padding:12px 14px 24px;display:flex;flex-direction:column;gap:10px;
     -webkit-overflow-scrolling:touch;
   }
-
   #topbar{padding:10px 14px 24px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
   #global-lang-toggle{top:12px;right:10px;gap:5px}
   .mlbtn{padding:4px 8px;font-size:.52rem}
-
   #legend{
     bottom:52px;left:8px;right:8px;transform:none;width:auto;
     overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;
@@ -131,7 +128,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 
 #legend{
   position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:none;
-  background:rgba(3,2,10,.8);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:30px;
+  background:rgba(2,2,4,.8);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:30px;
   padding:6px 22px;display:flex;gap:18px;align-items:center
 }
 .li{display:flex;align-items:center;gap:5px;font-size:.56rem;color:rgba(255,255,255,.42);white-space:nowrap}
@@ -143,11 +140,11 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .cb{width:37px;height:37px;border-radius:50%;background:rgba(99,163,237,.07);border:1px solid rgba(99,163,237,.25);color:rgba(144,196,255,.78);font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.22s;position:relative}
 .cb:hover{background:rgba(99,163,237,.18);box-shadow:0 0 14px rgba(99,163,237,.28)}
 .cb.on{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 16px rgba(99,163,237,.4)}
-.cb[data-title]:hover::after{content:attr(data-title);position:absolute;right:44px;top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(3,2,10,.94);border:1px solid rgba(99,163,237,.28);color:var(--blue-l);font-size:.56rem;padding:4px 9px;border-radius:4px;pointer-events:none}
+.cb[data-title]:hover::after{content:attr(data-title);position:absolute;right:44px;top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(2,2,4,.94);border:1px solid rgba(99,163,237,.28);color:var(--blue-l);font-size:.56rem;padding:4px 9px;border-radius:4px;pointer-events:none}
 
 #time-bar{
   position:absolute;bottom:62px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;
-  background:rgba(3,2,10,.84);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.09);border-radius:30px;
+  background:rgba(2,2,4,.84);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.09);border-radius:30px;
   padding:7px 20px;display:none;gap:12px;align-items:center;min-width:340px
 }
 #time-bar.show{display:flex}
@@ -195,7 +192,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000;letter-spacing:.05em}
 
 /* Loading overlay */
-#loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(3,2,10,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
+#loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(2,2,4,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
 #loading-overlay.hide{opacity:0;pointer-events:none}
 .loading-spinner{width:48px;height:48px;border:2px solid rgba(99,163,237,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -211,7 +208,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <!-- Loading overlay -->
 <div id="loading-overlay">
   <div class="loading-spinner"></div>
-  <div class="loading-text">載入星象引擎 (高精地心版)…</div>
+  <div class="loading-text">載入星象引擎 (極致物理渲染版)…</div>
 </div>
 
 <div class="top-left-panel">
@@ -230,7 +227,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="topbar">
   <div>
     <div id="tb-title" data-i18n="ui.tb_t">星象座標系 · 天球儀</div>
-    <div id="tb-sub" data-i18n="ui.tb_s">GEOCENTRIC ASTROLABE · 二十八宿 · 黃道十二宮</div>
+    <div id="tb-sub" data-i18n="ui.tb_s">GEOCENTRIC ASTROLABE · 物理光影宇宙</div>
   </div>
   <div class="tb-right">
     <div id="tb-info" style="display:none">
@@ -245,7 +242,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="mw">
 <div id="modal">
   <div class="ml" data-i18n="ui.title">星象座標系</div>
-  <div class="ms" data-i18n="ui.sub">高精地心儀 · ASTROLABE · 二十八宿</div>
+  <div class="ms" data-i18n="ui.sub">真3D地心儀 · 晝夜更替 · 二十八宿</div>
   <div class="fl" data-i18n="ui.name">命主姓名</div>
   <input type="text" id="f-nm" data-i18n-ph="ui.ph_name">
   <div class="fl" data-i18n="ui.date">出生日期（公曆）</div>
@@ -355,13 +352,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 /* 
  * =========================================================
  * 【核心校准区：紫炁历元常数 ZIQI_BASE】
- * 
- * 基于要求：2002年12月24日，紫炁落入氐宿3.1度（203.8度）。
- * 此时 d = 1088，通过 203.8 - (0.0351978 * 1088) 倒推校准。
- * 此常数可完美对准你的七政四余/子平万年历排盘数据。
+ * 基于参数倒推：2002年12月24日紫炁为氐宿3.1度（约204度）。
+ * 此时 d = 1087.5。 ZIQI_BASE = 204.1 - (0.0351978 * 1087.5) ≈ 165.8
+ * 已将基数精准校准至 165.8。如仍有毫秒级误差，请微调此数值。
  * =========================================================
  */
-const ZIQI_BASE = 165.47;
+const ZIQI_BASE = 165.83;
+
+/*
+ * 【立体空间参数：Z轴（黄纬）夸张倍数】
+ * 让含有黄纬的星体清晰地飞出/低于黄道环，产生震撼的三维立体感
+ */
+const Z_EXAGGERATION = 4.0;
 
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
 window.toggleDrawer = function() {
@@ -384,7 +386,7 @@ const LANGS = {
       eq:'赤道',ecl:'黃道',asc:'ASC 上升',dsc:'DSC 下降',mansion:'宿',house:'宮',
       p_zod:'視黃道度数 (Geo)',p_sum:'命盤分析摘要',p_asc:'黃道十二宮 · 宮位星曜',p_pl:'星體',
       tb_t:'星象座標系 · 物理地心儀',tb_s:'GEOCENTRIC ASTROLABE & DAY-NIGHT CYCLES',
-      c_zen:'沉浸星空',c_spin:'自動旋轉',c_sys:'切換回歸/恆星',c_out:'三王星',c_ecl:'黃道環',c_eq:'赤道環',c_man:'二十八宿',c_pl:'星體顯示',c_asp:'相位連線',c_tm:'時間推移',c_orb:'顯示軌道',
+      c_zen:'沉浸星空',c_spin:'自動旋轉',c_sys:'切換回歸/恆星',c_out:'三王星',c_ecl:'黃道環',c_eq:'赤道環',c_man:'二十八宿',c_pl:'星體顯示',c_asp:'相位連線',c_tm:'時間推移',c_orb:'顯示軌道(垂線)',
       t_play:'▶ 播放',t_pause:'⏸ 暫停',t_reset:'重置',t_curr:'當前時間',
       sys_t:'歸',sys_s:'恆',out_b:'王',s_man:'宿',s_pl:'政'
     },
@@ -411,7 +413,7 @@ const LANGS = {
       eq:'赤道',ecl:'黄道',asc:'ASC 上升',dsc:'DSC 下降',mansion:'宿',house:'宫',
       p_zod:'视黄道度数 (Geo)',p_sum:'命盘分析摘要',p_asc:'黄道十二宫 · 宫位星曜',p_pl:'星体',
       tb_t:'星象坐标系 · 物理地心仪',tb_s:'GEOCENTRIC ASTROLABE & DAY-NIGHT CYCLES',
-      c_zen:'沉浸星空',c_spin:'自动旋转',c_sys:'切换回归/恒星',c_out:'三王星',c_ecl:'黄道环',c_eq:'赤道环',c_man:'二十八宿',c_pl:'星体显示',c_asp:'相位连线',c_tm:'时间推移',c_orb:'显示轨道',
+      c_zen:'沉浸星空',c_spin:'自动旋转',c_sys:'切换回归/恒星',c_out:'三王星',c_ecl:'黄道环',c_eq:'赤道环',c_man:'二十八宿',c_pl:'星体显示',c_asp:'相位连线',c_tm:'时间推移',c_orb:'显示轨道(垂线)',
       t_play:'▶ 播放',t_pause:'⏸ 暂停',t_reset:'重置',t_curr:'当前时间',
       sys_t:'归',sys_s:'恒',out_b:'王',s_man:'宿',s_pl:'政'
     },
@@ -438,7 +440,7 @@ const LANGS = {
       eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mansion:' M.',house:'H.',
       p_zod:'Geocentric Longitude',p_sum:'Chart Summary',p_asc:'Houses & Planets',p_pl:'Planets',
       tb_t:'Astrolabe 3D',tb_s:'GEOCENTRIC ASTROLABE & DAY-NIGHT CYCLES',
-      c_zen:'Zen Mode',c_spin:'Auto Spin',c_sys:'Tropical/Sidereal',c_out:'Outer Planets',c_ecl:'Ecliptic',c_eq:'Equator',c_man:'Mansions',c_pl:'Planets',c_asp:'Aspects',c_tm:'Time Scrubber',c_orb:'Planet Orbits',
+      c_zen:'Zen Mode',c_spin:'Auto Spin',c_sys:'Tropical/Sidereal',c_out:'Outer Planets',c_ecl:'Ecliptic',c_eq:'Equator',c_man:'Mansions',c_pl:'Planets',c_asp:'Aspects',c_tm:'Time Scrubber',c_orb:'Show Spatial Lines',
       t_play:'▶ Play',t_pause:'⏸ Pause',t_reset:'Reset',t_curr:'Current Time',
       sys_t:'Tro',sys_s:'Sid',out_b:'Out',s_man:'M.',s_pl:'P.'
     },
@@ -465,7 +467,7 @@ const LANGS = {
       eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mansion:'수',house:'궁',
       p_zod:'시황도수 (Geo)',p_sum:'차트 요약',p_asc:'12궁 및 행성',p_pl:'행성',
       tb_t:'천구의 좌표계',tb_s:'입체 천구의 · 28수 · 황도 12궁',
-      c_zen:'몰입 모드',c_spin:'자동 회전',c_sys:'회귀/항성 황도',c_out:'외행성',c_ecl:'황도환',c_eq:'적도환',c_man:'28수',c_pl:'행성 표시',c_asp:'위상 연결',c_tm:'시간 이동',c_orb:'행성 궤도',
+      c_zen:'몰입 모드',c_spin:'자동 회전',c_sys:'회귀/항성 황도',c_out:'외행성',c_ecl:'황도환',c_eq:'적도환',c_man:'28수',c_pl:'행성 표시',c_asp:'위상 연결',c_tm:'시간 이동',c_orb:'공간 수직선',
       t_play:'▶ 재생',t_pause:'⏸ 일시정지',t_reset:'초기화',t_curr:'현재 시간',
       sys_t:'회',sys_s:'항',out_b:'외',s_man:'수',s_pl:'성'
     },
@@ -581,9 +583,8 @@ function calcAll(T, jd, lng, lat, isSid) {
   const sunGeo = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
   
   geo.sun = sunGeo;
-  geo.sun_lat = 0;
+  geo.sun_lat = 0; // Sun has no ecliptic latitude
   
-  // 地心视角的太阳位置（反推地球位置给计算行星用）
   const xe = 1.0 * Math.cos(norm(sunGeo + 180) * DEG);
   const ye = 1.0 * Math.sin(norm(sunGeo + 180) * DEG);
 
@@ -700,12 +701,12 @@ scene.background = new THREE.Color(0x020204);
 
 // 视距回归 Astrolabe 尺寸
 const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 2000);
-camera.position.set(0, 50, 140);
+camera.position.set(0, 50, 110);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
-// 启用物理光影以实现地球昼夜线
+// 启用物理光影以实现地球昼夜线 (ToneMapping)
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;  
 wrap.appendChild(renderer.domElement);
@@ -718,8 +719,8 @@ wrap.appendChild(lblR.domElement);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-// 保留微弱的Bloom用于恒星和 UI 线条
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.8, 0.4, 0.85);
+// 【削弱光溢】降低强度和阈值，确保光线不刺眼
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.4, 0.85);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -747,16 +748,16 @@ scene.add(new THREE.Mesh(
   new THREE.MeshBasicMaterial({ color: 0x100828, transparent: true, opacity: .2, side: THREE.DoubleSide })
 ));
 
-// 极低的全局环境光，确保地球和行星的暗面是黑的（产生真实昼夜/盈亏相）
-const ambLight = new THREE.AmbientLight(0xffffff, 0.08); 
+// 极低环境光，使得行星和月球拥有真实的暗面（昼夜相位）
+const ambLight = new THREE.AmbientLight(0xffffff, 0.05); 
 scene.add(ambLight);
 
 // ══════════════════════════
-//  TEXTURE LOADER (Stemkoski/MrDoob 高精贴图)
+//  TEXTURE LOADER (Stemkoski/MrDoob/ThreeGlobe 稳定高精图源)
 // ══════════════════════════
 const texLoader = new THREE.TextureLoader();
 const TEX_URLS = {
-  moon:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/moon_1024.jpg',
+  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
   mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
   venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
@@ -809,6 +810,7 @@ const OBL = 23.4365 * DEG;
 
 // ── Equator ──
 const eqG = new THREE.Group();
+// 赤道面平躺在 X-Z 平面
 eqG.rotation.x = Math.PI / 2;
 scene.add(eqG);
 eqG.add(new THREE.Mesh(
@@ -844,9 +846,10 @@ lbl2D(eqG, 'leq', 42, 0.4, 'ui', 'eq');
 
 // ── Ecliptic ──
 const eclG = new THREE.Group();
-eclG.rotation.x = Math.PI / 2;
-eclG.rotation.y = OBL;
+// 【核心光影修复】：精确倾斜黄道环 23.4度。这使得太阳（在黄道上运行）能够真实地直射地球南北回归线！
+eclG.rotation.x = (Math.PI / 2) - OBL;
 scene.add(eclG);
+
 eclG.add(new THREE.Mesh(
   new THREE.TorusGeometry(40, .09, 16, 200),
   new THREE.MeshBasicMaterial({ color: 0xFFD700, transparent: true, opacity: .88 })
@@ -882,6 +885,7 @@ eclG.add(houseG);
 
 // ── 二十八宿 ──
 const manG = new THREE.Group();
+// 宿度跟随赤道，平躺于 X-Z 平面
 manG.rotation.x = Math.PI / 2;
 scene.add(manG);
 const mR = 54, mO = 57.5;
@@ -912,27 +916,27 @@ eclG.add(plG);
 const aspG = new THREE.Group();
 plG.add(aspG);
 
-// 【紧凑级地心体系】三王星拉入内圈，确保它们处于黄道40以内或边缘
+// 【紧凑地心阵型】将三王星全部拉入黄道环(R=40)及宫位系统内
 const PCONF = [
-  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.7,  type:'sat',    isOut:false, R:9  },  
-  {id:'mercury', ic:'☿', col:0xAAAAAA, sz:0.8,  type:'planet', isOut:false, R:13 },
-  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.2,  type:'planet', isOut:false, R:17 },
-  {id:'sun',     ic:'☉', col:0xFFaa00, sz:3.2,  type:'star',   isOut:false, R:21 },
-  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.9,  type:'planet', isOut:false, R:25 },
-  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.2,  type:'planet', isOut:false, R:29 },
+  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.6,  type:'sat',    isOut:false, R:11 },  
+  {id:'mercury', ic:'☿', col:0xAAAAAA, sz:0.7,  type:'planet', isOut:false, R:14 },
+  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.0,  type:'planet', isOut:false, R:17 },
+  {id:'sun',     ic:'☉', col:0xFFaa00, sz:2.5,  type:'star',   isOut:false, R:21 },
+  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.8,  type:'planet', isOut:false, R:25 },
+  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.0,  type:'planet', isOut:false, R:29 },
   {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.8,  type:'planet', isOut:false, R:33 },
-  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.5,  type:'planet', isOut:true , R:37 },
-  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.4,  type:'planet', isOut:true , R:41 },
-  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.5,  type:'planet', isOut:true , R:45 },
-  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.5,  type:'fict',   isOut:false, R:11 },
-  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.5,  type:'fict',   isOut:false, R:11 },
-  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.5,  type:'fict',   isOut:false, R:11 },
-  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.5,  type:'fict',   isOut:false, R:11 },
+  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.3,  type:'planet', isOut:true , R:37 },
+  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.2,  type:'planet', isOut:true , R:41 },
+  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.4,  type:'planet', isOut:true , R:45 },
+  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.4,  type:'fict',   isOut:false, R:11 },
+  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.4,  type:'fict',   isOut:false, R:11 },
+  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.4,  type:'fict',   isOut:false, R:11 },
+  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.4,  type:'fict',   isOut:false, R:11 },
 ];
 
 const pMesh = {}, pLbl = {};
 
-// 地球现在是绝对中心，接受太阳直射并自转
+// 地球是天球仪的绝对中心 (0,0,0)
 let earthG = new THREE.Group();
 scene.add(earthG);
 let earthMesh = null;
@@ -941,12 +945,13 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-    roughness: 0.9, 
+    roughness: 0.8, // 漫反射，让昼夜交界线更自然
     metalness: 0.1,
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthG.add(earthMesh);
-
+  
+  // 大气层透明度
   earthG.add(new THREE.Mesh(
     new THREE.SphereGeometry(1.65, 32, 32),
     new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .12, blending: THREE.AdditiveBlending, side: THREE.BackSide })
@@ -961,14 +966,9 @@ function buildPlanetMesh(pc) {
   if (pc.type === 'fict') {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
-    mat = new THREE.MeshStandardMaterial({
-      color: 0xFFaa44,
-      emissive: new THREE.Color(0xFFaa44),
-      emissiveIntensity: 3.5, 
-      roughness: 0.1
-    });
+    mat = new THREE.MeshBasicMaterial({ color: 0xFFF5CC }); // 太阳恒亮
   } else {
-    // 【核心物理光影】除了太阳，其他实体星不再自发光
+    // 物理实体材质，月球和行星均靠反射太阳光
     mat = new THREE.MeshStandardMaterial({
       map: tex || null,
       color: tex ? 0xffffff : pc.col,
@@ -983,11 +983,6 @@ function buildPlanetMesh(pc) {
     sphere.add(new THREE.Mesh(
       new THREE.TorusGeometry(pc.sz * 1.85, .1, 8, 32),
       new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .4 })
-    ));
-  } else if (pc.id !== 'sun') {
-    sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 1.05, 32, 32),
-      new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: .06, blending: THREE.AdditiveBlending, side: THREE.BackSide })
     ));
   }
 
@@ -1004,9 +999,9 @@ function buildPlanetMesh(pc) {
     sphere.add(ring);
   }
 
-  // 太阳作为中心强光源，照耀一切
+  // 太阳内嵌物理点光源，照耀一切
   if (pc.id === 'sun') {
-    const sunPointLight = new THREE.PointLight(0xFFF5CC, 3500, 0, 1.5);
+    const sunPointLight = new THREE.PointLight(0xFFF5CC, 1500, 0, 2.0); // 降低强度和衰减，视觉更柔和
     sphere.add(sunPointLight);
   }
 
@@ -1031,14 +1026,13 @@ function buildAllPlanets() {
     plG.add(obj);
     pLbl[pc.id] = obj;
 
-    // 地心等距圆盘视轨道
-    const orbLine = new THREE.LineLoop(
-      new THREE.BufferGeometry(),
-      new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: 0.25 })
-    );
-    orbLine.visible = false;
-    plG.add(orbLine);
-    pc.orbLine = orbLine;
+    // 【垂直辅助线 Drop Line】：展示黄纬产生的上下空间区别
+    const dropGeo = new THREE.BufferGeometry();
+    const dropMat = new THREE.LineBasicMaterial({ color: pc.col, transparent: true, opacity: 0.5 });
+    const dropLine = new THREE.Line(dropGeo, dropMat);
+    dropLine.visible = false;
+    plG.add(dropLine);
+    pc.dropLine = dropLine;
   });
 
   window.switchLang(currLang);
@@ -1047,8 +1041,7 @@ function buildAllPlanets() {
 // ══════════════════════════
 //  STATE & DATA MAPPING 
 // ══════════════════════════
-// 默认打开三王星显示
-let showAsp = false, showOrb = false, isSidereal = false, showOut = true;
+let showAsp = true, showOrb = false, isSidereal = false, showOut = true;
 let userData = {};
 let curGeo = {}, currentLST = 0;
 let playingTime = false, playInterval = null;
@@ -1057,7 +1050,7 @@ let idleSpin = 0;
 function placePlanets(geo, lst) {
   currentLST = lst;
   
-  // 地球根据地方恒星时精准自转，结合太阳直射产生昼夜线
+  // 地球随地方恒星时自转，确保不同时段出生的盘，光斑打在不同的经度
   if(earthG) earthG.rotation.y = (lst * DEG) + idleSpin;
 
   PCONF.forEach(pc => {
@@ -1065,35 +1058,29 @@ function placePlanets(geo, lst) {
     const lon = geo[pc.id];
     if (lon === undefined) return;
 
-    // 根据黄经黄纬映射到3D空间 (地心视角，纯正Astrolabe逻辑)
     const a = lon * DEG;
+    // 提取黄纬，展现三维上下空间
     const beta = (geo[pc.id+'_lat'] || 0) * DEG;
 
     const rProj = Math.cos(beta) * pc.R;
     const x = Math.cos(a) * rProj;
     const y = Math.sin(a) * rProj;
-    const z = Math.sin(beta) * pc.R;
+    // 【夸张黄纬】真实黄纬太小肉眼难辨，乘以倍数拉开视觉高低差
+    const z = Math.sin(beta) * pc.R * (pc.id==='moon' ? 1.5 : Z_EXAGGERATION);
 
     if (pMesh[pc.id]) pMesh[pc.id].position.set(x, y, z);
     if (pLbl[pc.id]) pLbl[pc.id].position.set(x, y, z);
     if (pMesh[pc.id]) pMesh[pc.id].visible = isVis;
     if (pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
 
-    // 生成地心轨道环 (Moon 会根据升交点自动倾斜 5.145 度)
-    if (pc.orbLine) {
-        pc.orbLine.visible = isVis && showOrb;
-        if (pc.orbLine.visible) {
-            const pts = [];
-            const inc = (pc.id === 'moon') ? 5.145 : 0; 
-            const node = (pc.id === 'moon') ? geo.ketu : 0;
-            
-            for(let i=0; i<=128; i++) {
-                const ang = (i/128) * Math.PI * 2;
-                const lat = inc * Math.sin(ang - node * DEG) * DEG;
-                const rp = Math.cos(lat) * pc.R;
-                pts.push(new THREE.Vector3(Math.cos(ang)*rp, Math.sin(ang)*rp, Math.sin(lat)*pc.R));
-            }
-            pc.orbLine.geometry.setFromPoints(pts);
+    // 动态生成垂直于黄道的 Drop Line (空间垂线)
+    if (pc.dropLine) {
+        pc.dropLine.visible = isVis && showOrb && Math.abs(z) > 0.1;
+        if (pc.dropLine.visible) {
+            pc.dropLine.geometry.setFromPoints([
+                new THREE.Vector3(x, y, z),
+                new THREE.Vector3(x, y, 0)
+            ]);
         }
     }
   });
@@ -1106,7 +1093,7 @@ function placePlanets(geo, lst) {
     houseG.remove(c);
   }
   
-  // 绘制从地球向外延伸的十二宫切割线
+  // 宫位经线从地球射出，划分立体空间
   const asc = geo.asc;
   for (let i = 0; i < 12; i++) {
     const a = norm(asc + i * 30) * DEG;
@@ -1343,10 +1330,10 @@ tog('cb-ecl', () => eclG.visible = true, () => eclG.visible = false);
 tog('cb-eq',  () => eqG.visible = true,  () => eqG.visible = false);
 tog('cb-man', () => manG.visible = true,  () => manG.visible = false);
 tog('cb-pl',  () => plG.visible = true,   () => plG.visible = false);
-tog('cb-asp', () => { showAsp = true; buildAspects(curGeo); }, () => { showAsp = false; aspG.clear(); }, false);
+tog('cb-asp', () => { showAsp = true; buildAspects(curGeo); }, () => { showAsp = false; aspG.clear(); }, true);
 tog('cb-tm',  () => document.getElementById('time-bar').classList.add('show'), () => { document.getElementById('time-bar').classList.remove('show'); resetTime(); }, false);
 tog('cb-orb', () => { showOrb = true; if(userData.jd) updatePositions(); },
-               () => { showOrb = false; PCONF.forEach(pc => { if (pc.orbLine) pc.orbLine.visible = false; }); }, false);
+               () => { showOrb = false; PCONF.forEach(pc => { if (pc.dropLine) pc.dropLine.visible = false; }); }, false);
 
 const bSys = document.getElementById('cb-sys');
 tog('cb-sys',
@@ -1371,14 +1358,13 @@ function animate() {
       if (earthG) earthG.rotation.y = (currentLST * DEG) + idleSpin;
   }
 
-  if (pMesh.sun) pMesh.sun.rotation.y += dt * 0.04;
-  if (pMesh.jupiter) pMesh.jupiter.rotation.y += dt * 0.18;
-  if (pMesh.saturn) pMesh.saturn.rotation.y += dt * 0.15;
-  if (pMesh.mars) pMesh.mars.rotation.y += dt * 0.08;
-  if (pMesh.venus) pMesh.venus.rotation.y += dt * 0.02;
-  if (pMesh.mercury) pMesh.mercury.rotation.y += dt * 0.05;
-  if (pMesh.uranus) pMesh.uranus.rotation.y += dt * 0.12;
-  if (pMesh.neptune) pMesh.neptune.rotation.y += dt * 0.10;
+  // 赋予所有星体生动的自转
+  Object.values(pMesh).forEach((mesh, index) => {
+      if(mesh && mesh.rotation) {
+          // 每个星体的自转速度略微不同，制造错落感
+          mesh.rotation.y += dt * (0.1 + (index * 0.02)); 
+      }
+  });
 
   composer.render(dt);
   lblR.render(scene, camera);
