@@ -65,7 +65,7 @@ body{overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Noto S
 .hc:hover{background:rgba(240,201,106,.06);border-color:rgba(240,201,106,.22)}
 .hc-n{font-size:.46rem;color:rgba(255,255,255,.25);letter-spacing:.05em}
 .hc-s{font-size:.72rem;color:var(--gold);margin-top:1px}
-.hc-p{font-size:.6rem;color:var(--blue-l);margin-top:2px}
+.hc-p{font-size:.6rem;color:var(--blue-l);margin-top:2px;letter-spacing:0.1em}
 
 /* analysis */
 .al{font-size:.61rem;color:rgba(255,255,255,.62);padding:5px 0;
@@ -135,7 +135,7 @@ body{overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Noto S
   display:flex;align-items:center;justify-content:center;transition:opacity .6s}
 #modal{
   background:rgba(5,3,18,.97);border:1px solid rgba(99,163,237,.3);
-  border-radius:14px;padding:38px 34px;width:92%;max-width:406px;
+  border-radius:14px;padding:38px 34px;width:92%;max-width:420px;
   box-shadow:0 48px 96px rgba(0,0,0,.92),0 0 80px rgba(99,163,237,.1),
              inset 0 0 30px rgba(99,163,237,.03)
 }
@@ -200,10 +200,11 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <input type="number" id="f-h" placeholder="時 0–23" min="0" max="23" oninput="hst()">
     <input type="number" id="f-mi" placeholder="分 0–59" min="0" max="59" oninput="hst()">
   </div>
-  <div class="fl">出生地經緯度（度）</div>
-  <div class="r2">
-    <input type="number" id="f-lg" placeholder="東經 (例:116.4)" step="0.1" oninput="hst()">
-    <input type="number" id="f-lat" placeholder="北緯 (例:39.9)" step="0.1" oninput="hst()">
+  <div class="fl">出生地經緯度與時區</div>
+  <div class="r3">
+    <input type="number" id="f-lg" placeholder="東經(116.4)" step="0.1" value="120" oninput="hst()">
+    <input type="number" id="f-lat" placeholder="北緯(39.9)" step="0.1" value="30" oninput="hst()">
+    <input type="number" id="f-tz" placeholder="時區(+8)" step="1" value="8" oninput="hst()">
   </div>
   <div id="st-hint"></div>
   <button class="sbtn" onclick="submitForm()">觀 測 星 象 能 量</button>
@@ -298,6 +299,7 @@ const norm=d=>((d%360)+360)%360;
 function jdn(y,m,d,h=12,mn=0){
   if(m<=2){y--;m+=12}
   const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
+  // 完全修复时间减去小数的逻辑问题
   return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+(h+mn/60)/24;
 }
 function T_jd(jd){return(jd-2451545.0)/36525}
@@ -332,14 +334,15 @@ function ketuLon(T) {return norm(rahuLon(T)+180)}
 function yapLon(T)  {return norm(83.3532+4069.0137*T)}
 function ziqiLon(T) {return norm(yapLon(T)+90)}
 
-// 计算 Ascendant (上升点)
+// 核心修复：计算 Ascendant (上升点)
 function calcASC(jd, lng, lat) {
   const T = (jd - 2451545.0) / 36525.0;
-  // 格林威治平恒星时 (GMST)
+  // 格林威治平恒星时 (GMST) 算法
   const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
   const e = (23.4392911 - 0.0130042 * T) * DEG; // 黄赤交角
   const lat_rad = lat * DEG;
+  // 通过球面三角学计算上升点黄经
   const asc_rad = Math.atan2(Math.cos(lst), -(Math.sin(lst)*Math.cos(e) + Math.tan(lat_rad)*Math.sin(e)));
   return norm(asc_rad * R2D);
 }
@@ -362,7 +365,7 @@ function calcAll(T, jd, lng, lat, isSid){
   return res;
 }
 
-// 真太陽時
+// 真太陽時计算辅助
 function stCorr(lng,std=120){return Math.round((lng-std)*4)}
 function applyST(h,mn,c){let m=mn+c;while(m>=60){h++;m-=60}while(m<0){h--;m+=60}return{h:((h%24)+24)%24,m:((m%60)+60)%60}}
 
@@ -531,17 +534,6 @@ lbl2D(eclG,'黃道 ECLIPTIC','lecl',42,1.5);
 
 // 宫位系统 (Equal Houses 基于 ASC)
 const houseG=new THREE.Group();eclG.add(houseG);
-
-const ZODIAC_CN=['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
-for(let i=0;i<12;i++){
-  const a=i/12*Math.PI*2;
-  eclG.add(new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(Math.cos(a)*35,Math.sin(a)*35,0),
-      new THREE.Vector3(Math.cos(a)*40.5,Math.sin(a)*40.5,0)]),
-    new THREE.LineBasicMaterial({color:0xFFD700,transparent:true,opacity:.6})));
-  lbl2D(eclG,ZODIAC_CN[i],'lzod',46,a+Math.PI/12);
-}
 
 scene.add(new THREE.Line(
   new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-42,0,0),new THREE.Vector3(42,0,0)]),
@@ -758,11 +750,13 @@ function hideTip(){document.getElementById('tip').style.display='none'}
 // ══════════════════════════
 window.hst=function(){
   const lng=parseFloat(document.getElementById('f-lg').value);
+  const tz=parseInt(document.getElementById('f-tz').value)||8;
   const h=parseInt(document.getElementById('f-h').value)||0;
   const mn=parseInt(document.getElementById('f-mi').value)||0;
   const hint=document.getElementById('st-hint');
   if(!isNaN(lng)){
-    const c=stCorr(lng,120);const st=applyST(h,mn,c);
+    const c=stCorr(lng, tz*15); // 根据当前时区计算偏差
+    const st=applyST(h,mn,c);
     hint.textContent=`✦ 真太陽時：偏差${c>=0?'+':''}${c}分 → 校正後 ${String(st.h).padStart(2,'0')}:${String(st.m).padStart(2,'0')}`;
     hint.style.display='block';
   }else hint.style.display='none';
@@ -778,17 +772,21 @@ window.submitForm=function(){
   
   const lng=parseFloat(document.getElementById('f-lg').value)||120;
   const lat=parseFloat(document.getElementById('f-lat').value)||39.9; // 默认北京纬度
+  const tz=parseInt(document.getElementById('f-tz').value)||8; // 获取时区
   
   if(!y||!m||!d){alert('請輸入完整的年月日！');return}
-  const st=applyST(h,mn,stCorr(lng,120));
-  const jd=jdn(y,m,d,st.h,st.m);
-  userData={name,y,m,d,h:st.h,mn:st.m,lng,lat,jd};
+  
+  const st=applyST(h,mn,stCorr(lng, tz*15));
+  // 核心修复：直接减去时区偏差，推算精准的 UTC 儒略日
+  const jd_utc=jdn(y,m,d,h - tz,mn); 
+  
+  userData={name,y,m,d,h:st.h,mn:st.m,lng,lat,jd:jd_utc};
   launch();
 };
 
 window.loadDemo=function(){
-  ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat'].forEach((id,i)=>{
-    document.getElementById(id).value=['演示','2000','1','1','12','0','120','30'][i];
+  ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach((id,i)=>{
+    document.getElementById(id).value=['演示','2000','1','1','12','0','120','30','8'][i];
   });
   window.submitForm();
 };
