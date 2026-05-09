@@ -358,7 +358,7 @@ window.toggleDrawer = function() {
 };
 
 // ══════════════════════════
-//  I18N (国际化及南罗北计修正)
+//  I18N (南罗北计修正)
 // ══════════════════════════
 const LANGS = {
   'zh-TW': {
@@ -481,17 +481,14 @@ window.switchLang = function(l) {
   document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
   const d = LANGS[l];
   
-  // 更新普通文本
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.innerHTML = d[k[0]][k[1]];
   });
-  // 更新占位符
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const k = el.getAttribute('data-i18n-ph').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.placeholder = d[k[0]][k[1]];
   });
-  // 更新 3D 悬浮标签
   document.querySelectorAll('[data-3d-type]').forEach(el => {
     const type = el.getAttribute('data-3d-type');
     const id = el.getAttribute('data-3d-id');
@@ -501,12 +498,10 @@ window.switchLang = function(l) {
     if (type === 'ui')  el.innerHTML = d.ui[id];
     if (type === 'raw') el.innerHTML = id;
   });
-  // 更新控制器 Title 悬浮提示 (右下角完美同步)
   document.querySelectorAll('[data-i18n-title]').forEach(el => {
     const k = el.getAttribute('data-i18n-title').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.setAttribute('data-title', d[k[0]][k[1]]);
   });
-  // 更新控制器内部文字 (右下角完美同步)
   document.querySelectorAll('[data-i18n-txt]').forEach(el => {
     const k = el.getAttribute('data-i18n-txt').split('.');
     if (d[k[0]] && d[k[0]][k[1]] !== undefined) el.innerHTML = d[k[0]][k[1]];
@@ -559,7 +554,13 @@ function getHeliocentric(id, d) {
   const E = solveKepler(M * DEG, p.e);
   const xv = p.a * (Math.cos(E) - p.e);
   const yv = p.a * (Math.sqrt(1 - p.e * p.e) * Math.sin(E));
-  return { l: norm(Math.atan2(yv, xv) * R2D + p.w), r: Math.sqrt(xv * xv + yv * yv) };
+  const r = Math.sqrt(xv * xv + yv * yv);
+  const l = norm(Math.atan2(yv, xv) * R2D + p.w);
+  // Heliocentric latitude approximation for visually tilted orbit
+  const lat = p.i * Math.sin((l - p.Node) * DEG);
+  const z = r * Math.sin(lat * DEG);
+  const r_xy = r * Math.cos(lat * DEG);
+  return { l, r: r_xy, z };
 }
 
 function calcAll(T, jd, lng, lat, isSid) {
@@ -569,6 +570,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   const earth = getHeliocentric('sun', d);
   const sunGeo = norm(earth.l);
   res.sun = sunGeo;
+  res.sun_lat = 0;
   const xe = earth.r * Math.cos((sunGeo + 180) * DEG);
   const ye = earth.r * Math.sin((sunGeo + 180) * DEG);
 
@@ -588,19 +590,31 @@ function calcAll(T, jd, lng, lat, isSid) {
     const h = getHeliocentric(id, d);
     const xp = h.r * Math.cos(h.l * DEG);
     const yp = h.r * Math.sin(h.l * DEG);
-    res[id] = norm(Math.atan2(yp - ye, xp - xe) * R2D);
+    const X = xp - xe;
+    const Y = yp - ye;
+    const Z = h.z;
+    res[id] = norm(Math.atan2(Y, X) * R2D);
+    res[id+'_lat'] = Math.atan2(Z, Math.sqrt(X*X + Y*Y)) * R2D;
   });
 
-  // 交点修正 (南罗北计)：Ketu 是北交点(Ascending)，Rahu 是南交点(Descending)
+  // 南罗北计 (South Rahu, North Ketu) 
+  // ascNode is the Ascending (North) Node -> Ketu
   const ascNode = norm(125.04452 - 0.0529538 * d);
   res.ketu = ascNode;          
   res.rahu = norm(ascNode + 180); 
 
-  // 月孛 (Yapo / Lunar Apogee) 
-  res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
+  // 月球及交点的地心纬度 (黄白交角 5.145度)
+  res.moon_lat = 5.145 * Math.sin((res.moon - res.ketu) * DEG);
+  res.rahu_lat = 0;
+  res.ketu_lat = 0;
 
-  // 紫炁 (Ziqi / Purple Qi) — 修正误差，周期为精准的28年，J2000历元微调
-  res.ziqi = norm(212.8 + 0.035222 * d); 
+  // 月孛 (Yapo / Lunar Apogee)
+  res.yapo = norm(83.3532465 + 0.11140353 * d + 180);
+  res.yapo_lat = 5.145 * Math.sin((res.yapo - res.ketu) * DEG);
+
+  // 紫炁 (Ziqi) 精确修正：周期28年，基准常数微调至215.3
+  res.ziqi = norm(215.3 + 0.035195 * d); 
+  res.ziqi_lat = 0;
 
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
@@ -612,7 +626,7 @@ function calcAll(T, jd, lng, lat, isSid) {
 
   if (isSid) {
     const aya = 24.03 + d * (50.29 / 36525);
-    for (let k in res) res[k] = norm(res[k] - aya);
+    for (let k in res) { if(typeof res[k]==='number') res[k] = norm(res[k] - aya); }
   }
   return res;
 }
@@ -696,8 +710,8 @@ wrap.appendChild(lblR.domElement);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-// 泛光阈值控制在0.45，这样发光系数低的行星会隐隐泛光，而太阳会极度耀眼
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.2, 0.5, 0.45);
+// Bloom 泛光：Threshold 设置为 0.55，确保只有高自发光的太阳会极度耀眼，普通行星微光
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.35, 0.5, 0.55);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -709,7 +723,6 @@ OCtrl.maxDistance = 230;
 OCtrl.autoRotate = false;
 OCtrl.autoRotateSpeed = 0.45;
 
-// ── Stars ──
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
   for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - .5) * sp;
@@ -720,24 +733,14 @@ function mkStars(n, sz, sp, col, op) {
 scene.add(mkStars(4000, .44, 620, 0xCCDDFF, .55));
 scene.add(mkStars(1200, .88, 510, 0xFFFFFF, .36));
 scene.add(mkStars(400, 1.35, 460, 0xFFEEDD, .30));
-{
-  const bp = [];
-  for (let i = 0; i < 100; i++) {
-    const a = Math.random() * Math.PI * 2, b = Math.random() * Math.PI;
-    const r = 120 + Math.random() * 90;
-    bp.push(Math.sin(b) * Math.cos(a) * r, Math.cos(b) * r, Math.sin(b) * Math.sin(a) * r);
-  }
-  const sg = new THREE.BufferGeometry();
-  sg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(bp), 3));
-  scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ size: 2.6, color: 0xFFFFFF, transparent: true, opacity: .82 })));
-}
+
 scene.add(new THREE.Mesh(
   new THREE.TorusGeometry(215, 30, 8, 128),
   new THREE.MeshBasicMaterial({ color: 0x100828, transparent: true, opacity: .2, side: THREE.DoubleSide })
 ));
 
 // ══════════════════════════
-//  TEXTURE LOADER
+//  TEXTURE LOADER (精细贴图)
 // ══════════════════════════
 const texLoader = new THREE.TextureLoader();
 const TEX_URLS = {
@@ -749,7 +752,6 @@ const TEX_URLS = {
   mars:    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
   jupiter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
   saturn:  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg',
-  saturn_ring: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Saturn%27s_rings_pale_blue_dot.jpg/512px-Saturn%27s_rings_pale_blue_dot.jpg',
   uranus:  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Uranus2.jpg/1024px-Uranus2.jpg',
   neptune: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/NEPTUNE3.jpg/1024px-NEPTUNE3.jpg',
   pluto:   'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Pluto_in_True_Color_-_High-Res.jpg/1024px-Pluto_in_True_Color_-_High-Res.jpg',
@@ -772,6 +774,27 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
   })
 );
 
+// Procedural Saturn Ring Texture
+function getSaturnRingTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    const cx = 256, cy = 256;
+    const grad = ctx.createRadialGradient(cx, cy, 100, cx, cy, 250);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(0.1, 'rgba(180,160,130,0.85)');
+    grad.addColorStop(0.3, 'rgba(210,190,160,0.95)');
+    grad.addColorStop(0.5, 'rgba(0,0,0,0)'); // Cassini division
+    grad.addColorStop(0.55, 'rgba(230,210,180,0.9)');
+    grad.addColorStop(0.8, 'rgba(180,160,130,0.6)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 512, 512);
+    const tex = new THREE.CanvasTexture(canvas);
+    return tex;
+}
+const saturnRingProcedural = getSaturnRingTexture();
+
 // ── Earth group ──
 const earthG = new THREE.Group();
 scene.add(earthG);
@@ -783,17 +806,16 @@ function buildEarth() {
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     shininess: 12,
     specular: new THREE.Color(0x224488),
+    emissive: new THREE.Color(0x1a4a9a),
+    emissiveIntensity: 0.1
   });
-  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.88, 48, 48), mat);
+  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.2, 48, 48), mat);
   earthG.add(earthMesh);
 
+  // 大气层透明度极高，不遮挡地表
   earthG.add(new THREE.Mesh(
-    new THREE.SphereGeometry(2.1, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .06, blending: THREE.AdditiveBlending, side: THREE.BackSide })
-  ));
-  earthG.add(new THREE.Mesh(
-    new THREE.SphereGeometry(1.90, 18, 18),
-    new THREE.MeshBasicMaterial({ color: 0x2266AA, wireframe: true, transparent: true, opacity: .12 })
+    new THREE.SphereGeometry(1.35, 24, 24),
+    new THREE.MeshBasicMaterial({ color: 0x4488CC, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, side: THREE.BackSide })
   ));
 }
 
@@ -802,9 +824,9 @@ scene.add(new THREE.Line(
   new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .15 })
 ));
 
-const ambLight = new THREE.AmbientLight(0x202030, 0.8); 
+const ambLight = new THREE.AmbientLight(0x202030, 1.2); 
 scene.add(ambLight);
-const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.4); 
+const sunLight = new THREE.DirectionalLight(0xFFF5CC, 1.8); 
 sunLight.position.set(50, 20, 30);
 scene.add(sunLight);
 
@@ -883,11 +905,6 @@ for (let i = 0; i < 12; i++) {
 const houseG = new THREE.Group();
 eclG.add(houseG);
 
-scene.add(new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-42, 0, 0), new THREE.Vector3(42, 0, 0)]),
-  new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .1 })
-));
-
 // ── 二十八宿 ──
 const manG = new THREE.Group();
 manG.rotation.x = Math.PI / 2;
@@ -925,21 +942,22 @@ eclG.add(plG);
 const aspG = new THREE.Group();
 plG.add(aspG);
 
+// Physical sizes normalized for Astrolabe visual hierarchy
 const PCONF = [
-  {id:'sun',     ic:'☉', col:0xFF5500, sz:2.0,  isY:false, isOut:false, R:27},
-  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:1.12, isY:false, isOut:false, R:21},
-  {id:'mercury', ic:'☿', col:0x55CCFF, sz:0.82, isY:false, isOut:false, R:23},
-  {id:'venus',   ic:'♀', col:0xFFDD44, sz:0.95, isY:false, isOut:false, R:25},
-  {id:'mars',    ic:'♂', col:0xFF4040, sz:1.0,  isY:false, isOut:false, R:29},
-  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:1.6,  isY:false, isOut:false, R:31},
-  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.4,  isY:false, isOut:false, R:33},
-  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.1,  isY:false, isOut:true,  R:35},
-  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.05, isY:false, isOut:true,  R:37},
-  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.65, isY:false, isOut:true,  R:39},
-  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.68, isY:true,  isOut:false, R:22},
-  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.68, isY:true,  isOut:false, R:22},
-  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.68, isY:true,  isOut:false, R:21.5},
-  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.65, isY:true,  isOut:false, R:22.5},
+  {id:'sun',     ic:'☉', col:0xFF5500, sz:2.8,  isY:false, isOut:false, R:27},
+  {id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.6,  isY:false, isOut:false, R:14},  // Closest
+  {id:'mercury', ic:'☿', col:0x55CCFF, sz:0.7,  isY:false, isOut:false, R:23},
+  {id:'venus',   ic:'♀', col:0xFFDD44, sz:1.1,  isY:false, isOut:false, R:25},
+  {id:'mars',    ic:'♂', col:0xFF4040, sz:0.8,  isY:false, isOut:false, R:29},
+  {id:'jupiter', ic:'♃', col:0xFFAA55, sz:2.0,  isY:false, isOut:false, R:31},
+  {id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.7,  isY:false, isOut:false, R:34},
+  {id:'uranus',  ic:'♅', col:0x66CCFF, sz:1.5,  isY:false, isOut:true,  R:36},
+  {id:'neptune', ic:'♆', col:0x3366FF, sz:1.4,  isY:false, isOut:true,  R:38},
+  {id:'pluto',   ic:'♇', col:0xAAAAAA, sz:0.4,  isY:false, isOut:true,  R:39.5},
+  {id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.4,  isY:true,  isOut:false, R:14},
+  {id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.4,  isY:true,  isOut:false, R:14},
+  {id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.4,  isY:true,  isOut:false, R:14},
+  {id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.4,  isY:true,  isOut:false, R:14},
 ];
 
 const pMesh = {}, pLbl = {};
@@ -954,36 +972,28 @@ function buildPlanetMesh(pc) {
   if (pc.isY) {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
-    // 太阳拥有最强的发光系数
     mat = new THREE.MeshPhongMaterial({
       map: tex || null,
       color: 0xFFFFFF,
       emissive: new THREE.Color(0xFFaa44),
-      emissiveIntensity: 2.8, 
-    });
-  } else if (tex) {
-    // 赋予所有行星微弱的发光，让它们在宇宙中独立发光
-    mat = new THREE.MeshPhongMaterial({
-      map: tex,
-      shininess: pc.id === 'moon' ? 5 : 12,
-      emissive: new THREE.Color(pc.col),
-      emissiveIntensity: 0.45, 
+      emissiveIntensity: 3.5, // 绝对耀眼
     });
   } else {
-    mat = new THREE.MeshPhongMaterial({ 
-      color: pc.col, 
-      shininess: 10,
+    mat = new THREE.MeshPhongMaterial({
+      map: tex || null,
+      color: tex ? 0xffffff : pc.col,
+      shininess: pc.id === 'moon' ? 5 : 12,
       emissive: new THREE.Color(pc.col),
-      emissiveIntensity: 0.45 
+      emissiveIntensity: 0.35, // 普通行星微弱反光
     });
   }
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 48, 48), mat);
 
-  // 大气层透明度提升，帮助 Bloom 泛光捕捉
+  // 大气层透明度加高 (Opacity大幅降低) -> 呈现精细贴图
   sphere.add(new THREE.Mesh(
-    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.9), 16, 16),
-    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .1 : .15, blending: THREE.AdditiveBlending })
+    new THREE.SphereGeometry(pc.sz * (pc.isY ? 2.2 : 1.6), 16, 16),
+    new THREE.MeshBasicMaterial({ color: pc.col, transparent: true, opacity: pc.isY ? .08 : .02, blending: THREE.AdditiveBlending })
   ));
 
   if (pc.isY) {
@@ -993,40 +1003,25 @@ function buildPlanetMesh(pc) {
     ));
   }
 
-  // 精致的土星环重构 (高面数环形压缩)
+  // 精细化土星环带
   if (pc.id === 'saturn') {
-    const ringTex = loadedTex.saturn_ring || null;
-    const ringMat = new THREE.MeshPhongMaterial({
-      map: ringTex || null,
-      color: ringTex ? 0xddccaa : 0xAA9977,
+    const ringMat = new THREE.MeshBasicMaterial({
+      map: saturnRingProcedural,
+      color: 0xFFFFFF,
       transparent: true,
-      opacity: ringTex ? 0.9 : 0.75,
-      side: THREE.DoubleSide,
-      emissive: new THREE.Color(0x332211),
-      emissiveIntensity: 0.8
+      opacity: 0.95,
+      side: THREE.DoubleSide
     });
-    // 使用高切片 Torus 并极度压扁它来获得完美的 3D 环形感
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 2.6, pc.sz * 0.7, 32, 128), ringMat);
-    ring.scale.set(1, 1, 0.02); 
-    ring.rotation.x = Math.PI * 0.38;
+    const ring = new THREE.Mesh(new THREE.PlaneGeometry(pc.sz * 5, pc.sz * 5), ringMat);
+    ring.rotation.x = Math.PI / 2 + 0.38;
     sphere.add(ring);
-
-    // 给星环添加一点迷幻的泛光
-    const ringGlow = new THREE.Mesh(new THREE.TorusGeometry(pc.sz * 2.6, pc.sz * 0.8, 16, 128),
-      new THREE.MeshBasicMaterial({ color: 0xCCBB99, transparent: true, opacity: .15, blending: THREE.AdditiveBlending }));
-    ringGlow.scale.set(1, 1, 0.02);
-    ringGlow.rotation.x = Math.PI * 0.38;
-    sphere.add(ringGlow);
   }
 
+  // 太阳专属爆发现象光晕
   if (pc.id === 'sun') {
     sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 1.8, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .12, blending: THREE.AdditiveBlending })
-    ));
-    sphere.add(new THREE.Mesh(
-      new THREE.SphereGeometry(pc.sz * 2.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFFaa00, transparent: true, opacity: .06, blending: THREE.AdditiveBlending })
+      new THREE.SphereGeometry(pc.sz * 1.6, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xFF5500, transparent: true, opacity: .1, blending: THREE.AdditiveBlending })
     ));
     const sl = new THREE.PointLight(0xFFF5CC, 2.5, 300);
     sphere.add(sl);
@@ -1053,12 +1048,9 @@ function buildAllPlanets() {
     plG.add(obj);
     pLbl[pc.id] = obj;
 
-    const orbPts = [];
-    for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; orbPts.push(new THREE.Vector3(Math.cos(a) * pc.R, Math.sin(a) * pc.R, 0)); }
     const orbLine = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(orbPts),
-      // 月球轨道提亮，方便观察黄白交角
-      new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: pc.id==='moon'? 0.45 : 0.2 })
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: pc.id==='moon'? 0xFFFFFF : pc.col, transparent: true, opacity: pc.id==='moon'? 0.45 : 0.25 })
     );
     orbLine.visible = false;
     plG.add(orbLine);
@@ -1091,28 +1083,12 @@ function placePlanets(lons) {
     
     if (lon !== undefined) {
       const a = lon * DEG;
-      let x, y, z = 0;
+      const beta = (lons[pc.id+'_lat'] || 0) * DEG;
       
-      // 物理精确的月球 3D 坐标与黄白交角轨道 (倾斜 5.145度)
-      if (pc.id === 'moon' && lons.ketu !== undefined) {
-        // 白道纬度计算
-        const lat = 5.145 * Math.sin((lons.moon - lons.ketu) * DEG);
-        z = Math.sin(lat * DEG) * pc.R;
-        const rProj = Math.cos(lat * DEG) * pc.R;
-        x = Math.cos(a) * rProj;
-        y = Math.sin(a) * rProj;
-        
-        // 旋转月球轨道环，以 Ketu(北交点) 和 Rahu(南交点) 的连线为转轴，向上倾斜 5.145 度
-        if (pc.orbLine) {
-           const axis = new THREE.Vector3(Math.cos(lons.ketu * DEG), Math.sin(lons.ketu * DEG), 0).normalize();
-           pc.orbLine.quaternion.setFromAxisAngle(axis, 5.145 * DEG);
-        }
-      } else {
-        x = Math.cos(a) * pc.R;
-        y = Math.sin(a) * pc.R;
-        // 其他行星轨道保持平行黄道
-        if (pc.orbLine) pc.orbLine.quaternion.identity(); 
-      }
+      const rProj = Math.cos(beta) * pc.R;
+      const x = Math.cos(a) * rProj;
+      const y = Math.sin(a) * rProj;
+      const z = Math.sin(beta) * pc.R;
 
       if (pMesh[pc.id]) pMesh[pc.id].position.set(x, y, z);
       if (pLbl[pc.id]) pLbl[pc.id].position.set(x, y, z);
@@ -1131,6 +1107,22 @@ function placePlanets(lons) {
     if (pLbl[pc.id]) pLbl[pc.id].element.style.display = isVis ? 'flex' : 'none';
     if (pc.orbLine) pc.orbLine.visible = isVis && showOrb;
     if (!isVis && trails[pc.id] && trails[pc.id].line) trails[pc.id].line.visible = false;
+  });
+
+  // Generate mathematically tilted orbit rings
+  PCONF.forEach(pc => {
+    if (pc.orbLine && pc.orbLine.visible) {
+      const node = (pc.id === 'moon') ? lons.ketu : (PE[pc.id] ? PE[pc.id].Node : 0);
+      const inc  = (pc.id === 'moon') ? 5.145 : (PE[pc.id] ? PE[pc.id].i : 0);
+      const pts = [];
+      for (let i = 0; i <= 128; i++) {
+        const ang = (i / 128) * Math.PI * 2;
+        const lat = inc * Math.sin(ang - node * DEG) * DEG;
+        const rp = Math.cos(lat) * pc.R;
+        pts.push(new THREE.Vector3(Math.cos(ang)*rp, Math.sin(ang)*rp, Math.sin(lat)*pc.R));
+      }
+      pc.orbLine.geometry.setFromPoints(pts);
+    }
   });
 
   if (showAsp) buildAspects(lons); else aspG.clear();
@@ -1170,12 +1162,11 @@ function buildAspects(lons) {
     const diff = Math.min(norm(lons[id1] - lons[id2]), norm(lons[id2] - lons[id1]));
     for (let k = 0; k < ASP_A.length; k++) {
       if (Math.abs(diff - ASP_A[k]) < 8) {
-        // 读取真实的 3D XYZ 坐标进行连线
         const p1 = pMesh[id1] ? pMesh[id1].position.clone() : new THREE.Vector3();
         const p2 = pMesh[id2] ? pMesh[id2].position.clone() : new THREE.Vector3();
         aspG.add(new THREE.Line(
           new THREE.BufferGeometry().setFromPoints([p1, p2]),
-          new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: .35 })
+          new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: .45 })
         ));
         break;
       }
@@ -1195,7 +1186,7 @@ function renderPlanetList(lons, isSid, jd, suffix = '') {
     row.innerHTML = `<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
       <div class="pr-info"><div class="pr-n">${LANGS[currLang].pl[pc.id]}</div><div class="pr-s">${man}${LANGS[currLang].ui.mansion}·${z.s}</div></div>
       <div class="pr-d">${lon.toFixed(1)}°</div>`;
-    row.addEventListener('mouseenter', e => showTip(e, `${pc.ic} ${LANGS[currLang].pl[pc.id]}`,
+    row.addEventListener('mouseenter', e => showTip(e, `${pc.ic} ${LANGS[currLang].pl[pc.id]}`, 
       `${LANGS[currLang].ui.ecl}：${lon.toFixed(2)}°<br>${z.sym}${z.s} ${z.d}°<br>${man}${LANGS[currLang].ui.mansion}<br>${LANGS[currLang].wx[pc.id] || ''}`));
     row.addEventListener('mouseleave', () => hideTip());
     el.appendChild(row);
@@ -1336,7 +1327,7 @@ function launch() {
 
 // ── Time Scrubber ──
 const tRange = document.getElementById('time-range');
-const tLbl = document.getElementById('time-lbl');
+const tLbl = document.getElementById('time-lbl');	
 tRange.addEventListener('input', () => {
   if (!userData.jd) return;
   updatePositions();
