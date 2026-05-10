@@ -25,8 +25,8 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
 
-/* Fix: 修正翻譯按鈕位置，避免遮擋右側命主資訊 */
-#global-lang-toggle{position:fixed;top:30px;left:80px;z-index:100;display:flex;gap:8px;pointer-events:auto}
+/* 最新修改：置顶居中，彻底解决遮挡标题和命主信息的问题 */
+#global-lang-toggle{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
 
@@ -65,8 +65,10 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
   #topbar{padding:10px 14px 24px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
-  /* Fix: Mobile Translation Buttons Positioning */
-  #global-lang-toggle{top:12px;left:56px;right:auto;gap:5px}
+  
+  /* 移动端同样保持居中位置 */
+  #global-lang-toggle{top:12px;left:50%;transform:translateX(-50%);gap:5px}
+  
   .mlbtn{padding:4px 8px;font-size:.52rem}
   #legend{bottom:52px;left:8px;right:8px;transform:none;width:auto;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;padding:5px 14px;gap:12px}
   #ctrl-bar{bottom:52px;right:8px}
@@ -163,7 +165,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   </div>
   <div class="fl">出生時間（24小時）</div>
   <div class="r2">
-    <input type="number" id="f-h" placeholder="時 0-23" min="0" max="23" oninput="hst()">
+    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23" oninput="hst()">
     <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="hst()">
   </div>
   <div class="fl">出生地經緯度與時區</div>
@@ -191,7 +193,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div id="mobile-drawer-content">
     <div class="pc"><div class="pc-t">星象 · 視黃道度數</div><div id="plist-m"></div></div>
     <div class="pc"><div class="pc-t">命盤分析摘要</div><div id="abody-m"></div></div>
-    <div class="pc"><div class="pc-t">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
+    <div class="pc"><div class="pc-t">黃道十二宫</div><div class="hg" id="hgrid-m"></div></div>
   </div>
 </div>
 <div id="legend">
@@ -202,13 +204,13 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </div>
 <div id="ctrl-bar">
   <button class="cb" id="cb-zen" data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-tt="自動旋轉">⟳</button>
-  <button class="cb" id="cb-sys" data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
+  <button class="cb" id="cb-spin" data-tt="自动旋转">⟳</button>
+  <button class="cb" id="cb-sys" data-tt="切换回归/恒星" style="font-size:.68rem">归</button>
   <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
-  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
+  <button class="cb on" id="cb-ecl" data-tt="黄道环" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-tt="赤道环">⊕</button>
   <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體显示" style="font-size:.68rem">政</button>
+  <button class="cb on" id="cb-pl"  data-tt="星体显示" style="font-size:.68rem">政</button>
   <button class="cb"    id="cb-asp" data-tt="相位连线">⋆</button>
   <button class="cb"    id="cb-tm"  data-tt="时间推移">⏱</button>
   <button class="cb"    id="cb-orb" data-tt="黄纬垂线">◎</button>
