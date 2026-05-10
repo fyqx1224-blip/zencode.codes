@@ -24,9 +24,12 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .top-left-panel{position:absolute;top:30px;left:30px;pointer-events:auto;z-index:40}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
-#global-lang-toggle{position:fixed;top:20px;right:22px;z-index:100;display:flex;gap:8px;pointer-events:auto}
+
+/* Fix 6: 修正翻譯按鈕位置，避免遮擋右側命主資訊 */
+#global-lang-toggle{position:fixed;top:30px;left:80px;z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
+
 .side-panel{position:absolute;top:80px;z-index:20;width:220px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 #lp{left:14px}#rp{right:14px}
 .pc{background:rgba(2,2,4,.87);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(99,163,237,.16);border-radius:10px;padding:13px 15px}
@@ -62,7 +65,8 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
   #topbar{padding:10px 14px 24px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
-  #global-lang-toggle{top:12px;right:10px;gap:5px}
+  /* Fix 6: Mobile Translation Buttons Positioning */
+  #global-lang-toggle{top:12px;left:56px;right:auto;gap:5px}
   .mlbtn{padding:4px 8px;font-size:.52rem}
   #legend{bottom:52px;left:8px;right:8px;transform:none;width:auto;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;padding:5px 14px;gap:12px}
   #ctrl-bar{bottom:52px;right:8px}
@@ -211,7 +215,8 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </div>
 <div id="time-bar">
   <button class="tbtn" id="tb-play">▶ 播放</button>
-  <input type="range" id="time-range" min="-4380" max="4380" value="0" step="1">
+  <!-- Fix 2: Extend time range limits to ±87660 steps (5 years) -->
+  <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
   <div id="time-lbl">當前時間</div>
   <button class="tbtn" onclick="resetTime()">重置</button>
 </div>
@@ -233,9 +238,8 @@ const DEG = Math.PI / 180, R2D = 180 / Math.PI;
 const norm = x => ((x % 360) + 360) % 360;
 
 // ★ 紫炁：以月孛速度順行，J2000基準111.41°
-//   校驗：2002.12.24 d≈1087 → ziqi trop≈232.5° → sid≈207°（氐宿中段，金羅之間）
 const ZIQI_BASE = 111.41;
-const ZIQI_SPEED = 0.11140353; // °/day，同月孛速度，但方向相反（待確認後可調正負）
+const ZIQI_SPEED = 0.11140353; 
 
 // ★ Z軸誇張倍數（黃緯立體感）
 const Z_EXAG = 3.5;
@@ -244,42 +248,83 @@ const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
 window.toggleDrawer = () => document.getElementById('mobile-drawer').classList.toggle('open');
 
 // ═══════════════════════════════════════════════
-//  I18N
+//  I18N (Fix 4: UI DOM Elements Translation added)
 // ═══════════════════════════════════════════════
 const LANGS = {
   'zh-TW':{
     zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
     pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁'},
-    wx:{sun:'陽火·父·君主',moon:'陰水·母·情感',mercury:'陰水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·責任',rahu:'陰火·南交點·業力',ketu:'陽火·北交點·業力',yapo:'陰水·月遠地點·月孛',ziqi:'陽木·傳統假想星·紫炁',uranus:'時代星·改革·突變',neptune:'時代星·夢幻·潛意識',pluto:'時代星·毀滅·重生'},
+    wx:{sun:'陽火·父·君主',moon:'陰水·母·情感',mercury:'陰水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·責任',rahu:'陽火·北交點·業力',ketu:'陰火·南交點·業力',yapo:'陰水·月遠地點·月孛',ziqi:'陽木·傳統假想星·紫炁',uranus:'時代星·改革·突變',neptune:'時代星·夢幻·潛意識',pluto:'時代星·毀滅·重生'},
     ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宮',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
-    al:{asc:'命宮在',sun:'太陽在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'}
+    al:{asc:'命宮在',sun:'太陽在',moon:'月在',phase:'月相',rahu:'北交點在',jup:'福星在',sat:'剋星在'},
+    dom:{
+      modalTitle: '星象座標系', modalSub: '真3D地心儀 · 晝夜更替 · 二十八宿',
+      lblNm: '命主姓名', lblDt: '出生日期（公曆）', lblTm: '出生時間（24小時）', lblLoc: '出生地經緯度與時區',
+      plhNm: '姓名（可留空）', btnSub: '觀 測 星 象 能 量', btnDemo: '→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',
+      tbTitle: '星象座標系 · 天球儀', tbSub: 'GEOCENTRIC ASTROLABE · 物理光影宇宙',
+      tbPlay: '▶ 播放', tbPause: '⏸ 暫停', tbReset: '重置', timeLbl: '當前時間', loadTxt: '載入星象引擎…',
+      drwLbl: '星象資料', pEcl: '星象 · 視黃道度數', pAna: '命盤分析摘要', pHou: '黃道十二宮 · 宮位星曜', pHouM: '黃道十二宮',
+      ttZen: '沉浸星空', ttSpin: '自動旋轉', ttSys: '切換回歸/恆星', ttOut: '三王星', ttEcl: '黃道環', ttEq: '赤道環', 
+      ttMan: '二十八宿', ttPl: '星體顯示', ttAsp: '相位連線', ttTm: '時間推移', ttOrb: '黃緯垂線'
+    }
   },
   'zh-CN':{
     zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
     pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁'},
-    wx:{sun:'阳火·父·君主',moon:'阴水·母·情感',mercury:'阴水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'阴火·南交点·业力',ketu:'阳火·北交点·业力',yapo:'阴水·月远地点·月孛',ziqi:'阳木·传统假想星·紫炁',uranus:'时代星·改革·突变',neptune:'时代星·梦幻·潜意识',pluto:'时代星·毁灭·重生'},
+    wx:{sun:'阳火·父·君主',moon:'阴水·母·情感',mercury:'阴水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'阳火·北交点·业力',ketu:'阴火·南交点·业力',yapo:'阴水·月远地点·月孛',ziqi:'阳木·传统假想星·紫炁',uranus:'时代星·改革·突变',neptune:'时代星·梦幻·潜意识',pluto:'时代星·毁灭·重生'},
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
-    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'}
+    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'北交点在',jup:'福星在',sat:'克星在'},
+    dom:{
+      modalTitle: '星象坐标系', modalSub: '真3D地心仪 · 昼夜更替 · 二十八宿',
+      lblNm: '命主姓名', lblDt: '出生日期（公历）', lblTm: '出生时间（24小时）', lblLoc: '出生地经纬度与时区',
+      plhNm: '姓名（可留空）', btnSub: '观 测 星 象 能 量', btnDemo: '→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',
+      tbTitle: '星象坐标系 · 天球仪', tbSub: 'GEOCENTRIC ASTROLABE · 物理光影宇宙',
+      tbPlay: '▶ 播放', tbPause: '⏸ 暂停', tbReset: '重置', timeLbl: '当前时间', loadTxt: '载入星象引擎…',
+      drwLbl: '星象资料', pEcl: '星象 · 视黄道度数', pAna: '命盘分析摘要', pHou: '黄道十二宫 · 宫位星曜', pHouM: '黄道十二宫',
+      ttZen: '沉浸星空', ttSpin: '自动旋转', ttSys: '切换回归/恒星', ttOut: '三王星', ttEcl: '黄道环', ttEq: '赤道环', 
+      ttMan: '二十八宿', ttPl: '星体显示', ttAsp: '相位连线', ttTm: '时间推移', ttOrb: '黄纬垂线'
+    }
   },
   'en':{
     zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
     man:['Jiao','Kang','Di','Fang','Xin','Wei','Ji','Dou','Niu','Nu','Xu','Wei2','Shi','Bi','Kui','Lou','Wei3','Mao','Bi2','Zi','Shen','Jing','Gui','Liu','Xing','Zhang','Yi','Zhen'],
     pl:{sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',rahu:'Rahu',ketu:'Ketu',yapo:'Lilith',ziqi:'Ziqi'},
-    wx:{sun:'Yang Fire·Father',moon:'Yin Water·Mother',mercury:'Yin Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'S.Node·Karma',ketu:'N.Node·Karma',yapo:'Lunar Apogee',ziqi:'Imaginary Star',uranus:'Outer·Revolution',neptune:'Outer·Illusion',pluto:'Outer·Rebirth'},
+    wx:{sun:'Yang Fire·Father',moon:'Yin Water·Mother',mercury:'Yin Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'N.Node·Karma',ketu:'S.Node·Karma',yapo:'Lunar Apogee',ziqi:'Imaginary Star',uranus:'Outer·Revolution',neptune:'Outer·Illusion',pluto:'Outer·Rebirth'},
     ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal'},
-    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'}
+    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'N.Node in',jup:'Jupiter in',sat:'Saturn in'},
+    dom:{
+      modalTitle: 'Astro Coordinates', modalSub: 'True 3D Geocentric Astrolabe',
+      lblNm: 'Native Name', lblDt: 'Birth Date (Gregorian)', lblTm: 'Birth Time (24h)', lblLoc: 'Location & Timezone',
+      plhNm: 'Name (Optional)', btnSub: 'OBSERVE ASTRO ENERGY', btnDemo: '→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',
+      tbTitle: 'Geocentric Astrolabe', tbSub: 'TRUE 3D PHYSICAL UNIVERSE',
+      tbPlay: '▶ Play', tbPause: '⏸ Pause', tbReset: 'Reset', timeLbl: 'Current Time', loadTxt: 'Loading Engine...',
+      drwLbl: 'Astro Data', pEcl: 'Ecliptic Longitudes', pAna: 'Chart Summary', pHou: '12 Zodiac Houses', pHouM: 'Zodiac Houses',
+      ttZen: 'Zen Mode', ttSpin: 'Auto Spin', ttSys: 'Tropical/Sidereal', ttOut: 'Outer Planets', ttEcl: 'Ecliptic', ttEq: 'Equator', 
+      ttMan: '28 Mansions', ttPl: 'Planets', ttAsp: 'Aspect Lines', ttTm: 'Time Travel', ttOrb: 'Latitude Lines'
+    }
   },
   'ko':{
     zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
     man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
     pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기'},
-    wx:{sun:'양화·아버지',moon:'음수·어머니',mercury:'음수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'강교점',ketu:'승교점',yapo:'월원지점',ziqi:'가상성',uranus:'외행성·개혁',neptune:'외행성·환상',pluto:'외행성·재생'},
+    wx:{sun:'양화·아버지',moon:'음수·어머니',mercury:'음수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'승교점',ketu:'강교점',yapo:'월원지점',ziqi:'가상성',uranus:'외행성·개혁',neptune:'외행성·환상',pluto:'외행성·재생'},
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
-    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'}
+    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'북교점:',jup:'목성:',sat:'토성:'},
+    dom:{
+      modalTitle: '점성술 좌표계', modalSub: '3D 지구 중심 천구의',
+      lblNm: '이름', lblDt: '생년월일 (양력)', lblTm: '태어난 시간 (24시간)', lblLoc: '출생지 좌표 및 시간대',
+      plhNm: '이름 (선택)', btnSub: '천 체 관 측', btnDemo: '→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',
+      tbTitle: '지구 중심 천구의', tbSub: '3D 물리적 우주 시뮬레이션',
+      tbPlay: '▶ 재생', tbPause: '⏸ 일시정지', tbReset: '초기화', timeLbl: '현재 시간', loadTxt: '엔진 불러오는 중...',
+      drwLbl: '점성술 데이터', pEcl: '황도 좌표', pAna: '차트 요약', pHou: '12 하우스', pHouM: '하우스',
+      ttZen: '젠 모드', ttSpin: '자동 회전', ttSys: '회귀/항성 전환', ttOut: '외행성', ttEcl: '황도대', ttEq: '적도대', 
+      ttMan: '28수', ttPl: '행성 표시', ttAsp: '애스펙트 (위상)', ttTm: '시간 이동', ttOrb: '황위선'
+    }
   }
 };
+
 let currLang = localStorage.getItem('zc_lang') || 'zh-TW';
 if (!LANGS[currLang]) currLang = 'zh-TW';
 
@@ -288,15 +333,67 @@ window.switchLang = l => {
   currLang = l;
   localStorage.setItem('zc_lang', l);
   document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+  const d = LANGS[l];
+  
+  // Update 3D specific nodes
   document.querySelectorAll('[data-3d-type]').forEach(el => {
-    const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id'), d = LANGS[l];
+    const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id');
     if (t === 'zod') el.innerHTML = d.zod[id];
     if (t === 'man') el.innerHTML = d.man[id] + d.ui.mansion;
     if (t === 'pl')  el.innerHTML = d.pl[id];
     if (t === 'ui')  el.innerHTML = d.ui[id];
     if (t === 'raw') el.innerHTML = id;
   });
-  if (userData.jd) updatePositions();
+
+  // Fix 4: Update Global UI elements DOM
+  document.getElementById('tb-title').textContent = d.dom.tbTitle;
+  document.getElementById('tb-sub').textContent = d.dom.tbSub;
+  document.querySelector('.ml').textContent = d.dom.modalTitle;
+  document.querySelector('.ms').textContent = d.dom.modalSub;
+  const fls = document.querySelectorAll('.fl');
+  if(fls.length >= 4){
+    fls[0].textContent = d.dom.lblNm; fls[1].textContent = d.dom.lblDt;
+    fls[2].textContent = d.dom.lblTm; fls[3].textContent = d.dom.lblLoc;
+  }
+  document.getElementById('f-nm').placeholder = d.dom.plhNm;
+  document.querySelector('.sbtn').textContent = d.dom.btnSub;
+  document.querySelector('.demo').textContent = d.dom.btnDemo;
+  document.getElementById('mobile-drawer-label').textContent = d.dom.drwLbl;
+  
+  const pcts = document.querySelectorAll('.pc-t');
+  if(pcts.length >= 6){
+    pcts[0].textContent = d.dom.pEcl; pcts[1].textContent = d.dom.pAna; pcts[2].textContent = d.dom.pHou;
+    pcts[3].textContent = d.dom.pEcl; pcts[4].textContent = d.dom.pAna; pcts[5].textContent = d.dom.pHouM;
+  }
+  
+  document.getElementById('cb-zen').setAttribute('data-tt', d.dom.ttZen);
+  document.getElementById('cb-spin').setAttribute('data-tt', d.dom.ttSpin);
+  document.getElementById('cb-sys').setAttribute('data-tt', d.dom.ttSys);
+  document.getElementById('cb-out').setAttribute('data-tt', d.dom.ttOut);
+  document.getElementById('cb-ecl').setAttribute('data-tt', d.dom.ttEcl);
+  document.getElementById('cb-eq').setAttribute('data-tt', d.dom.ttEq);
+  document.getElementById('cb-man').setAttribute('data-tt', d.dom.ttMan);
+  document.getElementById('cb-pl').setAttribute('data-tt', d.dom.ttPl);
+  document.getElementById('cb-asp').setAttribute('data-tt', d.dom.ttAsp);
+  document.getElementById('cb-tm').setAttribute('data-tt', d.dom.ttTm);
+  document.getElementById('cb-orb').setAttribute('data-tt', d.dom.ttOrb);
+  
+  const tbPlay = document.getElementById('tb-play');
+  if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
+  const rstBtn = document.querySelector('#time-bar .tbtn:last-child');
+  if (rstBtn) rstBtn.textContent = d.dom.tbReset;
+  document.getElementById('time-lbl').textContent = d.dom.timeLbl;
+  document.querySelector('.loading-text').textContent = d.dom.loadTxt;
+
+  // Re-render HTML dynamic grids with new language
+  if (userData.jd) {
+    ['','-m'].forEach(sfx => {
+      const s = sfx.replace('-','');
+      renderPlanetList(curGeo, S.sidereal, userData.jd, s);
+      renderHouseGrid(curGeo, S.sidereal, userData.jd, s);
+      renderAnalysis(curGeo, S.sidereal, userData.jd, s);
+    });
+  }
 };
 
 // ═══════════════════════════════════════════════
@@ -344,17 +441,14 @@ function calcAll(T, jd, lng, lat, isSid) {
   const d = jd - 2451545.0;
   const geo = {};
 
-  // Sun
   const L_sun = norm(280.460 + 0.9856474 * d);
   const g_sun = norm(357.528 + 0.9856003 * d);
   geo.sun = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
   geo.sun_lat = 0;
 
-  // Earth vector (geocentric sun is helio earth, negated)
   const xe = Math.cos(norm(geo.sun + 180) * DEG);
   const ye = Math.sin(norm(geo.sun + 180) * DEG);
 
-  // Moon
   const D  = norm(297.85036 + 12.190749 * d);
   const M  = norm(357.52772 + 0.985600 * d);
   const Mp = norm(134.96298 + 13.064992 * d);
@@ -367,7 +461,6 @@ function calcAll(T, jd, lng, lat, isSid) {
     - 0.186 * Math.sin(M * DEG)
     - 0.114 * Math.sin(2*F * DEG));
 
-  // Planets
   ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const h = getHelio(id, d);
     const xp = h.r * Math.cos(h.l * DEG), yp = h.r * Math.sin(h.l * DEG);
@@ -376,23 +469,20 @@ function calcAll(T, jd, lng, lat, isSid) {
     geo[id + '_lat'] = Math.atan2(h.z, Math.sqrt(X*X + Y*Y)) * R2D;
   });
 
-  // Lunar nodes (Rahu/Ketu)
+  // Fix 1: 修正羅睺/計都的反轉問題 (Rahu為北交點, Ketu為南交點)
   const ascNode = norm(125.04452 - 0.0529538 * d);
-  geo.ketu = ascNode;
-  geo.rahu = norm(ascNode + 180);
+  geo.rahu = ascNode;
+  geo.ketu = norm(ascNode + 180);
   geo.moon_lat = 5.145 * Math.sin((geo.moon - geo.ketu) * DEG);
   geo.rahu_lat = 0; geo.ketu_lat = 0;
 
-  // 月孛 Yapo = Lunar Apogee = Mean Perigee + 180
   const perigee = norm(83.3532465 + 0.11140353 * d);
   geo.yapo = norm(perigee + 180);
   geo.yapo_lat = 0;
 
-  // ★ 紫炁 Ziqi = same speed as yapo but different base (calibrated to 2002.12.24)
   geo.ziqi = norm(ZIQI_BASE + ZIQI_SPEED * d);
   geo.ziqi_lat = 0;
 
-  // ASC
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
   const obliq = (23.4392911 - 0.0130042 * T) * DEG;
@@ -400,7 +490,6 @@ function calcAll(T, jd, lng, lat, isSid) {
   geo.asc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(obliq) + Math.tan(lat_r) * Math.sin(obliq))) * R2D);
   geo.dsc = norm(geo.asc + 180);
 
-  // Ayanamsa
   const aya = 24.03 + d * (50.29 / 36525);
 
   if (isSid) {
@@ -424,11 +513,9 @@ function applyST(h, mn, c) {
 const ZSYM = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 const zodiac = lon => ({ s: LANGS[currLang].zod[Math.floor(lon/30)], sym: ZSYM[Math.floor(lon/30)], d: (lon%30).toFixed(1) });
 
-// ★★★ 二十八宿：起始點 = 恆星黃道180°（角宿一在秋分點附近）
-// 這是正確值，v3錯改成0°導致全部偏移180°
 const MANSION_W = [12,9,15,5,5,18,11,26,8,12,10,17,16,9,16,12,14,11,16,2,9,33,4,15,7,18,18,17];
 const MANS = [];
-let _macc = 180; // ★ 正確起點
+let _macc = 180;
 for (let i = 0; i < 28; i++) {
   const w = MANSION_W[i] * 360 / 365;
   MANS.push({ id: i, s: _macc, w });
@@ -440,7 +527,7 @@ function getMansionSid(sidLon) {
   for (const m of MANS) {
     const ms = m.s % 360, me = (m.s + m.w) % 360;
     if (ms < me) { if (s >= ms && s < me) return LANGS[currLang].man[m.id]; }
-    else          { if (s >= ms || s < me) return LANGS[currLang].man[m.id]; }
+    else         { if (s >= ms || s < me) return LANGS[currLang].man[m.id]; }
   }
   return LANGS[currLang].man[0];
 }
@@ -501,7 +588,6 @@ const OCtrl = new OrbitControls(camera, renderer.domElement);
 OCtrl.enableDamping = true; OCtrl.dampingFactor = 0.055;
 OCtrl.minDistance = 3; OCtrl.maxDistance = 250;
 
-// ── Starfield ──
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
   for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - .5) * sp;
@@ -513,7 +599,6 @@ scene.add(mkStars(5000, 0.45, 600, 0xCCDDFF, .65));
 scene.add(mkStars(1500, 0.85, 500, 0xFFFFFF, .42));
 scene.add(mkStars(500,  1.3,  460, 0xFFEEDD, .32));
 
-// ── Meteors ──
 const METEOR_N = 7;
 const meteors = [];
 function spawnMeteor(m) {
@@ -558,10 +643,8 @@ function updateMeteors(dt) {
   });
 }
 
-// ── Lighting ──
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
-// ── Textures ──
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 const TEX_URLS = {
@@ -599,10 +682,8 @@ function makeSaturnRingTex() {
 }
 const satRingTex = makeSaturnRingTex();
 
-// ── Obliquity ──
 const OBL = 23.4365 * DEG;
 
-// ── EQUATOR GROUP ──
 const eqG = new THREE.Group(); eqG.rotation.x = Math.PI / 2; scene.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -629,9 +710,7 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
-// ── ECLIPTIC GROUP ──
 const eclG = new THREE.Group(); eclG.rotation.x = (Math.PI/2) - OBL; scene.add(eclG);
-// ★ 黃道自發光：MeshBasicMaterial + 粗Glow環
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -645,7 +724,6 @@ for (let i = 0; i < 36; i++) {
 }
 lbl2D(eclG, 'lecl', 43, 1.5, 'ui', 'ecl');
 
-// Zodiac dividers + labels
 const zodG = new THREE.Group(); eclG.add(zodG);
 for (let i = 0; i < 12; i++) {
   const a = i/12*Math.PI*2;
@@ -656,11 +734,8 @@ for (let i = 0; i < 12; i++) {
   lbl2D(zodG, 'lzod', 43.5, a + Math.PI/12, 'zod', i);
 }
 
-// House lines (rebuilt on each update)
 const houseG = new THREE.Group(); eclG.add(houseG);
 
-// ★★★ 二十八宿環掛在 eclG 下（與行星同一黃道坐標系）
-// 旋轉 manG.rotation.z = aya*DEG 使恆星座標對齊熱帶黃道
 const manG = new THREE.Group(); eclG.add(manG);
 const mR = 54, mO = 57.8;
 {
@@ -688,7 +763,6 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0 + (a1-a0)/2, 'man', m.id);
 });
 
-// ── PLANET CONFIG ──
 const plG = new THREE.Group(); eclG.add(plG);
 const aspG = new THREE.Group(); plG.add(aspG);
 
@@ -719,7 +793,6 @@ const EMISSIVE = {
 
 const pMesh = {}, pLbl = {}, dropLines = {};
 
-// ── Earth (centre) ──
 const earthG = new THREE.Group(); scene.add(earthG);
 let earthMesh = null;
 
@@ -730,8 +803,6 @@ function buildEarth() {
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
-  // ★ 地球初始旋轉：Y軸朝北，X軸朝向春分點方向
-  // 貼圖格林威治0°在X正方向，後面通過rotation.y調整輸入經度的視角
   earthG.add(earthMesh);
   earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
@@ -742,7 +813,7 @@ function buildPlanet(pc) {
   const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
   let mat;
   if (pc.type === 'fict') {
-    mat = new THREE.MeshBasicMaterial({ color: pc.col });
+    mat = new MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
     mat = new THREE.MeshStandardMaterial({
       color:0xFFFAE0, emissive:new THREE.Color(em.col), emissiveIntensity:em.i,
@@ -791,7 +862,6 @@ function buildAllPlanets() {
     if (pc.isOut) obj.element.style.display = 'none';
     plG.add(obj); pLbl[pc.id] = obj;
 
-    // ★★ Drop lines：預分配 Float32Array，DynamicDrawUsage，永不重建 geometry
     const buf = new Float32Array(6);
     const dg = new THREE.BufferGeometry();
     const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
@@ -804,9 +874,6 @@ function buildAllPlanets() {
   window.switchLang(currLang);
 }
 
-// ═══════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════
 const S = {
   zen:false, spin:false, sidereal:false, showOut:true,
   ecliptic:true, equator:true, mansion:true, planets:true,
@@ -814,7 +881,7 @@ const S = {
 };
 let userData = {}, curGeo = {}, currentLST = 0;
 let playingTime = false, playInterval = null;
-let birthLng = 120; // ★ 記錄出生地經度，用於地球初始朝向
+let birthLng = 120; 
 
 function bindBtn(id, key, onFn, offFn) {
   const b = document.getElementById(id); if (!b) return;
@@ -822,19 +889,8 @@ function bindBtn(id, key, onFn, offFn) {
   b.addEventListener('click', () => { S[key] = !S[key]; b.classList.toggle('on', S[key]); S[key] ? onFn() : offFn(); });
 }
 
-// ── Place planets ──
 function placePlanets(geo, lst, aya) {
   currentLST = lst;
-
-  // ★★ 地球旋轉：
-  // 地球貼圖中本初子午線（格林威治0°）初始在X正方向
-  // GMST給出格林威治的恆星時（即0°經度目前朝向的赤道天球方向）
-  // 我們要讓輸入的 birthLng 經度面朝向觀測者（即鏡頭方向）
-  // 在 eclG 坐標系下，春分點方向≈X軸，X軸 = 黃道0°方向
-  // earthG.rotation.y = -(lst - birthLng) * DEG + Math.PI
-  // 讓出生地所在子午線朝向黃道0°（約面向鏡頭）
-  // 簡化：earthG.rotation.y = -(GMST + birthLng)*DEG，使birthLng面朝+X
-  // 注意 earthG 在 scene 根，不在 eclG 下，所以直接用世界坐標
   earthG.rotation.y = -(lst - birthLng) * DEG;
 
   PCONF.forEach(pc => {
@@ -850,15 +906,14 @@ function placePlanets(geo, lst, aya) {
     if (pMesh[pc.id]) { pMesh[pc.id].position.set(x, y, z); pMesh[pc.id].visible = vis; }
     if (pLbl[pc.id])  { pLbl[pc.id].position.set(x+0.2, y+0.2, z+pc.sz+0.3); pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; }
 
-    // ★★★ Drop line（黃緯垂線）：直接寫入預分配 buffer
     const dl = dropLines[pc.id];
     if (dl) {
       const show = vis && S.orb && Math.abs(z) > 0.05;
       dl.visible = show;
       if (show) {
         const buf = dl.userData.buf;
-        buf[0] = x; buf[1] = y; buf[2] = z;   // 行星位置
-        buf[3] = x; buf[4] = y; buf[5] = 0;    // 黃道面投影點
+        buf[0] = x; buf[1] = y; buf[2] = z;   
+        buf[3] = x; buf[4] = y; buf[5] = 0;    
         dl.userData.pa.needsUpdate = true;
       }
     }
@@ -866,7 +921,6 @@ function placePlanets(geo, lst, aya) {
 
   if (S.aspects) buildAspects(geo); else aspG.clear();
 
-  // Rebuild house lines
   while (houseG.children.length > 0) {
     const c = houseG.children[0];
     if (c.isCSS2DObject && c.element) c.element.remove();
@@ -886,21 +940,30 @@ function placePlanets(geo, lst, aya) {
   }
 }
 
-const ASP_A = [0,60,90,120,150,180];
-const ASP_C = [0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
+// Fix 5: 相位連線優化 (加入南北交點、虛星，並放寬容許度)
+const ASP_A = [0, 60, 90, 120, 150, 180];
+const ASP_C = [0xFFFF00, 0x44FF88, 0xFF4444, 0x44AAFF, 0xFF8844, 0xFF4444];
+
 function buildAspects(geo) {
   aspG.clear();
-  const bp = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+  // 擴展相位陣列，加入南北交點、月孛、紫炁
+  const bp = ['sun','moon','mercury','venus','mars','jupiter','saturn', 'rahu', 'ketu', 'yapo', 'ziqi'];
   if (S.showOut) bp.push('uranus','neptune','pluto');
-  for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
-    const diff = Math.min(norm(geo[bp[i]]-geo[bp[j]]), norm(geo[bp[j]]-geo[bp[i]]));
-    for (let k = 0; k < ASP_A.length; k++) {
-      if (Math.abs(diff - ASP_A[k]) < 8) {
-        const p1 = pMesh[bp[i]] ? pMesh[bp[i]].position.clone() : new THREE.Vector3();
-        const p2 = pMesh[bp[j]] ? pMesh[bp[j]].position.clone() : new THREE.Vector3();
-        aspG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p1,p2]),
-          new THREE.LineBasicMaterial({ color:ASP_C[k], transparent:true, opacity:.45 })));
-        break;
+  
+  for (let i = 0; i < bp.length; i++) {
+    for (let j = i + 1; j < bp.length; j++) {
+      const diff = Math.min(norm(geo[bp[i]] - geo[bp[j]]), norm(geo[bp[j]] - geo[bp[i]]));
+      // 動態容許度：日月為 10°，其他為 8°
+      const orb = (bp[i] === 'sun' || bp[j] === 'sun' || bp[i] === 'moon' || bp[j] === 'moon') ? 10 : 8;
+      
+      for (let k = 0; k < ASP_A.length; k++) {
+        if (Math.abs(diff - ASP_A[k]) < orb) {
+          const p1 = pMesh[bp[i]] ? pMesh[bp[i]].position.clone() : new THREE.Vector3();
+          const p2 = pMesh[bp[j]] ? pMesh[bp[j]].position.clone() : new THREE.Vector3();
+          aspG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p1,p2]),
+            new THREE.LineBasicMaterial({ color:ASP_C[k], transparent:true, opacity:0.45 })));
+          break;
+        }
       }
     }
   }
@@ -955,9 +1018,6 @@ function showTip(e, h, p) {
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
-// ═══════════════════════════════════════════════
-//  FORM
-// ═══════════════════════════════════════════════
 window.hst = function() {
   const lng = parseFloat(document.getElementById('f-lg').value);
   const tz  = parseInt(document.getElementById('f-tz').value) || 8;
@@ -987,12 +1047,11 @@ window.submitForm = function() {
   const utcH = h - tz;
   const jd_utc = jdn(y, m, d, utcH, mn);
   const st = applyST(h, mn, stCorr(lng, tz));
-  birthLng = lng; // ★ 記錄出生地經度
+  birthLng = lng; 
   userData = { name, y, m, d, h:st.h, mn:st.m, lng, lat, tz, jd:jd_utc };
   launch();
 };
 
-// ★ 演示：2002.12.24 0:00 CST, 109E 31N
 window.loadDemo = function() {
   ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz']
     .forEach((id, i) => { document.getElementById(id).value = ['演示','2002','12','24','0','0','109','31','8'][i]; });
@@ -1001,7 +1060,6 @@ window.loadDemo = function() {
 
 function updatePositions() {
   if (!userData.jd) return;
-  // ★ 時間步長：range值單位為0.5小時（30分鐘），乘以0.5再除以24得到JD天
   const offHalfH = parseInt(document.getElementById('time-range').value) || 0;
   const offDays  = offHalfH * 0.5 / 24;
   const tJD = userData.jd + offDays;
@@ -1009,7 +1067,6 @@ function updatePositions() {
   const res = calcAll(T, tJD, userData.lng, userData.lat, S.sidereal);
   curGeo = res.geo;
 
-  // ★★★ manG旋轉對齊：將恆星0°對齊熱帶 aya° 方向
   manG.rotation.z = S.sidereal ? 0 : res.aya * DEG;
 
   placePlanets(curGeo, res.lst, res.aya);
@@ -1043,12 +1100,11 @@ function launch() {
 }
 
 // ═══════════════════════════════════════════════
-//  TIME SCRUBBER（步長30分鐘）
+//  TIME SCRUBBER
 // ═══════════════════════════════════════════════
 const tRange = document.getElementById('time-range');
 const tLbl   = document.getElementById('time-lbl');
 
-// range: -4380 to +4380 步 = ±4380×0.5h = ±2190h = ±91.25 天
 tRange.addEventListener('input', () => {
   if (!userData.jd) return;
   updatePositions();
@@ -1064,18 +1120,19 @@ tRange.addEventListener('input', () => {
 
 const tbPlay = document.getElementById('tb-play');
 tbPlay.addEventListener('click', function() {
-  if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = '▶ 播放'; return; }
-  playingTime = true; this.textContent = '⏸ 暫停';
+  const d = LANGS[currLang].dom;
+  if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = d.tbPlay; return; }
+  playingTime = true; this.textContent = d.tbPause;
   playInterval = setInterval(() => {
-    const v = Math.min(parseInt(tRange.value) + 1, 4380);
+    const v = Math.min(parseInt(tRange.value) + 1, 87660); // Fix 2
     tRange.value = v; tRange.dispatchEvent(new Event('input'));
-    if (v >= 4380) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = '▶ 播放'; }
+    if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = d.tbPlay; }
   }, 80);
 });
 
 window.resetTime = function() {
-  clearInterval(playInterval); playingTime = false; tbPlay.textContent = '▶ 播放';
-  tRange.value = 0; tRange.dispatchEvent(new Event('input')); tLbl.textContent = '當前時間';
+  clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].dom.tbPlay;
+  tRange.value = 0; tRange.dispatchEvent(new Event('input')); tLbl.textContent = LANGS[currLang].dom.timeLbl;
 };
 
 // ═══════════════════════════════════════════════
@@ -1115,7 +1172,6 @@ bindBtn('cb-asp', 'aspects',
   });
 }
 
-// ★★★ 黃緯垂線按鈕（徹底修復）
 { const b = document.getElementById('cb-orb');
   b.addEventListener('click', () => {
     S.orb = !S.orb; b.classList.toggle('on', S.orb);
@@ -1135,8 +1191,11 @@ function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
   OCtrl.update();
-  // Planet self-rotation
+  
+  // Fix 3: 加入地球自轉 (earthMesh)，並持續執行各行星原有的自轉計算
+  if (earthMesh) earthMesh.rotation.y += dt * 0.15;
   Object.values(pMesh).forEach((m, i) => { if (m && m.rotation) m.rotation.y += dt * (0.08 + i*0.018); });
+  
   updateMeteors(dt);
   composer.render(dt);
   lblR.render(scene, camera);
