@@ -184,7 +184,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="pc"><div class="pc-t">命盤分析摘要</div><div id="abody"></div></div>
 </div>
 <div class="side-panel" id="rp" style="display:none">
-  <div class="pc"><div class="pc-t">黃道十二宮 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
+  <div class="pc"><div class="pc-t">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
 </div>
 <div id="mobile-drawer" style="display:none">
   <div id="mobile-drawer-handle" onclick="toggleDrawer()">
@@ -251,15 +251,16 @@ window.toggleDrawer = () => document.getElementById('mobile-drawer').classList.t
 
 // ═══════════════════════════════════════════════
 //  I18N (UI DOM Elements Translation added)
+//  ★★ 修正七政四餘羅計交點定義：羅睺=南交點，計都=北交點 ★★
 // ═══════════════════════════════════════════════
 const LANGS = {
   'zh-TW':{
     zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
     pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁'},
-    wx:{sun:'陽火·父·君主',moon:'陰水·母·情感',mercury:'陰水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行动·刚毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·责任',rahu:'陽火·北交點·業力',ketu:'陰火·南交點·業力',yapo:'陰水·月遠地点·月孛',ziqi:'陽木·传统假想星·紫炁',uranus:'時代星·改革·突变',neptune:'時代星·梦幻·潜意识',pluto:'時代星·毁灭·重生'},
+    wx:{sun:'陽火·父·君主',moon:'陰水·母·情感',mercury:'陰水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行动·刚毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·责任',rahu:'陰火·南交點·業力',ketu:'陽火·北交點·業力',yapo:'陰水·月遠地点·月孛',ziqi:'陽木·传统假想星·紫炁',uranus:'時代星·改革·突变',neptune:'時代星·梦幻·潜意识',pluto:'時代星·毁灭·重生'},
     ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
-    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'北交点在',jup:'福星在',sat:'剋星在'},
+    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dom:{
       modalTitle: '星象座標系', modalSub: '真3D地心儀 · 晝夜更替 · 二十八宿',
       lblNm: '命主姓名', lblDt: '出生日期（公曆）', lblTm: '出生時間（24小時）', lblLoc: '出生地經緯度與時區',
@@ -275,9 +276,9 @@ const LANGS = {
     zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
     pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁'},
-    wx:{sun:'阳火·父·君主',moon:'阴水·母·情感',mercury:'阴水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'阳火·北交点·业力',ketu:'阴火·南交点·业力',yapo:'阴水·月远地点·月孛',ziqi:'阳木·传统假想星·紫炁',uranus:'时代星·改革·突变',neptune:'时代星·梦幻·潜意识',pluto:'时代星·毁灭·重生'},
+    wx:{sun:'阳火·父·君主',moon:'阴水·母·情感',mercury:'阴水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'阴火·南交点·业力',ketu:'阳火·北交点·业力',yapo:'阴水·月远地点·月孛',ziqi:'阳木·传统假想星·紫炁',uranus:'时代星·改革·突变',neptune:'时代星·梦幻·潜意识',pluto:'时代星·毁灭·重生'},
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
-    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'北交点在',jup:'福星在',sat:'克星在'},
+    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dom:{
       modalTitle: '星象坐标系', modalSub: '真3D地心仪 · 昼夜更替 · 二十八宿',
       lblNm: '命主姓名', lblDt: '出生日期（公历）', lblTm: '出生时间（24小时）', lblLoc: '出生地经纬度与时区',
@@ -293,9 +294,9 @@ const LANGS = {
     zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
     man:['Jiao','Kang','Di','Fang','Xin','Wei','Ji','Dou','Niu','Nu','Xu','Wei2','Shi','Bi','Kui','Lou','Wei3','Mao','Bi2','Zi','Shen','Jing','Gui','Liu','Xing','Zhang','Yi','Zhen'],
     pl:{sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',rahu:'Rahu',ketu:'Ketu',yapo:'Lilith',ziqi:'Ziqi'},
-    wx:{sun:'Yang Fire·Father',moon:'Yin Water·Mother',mercury:'Yin Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'N.Node·Karma',ketu:'S.Node·Karma',yapo:'Lunar Apogee',ziqi:'Imaginary Star',uranus:'Outer·Revolution',neptune:'Outer·Illusion',pluto:'Outer·Rebirth'},
+    wx:{sun:'Yang Fire·Father',moon:'Yin Water·Mother',mercury:'Yin Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'S.Node·Karma',ketu:'N.Node·Karma',yapo:'Lunar Apogee',ziqi:'Imaginary Star',uranus:'Outer·Revolution',neptune:'Outer·Illusion',pluto:'Outer·Rebirth'},
     ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal'},
-    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'N.Node in',jup:'Jupiter in',sat:'Saturn in'},
+    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
     dom:{
       modalTitle: 'Astro Coordinates', modalSub: 'True 3D Geocentric Astrolabe',
       lblNm: 'Native Name', lblDt: 'Birth Date (Gregorian)', lblTm: 'Birth Time (24h)', lblLoc: 'Location & Timezone',
@@ -311,9 +312,9 @@ const LANGS = {
     zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
     man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
     pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기'},
-    wx:{sun:'양화·아버지',moon:'음수·어머니',mercury:'음수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'승교점',ketu:'강교점',yapo:'월원지점',ziqi:'가상성',uranus:'외행성·개혁',neptune:'외행성·환상',pluto:'외행성·재생'},
+    wx:{sun:'양화·아버지',moon:'음수·어머니',mercury:'음수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'강교점',ketu:'승교점',yapo:'월원지점',ziqi:'가상성',uranus:'외행성·개혁',neptune:'외행성·환상',pluto:'외행성·재생'},
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
-    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'북교점:',jup:'목성:',sat:'토성:'},
+    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dom:{
       modalTitle: '점성술 좌표계', modalSub: '3D 지구 중심 천구의',
       lblNm: '이름', lblDt: '생년월일 (양력)', lblTm: '태어난 시간 (24시간)', lblLoc: '출생지 좌표 및 시간대',
@@ -468,9 +469,10 @@ function calcAll(T, jd, lng, lat, isSid) {
     geo[id + '_lat'] = Math.atan2(h.z, Math.sqrt(X*X + Y*Y)) * R2D;
   });
 
+  // ★ 修正七政四餘羅計交點定義
   const ascNode = norm(125.04452 - 0.0529538 * d);
-  geo.rahu = ascNode;
-  geo.ketu = norm(ascNode + 180);
+  geo.ketu = ascNode;             // 計都(Ketu) = 北交點
+  geo.rahu = norm(ascNode + 180); // 羅睺(Rahu) = 南交點
   geo.moon_lat = 5.145 * Math.sin((geo.moon - geo.ketu) * DEG);
   geo.rahu_lat = 0; geo.ketu_lat = 0;
 
@@ -776,6 +778,7 @@ MANS.forEach(m => {
 });
 
 // ── PLANET CONFIG ──
+// ★ 修正圖示對應：羅睺對應南交點符號☋，計都對應北交點符號☊
 const plG = new THREE.Group(); eclG.add(plG);
 const aspG = new THREE.Group(); plG.add(aspG);
 
@@ -790,8 +793,8 @@ const PCONF = [
   { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
   { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
   { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
-  { id:'rahu',    ic:'☊', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ketu',    ic:'☋', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
   { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
   { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
 ];
