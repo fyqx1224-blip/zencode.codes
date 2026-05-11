@@ -609,20 +609,18 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 行星物理貼圖 URL（完整清單，含木星/土星/天王星/海王星/冥王星高清源）
+// ★★★ 行星物理貼圖 URL（更新為全公開 CDN、高清、跨域支持）
 const TEX_URLS = {
-  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
-  // 改用 NASA/stemkoski 穩定源
-  mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
-  venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
-  mars:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
-  // ★ 木星：Solar System Scope 高清 NASA 源（2048px，真實帶紋）
-  jupiter: 'https://raw.githubusercontent.com/nicktarnold/solar-system/main/textures/jupiter.jpg',
-  saturn:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
-  uranus:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
-  neptune: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
-  pluto:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
+  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
+  mercury: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/mercury.jpg',
+  venus:   'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/venus.jpg',
+  mars:    'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/mars.jpg',
+  jupiter: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/jupiter.jpg',
+  saturn:  'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/saturn.jpg',
+  uranus:  'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/uranus.jpg',
+  neptune: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/neptune.jpg',
+  pluto:   'https://cdn.jsdelivr.net/gh/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
