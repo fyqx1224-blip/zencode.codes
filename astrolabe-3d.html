@@ -138,7 +138,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 #asc-hint.show{opacity:1}
 </style>
 <script type="importmap">
-{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+{"imports":{"three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.module.js","three/addons/":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/examples/jsm/"}}
 </script>
 </head>
 <body>
@@ -606,7 +606,7 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 终极稳定版：使用 Cloudflare 节点突破国内网络限制，完全支持跨域
+// ★★★ 终极稳定版：使用 jsDelivr 的备用节点，并在本地开发或 GitHub Pages 均可稳定解析
 const TEX_URLS = {
   earth:   'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
   moon:    'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
@@ -780,7 +780,7 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null,
+    emissiveMap: loadedTex.earth || null, // 保证地球在暗处也能看清地形
     emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
@@ -806,6 +806,7 @@ function buildPlanet(pc) {
     });
   } else {
     if (tex) {
+      // ★ 核心修复：emissiveIntensity 设为 0.15，避免发光过曝，展现细腻贴图阴影
       mat = new THREE.MeshStandardMaterial({
         map: tex,
         emissive: 0xffffff,
@@ -843,8 +844,9 @@ function buildPlanet(pc) {
 
   // 木星：巨型气态大气层
   if (pc.id === 'jupiter') {
+    // 之前引发卡加载的 BUG 在这里：缺少了 THREE. 命名空间
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
-      new MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
   // 土星：气态大气层与光环
