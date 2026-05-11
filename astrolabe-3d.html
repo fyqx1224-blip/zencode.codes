@@ -609,18 +609,18 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 行星物理貼圖 URL（更新為全公開 CDN、高清、跨域支持）
+// ★★★ 行星物理贴图 URL（更新为绝对稳定开源源，解决跨域及404问题）
 const TEX_URLS = {
   earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
   moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/mercury.jpg',
-  venus:   'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/venus.jpg',
-  mars:    'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/mars.jpg',
-  jupiter: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/jupiter.jpg',
-  saturn:  'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/saturn.jpg',
-  uranus:  'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/uranus.jpg',
-  neptune: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/neptune.jpg',
-  pluto:   'https://cdn.jsdelivr.net/gh/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
+  mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
+  venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
+  mars:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
+  jupiter: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/jupitermap.jpg',
+  saturn:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
+  uranus:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
+  neptune: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
+  pluto:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
@@ -632,44 +632,33 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
       t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
       loadedTex[k] = t; res();
     };
-    img.onerror = () => res();
+    img.onerror = () => res(); // 失败则静默降级为纯色，不阻塞渲染
     img.src = url;
   })
 );
 
-// ★★ 土星環紋理：恢復原版圓形徑向漸變（512×512，RingGeometry UV 完全對齊）
+// ★★ 土星环纹理：径向渐变
 function makeSaturnRingTex() {
   const c = document.createElement('canvas'); c.width = 512; c.height = 512;
   const ctx = c.getContext('2d'), cx = 256, cy = 256;
-  // 徑向漸變：從中心(95px)到邊緣(252px)，模擬卡西尼縫 + B環 + A環
   const g = ctx.createRadialGradient(cx,cy,95, cx,cy,252);
-  g.addColorStop(0.00, 'rgba(0,0,0,0)');          // 內側空白（C環透明）
-  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    // C環淡色
-  g.addColorStop(0.18, 'rgba(215,195,165,1)');     // B環內側（最亮）
-  g.addColorStop(0.30, 'rgba(235,215,185,1)');     // B環主體
-  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   // B環外側
-  g.addColorStop(0.44, 'rgba(0,0,0,0)');           // 卡西尼縫（透明）
-  g.addColorStop(0.48, 'rgba(0,0,0,0)');           // 卡西尼縫
-  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   // A環內側
-  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   // A環主體
-  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   // A環外側
-  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   // A環邊緣
-  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    // F環微弱
-  g.addColorStop(1.00, 'rgba(0,0,0,0)');           // 外側透明
+  g.addColorStop(0.00, 'rgba(0,0,0,0)');          
+  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    
+  g.addColorStop(0.18, 'rgba(215,195,165,1)');     
+  g.addColorStop(0.30, 'rgba(235,215,185,1)');     
+  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   
+  g.addColorStop(0.44, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.48, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   
+  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   
+  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   
+  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   
+  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    
+  g.addColorStop(1.00, 'rgba(0,0,0,0)');           
   ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
   return new THREE.CanvasTexture(c);
 }
 const satRingTex = makeSaturnRingTex();
-
-// ★★ 木星大紅斑輔助（環形大氣暈）
-function makeJupiterAtmosTex() {
-  const c = document.createElement('canvas'); c.width = 256; c.height = 256;
-  const ctx = c.getContext('2d'), cx=128, cy=128;
-  const g = ctx.createRadialGradient(cx,cy,60,cx,cy,128);
-  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(.7,'rgba(220,130,60,.08)'); g.addColorStop(1,'rgba(180,90,30,.2)');
-  ctx.fillStyle = g; ctx.fillRect(0,0,256,256);
-  return new THREE.CanvasTexture(c);
-}
 
 const OBL = 23.4365 * DEG;
 
@@ -793,39 +782,51 @@ let earthMesh = null;
 function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
+    emissive: 0xffffff,
+    emissiveMap: loadedTex.earth || null, // 保证地球在暗处也能看清地形
+    emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthG.add(earthMesh);
-  // 大氣輝光
+  // 大气辉光
   earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 }
 
-// ★★★ 行星建構（完整物理貼圖版）
+// ★★★ 行星建构（核心修复点：修复贴图背光过暗、精准移除岩石星的大气泛光）
 function buildPlanet(pc) {
   const tex = loadedTex[pc.id];
-  const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
   let mat;
 
   if (pc.type === 'fict') {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
     mat = new THREE.MeshStandardMaterial({
-      color:0xFFFAE0, emissive:new THREE.Color(em.col), emissiveIntensity:em.i,
-      roughness:1, metalness:0
+      color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
+      roughness: 1, metalness: 0
     });
   } else {
-    // ★ 有貼圖：啟用全物理渲染；無貼圖：降級為純色
-    mat = new THREE.MeshStandardMaterial({
-      map: tex || null,
-      color: tex ? 0xffffff : pc.col,
-      emissive: new THREE.Color(em.col),
-      emissiveIntensity: tex ? em.i * 0.55 : em.i,   // 有貼圖時降低自發光，避免過曝
-      roughness: 0.7,
-      metalness: 0.05
-    });
+    if (tex) {
+      // 启用贴图发光映射技术，替代旧版的纯色发光，彻底告别“高光纯色发光球”
+      mat = new THREE.MeshStandardMaterial({
+        map: tex,
+        emissive: 0xffffff,
+        emissiveMap: tex,
+        emissiveIntensity: 0.45,
+        roughness: 0.9,
+        metalness: 0.05
+      });
+    } else {
+      const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
+      mat = new THREE.MeshStandardMaterial({
+        color: pc.col,
+        emissive: new THREE.Color(em.col),
+        emissiveIntensity: em.i,
+        roughness: 0.8, metalness: 0.1
+      });
+    }
   }
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 64, 64), mat);
@@ -835,33 +836,40 @@ function buildPlanet(pc) {
       new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
   }
 
-  // ★★ 木星大氣光暈（輕薄邊緣暈，讓貼圖自己呈現帶紋）
-  if (pc.id === 'jupiter') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 32, 32),
-      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.07, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  // ★ 严格物理学修复：以下行星【没有】明显大气层，因此不再添加 BackSide 发光球体：
+  // 月球(moon)、水星(mercury)、火星(mars)、冥王星(pluto)
+
+  // 金星：浓密的硫酸云大气层
+  if (pc.id === 'venus') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // ★★ 土星環（恢復原版：RingGeometry + MeshBasicMaterial，徑向漸變正確顯示）
+  // 木星：巨型气态大气层
+  if (pc.id === 'jupiter') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
+
+  // 土星：气态大气层与光环
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
-      map: satRingTex,
-      transparent: true, opacity: 0.93,
-      side: THREE.DoubleSide
+      map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide
     });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = Math.PI/2 + 0.466;
     sphere.add(ring);
+    
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // ★★ 天王星：橫躺自轉軸 + 藍綠大氣
+  // 天王星：横躺自转轴 + 冰巨星气态大气层
   if (pc.id === 'uranus') {
-    sphere.rotation.z = Math.PI / 2 * 0.97; // 97.8° 傾斜
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.15, 24, 24),
+    sphere.rotation.z = Math.PI / 2 * 0.97;
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    // 天王星環（薄）
     const urRing = new THREE.Mesh(
       new THREE.RingGeometry(pc.sz*1.4, pc.sz*1.55, 64),
       new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
@@ -869,30 +877,18 @@ function buildPlanet(pc) {
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
 
-  // ★★ 海王星：深藍大氣 + 深色風暴斑
+  // 海王星：深蓝色气态大气层
   if (pc.id === 'neptune') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.14, 24, 24),
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // ★★ 火星：紅色大氣邊緣
-  if (pc.id === 'mars') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0xFF4400, transparent:true, opacity:.07, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
-
-  // ★★ 金星：厚雲大氣
-  if (pc.id === 'venus') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.18, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
-
+  // 太阳：耀斑与日冕层
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.5, 32, 32),
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    // 日冕二層
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*2.0, 32, 32),
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.9, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
