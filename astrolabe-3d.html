@@ -138,7 +138,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 #asc-hint.show{opacity:1}
 </style>
 <script type="importmap">
-{"imports":{"three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.module.js","three/addons/":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/examples/jsm/"}}
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
 </script>
 </head>
 <body>
@@ -185,7 +185,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
   <div class="r3">
     <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="hst()">
-    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="hst()">
+    <input type="number" id="f-lat" placeholder="北纬" step="0.1" value="30" oninput="hst()">
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="hst()">
   </div>
 
@@ -606,7 +606,7 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 终极稳定版：使用 jsDelivr 的备用节点，并在本地开发或 GitHub Pages 均可稳定解析
+// ★★★ 终极稳定版：使用 testingcf.jsdelivr 节点突破国内网络限制，完全支持跨域
 const TEX_URLS = {
   earth:   'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
   moon:    'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
@@ -844,7 +844,7 @@ function buildPlanet(pc) {
 
   // 木星：巨型气态大气层
   if (pc.id === 'jupiter') {
-    // 之前引发卡加载的 BUG 在这里：缺少了 THREE. 命名空间
+    // 这里上个版本漏掉了 THREE. 前缀，现已补全修复
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
