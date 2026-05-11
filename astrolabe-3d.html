@@ -251,7 +251,8 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// ★ 替換為軌跡球控制器，解鎖 360 度無死角旋轉
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -276,7 +277,6 @@ const LANGS = {
     zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
     pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁'},
-    // ★ 更新：完美對齊《七政四餘》傳統星垣定義
     wx:{sun:'純陽·父·君主',moon:'純陰·母·情感',mercury:'陽水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·責任',rahu:'火之餘·羅睺',ketu:'土之餘·計都',yapo:'水之餘·月孛',ziqi:'木之餘·紫炁',uranus:'陽土·改革·突變',neptune:'陰木·夢幻·潛意識',pluto:'陰火·毀滅·重生'},
     ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
@@ -287,7 +287,6 @@ const LANGS = {
     zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
     pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁'},
-    // ★ 更新：完美对齐《七政四余》传统星垣定义
     wx:{sun:'纯阳·父·君主',moon:'纯阴·母·情感',mercury:'阳水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'火之余·罗睺',ketu:'土之余·计都',yapo:'水之余·月孛',ziqi:'木之余·紫炁',uranus:'阳土·改革·突变',neptune:'阴木·梦幻·潜意识',pluto:'阴火·毁灭·重生'},
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
@@ -555,9 +554,15 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
-const OCtrl = new OrbitControls(camera, renderer.domElement);
-OCtrl.enableDamping = true; OCtrl.dampingFactor = 0.055;
-OCtrl.minDistance = 3; OCtrl.maxDistance = 250;
+// ★ 替換為 TrackballControls，解除萬向節鎖，實現 360 度無死角翻轉
+const OCtrl = new TrackballControls(camera, renderer.domElement);
+OCtrl.rotateSpeed = 3.5;          // 翻轉靈敏度
+OCtrl.zoomSpeed = 1.2;
+OCtrl.panSpeed = 0.8;
+OCtrl.staticMoving = false;       // 開啟平滑慣性
+OCtrl.dynamicDampingFactor = 0.1; // 慣性阻尼
+OCtrl.minDistance = 3;
+OCtrl.maxDistance = 250;
 
 // ── Starfield ──
 function mkStars(n, sz, sp, col, op) {
@@ -608,18 +613,17 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 终极稳定版：使用 jsDelivr 的备用节点，并在本地开发或 GitHub Pages 均可稳定解析
 const TEX_URLS = {
   earth:   'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
   moon:    'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/mercurymap.jpg',
-  venus:   'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/venusmap.jpg',
-  mars:    'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/marsmap1k.jpg',
-  jupiter: 'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/jupitermap.jpg',
-  saturn:  'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/saturnmap.jpg',
-  uranus:  'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/uranusmap.jpg',
-  neptune: 'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/neptunemap.jpg',
-  pluto:   'https://testingcf.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/plutomap1k.jpg',
+  mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
+  venus:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
+  mars:    'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
+  jupiter: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',
+  saturn:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',
+  uranus:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
+  neptune: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg',
+  pluto:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
@@ -631,7 +635,7 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
       t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
       loadedTex[k] = t; res();
     };
-    img.onerror = () => res(); // 失败则静默降级为纯色，不阻塞渲染
+    img.onerror = () => res(); 
     img.src = url;
   })
 );
@@ -782,19 +786,18 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null, // 保证地球在暗处也能看清地形
+    emissiveMap: loadedTex.earth || null, 
     emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthG.add(earthMesh);
-  // 大气辉光
+  
   earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 }
 
-// ★★★ 行星建构（使用发光映射降低高光，并精确移除岩石星大气层）
 function buildPlanet(pc) {
   const tex = loadedTex[pc.id];
   let mat;
@@ -834,22 +837,16 @@ function buildPlanet(pc) {
       new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
   }
 
-  // ★ 严格物理学修复：以下行星【没有】明显大气层，不再添加 BackSide 发光球体：
-  // 月球(moon)、水星(mercury)、火星(mars)、冥王星(pluto)
-
-  // 金星：浓密的硫酸云大气层
   if (pc.id === 'venus') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // 木星：巨型气态大气层
   if (pc.id === 'jupiter') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // 土星：气态大气层与光环
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -863,7 +860,6 @@ function buildPlanet(pc) {
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // 天王星：横躺自转轴 + 冰巨星气态大气层
   if (pc.id === 'uranus') {
     sphere.rotation.z = Math.PI / 2 * 0.97;
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
@@ -875,13 +871,11 @@ function buildPlanet(pc) {
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
 
-  // 海王星：深蓝色气态大气层
   if (pc.id === 'neptune') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // 太阳：耀斑与日冕层
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
@@ -927,77 +921,32 @@ let userData = {}, curGeo = {}, currentLST = 0;
 let playingTime = false, playInterval = null;
 let birthLng = 120, birthLat = 30;
 
-// ════════════════════════════════════════════════
-//  ★★★ ASC 對齊邏輯
-//  原理：星盤本質是「從出生地觀測的天空」
-//  ASC（上升點）= 黃道與地平線（東方）的交點
-//  => 當 ASC 方向朝向觀測者（畫面左側 = 東方地平），
-//     地球貼圖應顯示出生地所在位置朝向觀測者
-//
-//  實現：
-//  eclG 中，ASC 在黃道環上 asc*DEG 角度位置
-//  我們需要：
-//  1. 地球旋轉使出生地經度對準 ASC 方向（黃道系中 asc°）
-//  2. OrbitControls 旋轉後，計算 camera 方向對應的黃道角度
-//     與 ASC 的夾角，作為地球的額外旋轉補償
-//
-//  簡化方案：
-//  earthG 不在 eclG 下，在 scene root
-//  地球的 Y 旋轉 = 使出生地子午線面向 ASC 方向
-//  ASC在黃道系的世界坐標 = eclG.localToWorld(asc方向向量)
-//  地球的旋轉 = 使出生地子午線對準該世界方向
-// ════════════════════════════════════════════════
-
-// 記錄當前 ASC 黃道角度（度）
 let currentAscDeg = 0;
-// 記錄出生地在地球貼圖上的偏移（經度對齊用）
 let birthLngOffset = 0; 
-
-// ASC 對齊提示 debounce
 let ascHintTimer = null;
 
 function updateEarthOrientation() {
   if (!userData.jd) return;
-  
-  // eclG 的局部坐標系中，ASC 在 asc*DEG 方向
-  // eclG 是繞 X 軸旋轉了 (π/2 - OBL) 的黃道平面
-  // ASC 的 eclG 局部坐標：
   const ascAngle = currentAscDeg * DEG;
   const ascLocal = new THREE.Vector3(Math.cos(ascAngle), Math.sin(ascAngle), 0);
-  
-  // 轉到世界坐標
   const ascWorld = ascLocal.clone().applyQuaternion(eclG.quaternion).normalize();
-  
-  // 地球自轉軸 = Y 軸（世界空間），但 earthG 在 scene root
-  // 地球貼圖：本初子午線（0°E）初始在 +X 方向
-  // 出生地在 birthLng 度，偏移 = birthLng * DEG
-  // 我們要讓出生地子午線面向 ascWorld 在 XZ 平面的投影方向
   const ascXZ = new THREE.Vector2(ascWorld.x, ascWorld.z).normalize();
-  const ascAzimuth = Math.atan2(ascXZ.y, ascXZ.x); // 世界XZ平面角度
-  
-  // 地球 Y 旋轉 = 使出生地（birthLng）朝向 ascWorld 的 XZ 投影
-  // 貼圖中，角度 θ 對應的子午線 = birthLng * DEG
-  // 需要旋轉 = ascAzimuth - birthLng * DEG
-  earthG.rotation.y = ascAzimuth - birthLng * DEG + Math.PI;
+  const ascAzimuth = Math.atan2(ascXZ.y, ascXZ.x); 
+  earthG.rotation.y = ascAzimuth - birthLng * Math.PI / 180 + Math.PI;
 }
 
-// 監聽 OrbitControls 旋轉，實時更新地球朝向
 OCtrl.addEventListener('change', () => {
   if (userData.jd) {
     updateEarthOrientation();
-    // 檢測 ASC 是否接近畫面左側（即相機右側）
     checkAscAlignment();
   }
 });
 
 function checkAscAlignment() {
-  // 獲取 ASC 在螢幕上的投影位置
   const ascAngle = currentAscDeg * DEG;
   const ascLocal = new THREE.Vector3(Math.cos(ascAngle) * 41, Math.sin(ascAngle) * 41, 0);
   const ascWorld = ascLocal.clone().applyMatrix4(eclG.matrixWorld);
   const ascNDC = ascWorld.clone().project(camera);
-  // NDC x: -1=左側, +1=右側
-  // 當 ASC 在畫面左側 1/3 區域時顯示提示
   const hint = document.getElementById('asc-hint');
   if (ascNDC.x < -0.3 && ascNDC.x > -0.95 && Math.abs(ascNDC.y) < 0.5) {
     hint.classList.add('show');
@@ -1059,7 +1008,6 @@ function placePlanets(geo, lst, aya) {
     else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
   }
 
-  // ★ 更新地球朝向（基於當前 ASC）
   updateEarthOrientation();
 }
 
@@ -1140,7 +1088,6 @@ window.hst = function() {
   let h  = parseInt(document.getElementById('f-h').value) || 0;
   let mn = parseInt(document.getElementById('f-mi').value) || 0;
   const dst = document.getElementById('f-dst').checked;
-  // ★ DST: 在真太陽時校正之前，先應用 +1h
   if (dst) h += 1;
   const hint = document.getElementById('st-hint');
   if (!isNaN(lng)) {
@@ -1163,11 +1110,9 @@ window.submitForm = function() {
   const lng = parseFloat(document.getElementById('f-lg').value) || 120;
   const lat = parseFloat(document.getElementById('f-lat').value) || 30;
   const tz  = parseInt(document.getElementById('f-tz').value) || 8;
-  // ★ DST: 出生時間 +1h（夏令時期間，鐘錶時間比標準時提前1小時）
   const dst = document.getElementById('f-dst').checked;
-  const effectiveH = dst ? h + 1 : h; // DST 校正：把鐘錶時間轉回標準時
+  const effectiveH = dst ? h + 1 : h; 
   if (!y||!m||!d||isNaN(y)||isNaN(m)||isNaN(d)) { alert('請輸入完整的年月日！'); return; }
-  // ★ UTC 轉換：標準時 - 時區偏移 = UTC
   const utcH = effectiveH - tz;
   const jd_utc = jdn(y, m, d, utcH, mn);
   const st = applyST(effectiveH, mn, stCorr(lng, tz));
@@ -1217,7 +1162,13 @@ function launch() {
   if (mw.style.display !== 'none') {
     mw.style.transition = 'opacity .7s'; mw.style.opacity = '0';
     setTimeout(() => { mw.style.display = 'none'; }, 700);
-    OCtrl.autoRotate = true; setTimeout(() => OCtrl.autoRotate = false, 5500);
+    // 自動旋轉開啟
+    S.spin = true; 
+    document.getElementById('cb-spin').classList.add('on');
+    setTimeout(() => { 
+      S.spin = false; 
+      document.getElementById('cb-spin').classList.remove('on');
+    }, 5500);
   }
 }
 
@@ -1252,7 +1203,8 @@ window.resetTime = function() {
 };
 
 bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
-bindBtn('cb-spin','spin',()=>{OCtrl.autoRotate=true;},()=>{OCtrl.autoRotate=false;});
+// ★ 修復自動旋轉按鈕，適配 TrackballControls
+bindBtn('cb-spin','spin', () => { S.spin = true; }, () => { S.spin = false; });
 bindBtn('cb-ecl','ecliptic',()=>eclG.visible=true, ()=>eclG.visible=false);
 bindBtn('cb-eq', 'equator', ()=>eqG.visible=true,  ()=>eqG.visible=false);
 bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
@@ -1287,9 +1239,17 @@ const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
+  
+  // ★ 注入自動旋轉邏輯，讓攝像機平滑繞 Y 軸飛行
+  if (S.spin) {
+    const speed = 0.2 * dt;
+    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed);
+    camera.up.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed); // 確保翻轉時不掉向
+    camera.lookAt(0, 0, 0);
+  }
+  
   OCtrl.update();
   if (earthMesh) earthMesh.rotation.y += dt * 0.15;
-  // ★ 行星自轉（各星球真實比例差異）
   const rotSpeeds = { moon:0.02, mercury:0.04, venus:0.01, sun:0.06, mars:0.09,
     jupiter:0.22, saturn:0.19, uranus:0.15, neptune:0.17, pluto:0.03,
     rahu:0, ketu:0, yapo:0, ziqi:0 };
