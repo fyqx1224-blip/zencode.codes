@@ -617,8 +617,8 @@ const TEX_URLS = {
   mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
   venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
   mars:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
-  // ★ 木星、土星、天王星、海王星 改用 NASA CORS proxy 源
-  jupiter: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/jupitermap.jpg',
+  // ★ 木星：Solar System Scope 高清 NASA 源（2048px，真實帶紋）
+  jupiter: 'https://raw.githubusercontent.com/nicktarnold/solar-system/main/textures/jupiter.jpg',
   saturn:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
   uranus:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
   neptune: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
@@ -639,28 +639,27 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
   })
 );
 
-// ★★ 土星環紋理（Canvas生成，更真實）
+// ★★ 土星環紋理：恢復原版圓形徑向漸變（512×512，RingGeometry UV 完全對齊）
 function makeSaturnRingTex() {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 1;
-  const ctx = c.getContext('2d');
-  const g = ctx.createLinearGradient(0,0,1024,0);
-  g.addColorStop(0.00, 'rgba(0,0,0,0)');
-  g.addColorStop(0.05, 'rgba(160,140,110,.8)');
-  g.addColorStop(0.12, 'rgba(200,180,150,.95)');
-  g.addColorStop(0.20, 'rgba(140,120,90,.6)');
-  g.addColorStop(0.28, 'rgba(0,0,0,0)');
-  g.addColorStop(0.34, 'rgba(230,210,180,1)');
-  g.addColorStop(0.42, 'rgba(210,190,160,.9)');
-  g.addColorStop(0.52, 'rgba(180,160,130,.7)');
-  g.addColorStop(0.60, 'rgba(240,220,190,.85)');
-  g.addColorStop(0.72, 'rgba(190,170,140,.65)');
-  g.addColorStop(0.82, 'rgba(160,140,110,.45)');
-  g.addColorStop(0.92, 'rgba(130,110,80,.25)');
-  g.addColorStop(1.00, 'rgba(0,0,0,0)');
-  ctx.fillStyle = g; ctx.fillRect(0,0,1024,1);
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
-  return tex;
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d'), cx = 256, cy = 256;
+  // 徑向漸變：從中心(95px)到邊緣(252px)，模擬卡西尼縫 + B環 + A環
+  const g = ctx.createRadialGradient(cx,cy,95, cx,cy,252);
+  g.addColorStop(0.00, 'rgba(0,0,0,0)');          // 內側空白（C環透明）
+  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    // C環淡色
+  g.addColorStop(0.18, 'rgba(215,195,165,1)');     // B環內側（最亮）
+  g.addColorStop(0.30, 'rgba(235,215,185,1)');     // B環主體
+  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   // B環外側
+  g.addColorStop(0.44, 'rgba(0,0,0,0)');           // 卡西尼縫（透明）
+  g.addColorStop(0.48, 'rgba(0,0,0,0)');           // 卡西尼縫
+  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   // A環內側
+  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   // A環主體
+  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   // A環外側
+  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   // A環邊緣
+  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    // F環微弱
+  g.addColorStop(1.00, 'rgba(0,0,0,0)');           // 外側透明
+  ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
+  return new THREE.CanvasTexture(c);
 }
 const satRingTex = makeSaturnRingTex();
 
@@ -838,40 +837,23 @@ function buildPlanet(pc) {
       new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
   }
 
-  // ★★ 木星大氣光暈
+  // ★★ 木星大氣光暈（輕薄邊緣暈，讓貼圖自己呈現帶紋）
   if (pc.id === 'jupiter') {
-    const atmoMat = new THREE.MeshBasicMaterial({
-      color: 0xFF9944, transparent: true, opacity: .08,
-      blending: THREE.AdditiveBlending, side: THREE.BackSide
-    });
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.22, 32, 32), atmoMat));
-    // 木星赤道帶紋（3條環帶暗紋叠加）
-    for (let i = 0; i < 3; i++) {
-      const beltAngle = (i - 1) * 0.55;
-      const belt = new THREE.Mesh(
-        new THREE.TorusGeometry(pc.sz, pc.sz * 0.12 + i*0.04, 6, 48),
-        new THREE.MeshBasicMaterial({ color:0x8B4513, transparent:true, opacity:.07, blending:THREE.AdditiveBlending })
-      );
-      belt.rotation.x = Math.PI/2 + beltAngle;
-      sphere.add(belt);
-    }
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.07, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
 
-  // ★★ 土星環（精細版）
+  // ★★ 土星環（恢復原版：RingGeometry + MeshBasicMaterial，徑向漸變正確顯示）
   if (pc.id === 'saturn') {
-    const ringGeo = new THREE.RingGeometry(pc.sz*1.45, pc.sz*2.95, 128, 4);
-    const ringMat = new THREE.MeshStandardMaterial({
+    const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
       map: satRingTex,
-      transparent: true, opacity: 0.95,
-      side: THREE.DoubleSide,
-      emissive: new THREE.Color(0x554433),
-      emissiveIntensity: 0.08,
-      roughness: 0.9, metalness: 0.0
+      transparent: true, opacity: 0.93,
+      side: THREE.DoubleSide
     });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = Math.PI/2 + 0.466;
     sphere.add(ring);
-    // 土星大氣暈
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
