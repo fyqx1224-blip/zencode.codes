@@ -606,18 +606,18 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 修复网络拦截：使用 fastly.jsdelivr 镜像源，确保国内网络不被墙
+// ★★★ 终极网络修复方案：使用 ghproxy 镜像代理，突破国内 DNS 污染与跨域限制
 const TEX_URLS = {
-  earth:   'https://fastly.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
-  moon:    'https://fastly.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/mercurymap.jpg',
-  venus:   'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/venusmap.jpg',
-  mars:    'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/marsmap1k.jpg',
-  jupiter: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/jupitermap.jpg',
-  saturn:  'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/saturnmap.jpg',
-  uranus:  'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/uranusmap.jpg',
-  neptune: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/neptunemap.jpg',
-  pluto:   'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/plutomap1k.jpg',
+  earth:   'https://mirror.ghproxy.com/https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
+  moon:    'https://mirror.ghproxy.com/https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
+  mercury: 'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
+  venus:   'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
+  mars:    'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
+  jupiter: 'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/jupitermap.jpg',
+  saturn:  'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
+  uranus:  'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
+  neptune: 'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
+  pluto:   'https://mirror.ghproxy.com/https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
@@ -780,7 +780,7 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null,
+    emissiveMap: loadedTex.earth || null, // 保证地球在暗处也能看清地形
     emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
@@ -806,7 +806,7 @@ function buildPlanet(pc) {
     });
   } else {
     if (tex) {
-      // ★ 核心修复：emissiveIntensity 从 0.45 调低到 0.15，避免纯色光球问题，展现细腻贴图
+      // ★ 核心修复：emissiveIntensity 设为 0.15，避免发光过曝，展现细腻贴图阴影
       mat = new THREE.MeshStandardMaterial({
         map: tex,
         emissive: 0xffffff,
