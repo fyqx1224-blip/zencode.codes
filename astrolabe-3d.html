@@ -165,7 +165,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
   </div>
 </div>
 
-<!-- MODAL -->
 <div id="mw">
 <div id="modal">
   <div class="ml" id="modal-title">星象座標系</div>
@@ -190,7 +189,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="hst()">
   </div>
 
-  <!-- ★ DST 夏令時開關 -->
   <div class="dst-row">
     <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
     <span class="dst-badge" id="dst-badge">標準時</span>
@@ -206,7 +204,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </div>
 </div>
 
-<!-- SIDE PANELS -->
 <div class="side-panel" id="lp" style="display:none">
   <div class="pc"><div class="pc-t" id="pct-ecl">星象 · 視黃道度數</div><div id="plist"></div></div>
   <div class="pc"><div class="pc-t" id="pct-ana">命盤分析摘要</div><div id="abody"></div></div>
@@ -609,18 +606,18 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-// ★★★ 行星物理贴图 URL（更新为绝对稳定开源源，解决跨域及404问题）
+// ★★★ 修复网络拦截：使用 fastly.jsdelivr 镜像源，确保国内网络不被墙
 const TEX_URLS = {
-  earth:   'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
-  moon:    'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/mercurymap.jpg',
-  venus:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/venusmap.jpg',
-  mars:    'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/marsmap1k.jpg',
-  jupiter: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/jupitermap.jpg',
-  saturn:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/saturnmap.jpg',
-  uranus:  'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/uranusmap.jpg',
-  neptune: 'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/neptunemap.jpg',
-  pluto:   'https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/plutomap1k.jpg',
+  earth:   'https://fastly.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
+  moon:    'https://fastly.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
+  mercury: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/mercurymap.jpg',
+  venus:   'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/venusmap.jpg',
+  mars:    'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/marsmap1k.jpg',
+  jupiter: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/jupitermap.jpg',
+  saturn:  'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/saturnmap.jpg',
+  uranus:  'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/uranusmap.jpg',
+  neptune: 'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/neptunemap.jpg',
+  pluto:   'https://fastly.jsdelivr.net/gh/stemkoski/stemkoski.github.com@master/Three.js/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
@@ -783,7 +780,7 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null, // 保证地球在暗处也能看清地形
+    emissiveMap: loadedTex.earth || null,
     emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
@@ -795,7 +792,7 @@ function buildEarth() {
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 }
 
-// ★★★ 行星建构（核心修复点：修复贴图背光过暗、精准移除岩石星的大气泛光）
+// ★★★ 行星建构（使用发光映射降低高光，并精确移除岩石星大气层）
 function buildPlanet(pc) {
   const tex = loadedTex[pc.id];
   let mat;
@@ -809,12 +806,12 @@ function buildPlanet(pc) {
     });
   } else {
     if (tex) {
-      // 启用贴图发光映射技术，替代旧版的纯色发光，彻底告别“高光纯色发光球”
+      // ★ 核心修复：emissiveIntensity 从 0.45 调低到 0.15，避免纯色光球问题，展现细腻贴图
       mat = new THREE.MeshStandardMaterial({
         map: tex,
         emissive: 0xffffff,
         emissiveMap: tex,
-        emissiveIntensity: 0.45,
+        emissiveIntensity: 0.15,
         roughness: 0.9,
         metalness: 0.05
       });
@@ -836,7 +833,7 @@ function buildPlanet(pc) {
       new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
   }
 
-  // ★ 严格物理学修复：以下行星【没有】明显大气层，因此不再添加 BackSide 发光球体：
+  // ★ 严格物理学修复：以下行星【没有】明显大气层，不再添加 BackSide 发光球体：
   // 月球(moon)、水星(mercury)、火星(mars)、冥王星(pluto)
 
   // 金星：浓密的硫酸云大气层
