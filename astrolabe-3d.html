@@ -52,6 +52,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .al:last-child{border-bottom:none}
 .at{display:inline-block;font-size:.48rem;padding:1px 5px;border-radius:3px;background:rgba(99,163,237,.14);color:var(--blue-l);margin-right:4px}
 .av{color:var(--gold);font-family:'Noto Serif TC',serif}
+.retro{color:var(--red);font-size:.48rem;margin-left:3px;vertical-align:top}
 @media(max-width:768px){
   .side-panel{display:none!important}
   #mobile-drawer{position:fixed;bottom:0;left:0;right:0;z-index:25;background:rgba(2,2,4,.96);backdrop-filter:blur(28px);border-top:1px solid rgba(99,163,237,.22);border-radius:18px 18px 0 0;transform:translateY(calc(100% - 48px));transition:transform .38s cubic-bezier(.4,0,.2,1);max-height:72vh;display:flex;flex-direction:column}
@@ -127,7 +128,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .lax{color:rgba(255,255,255,.6);font-size:.75rem;letter-spacing:.1em;text-shadow:0 0 8px #000;font-weight:bold}
 .lasc{color:var(--red);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--red),0 0 5px #000;letter-spacing:.05em}
 .ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000;letter-spacing:.05em}
-/* ★ MC/IC 專屬樣式 */
 .lmc{color:#7DE09A;font-size:.8rem;font-weight:bold;text-shadow:0 0 12px #7DE09A,0 0 5px #000;letter-spacing:.05em}
 
 #loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(2,2,4,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
@@ -136,7 +136,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:.65rem;color:var(--blue);letter-spacing:.25em}
 
-/* ── ASC align hint ── */
 #asc-hint{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(2,2,4,.82);backdrop-filter:blur(12px);border:1px solid rgba(240,201,106,.25);border-radius:20px;padding:5px 16px;font-size:.52rem;color:rgba(240,201,106,.7);letter-spacing:.12em;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
 #asc-hint.show{opacity:1}
 </style>
@@ -232,16 +231,16 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </div>
 <div id="ctrl-bar">
   <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-tt="自动旋转">⟳</button>
-  <button class="cb" id="cb-sys"  data-tt="切换回归/恒星" style="font-size:.68rem">归</button>
+  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
+  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
   <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
-  <button class="cb on" id="cb-ecl" data-tt="黄道环" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-tt="赤道环">⊕</button>
+  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
   <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星体显示" style="font-size:.68rem">政</button>
-  <button class="cb"    id="cb-asp" data-tt="相位连线">⋆</button>
-  <button class="cb"    id="cb-tm"  data-tt="时间推移">⏱</button>
-  <button class="cb"    id="cb-orb" data-tt="黄纬垂线">◎</button>
+  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
+  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
+  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
+  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
 </div>
 <div id="time-bar">
   <button class="tbtn" id="tb-play">▶ 播放</button>
@@ -271,9 +270,6 @@ const Z_EXAG = 3.5;
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
 window.toggleDrawer = () => document.getElementById('mobile-drawer').classList.toggle('open');
 
-// ═══════════════════════════════════════════════
-//  I18N
-// ═══════════════════════════════════════════════
 const LANGS = {
   'zh-TW':{
     zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
@@ -417,62 +413,106 @@ function getHelio(id, d) {
   return { l, r: r * Math.cos(lat * DEG), z: r * Math.sin(lat * DEG) };
 }
 
-function calcAll(T, jd, lng, lat, isSid) {
+function getAstroPositions(jd) {
   const d = jd - 2451545.0;
-  const geo = {};
+  const pos = {};
   const L_sun = norm(280.460 + 0.9856474 * d);
   const g_sun = norm(357.528 + 0.9856003 * d);
-  geo.sun = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
-  geo.sun_lat = 0;
-  const xe = Math.cos(norm(geo.sun + 180) * DEG);
-  const ye = Math.sin(norm(geo.sun + 180) * DEG);
+  pos.sun = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
+  
+  const xe = Math.cos(norm(pos.sun + 180) * DEG);
+  const ye = Math.sin(norm(pos.sun + 180) * DEG);
   const D  = norm(297.85036 + 12.190749 * d);
   const M  = norm(357.52772 + 0.985600 * d);
   const Mp = norm(134.96298 + 13.064992 * d);
   const F  = norm(93.27191  + 13.229350 * d);
-  geo.moon = norm(218.3165 + 13.176396 * d
-    + 6.289 * Math.sin(Mp * DEG)
-    + 1.274 * Math.sin((2*D - Mp) * DEG)
-    + 0.658 * Math.sin(2*D * DEG)
-    + 0.214 * Math.sin(2*Mp * DEG)
-    - 0.186 * Math.sin(M * DEG)
-    - 0.114 * Math.sin(2*F * DEG));
+  pos.moon = norm(218.3165 + 13.176396 * d
+    + 6.289 * Math.sin(Mp * DEG) + 1.274 * Math.sin((2*D - Mp) * DEG)
+    + 0.658 * Math.sin(2*D * DEG) + 0.214 * Math.sin(2*Mp * DEG)
+    - 0.186 * Math.sin(M * DEG) - 0.114 * Math.sin(2*F * DEG));
+    
   ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const h = getHelio(id, d);
-    const xp = h.r * Math.cos(h.l * DEG), yp = h.r * Math.sin(h.l * DEG);
-    const X = xp - xe, Y = yp - ye;
-    geo[id] = norm(Math.atan2(Y, X) * R2D);
-    geo[id + '_lat'] = Math.atan2(h.z, Math.sqrt(X*X + Y*Y)) * R2D;
+    const X = h.r * Math.cos(h.l * DEG) - xe, Y = h.r * Math.sin(h.l * DEG) - ye;
+    pos[id] = norm(Math.atan2(Y, X) * R2D);
+    pos[id + '_lat'] = Math.atan2(h.z, Math.sqrt(X*X + Y*Y)) * R2D;
   });
+  
   const ascNode = norm(125.04452 - 0.0529538 * d);
-  geo.ketu = ascNode;
-  geo.rahu = norm(ascNode + 180);
-  geo.moon_lat = 5.145 * Math.sin((geo.moon - geo.ketu) * DEG);
-  geo.rahu_lat = 0; geo.ketu_lat = 0;
-  const perigee = norm(83.3532465 + 0.11140353 * d);
-  geo.yapo = norm(perigee + 180);
-  geo.yapo_lat = 0;
-  geo.ziqi = norm(ZIQI_BASE + ZIQI_SPEED * d);
-  geo.ziqi_lat = 0;
+  pos.ketu = ascNode;
+  pos.rahu = norm(ascNode + 180);
+  pos.moon_lat = 5.145 * Math.sin((pos.moon - pos.ketu) * DEG);
+  pos.yapo = norm(norm(83.3532465 + 0.11140353 * d) + 180);
+  pos.ziqi = norm(ZIQI_BASE + ZIQI_SPEED * d);
+  
+  return pos;
+}
+
+function calcAll(T, jd, lng, lat, isSid) {
+  const d = jd - 2451545.0;
+  const geo = getAstroPositions(jd);
+  geo.sun_lat = 0; geo.rahu_lat = 0; geo.ketu_lat = 0; geo.yapo_lat = 0; geo.ziqi_lat = 0;
+  
+  const posPrev = getAstroPositions(jd - 0.02); 
+  geo.retrograde = {};
+  for(let id in geo) {
+    if(id.includes('_lat')) continue;
+    if(id==='sun'||id==='moon'||id==='yapo'||id==='ziqi') geo.retrograde[id] = false;
+    else if(id==='rahu'||id==='ketu') geo.retrograde[id] = true; 
+    else {
+      let diff = geo[id] - posPrev[id];
+      if(diff > 180) diff -= 360;
+      if(diff < -180) diff += 360;
+      geo.retrograde[id] = diff < 0;
+    }
+  }
+
   const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
   const lst = norm(gmst + lng) * DEG;
   const obliq = (23.4392911 - 0.0130042 * T) * DEG;
   const lat_r = lat * DEG;
-  geo.asc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(obliq) + Math.tan(lat_r) * Math.sin(obliq))) * R2D);
-  geo.dsc = norm(geo.asc + 180);
   
-  // ★ 核心修復 2：精准計算天頂 (MC) 與天底 (IC)
-  geo.mc = norm(Math.atan2(Math.sin(lst), Math.cos(lst) * Math.cos(obliq)) * R2D);
-  geo.ic = norm(geo.mc + 180);
+  let rawAsc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(obliq) + Math.tan(lat_r) * Math.sin(obliq))) * R2D);
+  let rawMc = norm(Math.atan2(Math.sin(lst), Math.cos(lst) * Math.cos(obliq)) * R2D);
+  let rawDsc = norm(rawAsc + 180);
+  let rawIc = norm(rawMc + 180);
 
   const aya = 24.03 + d * (50.29 / 36525);
+  
   if (isSid) {
     const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
     for (const k in geo) {
       if (!latKeys.has(k) && typeof geo[k] === 'number') geo[k] = norm(geo[k] - aya);
     }
+    geo.asc = norm(rawAsc - aya);
+    geo.mc = norm(rawMc - aya);
+    geo.dsc = norm(rawDsc - aya);
+    geo.ic = norm(rawIc - aya);
+
+    const ascSign = Math.floor(geo.asc / 30);
+    geo.houses = [];
+    for (let i = 0; i < 12; i++) {
+        geo.houses.push(norm((ascSign + i) * 30));
+    }
+  } else {
+    geo.asc = rawAsc;
+    geo.mc = rawMc;
+    geo.dsc = rawDsc;
+    geo.ic = rawIc;
+
+    const q1 = norm(geo.ic - geo.asc);
+    const q2 = norm(geo.dsc - geo.ic);
+    const q3 = norm(geo.mc - geo.dsc);
+    const q4 = norm(geo.asc - geo.mc);
+    geo.houses = [
+        geo.asc, norm(geo.asc + q1/3), norm(geo.asc + 2*q1/3),
+        geo.ic,  norm(geo.ic + q2/3),  norm(geo.ic + 2*q2/3),
+        geo.dsc, norm(geo.dsc + q3/3), norm(geo.dsc + 2*q3/3),
+        geo.mc,  norm(geo.mc + q4/3),  norm(geo.mc + 2*q4/3)
+    ];
   }
-  return { geo, lst: norm(gmst + lng), aya };
+
+  return { geo, lst: norm(gmst + lng), gmst: norm(gmst), aya };
 }
 
 function stCorr(lng, tz) { return Math.round((lng - tz * 15) * 4); }
@@ -666,8 +706,11 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-// ★ 核心修復 1：赤道平面倒轉，糾正天球極點朝向（-Math.PI / 2）
-const eqG = new THREE.Group(); eqG.rotation.x = -Math.PI / 2; scene.add(eqG);
+// ★ 核心修復 1：黃道面設為絕對水平 (0,0,0)
+const eclG = new THREE.Group(); scene.add(eclG);
+
+// 赤道面傾斜 OBL 度
+const eqG = new THREE.Group(); eqG.rotation.x = OBL; eclG.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
 for (let i = 0; i < 36; i++) {
@@ -694,8 +737,7 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
-// ★ 核心修復 1：黃道平面同步倒轉（-Math.PI / 2 + OBL）
-const eclG = new THREE.Group(); eclG.rotation.x = -Math.PI / 2 + OBL; scene.add(eclG);
+// 黃道面網格
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -778,9 +820,13 @@ const EMISSIVE = {
 
 const pMesh = {}, pLbl = {}, dropLines = {};
 
-const earthG = new THREE.Group(); scene.add(earthG);
+// ★ 地球層級重構：放入赤道群組，隨恆星時旋轉
+const earthContainer = new THREE.Group(); eqG.add(earthContainer);
+const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2;
+earthContainer.add(earthMeshGroup);
+
 let earthMesh = null;
-let birthMarker = null; // ★ 新增出生地信標
+let birthMarker = null;
 
 function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
@@ -792,16 +838,15 @@ function buildEarth() {
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
-  earthG.add(earthMesh);
+  earthMeshGroup.add(earthMesh);
   
-  earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+  earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
-  // ★ 初始化出生地紅色呼吸信標
   birthMarker = new THREE.Group();
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-  earthG.add(birthMarker);
+  earthMeshGroup.add(birthMarker);
 }
 
 function buildPlanet(pc) {
@@ -847,12 +892,10 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'jupiter') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -865,7 +908,6 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'uranus') {
     sphere.rotation.z = Math.PI / 2 * 0.97;
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
@@ -876,12 +918,10 @@ function buildPlanet(pc) {
     );
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
-
   if (pc.id === 'neptune') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
@@ -902,7 +942,7 @@ function buildAllPlanets() {
 
     const hex = '#' + pc.col.toString(16).padStart(6, '0');
     const el = document.createElement('div'); el.className = 'lbl lpl';
-    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}</div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
+    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
     const obj = new CSS2DObject(el);
     if (pc.isOut) obj.element.style.display = 'none';
     plG.add(obj); pLbl[pc.id] = obj;
@@ -930,28 +970,18 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
-// ★ 核心修復 2：精準計算並映射出生地標點，使其永遠對齊命盤方位
+// ★ 核心修復 3：精準計算並映射出生地標點，使其永遠對齊命盤方位
 function updateEarthOrientation() {
   if (!userData.jd) return;
-  const ascAngle = currentAscDeg * DEG;
-  const ascLocal = new THREE.Vector3(Math.cos(ascAngle), Math.sin(ascAngle), 0);
-  const ascWorld = ascLocal.clone().applyQuaternion(eclG.quaternion).normalize();
-  const ascAzimuth = Math.atan2(ascWorld.z, ascWorld.x); 
   
-  // 動態更新出生地紅色信標的三維球面坐標
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = -userData.lng * DEG - Math.PI / 2;
-    birthMarker.position.set(
-        1.52 * Math.sin(phi) * Math.cos(theta),
-        1.52 * Math.cos(phi),
-        1.52 * Math.sin(phi) * Math.sin(theta)
-    );
+    const theta = (userData.lng + 90) * DEG;
+    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   
-  // 保持地球自轉同步於命盤
-  const markerLocalAngle = Math.atan2(birthMarker.position.z, birthMarker.position.x);
-  earthG.rotation.y = ascAzimuth - markerLocalAngle;
+  // 地球絕對自轉同步於恆星時：讓紅點永遠對齊子午線 (MC天頂)
+  earthContainer.rotation.z = curGeo.gmst * DEG;
 }
 
 OCtrl.addEventListener('change', () => {
@@ -993,8 +1023,15 @@ function placePlanets(geo, lst, aya) {
     const rProj = Math.cos(beta) * pc.R;
     const x = Math.cos(a)*rProj, y = Math.sin(a)*rProj;
     const z = Math.sin(beta) * pc.R * (pc.id === 'moon' ? 1.5 : Z_EXAG);
+    
     if (pMesh[pc.id]) { pMesh[pc.id].position.set(x,y,z); pMesh[pc.id].visible = vis; }
-    if (pLbl[pc.id])  { pLbl[pc.id].position.set(x+0.2,y+0.2,z+pc.sz+0.3); pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; }
+    if (pLbl[pc.id])  { 
+      pLbl[pc.id].position.set(x+0.2,y+0.2,z+pc.sz+0.3); 
+      pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; 
+      const rEl = document.getElementById('r_' + pc.id);
+      if (rEl) rEl.textContent = geo.retrograde[pc.id] ? '(逆)' : '';
+    }
+    
     const dl = dropLines[pc.id];
     if (dl) {
       const show = vis && S.orb && Math.abs(z) > 0.05;
@@ -1015,30 +1052,57 @@ function placePlanets(geo, lst, aya) {
     houseG.remove(c);
   }
   
-  // 繪製黃道十二宮（等宮制）
+  // ★ 核心修復 2：雙軌宮位制繪圖邏輯
   for (let i = 0; i < 12; i++) {
-    const a = norm(geo.asc + i*30) * DEG;
-    const isAxis = i === 0 || i === 6;
-    const col = i === 0 ? 0xFF4444 : (i === 6 ? 0x4488FF : 0xFFFFFF);
-    houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
-      new THREE.Vector3(Math.cos(a)*(isAxis?43:40.5), Math.sin(a)*(isAxis?43:40.5), 0)
-    ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis?.68:.18 })));
-    if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
-    else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
-    else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+    const a = geo.houses[i] * DEG;
+    let isAxis = false;
+    let col = 0xFFFFFF;
+    
+    if (!S.sidereal) {
+      isAxis = (i === 0 || i === 3 || i === 6 || i === 9);
+      col = (i===0||i===6) ? 0xFF4444 : ((i===3||i===9) ? 0x7DE09A : 0xFFFFFF);
+      
+      houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+        new THREE.Vector3(Math.cos(a)*(isAxis?43:40.5), Math.sin(a)*(isAxis?43:40.5), 0)
+      ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis?.68:.18 })));
+      
+      if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
+      else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
+      else if (i === 9) lbl2D(houseG, 'lmc', 46, a, 'ui', 'mc');
+      else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
+      else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+    } else {
+      // 恆星黃道：整宮制網格
+      houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+        new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
+      ]), new THREE.LineBasicMaterial({ color:0x888888, transparent:true, opacity:0.18 })));
+      lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+    }
   }
 
-  // ★ 核心修復 3：繪製天頂 (MC) 與天底 (IC) 軸線
-  const mcA = geo.mc * DEG;
-  const icA = geo.ic * DEG;
-  houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
-    new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
-  ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
-  
-  lbl2D(houseG, 'lmc', 48, mcA, 'ui', 'mc');
-  lbl2D(houseG, 'lmc', 48, icA, 'ui', 'ic');
+  // 恆星黃道：單獨繪製懸浮的 ASC/MC 天干軸線
+  if (S.sidereal) {
+    const ascA = geo.asc * DEG;
+    const dscA = geo.dsc * DEG;
+    const mcA = geo.mc * DEG;
+    const icA = geo.ic * DEG;
+    
+    houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(Math.cos(dscA)*43, Math.sin(dscA)*43, 0),
+      new THREE.Vector3(Math.cos(ascA)*43, Math.sin(ascA)*43, 0)
+    ]), new THREE.LineBasicMaterial({ color:0xFF4444, transparent:true, opacity:0.68 })));
+    lbl2D(houseG, 'lasc', 46, ascA, 'ui', 'asc');
+    lbl2D(houseG, 'ldsc', 46, dscA, 'ui', 'dsc');
+    
+    houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
+      new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
+    ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
+    lbl2D(houseG, 'lmc', 46, mcA, 'ui', 'mc');
+    lbl2D(houseG, 'lmc', 46, icA, 'ui', 'ic');
+  }
 
   updateEarthOrientation();
 }
@@ -1071,10 +1135,11 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
   PCONF.filter(pc => !pc.isOut || S.showOut).forEach(pc => {
     const lon = geo[pc.id]; if (lon === undefined) return;
     const z = zodiac(lon), man = getMansion(lon, isSid, jd);
+    const retroStr = geo.retrograde[pc.id] ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     const row = document.createElement('div'); row.className = 'pr';
     row.innerHTML = `<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
-      <div class="pr-info"><div class="pr-n">${LANGS[currLang].pl[pc.id]}</div>
+      <div class="pr-info"><div class="pr-n">${LANGS[currLang].pl[pc.id]}${retroStr}</div>
       <div class="pr-s">${man}${LANGS[currLang].ui.mansion}·${z.s}</div></div>
       <div class="pr-d">${lon.toFixed(1)}°</div>`;
     row.addEventListener('mouseenter', e => showTip(e, `${pc.ic} ${LANGS[currLang].pl[pc.id]}`,
@@ -1088,10 +1153,17 @@ function renderHouseGrid(geo, isSid, jd, sfx='') {
   const g = document.getElementById('hgrid'+sfx); if (!g) return;
   g.innerHTML = '';
   for (let i = 0; i < 12; i++) {
-    const cLon = norm(geo.asc + i*30), z = zodiac(cLon);
+    const cLon = geo.houses[i], z = zodiac(cLon);
+    const nCusp = geo.houses[(i+1)%12];
     const man = getMansion(cLon, isSid, jd);
-    const ph = PCONF.filter(pc=>(!pc.isOut||S.showOut)&&geo[pc.id]!==undefined&&Math.floor(norm(geo[pc.id]-geo.asc)/30)===i)
-      .map(p=>`<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
+    
+    const ph = PCONF.filter(pc => {
+      if(pc.isOut && !S.showOut) return false;
+      const pLon = geo[pc.id]; if(pLon===undefined) return false;
+      if (cLon < nCusp) return pLon >= cLon && pLon < nCusp;
+      else return pLon >= cLon || pLon < nCusp;
+    }).map(p=>`<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
+    
     const cell = document.createElement('div'); cell.className = 'hc';
     cell.innerHTML = `<div class="hc-n">${i+1}</div><div class="hc-s">${z.sym}${z.s}</div>${ph?`<div class="hc-p">${ph}</div>`:''}`;
     cell.addEventListener('mouseenter', e => showTip(e, `${i+1}${LANGS[currLang].ui.house}·${z.s}`, `${cLon.toFixed(1)}°<br>${man}${LANGS[currLang].ui.mansion}`));
@@ -1194,12 +1266,6 @@ function launch() {
   if (mw.style.display !== 'none') {
     mw.style.transition = 'opacity .7s'; mw.style.opacity = '0';
     setTimeout(() => { mw.style.display = 'none'; }, 700);
-    S.spin = true; 
-    document.getElementById('cb-spin').classList.add('on');
-    setTimeout(() => { 
-      S.spin = false; 
-      document.getElementById('cb-spin').classList.remove('on');
-    }, 5500);
   }
 }
 
@@ -1234,7 +1300,11 @@ window.resetTime = function() {
 };
 
 bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
-bindBtn('cb-spin','spin', () => { S.spin = true; }, () => { S.spin = false; });
+bindBtn('cb-spin','spin', () => { 
+  if(!playingTime) document.getElementById('tb-play').click(); 
+}, () => { 
+  if(playingTime) document.getElementById('tb-play').click(); 
+});
 bindBtn('cb-ecl','ecliptic',()=>eclG.visible=true, ()=>eclG.visible=false);
 bindBtn('cb-eq', 'equator', ()=>eqG.visible=true,  ()=>eqG.visible=false);
 bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
@@ -1270,23 +1340,21 @@ function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
   
-  if (S.spin) {
-    const speed = 0.2 * dt;
-    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed);
-    camera.up.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed);
-    camera.lookAt(0, 0, 0);
-  }
-  
   OCtrl.update();
-  if (earthMesh) earthMesh.rotation.y += dt * 0.15;
-  const rotSpeeds = { moon:0.02, mercury:0.04, venus:0.01, sun:0.06, mars:0.09,
-    jupiter:0.22, saturn:0.19, uranus:0.15, neptune:0.17, pluto:0.03,
-    rahu:0, ketu:0, yapo:0, ziqi:0 };
-  PCONF.forEach(pc => {
-    if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined) {
-      pMesh[pc.id].rotation.y += dt * rotSpeeds[pc.id];
-    }
-  });
+  
+  // ★ 核心修復 4：自動推移時間時，星體基於真實順逆行進行自轉！
+  if (playingTime) {
+    const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18,
+      jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06,
+      rahu:0, ketu:0, yapo:0, ziqi:0 };
+    PCONF.forEach(pc => {
+      if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined && curGeo.retrograde) {
+        const dir = curGeo.retrograde[pc.id] ? -1 : 1;
+        pMesh[pc.id].rotation.y += dt * rotSpeeds[pc.id] * dir;
+      }
+    });
+  }
+
   updateMeteors(dt);
   composer.render(dt);
   lblR.render(scene, camera);
