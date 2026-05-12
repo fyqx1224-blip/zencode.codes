@@ -155,10 +155,10 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="loading-overlay"><div class="loading-spinner"></div><div class="loading-text" id="loading-text-el">載入星象引擎…</div></div>
 <div class="top-left-panel"><a href="/" class="btn-back" title="返回主頁">⟨</a></div>
 <div id="global-lang-toggle">
-  <button class="mlbtn active" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
-  <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
-  <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
-  <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
+  <button class="mlbtn active" data-lang="zh-TW" id="lang-tw">繁</button>
+  <button class="mlbtn" data-lang="zh-CN" id="lang-cn">简</button>
+  <button class="mlbtn" data-lang="en" id="lang-en">EN</button>
+  <button class="mlbtn" data-lang="ko" id="lang-ko">KR</button>
 </div>
 <div id="three-canvas"></div>
 <div id="topbar">
@@ -183,34 +183,32 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <input type="text" id="f-nm" placeholder="姓名（可留空）">
   <div class="fl" id="lbl-dt">出生日期（公曆）</div>
   <div class="r3">
-    <input type="number" id="f-y" placeholder="年" min="1900" max="2100" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-m" placeholder="月" min="1" max="12" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-d" placeholder="日" min="1" max="31" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-y" placeholder="年" min="1900" max="2100">
+    <input type="number" id="f-m" placeholder="月" min="1" max="12">
+    <input type="number" id="f-d" placeholder="日" min="1" max="31">
   </div>
   <div class="fl" id="lbl-tm">出生時間（24小時）</div>
   <div class="r2">
-    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23">
+    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59">
   </div>
   <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
   <div class="r3">
-    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120">
+    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30">
+    <input type="number" id="f-tz" placeholder="時區" step="1" value="8">
   </div>
-
   <div class="dst-row">
     <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
     <span class="dst-badge" id="dst-badge">標準時</span>
     <label class="dst-toggle">
-      <input type="checkbox" id="f-dst" onchange="if(window.toggleDST) window.toggleDST()">
+      <input type="checkbox" id="f-dst">
       <span class="dst-slider"></span>
     </label>
   </div>
-
   <div id="st-hint"></div>
-  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">觀 測 星 象 能 量</button>
-  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
+  <button class="sbtn" id="btn-sub">觀 測 星 象 能 量</button>
+  <div class="demo" id="btn-demo">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
 </div>
 </div>
 
@@ -222,7 +220,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="pc"><div class="pc-t" id="pct-hou">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
 </div>
 <div id="mobile-drawer" style="display:none">
-  <div id="mobile-drawer-handle" onclick="if(window.toggleDrawer) window.toggleDrawer()">
+  <div id="mobile-drawer-handle" id="btn-drawer">
     <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象資料</span><div class="pill"></div>
   </div>
   <div id="mobile-drawer-content">
@@ -255,7 +253,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="tbtn" id="tb-play">▶ 播放</button>
   <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
   <div id="time-lbl">當前時間</div>
-  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
+  <button class="tbtn" id="tb-reset">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
 <div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
@@ -277,7 +275,6 @@ const ZIQI_SPEED = 0.11140353;
 const Z_EXAG = 3.5;
 
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
-window.toggleDrawer = () => document.getElementById('mobile-drawer').classList.toggle('open');
 
 const LANGS = {
   'zh-TW':{
@@ -326,13 +323,15 @@ const LANGS = {
   }
 };
 
-let currLang = localStorage.getItem('zc_lang') || 'zh-TW';
+let currLang = 'zh-TW';
+try { currLang = localStorage.getItem('zc_lang') || 'zh-TW'; } catch(e) {}
 if (!LANGS[currLang]) currLang = 'zh-TW';
 
-window.switchLang = l => {
+const switchLang = l => {
   if (!LANGS[l]) return;
   currLang = l;
-  localStorage.setItem('zc_lang', l);
+  try { localStorage.setItem('zc_lang', l); } catch(e) {}
+  
   document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
   const d = LANGS[l];
   document.querySelectorAll('[data-3d-type]').forEach(el => {
@@ -343,6 +342,7 @@ window.switchLang = l => {
     if (t === 'ui')  el.innerHTML = d.ui[id];
     if (t === 'raw') el.innerHTML = id;
   });
+  
   document.getElementById('tb-title').textContent = d.dom.tbTitle;
   document.getElementById('tb-sub').textContent = d.dom.tbSub;
   document.getElementById('modal-title').textContent = d.dom.modalTitle;
@@ -363,6 +363,7 @@ window.switchLang = l => {
   document.getElementById('pct-ana-m').textContent = d.dom.pAna;
   document.getElementById('pct-hou-m').textContent = d.dom.pHouM;
   document.getElementById('asc-hint').textContent = d.dom.ascAligned;
+  
   const dstOn = document.getElementById('f-dst').checked;
   document.getElementById('dst-badge').textContent = dstOn ? d.dst.on : d.dst.off;
   document.getElementById('dst-badge').className = 'dst-badge' + (dstOn ? ' active' : '');
@@ -404,12 +405,46 @@ window.switchLang = l => {
   }
 };
 
-window.toggleDST = function() {
+const calcHST = function() {
+  try {
+      const lngStr = document.getElementById('f-lg').value;
+      const tzStr  = document.getElementById('f-tz').value;
+      const hInput = document.getElementById('f-h').value;
+      const mInput = document.getElementById('f-mi').value;
+      
+      const lng = lngStr === "" ? NaN : parseFloat(lngStr);
+      const tz  = tzStr === "" ? NaN : parseInt(tzStr);
+      let h  = hInput === "" ? 0 : parseInt(hInput);
+      let mn = mInput === "" ? 0 : parseInt(mInput);
+      
+      const dst = document.getElementById('f-dst').checked;
+      if (dst) h += 1;
+      const hint = document.getElementById('st-hint');
+      
+      if (!isNaN(lng) && !isNaN(tz) && !isNaN(h) && !isNaN(mn)) {
+        const val = (lng - tz * 15) * 4;
+        const c = Math.round(val);
+        let totalM = mn + c;
+        let newH = h + Math.floor(totalM / 60);
+        let newM = ((totalM % 60) + 60) % 60;
+        newH = ((newH % 24) + 24) % 24;
+        const dstTxt = dst ? ' [DST+1h]' : '';
+        hint.textContent = `✦ 真太陽時${dstTxt} 偏差${c>=0?'+':''}${c}分 → 校正後 ${String(newH).padStart(2,'0')}:${String(newM).padStart(2,'0')}`;
+        hint.style.display = 'block';
+      } else {
+        hint.style.display = 'none';
+      }
+  } catch (e) {
+      console.error("HST error:", e);
+  }
+};
+
+const toggleDST = function() {
   const on = document.getElementById('f-dst').checked;
   const d = LANGS[currLang];
   document.getElementById('dst-badge').textContent = on ? d.dst.on : d.dst.off;
   document.getElementById('dst-badge').className = 'dst-badge' + (on ? ' active' : '');
-  if(window.hst) window.hst();
+  calcHST();
 };
 
 function jdn(y, m, d, h = 12, mn = 0) {
@@ -518,7 +553,11 @@ function calcAll(T, jd, lng, lat, isSid) {
   let rawIc = norm(rawMc + 180);
 
   const isDay = norm(rawAsc - geo.sun) < 180;
-  geo.fortune = isDay ? norm(rawAsc + geo.moon - geo.sun) : norm(rawAsc + geo.sun - geo.moon);
+  if (!isNaN(rawAsc) && !isNaN(geo.sun) && !isNaN(geo.moon)) {
+      geo.fortune = isDay ? norm(rawAsc + geo.moon - geo.sun) : norm(rawAsc + geo.sun - geo.moon);
+  } else {
+      geo.fortune = 0;
+  }
   geo.fortune_lat = 0;
   geo.retrograde.fortune = false;
 
@@ -572,19 +611,6 @@ function calcAll(T, jd, lng, lat, isSid) {
 function auToR(au) {
     if (au === 0) return 0;
     return 18 * Math.pow(au, 0.42); 
-}
-
-function stCorr(lng, tz) { 
-  if(isNaN(lng) || isNaN(tz)) return 0;
-  return Math.round((lng - tz * 15) * 4);
-}
-
-function applyST(h, mn, c) {
-  let totalM = mn + c;
-  let newH = h + Math.floor(totalM / 60);
-  let newM = ((totalM % 60) + 60) % 60;
-  newH = ((newH % 24) + 24) % 24;
-  return { h: newH, m: newM };
 }
 
 const ZSYM = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
@@ -1085,7 +1111,7 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
-// ★ 核心修復 1：安全的倒序清理機制，防卡死防內存洩露
+// ★ 安全的記憶體清理機制（倒序遍歷，絕對防止死循環卡死）
 function clearGroup(group) {
     if (!group || !group.children) return;
     for (let i = group.children.length - 1; i >= 0; i--) {
@@ -1397,13 +1423,20 @@ function showTip(e, h, p) {
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
-// ★ 核心修復 2：絕對防禦 NaN 的表單讀取與真太陽時運算
+// ★ 將所有依賴模組的按鈕事件統一在這裡綁定
 window.hst = function() {
   try {
-      const lngStr = document.getElementById('f-lg').value;
-      const tzStr  = document.getElementById('f-tz').value;
-      const hInput = document.getElementById('f-h').value;
-      const mInput = document.getElementById('f-mi').value;
+      const lngEl = document.getElementById('f-lg');
+      const tzEl  = document.getElementById('f-tz');
+      const hEl   = document.getElementById('f-h');
+      const mEl   = document.getElementById('f-mi');
+      
+      if(!lngEl || !tzEl || !hEl || !mEl) return;
+      
+      const lngStr = lngEl.value;
+      const tzStr  = tzEl.value;
+      const hInput = hEl.value;
+      const mInput = mEl.value;
       
       const lng = lngStr === "" ? NaN : parseFloat(lngStr);
       const tz  = tzStr === "" ? NaN : parseInt(tzStr);
@@ -1477,7 +1510,6 @@ window.submitForm = function() {
 
       birthLng = lng; birthLat = lat;
       
-      // 更新全局 userData 並重新渲染
       userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
       launch();
   } catch(e) {
@@ -1490,8 +1522,8 @@ window.loadDemo = function() {
   ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz']
     .forEach((id,i) => { document.getElementById(id).value = ['演示','2002','12','24','0','0','109','31','8'][i]; });
   document.getElementById('f-dst').checked = false;
-  if(window.toggleDST) window.toggleDST();
-  if(window.submitForm) window.submitForm();
+  window.toggleDST();
+  window.submitForm();
 };
 
 function updatePositions() {
@@ -1538,6 +1570,31 @@ function launch() {
   }
 }
 
+// 事件綁定 (保證在腳本完全加載後觸發)
+const setupEvents = () => {
+    ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', window.hst);
+    });
+
+    const bindClick = (id, fn) => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('click', fn);
+    };
+
+    bindClick('btn-sub', window.submitForm);
+    bindClick('btn-demo', window.loadDemo);
+    
+    document.getElementById('lang-tw').addEventListener('click', () => window.switchLang('zh-TW'));
+    document.getElementById('lang-cn').addEventListener('click', () => window.switchLang('zh-CN'));
+    document.getElementById('lang-en').addEventListener('click', () => window.switchLang('en'));
+    document.getElementById('lang-ko').addEventListener('click', () => window.switchLang('ko'));
+    
+    document.getElementById('f-dst').addEventListener('change', window.toggleDST);
+    if(isMobile) document.getElementById('mobile-drawer-handle').addEventListener('click', window.toggleDrawer);
+};
+setupEvents();
+
 const tRange = document.getElementById('time-range');
 const tLbl   = document.getElementById('time-lbl');
 tRange.addEventListener('input', () => {
@@ -1567,6 +1624,7 @@ window.resetTime = function() {
   clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].dom.tbPlay;
   tRange.value = 0; tRange.dispatchEvent(new Event('input')); tLbl.textContent = LANGS[currLang].dom.timeLbl;
 };
+document.getElementById('tb-reset').addEventListener('click', window.resetTime);
 
 bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
 bindBtn('cb-spin','spin', () => { 
@@ -1594,7 +1652,7 @@ bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clea
 { const tb = document.getElementById('time-bar'), b = document.getElementById('cb-tm');
   b.addEventListener('click', () => {
     S.time=!S.time; b.classList.toggle('on',S.time);
-    S.time ? tb.classList.add('show') : (tb.classList.remove('show'), resetTime());
+    S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime());
   });
 }
 { const b = document.getElementById('cb-orb');
@@ -1655,7 +1713,6 @@ Promise.all(texPromises).then(() => {
   });
   animate();
 });
-
 </script>
 </body>
 </html>
