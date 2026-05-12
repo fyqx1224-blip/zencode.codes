@@ -54,7 +54,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .av{color:var(--gold);font-family:'Noto Serif TC',serif}
 .retro{color:var(--red);font-size:.48rem;margin-left:3px;vertical-align:top}
 
-/* 手機版抽屜基礎設定 (提至外層，避免媒體查詢失效時出現黑框) */
+/* 手機版抽屜基礎設定 */
 #mobile-drawer{
   position:fixed;bottom:0;left:0;right:0;z-index:25;
   background:rgba(2,2,4,.98);
@@ -1128,7 +1128,7 @@ window.submitForm = function() {
       let newH = ((effectiveH + Math.floor(totalM / 60)) % 24 + 24) % 24;
       let newM = ((totalM % 60) + 60) % 60;
 
-      birthLng = lng; birthLat = lat;
+      // 移除了触发错误的未声明变量赋值 birthLng = lng; birthLat = lat;
       userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
       launch();
   } catch(e) { alert('計算模組出錯: ' + e.message); console.error(e); }
@@ -1171,7 +1171,6 @@ function launch() {
   const lp = document.getElementById('lp');
   const rp = document.getElementById('rp');
 
-  // 強制以 JS 管理行動/桌面面板，防堵媒體查詢失效導致側邊欄出現在手機畫面上
   if (isMob) {
       if (drw) drw.style.display = 'flex';
       if (lp) lp.style.display = 'none';
@@ -1187,7 +1186,7 @@ function launch() {
       mw.style.transition = 'opacity .6s';
       mw.style.opacity = '0';
       mw.style.pointerEvents = 'none'; 
-      setTimeout(() => { mw.style.display = 'none'; mw.remove(); }, 600); // 徹底銷毀避免渲染殘留
+      setTimeout(() => { mw.style.display = 'none'; mw.remove(); }, 600); 
   }
 }
 
