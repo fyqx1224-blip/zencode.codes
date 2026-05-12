@@ -374,7 +374,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天顶',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
     ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
@@ -742,10 +742,8 @@ function updateMeteors(dt) {
   });
 }
 
-const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
-sunLight.position.set(0, 10, 50);
-scene.add(sunLight);
-scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+// 這個 AmbientLight 是保留你原始設定的
+scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
 const universeG = new THREE.Group(); 
 universeG.rotation.x = -Math.PI / 2; 
@@ -864,7 +862,8 @@ function updateEarthOrientation() {
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
     const theta = (userData.lng + 90) * DEG;
-    birthMarker.position.setFromSphericalCoords(2.05, phi, theta);
+    // 完美的紅點半徑 (配合 Earth 的 1.5)
+    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
 }
@@ -1192,7 +1191,7 @@ function launch() {
       mw.style.transition = 'opacity .6s';
       mw.style.opacity = '0';
       mw.style.pointerEvents = 'none'; 
-      setTimeout(() => { mw.style.display = 'none'; }, 600); 
+      setTimeout(() => { mw.style.display = 'none'; mw.remove(); }, 600); 
   }
 }
 
@@ -1258,12 +1257,13 @@ const setupEvents = () => {
 };
 
 // ==========================================
-// 6. 動畫迴圈與啟動程序 (高精貼圖版)
+// 6. 動畫迴圈與啟動程序 (還原最原始的高精貼圖邏輯)
 // ==========================================
 
+// 使用你提供的 CDN
 const TEX_URLS = {
-  earth: 'https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg',
-  moon: 'https://unpkg.com/three@0.160.0/examples/textures/planets/moon_1024.jpg',
+  earth: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
+  moon: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
   mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
   venus: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
   mars: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
@@ -1275,16 +1275,21 @@ const TEX_URLS = {
 };
 
 const loadedTex = {};
-const texLoader = new THREE.TextureLoader();
-texLoader.crossOrigin = 'anonymous';
 
+// 原封不動還原 Image 加載機制
 const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
   new Promise(res => {
-    texLoader.load(url, tex => {
-      tex.colorSpace = THREE.SRGBColorSpace; 
-      loadedTex[k] = tex; 
+    const img = new Image(); 
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const t = new THREE.Texture(img);
+      t.colorSpace = THREE.SRGBColorSpace; 
+      t.needsUpdate = true;
+      loadedTex[k] = t; 
       res();
-    }, undefined, () => res()); 
+    };
+    img.onerror = () => res(); 
+    img.src = url;
   })
 );
 
@@ -1311,134 +1316,140 @@ function makeSaturnRingTex() {
 const satRingTex = makeSaturnRingTex();
 
 function buildEarth() {
-    const geo = new THREE.SphereGeometry(2, 64, 64); 
-    const mat = new THREE.MeshStandardMaterial({
-        map: loadedTex.earth || null,
-        color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-        emissive: 0xffffff,
-        emissiveMap: loadedTex.earth || null, 
-        emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
-        roughness: 0.8, metalness: 0.1
-    });
-    earthMesh = new THREE.Mesh(geo, mat);
-    earthMeshGroup.add(earthMesh);
+  // 完美還原你提供的地球材質參數與 1.5 半徑
+  const mat = new THREE.MeshStandardMaterial({
+    map: loadedTex.earth || null,
+    emissive: 0xffffff,
+    emissiveMap: loadedTex.earth || null,
+    emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
+    color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
+    roughness: 0.8, metalness: 0.1
+  });
+  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
+  earthMeshGroup.add(earthMesh);
+ 
+  earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+    new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
-    // 大氣層發光
-    earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(2.15, 32, 32),
-      new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-
-    // 無貼圖備用網格
-    if (!loadedTex.earth) {
-        const wireMat = new THREE.LineBasicMaterial({ color: 0x4488cc, transparent: true, opacity: 0.4 });
-        const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo), wireMat);
-        earthMeshGroup.add(wire);
-    }
-
-    birthMarker = new THREE.Group();
-    birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
-    birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-    earthMeshGroup.add(birthMarker);
+  birthMarker = new THREE.Group();
+  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
+  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
+  earthMeshGroup.add(birthMarker);
 }
 
 function buildPlanet(pc) {
-    const tex = loadedTex[pc.id];
-    let mat;
-    const R = pc.sz * 0.8;
+  const tex = loadedTex[pc.id];
+  let mat;
 
-    if (pc.type === 'fict') {
-      mat = new THREE.MeshBasicMaterial({ color: pc.col });
-    } else if (pc.id === 'sun') {
+  if (pc.type === 'fict') {
+    mat = new THREE.MeshBasicMaterial({ color: pc.col });
+  } else if (pc.id === 'sun') {
+    mat = new THREE.MeshStandardMaterial({
+      color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
+      roughness: 1, metalness: 0
+    });
+  } else {
+    if (tex) {
       mat = new THREE.MeshStandardMaterial({
-        color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
-        roughness: 1, metalness: 0
+        map: tex,
+        emissive: 0xffffff,
+        emissiveMap: tex,
+        emissiveIntensity: 0.15,
+        roughness: 0.9,
+        metalness: 0.05
       });
     } else {
-      if (tex) {
-        mat = new THREE.MeshStandardMaterial({
-          map: tex, color: 0xffffff,
-          emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.15,
-          roughness: 0.9, metalness: 0.05
-        });
-      } else {
-        const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
-        mat = new THREE.MeshStandardMaterial({
-          color: pc.col,
-          emissive: new THREE.Color(em.col), emissiveIntensity: em.i,
-          roughness: 0.8, metalness: 0.1
-        });
-      }
+      const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
+      mat = new THREE.MeshStandardMaterial({
+        color: pc.col,
+        emissive: new THREE.Color(em.col),
+        emissiveIntensity: em.i,
+        roughness: 0.8, metalness: 0.1
+      });
     }
+  }
 
-    const sphere = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), mat);
+  // 完美還原 pc.sz，不再縮放
+  const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 64, 64), mat);
 
-    if (pc.type === 'fict') {
-      sphere.add(new THREE.Mesh(new THREE.TorusGeometry(R*1.9, .09, 8, 32),
-        new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
-    }
+  if (pc.type === 'fict') {
+    sphere.add(new THREE.Mesh(new THREE.TorusGeometry(pc.sz*1.9, .09, 8, 32),
+      new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
+  }
 
-    if (pc.id === 'venus') {
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
-        new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    }
+  if (pc.id === 'venus') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-    if (pc.id === 'jupiter') {
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.1, 32, 32),
-        new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    }
+  if (pc.id === 'jupiter') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-    if (pc.id === 'saturn') {
-      const ringGeo = new THREE.RingGeometry(R*1.55, R*2.85, 64);
-      const ringMat = new THREE.MeshBasicMaterial({ map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = Math.PI/2 + 0.466;
-      sphere.add(ring);
-      
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.08, 24, 24),
-        new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    }
+  if (pc.id === 'saturn') {
+    const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI/2 + 0.466;
+    sphere.add(ring);
+    
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-    if (pc.id === 'uranus') {
-      sphere.rotation.z = Math.PI / 2 * 0.97;
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
-        new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-      const urRing = new THREE.Mesh(
-        new THREE.RingGeometry(R*1.4, R*1.55, 64),
-        new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
-      );
-      urRing.rotation.x = Math.PI/2; sphere.add(urRing);
-    }
+  if (pc.id === 'uranus') {
+    sphere.rotation.z = Math.PI / 2 * 0.97;
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    const urRing = new THREE.Mesh(
+      new THREE.RingGeometry(pc.sz*1.4, pc.sz*1.55, 64),
+      new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
+    );
+    urRing.rotation.x = Math.PI/2; sphere.add(urRing);
+  }
 
-    if (pc.id === 'neptune') {
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
-        new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    }
+  if (pc.id === 'neptune') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-    if (pc.id === 'sun') {
-      sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.4, 32, 32),
-        new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.9, 32, 32),
-        new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    }
+  // 太陽維持自發光與點光源
+  if (pc.id === 'sun') {
+    sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.9, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-    return sphere;
+  return sphere;
 }
 
 function buildBaseMeshes() {
-    buildEarth();
-    PCONF.forEach(pc => {
-        const sphere = buildPlanet(pc);
-        if (pc.isOut) sphere.visible = false;
-        plG.add(sphere); pMesh[pc.id] = sphere;
-        const hex = '#' + pc.col.toString(16).padStart(6, '0'), el = document.createElement('div'); el.className = 'lbl lpl';
-        el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
-        const obj = new CSS2DObject(el); if (pc.isOut) obj.element.style.display = 'none';
-        plG.add(obj); pLbl[pc.id] = obj;
-        const buf = new Float32Array(6), dg = new THREE.BufferGeometry();
-        const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage); dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
-        const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:0.6 }));
-        dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa; plG.add(dl); dropLines[pc.id] = dl;
-    });
+  buildEarth();
+  PCONF.forEach(pc => {
+    const sphere = buildPlanet(pc);
+    if (pc.isOut) sphere.visible = false;
+    plG.add(sphere); pMesh[pc.id] = sphere;
+
+    const hex = '#' + pc.col.toString(16).padStart(6, '0');
+    const el = document.createElement('div'); el.className = 'lbl lpl';
+    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
+    const obj = new CSS2DObject(el);
+    if (pc.isOut) obj.element.style.display = 'none';
+    plG.add(obj); pLbl[pc.id] = obj;
+
+    const buf = new Float32Array(6);
+    const dg = new THREE.BufferGeometry();
+    const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
+    dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
+    const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:.6 }));
+    dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa;
+    plG.add(dl); dropLines[pc.id] = dl;
+  });
 }
 
 const clock = new THREE.Clock();
@@ -1453,7 +1464,7 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
-// 核心初始化：等待貼圖加載完畢再渲染，徹底消滅黑畫面
+// 必須等待貼圖徹底加載完畢，才開始構建地球與行星，拒絕黑屏
 Promise.all(texPromises).then(() => {
     buildBaseMeshes();
     setupEvents();
