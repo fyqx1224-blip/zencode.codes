@@ -258,7 +258,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // ==========================================
-// 1. 唯一宣告的全局變數與常數 (防 TDZ)
+// 1. 唯一宣告的全局變數與常數
 // ==========================================
 const DEG = Math.PI / 180;
 const R2D = 180 / Math.PI;
@@ -274,6 +274,7 @@ const S = { zen:false, spin:false, sidereal:false, helio:false, showOut:true, ec
 let userData = {}, curGeo = {}, curHelio = {};
 let currentGMST = 0, currentLST = 0, currentAscDeg = 0;
 let playingTime = false, playInterval = null, ascHintTimer = null;
+let birthLng = 120, birthLat = 30; // added explicit fallbacks
 let earthMesh = null, birthMarker = null;
 const pMesh = {}, pLbl = {}, dropLines = {};
 
@@ -1068,6 +1069,15 @@ const hideTip = () => { document.getElementById('tip').style.display = 'none'; }
 // ==========================================
 // 5. 事件與啟動邏輯
 // ==========================================
+window.toggleDST = function() {
+    const dstChk = document.getElementById('f-dst');
+    const dstBdg = document.getElementById('dst-badge');
+    if (dstChk && dstBdg) {
+        dstBdg.textContent = dstChk.checked ? LANGS[currLang].dst.on : LANGS[currLang].dst.off;
+        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
+    }
+};
+
 window.hst = function() {
   try {
       const lngEl = document.getElementById('f-lg'), tzEl  = document.getElementById('f-tz'), hEl = document.getElementById('f-h'), mEl = document.getElementById('f-mi');
@@ -1209,8 +1219,32 @@ const setupEvents = () => {
 };
 
 // ==========================================
-// 6. 動畫迴圈與啟動程序 (防加載競態)
+// 6. 動畫迴圈與啟動程序 (已修復缺失的渲染函數)
 // ==========================================
+
+function buildEarth() {
+    const geo = new THREE.SphereGeometry(2, 32, 32); 
+    const mat = new THREE.MeshStandardMaterial({ color: 0x336699, roughness: 0.8, metalness: 0.2 });
+    earthMesh = new THREE.Mesh(geo, mat);
+    earthMeshGroup.add(earthMesh);
+
+    // 新增觀測地標 (紅點)
+    birthMarker = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    earthMeshGroup.add(birthMarker);
+}
+
+function buildPlanet(pc) {
+    const geo = new THREE.SphereGeometry(pc.sz * 0.4, 16, 16);
+    let emCol = pc.col;
+    let emInt = 0.2;
+    if (EMISSIVE[pc.id]) {
+        emCol = EMISSIVE[pc.id].col;
+        emInt = EMISSIVE[pc.id].i;
+    }
+    const mat = new THREE.MeshStandardMaterial({ color: pc.col, emissive: emCol, emissiveIntensity: emInt });
+    return new THREE.Mesh(geo, mat);
+}
+
 function buildBaseMeshes() {
     buildEarth();
     PCONF.forEach(pc => {
@@ -1240,28 +1274,18 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
-// 瞬間初始化核心模型與事件，不等待貼圖
+// 瞬間初始化核心模型與事件
 buildBaseMeshes();
 setupEvents();
 window.switchLang(currLang);
 window.hst();
 
-// 後台加載貼圖
-Promise.all(texPromises).then(() => {
-  const ov = document.getElementById('loading-overlay');
-  if(ov) { ov.classList.add('hide'); setTimeout(()=>ov.style.display='none', 700); }
-  Object.entries(TEX_URLS).forEach(([id, url]) => {
-      texLoader.load(url, (tex) => {
-          tex.colorSpace = THREE.SRGBColorSpace;
-          const target = id === 'earth' ? earthMesh : pMesh[id];
-          if (target && target.material) {
-              target.material.map = tex; target.material.emissiveMap = tex;
-              target.material.emissiveIntensity = id === 'earth' ? 0.35 : 0.15;
-              target.material.color.setHex(0xffffff); target.material.needsUpdate = true;
-          }
-      });
-  });
-}).catch(e => console.error("貼圖加載失敗", e));
+// 移除原有的 texPromises 錯誤邏輯，直接解除 Loading 畫面
+const ov = document.getElementById('loading-overlay');
+if(ov) { 
+    ov.classList.add('hide'); 
+    setTimeout(() => ov.style.display = 'none', 700); 
+}
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
