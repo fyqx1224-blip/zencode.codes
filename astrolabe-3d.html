@@ -598,7 +598,6 @@ function calcAll(T, jd, lng, lat, isSid) {
   
   geo.prev = posPrev;
 
-  // ★ 日心模式下，地球的虛點與交點轉換為真實日心軌道位置，並適當放大視距保證可見
   const helio = {};
   helio.sun = { l: 0, r: 0, lat: 0 };
   helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
@@ -768,11 +767,7 @@ const eqRingG = new THREE.Group(); eqRingG.rotation.x = -OBL; universeG.add(eqRi
 
 const earthContainer = new THREE.Group(); earthContainer.rotation.x = -OBL; universeG.add(earthContainer);
 const earthSpin = new THREE.Group(); earthContainer.add(earthSpin);
-
-// 建立專門承載數學與貼圖對齊的 earthMathGroup
-const earthMathGroup = new THREE.Group(); 
-earthMathGroup.rotation.x = Math.PI / 2; 
-earthSpin.add(earthMathGroup);
+const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2; earthSpin.add(earthMeshGroup);
 
 const helioOrbitsG = new THREE.Group(); universeG.add(helioOrbitsG); helioOrbitsG.visible = false;
 const houseG = new THREE.Group(); universeG.add(houseG);
@@ -846,7 +841,6 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
-// 真實克卜勒橢圓軌道渲染
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const pts = [];
     if (id === 'earth') {
@@ -894,27 +888,28 @@ function clearGroup(group) {
     }
 }
 
-// ★ 核心修復 1.2：相機完美對焦測者中心，強制鎖定北極向上，絕對對齊 MC 中天
+// ★ 核心修復 1：相機完美對焦測者中心 (Topocentric)，對齊地球北極以指向 MC
 function pointCameraAtBirthplace() {
-  if (!birthMarker || !earthMesh) return;
+  if (!birthMarker) return;
   scene.updateMatrixWorld(true);
   
   const targetPos = new THREE.Vector3();
   birthMarker.getWorldPosition(targetPos);
   const centerPos = new THREE.Vector3();
-  earthSpin.getWorldPosition(centerPos);
+  earthMeshGroup.getWorldPosition(centerPos);
   
   const camDist = camera.position.length() || 115;
-  const zenithDir = targetPos.clone().sub(centerPos).normalize();
+  const dir = targetPos.clone().sub(centerPos).normalize();
   
-  camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
+  // 相機位於紅點正上方，看向地心
+  camera.position.copy(centerPos.clone().add(dir.multiplyScalar(camDist)));
   camera.lookAt(centerPos);
 
-  // 獲取地球絕對北極，並設定為 Camera UP
+  // 強制設置 Camera 的 UP 向量為地球北極，確保 MC(中天) 完美朝上
   const northPoleLocal = new THREE.Vector3(0, 1.5, 0); 
-  const northPoleWorld = northPoleLocal.applyMatrix4(earthMesh.matrixWorld);
-  const northDir = northPoleWorld.sub(centerPos).normalize();
-  camera.up.copy(northDir);
+  const northPoleWorld = northPoleLocal.applyMatrix4(earthMeshGroup.matrixWorld);
+  const upDir = northPoleWorld.sub(centerPos).normalize();
+  camera.up.copy(upDir);
   
   if(OCtrl) {
       OCtrl.target.copy(centerPos);
@@ -926,7 +921,7 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng + 90) * DEG; // 修正幾何偏移，讓 Lon 0 = +X
+    const theta = (userData.lng + 90) * DEG; 
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
@@ -991,10 +986,15 @@ function placePlanets(geo, helio, lst, aya) {
       const vis = !pc.isOut || S.showOut;
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
-      else {
+      else if (pc.id === 'moon' || pc.type === 'fict') {
         const hData = helio[pc.id]; if(!hData) return;
-        const r_m = pc.id === 'moon' || pc.type === 'fict' ? hData.r : auToR(hData.r);
-        const lat_r = hData.lat * DEG, l_r = hData.l * DEG;
+        const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
+        z = r_m * Math.sin(lat_r) * Z_EXAG;
+        const rP = r_m * Math.cos(lat_r);
+        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
+      } else {
+        const hData = helio[pc.id]; if(!hData) return;
+        const r_m = auToR(hData.r), lat_r = hData.lat * DEG, l_r = hData.l * DEG;
         z = r_m * Math.sin(lat_r) * Z_EXAG;
         const rP = r_m * Math.cos(lat_r);
         x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
@@ -1261,6 +1261,7 @@ function updatePositions() {
 
 function launch() {
   updatePositions();
+  
   pointCameraAtBirthplace();
 
   const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
@@ -1431,7 +1432,7 @@ function buildEarth() {
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthMesh.rotation.y = -Math.PI / 2;
-  earthMathGroup.add(earthMesh);
+  earthMeshGroup.add(earthMesh);
   
   // ★ 黃金經緯網格
   const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
@@ -1439,13 +1440,15 @@ function buildEarth() {
   const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
   earthMesh.add(graticule);
  
-  earthMathGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+  earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
   birthMarker = new THREE.Group();
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-  earthMathGroup.add(birthMarker);
+  
+  // 將紅點放進 EarthMesh，自動繼承其貼圖旋轉，確保物理與視覺100%對齊
+  earthMesh.add(birthMarker);
 }
 
 function buildPlanet(pc) {
