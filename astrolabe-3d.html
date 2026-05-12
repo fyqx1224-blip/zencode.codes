@@ -244,7 +244,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="ctrl-bar">
   <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
   <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
-  <button class="cb" id="cb-zenith" data-tt="對齊天頂" style="font-size:.85rem">🎯</button>
+  <button class="cb" id="cb-zenith" data-tt="對齊中天" style="font-size:.85rem">🎯</button>
   <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
   <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
   <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
@@ -263,7 +263,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
-<div id="asc-hint">☽ 觀測地標已對齊螢幕絕對正中心</div>
+<div id="asc-hint">☽ 測者中心已完美鎖定，中天直指螢幕正上方</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -294,7 +294,7 @@ const S = {
 let userData = {}, curGeo = {}, curHelio = {};
 let currentGMST = 0, currentLST = 0, currentAscDeg = 0;
 let playingTime = false, playInterval = null, ascHintTimer = null;
-let earthMesh = null, birthMarker = null;
+let earthMesh = null, birthMarker = null, earthMathGroup = null;
 const pMesh = {}, pLbl = {}, dropLines = {};
 
 const PE = {
@@ -352,7 +352,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道',helio:'日心黃道',helioMsg:'☉ 日心模式 · 恆星參考系固定 · 視黃道不適用'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
-    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 觀測地標已對齊螢幕絕對正中心'},
+    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 測者中心已完美鎖定，中天直指螢幕正上方'},
     ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星體顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'zh-CN':{
@@ -363,7 +363,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道',helio:'日心黄道',helioMsg:'☉ 日心模式 · 恒星参考系固定 · 视黄道不适用'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐萤幕绝对正中心'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指萤幕正上方'},
     ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
@@ -374,7 +374,7 @@ const LANGS = {
     ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mc:'MC Midheaven',ic:'IC Nadir',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal',helio:'Heliocentric',helioMsg:'☉ Heliocentric Mode · Fixed Sidereal Frame · Tropical NA'},
     al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
     dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
-    dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Observer landmark aligned to screen center'},
+    dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Topocentric focus locked, MC points straight up'},
     ctrl:{zen:'Zen Mode',spin:'Time Spin',helio:'Toggle Helio/Geo',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl',btnHelio:'Sun'}
   },
   'ko':{
@@ -385,7 +385,7 @@ const LANGS = {
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 중천',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도',helio:'일심 황도',helioMsg:'☉ 일심 모드 · 항성 기준계 고정 · 시황도 비적용'},
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
-    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 화면 정중앙에 정렬되었습니다'},
+    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 화면 정중앙에 정렬되었습니다 (MC 위)'},
     ctrl:{zen:'몰입 모드',spin:'시간 회전',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
   }
 };
@@ -598,7 +598,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   
   geo.prev = posPrev;
 
-  // ★ 核心修復 2：日心模式下，將月球與虛點作為地月系統附屬物渲染
+  // ★ 日心模式下，地球的虛點與交點轉換為真實日心軌道位置，並適當放大視距保證可見
   const helio = {};
   helio.sun = { l: 0, r: 0, lat: 0 };
   helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
@@ -609,8 +609,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   ['moon', 'rahu', 'ketu', 'yapo', 'ziqi', 'fortune'].forEach(id => {
       const l_geo = geo[id] * DEG;
       const lat_geo = (geo[id+'_lat'] || 0) * DEG;
-      // 在日心模型中，为了清晰可见，将地月系统微观半径夸张为 0.3 AU
-      const r_geo = 0.3; 
+      const r_geo = 0.3; // 局部放大引力場，讓虛點與月亮在日心模式下肉眼可見
       const dx = r_geo * Math.cos(lat_geo) * Math.cos(l_geo);
       const dy = r_geo * Math.cos(lat_geo) * Math.sin(l_geo);
       const dz = r_geo * Math.sin(lat_geo);
@@ -765,12 +764,15 @@ universeG.rotation.x = -Math.PI / 2;
 scene.add(universeG);
 
 const eclRingG = new THREE.Group(); universeG.add(eclRingG);
-// ★ 修正赤道環傾角
 const eqRingG = new THREE.Group(); eqRingG.rotation.x = -OBL; universeG.add(eqRingG);
 
 const earthContainer = new THREE.Group(); earthContainer.rotation.x = -OBL; universeG.add(earthContainer);
 const earthSpin = new THREE.Group(); earthContainer.add(earthSpin);
-const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2; earthSpin.add(earthMeshGroup);
+
+// 建立專門承載數學與貼圖對齊的 earthMathGroup
+const earthMathGroup = new THREE.Group(); 
+earthMathGroup.rotation.x = Math.PI / 2; 
+earthSpin.add(earthMathGroup);
 
 const helioOrbitsG = new THREE.Group(); universeG.add(helioOrbitsG); helioOrbitsG.visible = false;
 const houseG = new THREE.Group(); universeG.add(houseG);
@@ -892,28 +894,27 @@ function clearGroup(group) {
     }
 }
 
-// ★ 核心修復 1：相機完美對焦測者中心 (Topocentric)，對齊地球北極以指向 MC
+// ★ 核心修復 1.2：相機完美對焦測者中心，強制鎖定北極向上，絕對對齊 MC 中天
 function pointCameraAtBirthplace() {
-  if (!birthMarker) return;
+  if (!birthMarker || !earthMesh) return;
   scene.updateMatrixWorld(true);
   
   const targetPos = new THREE.Vector3();
   birthMarker.getWorldPosition(targetPos);
   const centerPos = new THREE.Vector3();
-  earthMeshGroup.getWorldPosition(centerPos);
+  earthSpin.getWorldPosition(centerPos);
   
   const camDist = camera.position.length() || 115;
-  const dir = targetPos.clone().sub(centerPos).normalize();
+  const zenithDir = targetPos.clone().sub(centerPos).normalize();
   
-  // 相機位於紅點正上方，看向地心
-  camera.position.copy(centerPos.clone().add(dir.multiplyScalar(camDist)));
+  camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
   camera.lookAt(centerPos);
 
-  // 強制設置 Camera 的 UP 向量為地球北極，確保 MC(天頂) 完美朝上
-  const northPoleLocal = new THREE.Vector3(0, 1, 0); 
-  const northPoleWorld = northPoleLocal.applyMatrix4(earthMeshGroup.matrixWorld);
-  const upDir = northPoleWorld.sub(centerPos).normalize();
-  camera.up.copy(upDir);
+  // 獲取地球絕對北極，並設定為 Camera UP
+  const northPoleLocal = new THREE.Vector3(0, 1.5, 0); 
+  const northPoleWorld = northPoleLocal.applyMatrix4(earthMesh.matrixWorld);
+  const northDir = northPoleWorld.sub(centerPos).normalize();
+  camera.up.copy(northDir);
   
   if(OCtrl) {
       OCtrl.target.copy(centerPos);
@@ -925,7 +926,7 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng - 90) * DEG; // 修正地球經度與世界座標映射
+    const theta = (userData.lng + 90) * DEG; // 修正幾何偏移，讓 Lon 0 = +X
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
@@ -990,16 +991,10 @@ function placePlanets(geo, helio, lst, aya) {
       const vis = !pc.isOut || S.showOut;
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
-      else if (pc.id === 'moon' || pc.type === 'fict') {
-        const mA = geo[pc.id] * DEG; 
+      else {
         const hData = helio[pc.id]; if(!hData) return;
-        const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
-        z = r_m * Math.sin(lat_r) * Z_EXAG;
-        const rP = r_m * Math.cos(lat_r);
-        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
-      } else {
-        const hData = helio[pc.id]; if(!hData) return;
-        const r_m = auToR(hData.r), lat_r = hData.lat * DEG, l_r = hData.l * DEG;
+        const r_m = pc.id === 'moon' || pc.type === 'fict' ? hData.r : auToR(hData.r);
+        const lat_r = hData.lat * DEG, l_r = hData.l * DEG;
         z = r_m * Math.sin(lat_r) * Z_EXAG;
         const rP = r_m * Math.cos(lat_r);
         x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
@@ -1019,7 +1014,6 @@ function placePlanets(geo, helio, lst, aya) {
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
-    // 確保相位圖層切換回地心時開啟
     if (S.aspects) aspG.visible = true;
 
     PCONF.forEach(pc => {
@@ -1138,7 +1132,6 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
     const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     
-    // 日心經度標註
     const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
     
     const row = document.createElement('div'); row.className = 'pr';
@@ -1268,7 +1261,6 @@ function updatePositions() {
 
 function launch() {
   updatePositions();
-  
   pointCameraAtBirthplace();
 
   const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
@@ -1438,22 +1430,22 @@ function buildEarth() {
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
-  earthMesh.rotation.y = Math.PI / 2;
-  earthMeshGroup.add(earthMesh);
+  earthMesh.rotation.y = -Math.PI / 2;
+  earthMathGroup.add(earthMesh);
   
-  // ★ 加入地球金色網格 (Graticule)
+  // ★ 黃金經緯網格
   const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.15 });
   const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
-  earthMeshGroup.add(graticule);
+  earthMesh.add(graticule);
  
-  earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+  earthMathGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
   birthMarker = new THREE.Group();
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-  earthMeshGroup.add(birthMarker);
+  earthMathGroup.add(birthMarker);
 }
 
 function buildPlanet(pc) {
