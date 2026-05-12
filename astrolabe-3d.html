@@ -248,7 +248,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="ctrl-bar">
   <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
   <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
-  <button class="cb" id="cb-zenith" data-tt="對齊天頂" style="font-size:.85rem">🎯</button>
+  <button class="cb" id="cb-zenith" data-tt="對齊天頂 (2D星盤)" style="font-size:.85rem">🎯</button>
   <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
   <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
   <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
@@ -358,7 +358,7 @@ const LANGS = {
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
     dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 測者中心已完美鎖定，中天直指螢幕正上方'},
-    ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',zenith:'對齊天頂',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星体顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
+    ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',zenith:'對齊天頂 (2D星盤)',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星体顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'zh-CN':{
     zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
@@ -369,7 +369,7 @@ const LANGS = {
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
     dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指萤幕正上方'},
-    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',zenith:'对齐天顶',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
+    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',zenith:'对齐天顶 (2D星盘)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
     zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
@@ -380,7 +380,7 @@ const LANGS = {
     al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
     dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
     dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Topocentric focus locked, MC points straight up'},
-    ctrl:{zen:'Zen Mode',spin:'Time Spin',zenith:'Align Zenith',helio:'Toggle Helio/Geo',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl',btnHelio:'Sun'}
+    ctrl:{zen:'Zen Mode',spin:'Time Spin',zenith:'Align Zenith (2D Chart)',helio:'Toggle Helio/Geo',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl',btnHelio:'Sun'}
   },
   'ko':{
     zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
@@ -391,7 +391,7 @@ const LANGS = {
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
     dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 화면 정중앙에 정렬되었습니다 (MC 위)'},
-    ctrl:{zen:'몰입 모드',spin:'시간 회전',zenith:'천정 정렬',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
+    ctrl:{zen:'몰입 모드',spin:'시간 회전',zenith:'천정 정렬 (2D 차트)',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
   }
 };
 
@@ -437,7 +437,6 @@ window.switchLang = function(l) {
         dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
     }
     
-    // 這裡綁定了所有的按鈕悬浮提示切換
     ['cb-zen','cb-spin','cb-zenith','cb-helio','cb-sys','cb-out','cb-ecl','cb-eq','cb-man','cb-pl','cb-asp','cb-tm','cb-orb'].forEach((id, i) => { 
       const e = document.getElementById(id); 
       if(e) e.setAttribute('data-tt', d.ctrl[['zen','spin','zenith','helio','sys','out','ecl','eq','man','pl','asp','tm','orb'][i]]); 
@@ -912,22 +911,27 @@ function pointCameraAtBirthplace() {
   camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
   camera.lookAt(centerPos);
 
-  // 完美投影 2D 星盤視角：將相機 UP 向量精準指向黃道中天 (MC)
+  // 完美投影 2D 星盤視角：將相機 UP 向量精準指向黃道中天 (MC) 的投影
   if (curGeo && curGeo.mc !== undefined) {
       const mcAngle = curGeo.mc * DEG;
-      // MC 所在的黃道 3D 物理位置
       const mcLocal = new THREE.Vector3(Math.cos(mcAngle), Math.sin(mcAngle), 0);
+      // MC 所在的黃道 3D 物理絕對方向
       const mcWorld = mcLocal.applyMatrix4(universeG.matrixWorld).sub(centerPos).normalize();
       
-      // 防止在極端緯度（中天剛好過天頂）導致的平行計算報錯
-      if (Math.abs(mcWorld.dot(zenithDir)) > 0.999) {
+      // 將 MC 向量精準投影到相機的視角平面（即地平圈）上，確保 12 點鐘方向絕對垂直
+      const dot = mcWorld.dot(zenithDir);
+      let upDir = mcWorld.clone().sub(zenithDir.clone().multiplyScalar(dot));
+      
+      // 防止在極端緯度下（如中天剛好垂直過天頂）導致的平行計算向量歸零報錯
+      if (upDir.lengthSq() < 0.0001) {
           const northPoleWorld = new THREE.Vector3(0, 1, 0).applyMatrix4(earthMathGroup.matrixWorld).sub(centerPos).normalize();
           let localEast = new THREE.Vector3().crossVectors(northPoleWorld, zenithDir).normalize();
           const localNorth = new THREE.Vector3().crossVectors(zenithDir, localEast).normalize();
-          camera.up.copy(localNorth);
-      } else {
-          camera.up.copy(mcWorld);
+          upDir = localNorth.clone().negate(); // 備用：退回計算本地正南
       }
+      
+      // 設定 UP，完成最終 2D 星盤拓撲映射
+      camera.up.copy(upDir.normalize());
   } else {
       const northPoleWorld = new THREE.Vector3(0, 1, 0).applyMatrix4(earthMathGroup.matrixWorld).sub(centerPos).normalize();
       camera.up.copy(northPoleWorld);
@@ -943,7 +947,8 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng + 180) * DEG; 
+    // 【核心修正】把 theta 恢復為 + 90 度，將天文幾何算法與 EarthMesh 的外觀貼圖徹底解耦！
+    const theta = (userData.lng + 90) * DEG; 
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
 
     if (zenithLine && zenithLabel) {
