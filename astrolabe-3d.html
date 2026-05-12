@@ -24,7 +24,9 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .top-left-panel{position:absolute;top:30px;left:30px;pointer-events:auto;z-index:40}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
-#global-lang-toggle{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px;pointer-events:auto}
+
+/* 語言切換：全平台右上角定位，徹底避免重合 */
+#global-lang-toggle{position:absolute;top:20px;right:25px;z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
 
@@ -73,12 +75,12 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 #legend{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:none;background:rgba(2,2,4,.92);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:6px 22px;display:flex;gap:18px;align-items:center}
 .li{display:flex;align-items:center;gap:5px;font-size:.56rem;color:rgba(255,255,255,.42);white-space:nowrap}
 .ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-#ctrl-bar{position:absolute;bottom:16px;right:14px;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;transition:opacity .5s}
+#ctrl-bar{position:absolute;bottom:16px;right:14px;z-index:40;display:flex;flex-direction:column;gap:6px;pointer-events:auto;transition:opacity .5s}
 .cb{width:37px;height:37px;border-radius:50%;background:rgba(99,163,237,.07);border:1px solid rgba(99,163,237,.25);color:rgba(144,196,255,.78);font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.22s;position:relative;flex-shrink:0}
 .cb:hover{background:rgba(99,163,237,.18);box-shadow:0 0 14px rgba(99,163,237,.28)}
 .cb.on{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 16px rgba(99,163,237,.4)}
 .cb[data-tt]:hover::after{content:attr(data-tt);position:absolute;right:44px;top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(2,2,4,.94);border:1px solid rgba(99,163,237,.28);color:var(--blue-l);font-size:.56rem;padding:4px 9px;border-radius:4px;pointer-events:none;z-index:99}
-#time-bar{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;background:rgba(2,2,4,.94);border:1px solid rgba(255,255,255,.09);border-radius:30px;padding:7px 20px;display:none;gap:12px;align-items:center;min-width:360px}
+#time-bar{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);z-index:40;pointer-events:auto;background:rgba(2,2,4,.94);border:1px solid rgba(255,255,255,.09);border-radius:30px;padding:7px 20px;display:none;gap:12px;align-items:center;min-width:360px}
 #time-bar.show{display:flex}
 #time-lbl{font-size:.6rem;color:var(--gold);white-space:nowrap;min-width:120px;text-align:center}
 #time-range{flex:1;accent-color:var(--blue)}
@@ -88,8 +90,8 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 #tip h4{font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:5px}
 #tip p{font-size:.63rem;color:rgba(255,255,255,.63);line-height:1.72}
 
-#mw{position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;overflow-y:auto}
-#modal{background:rgba(5,3,18,.98);border:1px solid rgba(99,163,237,.3);border-radius:14px;padding:38px 34px;width:92%;max-width:406px;box-shadow:0 48px 96px rgba(0,0,0,.92),0 0 80px rgba(99,163,237,.1);margin:auto}
+#mw{position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding-top:40px;}
+#modal{background:rgba(5,3,18,.98);border:1px solid rgba(99,163,237,.3);border-radius:14px;padding:38px 34px;width:92%;max-width:406px;box-shadow:0 48px 96px rgba(0,0,0,.92),0 0 80px rgba(99,163,237,.1);margin:auto;position:relative;}
 .ml{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;color:var(--blue-l);text-align:center;text-shadow:0 0 36px rgba(99,163,237,.55);letter-spacing:.14em}
 .ms{font-size:.58rem;color:rgba(255,255,255,.32);text-align:center;letter-spacing:.15em;margin:4px 0 26px}
 .fl{font-size:.5rem;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;margin-top:12px}
@@ -136,30 +138,33 @@ input::placeholder{color:rgba(255,255,255,.17)}
 #asc-hint.show{opacity:1}
 
 /* =========================================================
-   手機版響應式
+   手機版響應式 (排版全優化)
    ========================================================= */
 @media(max-width:768px){
   .side-panel{display:none!important}
   
-  .top-left-panel { top: 12px; left: 12px; }
-  .btn-back { width: 32px; height: 32px; font-size: 1rem; }
+  .top-left-panel { top: 15px; left: 15px; }
+  .btn-back { width: 34px; height: 34px; font-size: 1.1rem; }
   
-  #topbar{padding:12px 14px 24px 54px}
+  #topbar{padding:16px 14px 24px 60px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
   
-  #global-lang-toggle{top:50px;left:50%;transform:translateX(-50%);gap:5px; width: 100%; justify-content: center;}
+  /* 語言按鈕鎖定在絕對右上角，再也不重疊 */
+  #global-lang-toggle{top:15px; right:15px; left:auto; transform:none; gap:5px;}
   .mlbtn{padding:4px 8px;font-size:.52rem}
   
-  #ctrl-bar { bottom: 105px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 0 14px 10px; gap: 10px; justify-content: flex-start; }
+  /* 按鈕列抬高至 58px，完美跨越手機抽屜把手，絕對不會消失 */
+  #ctrl-bar { bottom: 58px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 10px 14px; gap: 10px; justify-content: flex-start; background: linear-gradient(to top, rgba(2,2,4,0.95) 30%, transparent); }
   #ctrl-bar::-webkit-scrollbar { display: none; }
   .cb[data-tt]:hover::after{display:none}
   
-  #time-bar { bottom: 62px; min-width: 0; width: 92%; }
+  /* 時間條再往上抬，避開控制按鈕 */
+  #time-bar { bottom: 110px; min-width: 0; width: 92%; }
   
-  #legend { top: 85px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
+  #legend { top: 75px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
   
-  #asc-hint { top: 135px; bottom: auto; }
+  #asc-hint { top: 125px; bottom: auto; }
   #modal{padding:24px 18px;margin:16px}
   #mw{align-items:flex-start;padding-top:10px}
 }
@@ -169,7 +174,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 </script>
 </head>
 <body>
-<div id="loading-overlay"><div class="loading-spinner"></div><div class="loading-text" id="loading-text-el">載入星象引擎…</div></div>
+<div id="loading-overlay"><div class="loading-spinner"></div><div class="loading-text" id="loading-text-el">載入星象引擎與高精貼圖…</div></div>
 <div class="top-left-panel"><a href="/" class="btn-back" title="返回主頁">⟨</a></div>
 <div id="global-lang-toggle">
   <button class="mlbtn active" data-lang="zh-TW" id="lang-tw">繁</button>
@@ -246,6 +251,34 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <div class="pc"><div class="pc-t" id="pct-hou-m">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
   </div>
 </div>
+<div id="legend">
+  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黃道</span></div>
+  <div class="li"><div class="ld" style="background:#63A3ED"></div><span>赤道</span></div>
+  <div class="li"><div class="ld" style="background:#7DE09A"></div><span>二十八宿</span></div>
+  <div class="li"><div class="ld" style="background:#FF6B6B"></div><span>ASC/宮位</span></div>
+</div>
+<div id="ctrl-bar">
+  <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
+  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
+  <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
+  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
+  <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
+  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
+  <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
+  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
+  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
+  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
+  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
+</div>
+<div id="time-bar">
+  <button class="tbtn" id="tb-play">▶ 播放</button>
+  <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
+  <div id="time-lbl">當前時間</div>
+  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
+</div>
+<div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
+<div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -305,7 +338,7 @@ const PCONF = [
 ];
 
 const EMISSIVE = {
-  sun:    { col:0xFFCC00, i:3.5 }, moon:   { col:0x445566, i:0.18 },
+  sun:    { col:0xFFCC00, i:2.0 }, moon:   { col:0x445566, i:0.18 },
   mercury:{ col:0x776655, i:0.12 }, venus: { col:0xFFAA00, i:0.35 },
   mars:   { col:0xCC2200, i:0.22 }, jupiter:{ col:0xDD7700, i:0.28 },
   saturn: { col:0x998855, i:0.22 }, uranus: { col:0x006699, i:0.18 },
@@ -363,7 +396,7 @@ const LANGS = {
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 천정',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
-    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
+    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
     ctrl:{zen:'몰입 모드',spin:'시간 회전',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
   }
 };
@@ -663,11 +696,11 @@ composer.addPass(new OutputPass());
 const OCtrl = new TrackballControls(camera, renderer.domElement);
 OCtrl.rotateSpeed = isMobile ? 2.5 : 3.5;
 OCtrl.zoomSpeed = isMobile ? 0.8 : 1.2;
-OCtrl.noPan = true;  
+OCtrl.noPan = true;  // 禁用平移防走丟
 OCtrl.staticMoving = false;
 OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
-// 修復 2：大幅增加最大視距，日心模式可清楚看到三王星軌道
+// 修復 2: 放寬最大距離至 800，三王星軌道清楚可見
 OCtrl.maxDistance = 800; 
 
 function mkStars(n, sz, sp, col, op) {
@@ -709,7 +742,12 @@ function updateMeteors(dt) {
     m.positions.needsUpdate = true;
   });
 }
-scene.add(new THREE.AmbientLight(0xffffff, 0.07));
+
+// 修復 1: 增加強效平行光與環境光，星系不再黑乎乎
+const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+sunLight.position.set(0, 10, 50);
+scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
 const universeG = new THREE.Group(); 
 universeG.rotation.x = -Math.PI / 2; 
@@ -828,8 +866,8 @@ function updateEarthOrientation() {
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
     const theta = (userData.lng + 90) * DEG;
-    // 修復 1: 半徑需大於地球 2，紅點才會露出來
-    birthMarker.position.setFromSphericalCoords(2.03, phi, theta);
+    // 修復 1: 紅點半徑加大至 2.05，徹底防埋沒
+    birthMarker.position.setFromSphericalCoords(2.05, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
 }
@@ -1226,45 +1264,54 @@ const setupEvents = () => {
 };
 
 // ==========================================
-// 6. 動畫迴圈與啟動程序
+// 6. 動畫迴圈與啟動程序 (還原高精貼圖邏輯)
 // ==========================================
 
-function buildEarth() {
-    // 建立半徑為 2 的地球模型
-    const geo = new THREE.SphereGeometry(2, 64, 64); 
-    const mat = new THREE.MeshStandardMaterial({ 
-        color: 0xffffff, 
-        roughness: 0.6, 
-        metalness: 0.1 
+// 高精貼圖 URL 註冊中心 (使用穩定的 unpkg CDN)
+const TEX_URLS = {
+    earth: 'https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg',
+    moon: 'https://unpkg.com/three@0.160.0/examples/textures/planets/moon_1024.jpg'
+    // 若你有其他高精貼圖 URL 可自行在下方補回：
+    // sun: '...', mars: '...'
+};
+
+const texLoader = new THREE.TextureLoader();
+const texPromises = Object.entries(TEX_URLS).map(([id, url]) => {
+    return new Promise(resolve => {
+        texLoader.load(url, tex => {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            resolve({ id, tex });
+        }, undefined, () => resolve({ id, tex: null })); // 失敗不報錯，優雅降級
     });
+});
+if (texPromises.length === 0) texPromises.push(Promise.resolve(null));
+
+function buildEarth() {
+    const geo = new THREE.SphereGeometry(2, 64, 64); 
+    const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8, metalness: 0.1 });
     earthMesh = new THREE.Mesh(geo, mat);
     earthMeshGroup.add(earthMesh);
 
-    // 非同步加載地球精細貼圖 (2K 解析度)
-    const texLoader = new THREE.TextureLoader();
-    texLoader.load('https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg', (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        earthMesh.material.map = tex;
-        earthMesh.material.needsUpdate = true;
-    });
-
-    // 定位紅點 (Birth Marker)
-    birthMarker = new THREE.Mesh(
-        new THREE.SphereGeometry(0.06, 16, 16), 
-        new THREE.MeshBasicMaterial({ color: 0xff3333 })
-    );
+    birthMarker = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
     earthMeshGroup.add(birthMarker);
 }
 
 function buildPlanet(pc) {
-    const geo = new THREE.SphereGeometry(pc.sz * 0.4, 16, 16);
+    // 修復 1: 放大了行星渲染倍率，讓恆星/行星/衛星大小差異立體化
+    const geo = new THREE.SphereGeometry(pc.sz * 0.8, 64, 64);
+    
+    // 如果是太陽(star)，改用發光材質，其餘採用物理標準材質
+    if (pc.type === 'star') {
+        return new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: pc.col }));
+    }
+
     let emCol = pc.col;
     let emInt = 0.2;
     if (EMISSIVE[pc.id]) {
         emCol = EMISSIVE[pc.id].col;
         emInt = EMISSIVE[pc.id].i;
     }
-    const mat = new THREE.MeshStandardMaterial({ color: pc.col, emissive: emCol, emissiveIntensity: emInt });
+    const mat = new THREE.MeshStandardMaterial({ color: pc.col, emissive: emCol, emissiveIntensity: emInt, roughness: 0.6 });
     return new THREE.Mesh(geo, mat);
 }
 
@@ -1297,16 +1344,30 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
+// 初始化幾何體與 UI
 buildBaseMeshes();
 setupEvents();
 window.switchLang(currLang);
 window.hst();
 
-const ov = document.getElementById('loading-overlay');
-if(ov) { 
-    ov.classList.add('hide'); 
-    setTimeout(() => ov.style.display = 'none', 700); 
-}
+// 高精貼圖加載完成後統一賦予材質，並解除 Loading 畫面
+Promise.all(texPromises).then((results) => {
+    const ov = document.getElementById('loading-overlay');
+    if (ov) { 
+        ov.classList.add('hide'); 
+        setTimeout(() => ov.style.display = 'none', 700); 
+    }
+    results.forEach(res => {
+        if (!res || !res.tex) return;
+        const target = res.id === 'earth' ? earthMesh : pMesh[res.id];
+        if (target && target.material) {
+            target.material.map = res.tex;
+            target.material.color.setHex(0xffffff); // 貼上高精貼圖後，清除底色避免混色
+            if (EMISSIVE[res.id]) target.material.emissiveMap = res.tex;
+            target.material.needsUpdate = true;
+        }
+    });
+});
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
