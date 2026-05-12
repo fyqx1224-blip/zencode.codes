@@ -154,13 +154,12 @@ input::placeholder{color:rgba(255,255,255,.17)}
   #global-lang-toggle{top:15px; right:15px; left:auto; transform:none; gap:5px; width:auto; justify-content: flex-end;}
   .mlbtn{padding:4px 8px;font-size:.52rem}
   
-  /* 按鈕列抬高至 58px，完美跨越手機抽屜把手，絕對不會消失 */
-  #ctrl-bar { bottom: 58px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 10px 14px; gap: 10px; justify-content: flex-start; background: linear-gradient(to top, rgba(2,2,4,0.95) 30%, transparent); }
-  #ctrl-bar::-webkit-scrollbar { display: none; }
+  /* 按鈕列抬高，並強制換行 (flex-wrap) 確保所有按鈕可見！ */
+  #ctrl-bar { bottom: 58px; right: 0; left: 0; flex-direction: row; flex-wrap: wrap; padding: 10px 14px; gap: 8px; justify-content: center; background: linear-gradient(to top, rgba(2,2,4,0.95) 30%, transparent); }
   .cb[data-tt]:hover::after{display:none}
   
   /* 時間條再往上抬，避開控制按鈕 */
-  #time-bar { bottom: 110px; min-width: 0; width: 92%; }
+  #time-bar { bottom: 155px; min-width: 0; width: 92%; }
   
   #legend { top: 75px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
   
@@ -374,7 +373,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天顶',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
     ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
@@ -498,7 +497,7 @@ function getHelio(id, d) {
   const xv = p.a * (Math.cos(E) - p.e), yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
   const r = Math.sqrt(xv * xv + yv * yv), l = norm(Math.atan2(yv, xv) * R2D + p.w);
   const lat = p.i * Math.sin((l - p.Node) * DEG);
-  return { l, r: r * Math.cos(lat * DEG), z: r * Math.sin(lat * DEG), a: p.a };
+  return { l, r, lat, a: p.a };
 }
 
 function getAstroPositions(jd) {
@@ -521,9 +520,11 @@ function getAstroPositions(jd) {
     
   ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const h = getHelio(id, d);
-    const X = h.r * Math.cos(h.l * DEG) - xe, Y = h.r * Math.sin(h.l * DEG) - ye;
+    const rProj = h.r * Math.cos(h.lat * DEG);
+    const X = rProj * Math.cos(h.l * DEG) - xe, Y = rProj * Math.sin(h.l * DEG) - ye;
     pos[id] = norm(Math.atan2(Y, X) * R2D);
-    pos[id + '_lat'] = Math.atan2(h.z, Math.sqrt(X*X + Y*Y)) * R2D;
+    const z = h.r * Math.sin(h.lat * DEG);
+    pos[id + '_lat'] = Math.atan2(z, Math.sqrt(X*X + Y*Y)) * R2D;
   });
   
   const ascNode = norm(125.04452 - 0.0529538 * d);
@@ -611,8 +612,8 @@ function calcAll(T, jd, lng, lat, isSid) {
   geo.prev = posPrev;
 
   const helio = {};
-  helio.sun = { l: 0, r: 0, z: 0 };
-  helio.earth = { l: norm(geo.sun + 180), r: 1.0, z: 0 }; 
+  helio.sun = { l: 0, r: 0, lat: 0 };
+  helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
   ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     helio[id] = getHelio(id, d);
   });
@@ -700,7 +701,7 @@ OCtrl.noPan = true;
 OCtrl.staticMoving = false;
 OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
-OCtrl.maxDistance = 800; 
+OCtrl.maxDistance = 800; // 允許縮放看清冥王星
 
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
@@ -742,7 +743,6 @@ function updateMeteors(dt) {
   });
 }
 
-// 這個 AmbientLight 是保留你原始設定的
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
 const universeG = new THREE.Group(); 
@@ -828,15 +828,34 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
+// ★ 真實克卜勒軌道計算 (替換掉原本的假圓圈)
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
-    const au = id === 'earth' ? 1.0 : PE[id].a;
-    const r = auToR(au);
     const pts = [];
-    for (let i=0; i<=64; i++) { pts.push(new THREE.Vector3(Math.cos(i/64*Math.PI*2)*r, Math.sin(i/64*Math.PI*2)*r, 0)); }
+    if (id === 'earth') {
+        const r = auToR(1.0);
+        for(let i=0; i<=64; i++) { pts.push(new THREE.Vector3(Math.cos(i/64*Math.PI*2)*r, Math.sin(i/64*Math.PI*2)*r, 0)); }
+    } else {
+        const p = PE[id];
+        for(let i=0; i<=64; i++) {
+            const E = (i/64) * Math.PI * 2;
+            const xv = p.a * (Math.cos(E) - p.e);
+            const yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
+            const r_au = Math.sqrt(xv*xv + yv*yv);
+            const l = norm(Math.atan2(yv, xv) * R2D + p.w);
+            const lat = p.i * Math.sin((l - p.Node) * DEG);
+            
+            const r_mapped = auToR(r_au);
+            const z = r_mapped * Math.sin(lat * DEG) * Z_EXAG;
+            const rProj = r_mapped * Math.cos(lat * DEG);
+            pts.push(new THREE.Vector3(Math.cos(l * DEG) * rProj, Math.sin(l * DEG) * rProj, z));
+        }
+    }
     const geoLine = new THREE.BufferGeometry().setFromPoints(pts);
     const pc = PCONF.find(p=>p.id===id);
     const col = id==='earth' ? 0x5599DD : (pc ? pc.col : 0x888888);
-    helioOrbitsG.add(new THREE.Line(geoLine, new THREE.LineBasicMaterial({ color: col, transparent:true, opacity:0.3 })));
+    const orbitLine = new THREE.Line(geoLine, new THREE.LineBasicMaterial({ color: col, transparent:true, opacity:0.3 }));
+    if (pc && pc.isOut) orbitLine.userData.isOut = true;
+    helioOrbitsG.add(orbitLine);
 });
 
 const moonOrbitHelio = new THREE.Line(
@@ -862,7 +881,6 @@ function updateEarthOrientation() {
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
     const theta = (userData.lng + 90) * DEG;
-    // 完美的紅點半徑 (配合 Earth 的 1.5)
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
@@ -900,6 +918,11 @@ function placePlanets(geo, helio, lst, aya) {
     const eR = auToR(1.0); const eA = helio.earth.l * DEG;
     const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
     earthContainer.position.set(eX, eY, 0);
+    
+    // Toggle outer planet orbits based on state
+    helioOrbitsG.children.forEach(orbit => {
+        if (orbit.userData.isOut) orbit.visible = S.showOut;
+    });
 
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut;
@@ -917,8 +940,14 @@ function placePlanets(geo, helio, lst, aya) {
         z = Math.sin(geo.moon_lat * DEG) * mR * Z_EXAG;
       } else {
         const hData = helio[pc.id]; if(!hData) return;
-        const a = hData.l * DEG, r = auToR(hData.a);
-        x = Math.cos(a) * r; y = Math.sin(a) * r; z = hData.z * (r / hData.r) * Z_EXAG;
+        // ★ 核心修復：使用真實半徑計算 3D 坐標，行星完美貼合真實軌道
+        const r_mapped = auToR(hData.r);
+        const lat_rad = hData.lat * DEG;
+        const l_rad = hData.l * DEG;
+        z = r_mapped * Math.sin(lat_rad) * Z_EXAG;
+        const rProj = r_mapped * Math.cos(lat_rad);
+        x = Math.cos(l_rad) * rProj;
+        y = Math.sin(l_rad) * rProj;
       }
       if (pMesh[pc.id]) { pMesh[pc.id].position.set(x, y, z); pMesh[pc.id].visible = vis; }
       if (pLbl[pc.id]) {
@@ -1025,6 +1054,7 @@ function buildAspects(geo) {
         if(geo.prev && geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
            prevDiff = Math.abs(geo.prev[bp[i]] - geo.prev[bp[j]]); if (prevDiff > 180) prevDiff = 360 - prevDiff;
         } else { prevDiff = curDiff + 1; }
+        // 入相位動態判斷
         const isApplying = Math.abs(curDiff - ASP_A[k]) < Math.abs(prevDiff - ASP_A[k]);
         const geoLine = new THREE.BufferGeometry().setFromPoints([p1,p2]);
         let mat = isApplying ? new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: 0.65 }) 
@@ -1191,7 +1221,7 @@ function launch() {
       mw.style.transition = 'opacity .6s';
       mw.style.opacity = '0';
       mw.style.pointerEvents = 'none'; 
-      setTimeout(() => { mw.style.display = 'none'; mw.remove(); }, 600); 
+      setTimeout(() => { mw.style.display = 'none'; }, 600); 
   }
 }
 
@@ -1233,7 +1263,15 @@ const setupEvents = () => {
     bindClick('tb-reset', window.resetTime);
     bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
     bindBtn('cb-spin','spin', () => { if(!playingTime && tbPlay) tbPlay.click(); }, () => { if(playingTime && tbPlay) tbPlay.click(); });
-    bindBtn('cb-helio','helio', () => { if(userData.jd) updatePositions(); }, () => { if(userData.jd) updatePositions(); });
+    
+    bindBtn('cb-helio','helio', () => { 
+        document.getElementById('cb-asp').style.display = 'none'; // 日心隱藏相位連線按鈕
+        if(userData.jd) updatePositions(); 
+    }, () => { 
+        document.getElementById('cb-asp').style.display = 'flex'; // 地心恢復相位連線按鈕
+        if(userData.jd) updatePositions(); 
+    });
+
     bindBtn('cb-ecl','ecliptic',()=>eclRingG.visible=true, ()=>eclRingG.visible=false);
     bindBtn('cb-eq', 'equator', ()=>eqRingG.visible=true,  ()=>eqRingG.visible=false);
     bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
@@ -1260,7 +1298,6 @@ const setupEvents = () => {
 // 6. 動畫迴圈與啟動程序 (還原最原始的高精貼圖邏輯)
 // ==========================================
 
-// 使用你提供的 CDN
 const TEX_URLS = {
   earth: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
   moon: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
@@ -1464,7 +1501,7 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
-// 必須等待貼圖徹底加載完畢，才開始構建地球與行星，拒絕黑屏
+// 等待所有貼圖完成載入後才建立場景，確保不黑屏
 Promise.all(texPromises).then(() => {
     buildBaseMeshes();
     setupEvents();
