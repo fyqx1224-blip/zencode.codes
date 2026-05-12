@@ -246,7 +246,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="tbtn" id="tb-play">▶ 播放</button>
   <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
   <div id="time-lbl">當前時間</div>
-  <button class="tbtn" onclick="resetTime()">重置</button>
+  <button class="tbtn" id="tb-reset" onclick="resetTime()">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
 <div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
@@ -280,6 +280,7 @@ const LANGS = {
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
     dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 觀測地標已對齊天頂與上升點'},
+    ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星體顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政'}
   },
   'zh-CN':{
     zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
@@ -290,6 +291,7 @@ const LANGS = {
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
     dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
+    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政'}
   },
   'en':{
     zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
@@ -300,6 +302,7 @@ const LANGS = {
     al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
     dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
     dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Observer landmark aligned to Zenith & ASC'},
+    ctrl:{zen:'Zen Mode',spin:'Time Spin',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl'}
   },
   'ko':{
     zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
@@ -310,6 +313,7 @@ const LANGS = {
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
     dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
+    ctrl:{zen:'몰입 모드',spin:'시간 회전',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성'}
   }
 };
 
@@ -353,10 +357,33 @@ window.switchLang = l => {
   const dstOn = document.getElementById('f-dst').checked;
   document.getElementById('dst-badge').textContent = dstOn ? d.dst.on : d.dst.off;
   document.getElementById('dst-badge').className = 'dst-badge' + (dstOn ? ' active' : '');
+  
+  // ★ 語言切換：動態更新控制列按鈕 tooltip 與內部文本
+  document.getElementById('cb-zen').setAttribute('data-tt', d.ctrl.zen);
+  document.getElementById('cb-spin').setAttribute('data-tt', d.ctrl.spin);
+  document.getElementById('cb-sys').setAttribute('data-tt', d.ctrl.sys);
+  document.getElementById('cb-out').setAttribute('data-tt', d.ctrl.out);
+  document.getElementById('cb-ecl').setAttribute('data-tt', d.ctrl.ecl);
+  document.getElementById('cb-eq').setAttribute('data-tt', d.ctrl.eq);
+  document.getElementById('cb-man').setAttribute('data-tt', d.ctrl.man);
+  document.getElementById('cb-pl').setAttribute('data-tt', d.ctrl.pl);
+  document.getElementById('cb-asp').setAttribute('data-tt', d.ctrl.asp);
+  document.getElementById('cb-tm').setAttribute('data-tt', d.ctrl.tm);
+  document.getElementById('cb-orb').setAttribute('data-tt', d.ctrl.orb);
+  
+  document.getElementById('cb-sys').textContent = S.sidereal ? d.ctrl.btnSysS : d.ctrl.btnSysT;
+  document.getElementById('cb-out').textContent = d.ctrl.btnOut;
+  document.getElementById('cb-man').textContent = d.ctrl.btnMan;
+  document.getElementById('cb-pl').textContent = d.ctrl.btnPl;
+  
+  // ★ 更新時間推移操作列的按鈕文字
   const tbPlay = document.getElementById('tb-play');
   if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
-  document.getElementById('time-lbl').textContent = d.dom.timeLbl;
+  document.getElementById('tb-reset').textContent = d.dom.tbReset;
+  
   document.getElementById('loading-text-el').textContent = d.dom.loadTxt;
+
+  // 避免直接覆蓋帶有具體日期的 time-lbl
   if (userData.jd) {
     renderPlanetList(curGeo, S.sidereal, userData.jd, '');
     renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
@@ -364,6 +391,9 @@ window.switchLang = l => {
     renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
     renderAnalysis(curGeo, S.sidereal, userData.jd, '');
     renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
+    document.getElementById('time-range').dispatchEvent(new Event('input'));
+  } else {
+    document.getElementById('time-lbl').textContent = d.dom.timeLbl;
   }
 };
 
@@ -706,10 +736,8 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-// ★ 核心修復 1：黃道面設為絕對水平 (0,0,0)
 const eclG = new THREE.Group(); scene.add(eclG);
 
-// 赤道面傾斜 OBL 度
 const eqG = new THREE.Group(); eqG.rotation.x = OBL; eclG.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -737,7 +765,6 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
-// 黃道面網格
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -820,7 +847,6 @@ const EMISSIVE = {
 
 const pMesh = {}, pLbl = {}, dropLines = {};
 
-// ★ 地球層級重構：放入赤道群組，隨恆星時旋轉
 const earthContainer = new THREE.Group(); eqG.add(earthContainer);
 const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2;
 earthContainer.add(earthMeshGroup);
@@ -970,7 +996,6 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
-// ★ 核心修復 3：精準計算並映射出生地標點，使其永遠對齊命盤方位
 function updateEarthOrientation() {
   if (!userData.jd) return;
   
@@ -980,7 +1005,6 @@ function updateEarthOrientation() {
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   
-  // 地球絕對自轉同步於恆星時：讓紅點永遠對齊子午線 (MC天頂)
   earthContainer.rotation.z = curGeo.gmst * DEG;
 }
 
@@ -1052,7 +1076,6 @@ function placePlanets(geo, lst, aya) {
     houseG.remove(c);
   }
   
-  // ★ 核心修復 2：雙軌宮位制繪圖邏輯
   for (let i = 0; i < 12; i++) {
     const a = geo.houses[i] * DEG;
     let isAxis = false;
@@ -1073,7 +1096,6 @@ function placePlanets(geo, lst, aya) {
       else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
       else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
     } else {
-      // 恆星黃道：整宮制網格
       houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
         new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
@@ -1082,7 +1104,6 @@ function placePlanets(geo, lst, aya) {
     }
   }
 
-  // 恆星黃道：單獨繪製懸浮的 ASC/MC 天干軸線
   if (S.sidereal) {
     const ascA = geo.asc * DEG;
     const dscA = geo.dsc * DEG;
@@ -1314,7 +1335,7 @@ bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>aspG
 { const b = document.getElementById('cb-sys');
   b.addEventListener('click', () => {
     S.sidereal=!S.sidereal; b.classList.toggle('on',S.sidereal);
-    b.textContent = S.sidereal ? '恆' : '歸';
+    b.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT;
     if (userData.jd) updatePositions();
   });
 }
@@ -1342,7 +1363,6 @@ function animate() {
   
   OCtrl.update();
   
-  // ★ 核心修復 4：自動推移時間時，星體基於真實順逆行進行自轉！
   if (playingTime) {
     const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18,
       jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06,
