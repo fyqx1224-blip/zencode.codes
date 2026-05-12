@@ -369,7 +369,7 @@ const LANGS = {
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
     dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北緯31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指螢幕正上方'},
-    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
+    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
     zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
@@ -674,8 +674,8 @@ const eqRingG = new THREE.Group(); eqRingG.rotation.x = -OBL; universeG.add(eqRi
 const earthContainer = new THREE.Group(); earthContainer.rotation.x = -OBL; universeG.add(earthContainer);
 const earthSpin = new THREE.Group(); earthContainer.add(earthSpin);
 
-// ★ 修復：初始化為空，確保後續指針正確
 earthMathGroup = new THREE.Group(); 
+earthMathGroup.rotation.x = Math.PI / 2;
 earthSpin.add(earthMathGroup);
 
 const helioOrbitsG = new THREE.Group(); universeG.add(helioOrbitsG); helioOrbitsG.visible = false;
@@ -735,7 +735,6 @@ function pointCameraAtBirthplace() {
   camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
   camera.lookAt(centerPos);
   const northPoleLocal = new THREE.Vector3(0, 1.5, 0); 
-  // ★ 修正：統一使用 earthMathGroup 矩陣
   const northPoleWorld = northPoleLocal.applyMatrix4(earthMathGroup.matrixWorld);
   camera.up.copy(northPoleWorld.sub(centerPos).normalize());
   if(OCtrl) { OCtrl.target.copy(centerPos); OCtrl.update(); }
@@ -745,7 +744,7 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    // ★ 核心修正：將偏移量設為標準 180 度，對齊 Three.js 球面 UV
+    // ★ 關鍵修正 2：利用 + 180 完全校正球面貼圖與數學座標的偏差
     const theta = (userData.lng + 180) * DEG; 
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
     if (zenithLine && zenithLabel) {
@@ -827,7 +826,7 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({ map: loadedTex.earth || null, emissive: 0xffffff, emissiveMap: loadedTex.earth || null, emissiveIntensity: loadedTex.earth ? 0.35 : 0.1, color: loadedTex.earth ? 0xffffff : 0x1a4a9a, roughness: 0.8, metalness: 0.1 });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   
-  // ★ 核心修正：取消視覺旋轉偏移，對齊標準經緯度系統
+  // ★ 關鍵修正 1：將貼圖的初始視覺旋轉歸零，讓原圖的經緯度 0 完全對準幾何的 0。
   earthMesh.rotation.y = 0; 
   earthMathGroup.add(earthMesh);
   
@@ -874,8 +873,6 @@ Promise.all(texPromises).then(() => {
     animate();
 });
 
-// 重點提示：其餘 helper 函數保持不變...
-// [此處省略其餘 UI 綁定邏輯以節省空間，請沿用上一版中的 setupEvents, window.submitForm 等]
 const setupEvents = () => {
     ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', window.hst); });
     const bindClick = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
@@ -892,6 +889,13 @@ const setupEvents = () => {
     bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
     bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
     const btnSys = document.getElementById('cb-sys'); if(btnSys) btnSys.addEventListener('click', () => { S.sidereal=!S.sidereal; btnSys.classList.toggle('on',S.sidereal); btnSys.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT; if (userData.jd) updatePositions(); });
+    const btnOut = document.getElementById('cb-out'); if(btnOut) btnOut.addEventListener('click', () => { S.showOut=!S.showOut; btnOut.classList.toggle('on',S.showOut); if(userData.jd)updatePositions(); });
+    const tb = document.getElementById('time-bar'), btnTm = document.getElementById('cb-tm'); if(btnTm && tb) btnTm.addEventListener('click', () => { S.time=!S.time; btnTm.classList.toggle('on',S.time); S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime()); });
+    const btnOrb = document.getElementById('cb-orb'); if(btnOrb) btnOrb.addEventListener('click', () => { S.orb=!S.orb; btnOrb.classList.toggle('on',S.orb); if (!S.orb) Object.values(dropLines).forEach(dl=>{dl.visible=false;}); else if (userData.jd) updatePositions(); });
+    const tbPlay = document.getElementById('tb-play');
+    if (tbPlay) { tbPlay.addEventListener('click', function() { if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = LANGS[currLang].dom.tbPlay; return; } playingTime = true; this.textContent = LANGS[currLang].dom.tbPause; playInterval = setInterval(() => { const v = Math.min(parseInt(tRange.value)+1, 87660); tRange.value = v; tRange.dispatchEvent(new Event('input')); if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].dom.tbPlay; } }, 80); }); }
+    window.resetTime = function() { clearInterval(playInterval); playingTime = false; if (tbPlay) tbPlay.textContent = LANGS[currLang].dom.tbPlay; if (tRange) { tRange.value = 0; tRange.dispatchEvent(new Event('input')); } if (tLbl) tLbl.textContent = LANGS[currLang].dom.timeLbl; };
+    bindClick('tb-reset', window.resetTime);
 };
 
 } catch (err) { console.error(err); }
