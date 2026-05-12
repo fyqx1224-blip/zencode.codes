@@ -251,7 +251,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 
 <script type="module">
 import * as THREE from 'three';
-// ★ 替換為軌跡球控制器，解鎖 360 度無死角旋轉
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -554,13 +553,13 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
-// ★ 替換為 TrackballControls，解除萬向節鎖，實現 360 度無死角翻轉
+// ★ 替換為 TrackballControls，解除極角限制，實現 360 度無縫翻轉
 const OCtrl = new TrackballControls(camera, renderer.domElement);
-OCtrl.rotateSpeed = 3.5;          // 翻轉靈敏度
-OCtrl.zoomSpeed = 1.2;
-OCtrl.panSpeed = 0.8;
-OCtrl.staticMoving = false;       // 開啟平滑慣性
-OCtrl.dynamicDampingFactor = 0.1; // 慣性阻尼
+OCtrl.rotateSpeed = isMobile ? 2.5 : 3.5;
+OCtrl.zoomSpeed = isMobile ? 0.8 : 1.2;
+OCtrl.noPan = true;  // ★ 禁用平移：防止移動端星系飛出屏幕中心
+OCtrl.staticMoving = false;
+OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
 OCtrl.maxDistance = 250;
 
@@ -786,7 +785,7 @@ function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
     map: loadedTex.earth || null,
     emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null, 
+    emissiveMap: loadedTex.earth || null,
     emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
     color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
     roughness: 0.8, metalness: 0.1
@@ -1162,7 +1161,6 @@ function launch() {
   if (mw.style.display !== 'none') {
     mw.style.transition = 'opacity .7s'; mw.style.opacity = '0';
     setTimeout(() => { mw.style.display = 'none'; }, 700);
-    // 自動旋轉開啟
     S.spin = true; 
     document.getElementById('cb-spin').classList.add('on');
     setTimeout(() => { 
@@ -1203,7 +1201,6 @@ window.resetTime = function() {
 };
 
 bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
-// ★ 修復自動旋轉按鈕，適配 TrackballControls
 bindBtn('cb-spin','spin', () => { S.spin = true; }, () => { S.spin = false; });
 bindBtn('cb-ecl','ecliptic',()=>eclG.visible=true, ()=>eclG.visible=false);
 bindBtn('cb-eq', 'equator', ()=>eqG.visible=true,  ()=>eqG.visible=false);
@@ -1240,11 +1237,10 @@ function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
   
-  // ★ 注入自動旋轉邏輯，讓攝像機平滑繞 Y 軸飛行
   if (S.spin) {
     const speed = 0.2 * dt;
     camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed);
-    camera.up.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed); // 確保翻轉時不掉向
+    camera.up.applyAxisAngle(new THREE.Vector3(0, 1, 0), speed);
     camera.lookAt(0, 0, 0);
   }
   
@@ -1267,20 +1263,29 @@ Promise.all(texPromises).then(() => {
   buildAllPlanets();
   const ov = document.getElementById('loading-overlay');
   ov.classList.add('hide'); setTimeout(()=>ov.style.display='none', 700);
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+    composer.setSize(innerWidth,innerHeight);
+    bloom.setSize(innerWidth,innerHeight);
+    lblR.setSize(innerWidth,innerHeight);
+    OCtrl.handleResize();
+  });
   animate();
 }).catch(() => {
   buildAllPlanets();
   document.getElementById('loading-overlay').style.display = 'none';
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+    composer.setSize(innerWidth,innerHeight);
+    bloom.setSize(innerWidth,innerHeight);
+    lblR.setSize(innerWidth,innerHeight);
+    OCtrl.handleResize();
+  });
   animate();
 });
 
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-  composer.setSize(innerWidth,innerHeight);
-  bloom.setSize(innerWidth,innerHeight);
-  lblR.setSize(innerWidth,innerHeight);
-});
 </script>
 </body>
 </html>
