@@ -358,7 +358,6 @@ window.switchLang = l => {
   document.getElementById('dst-badge').textContent = dstOn ? d.dst.on : d.dst.off;
   document.getElementById('dst-badge').className = 'dst-badge' + (dstOn ? ' active' : '');
   
-  // ★ 語言切換：動態更新控制列按鈕 tooltip 與內部文本
   document.getElementById('cb-zen').setAttribute('data-tt', d.ctrl.zen);
   document.getElementById('cb-spin').setAttribute('data-tt', d.ctrl.spin);
   document.getElementById('cb-sys').setAttribute('data-tt', d.ctrl.sys);
@@ -376,14 +375,11 @@ window.switchLang = l => {
   document.getElementById('cb-man').textContent = d.ctrl.btnMan;
   document.getElementById('cb-pl').textContent = d.ctrl.btnPl;
   
-  // ★ 更新時間推移操作列的按鈕文字
   const tbPlay = document.getElementById('tb-play');
   if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
   document.getElementById('tb-reset').textContent = d.dom.tbReset;
-  
   document.getElementById('loading-text-el').textContent = d.dom.loadTxt;
 
-  // 避免直接覆蓋帶有具體日期的 time-lbl
   if (userData.jd) {
     renderPlanetList(curGeo, S.sidereal, userData.jd, '');
     renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
@@ -477,6 +473,8 @@ function getAstroPositions(jd) {
   
   return pos;
 }
+
+let currentGMST = 0; // 全局變數保存恆星時，防止矩陣崩潰
 
 function calcAll(T, jd, lng, lat, isSid) {
   const d = jd - 2451545.0;
@@ -736,8 +734,10 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-const eclG = new THREE.Group(); scene.add(eclG);
+// ★ 核心修復 1：黃道面設為絕對水平 (0,0,0)，並沿 X 軸翻轉 -90 度，確保俯視正中心為北極！
+const eclG = new THREE.Group(); eclG.rotation.x = -Math.PI / 2; scene.add(eclG);
 
+// 赤道面傾斜 OBL 度
 const eqG = new THREE.Group(); eqG.rotation.x = OBL; eclG.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -765,6 +765,7 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
+// 黃道面網格
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -847,9 +848,18 @@ const EMISSIVE = {
 
 const pMesh = {}, pLbl = {}, dropLines = {};
 
-const earthContainer = new THREE.Group(); eqG.add(earthContainer);
-const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2;
-earthContainer.add(earthMeshGroup);
+// ★ 地球層級與旋轉矩陣修復：確保它獨立旋轉不被 NaN 崩潰
+const earthContainer = new THREE.Group(); 
+earthContainer.rotation.x = OBL; // 讓地球容器傾斜，與赤道面平行
+eclG.add(earthContainer);
+
+const earthSpin = new THREE.Group(); 
+earthContainer.add(earthSpin);
+
+const earthMeshGroup = new THREE.Group(); 
+// 將 Y 軸極點調整至 Z 軸（赤道面的法線）
+earthMeshGroup.rotation.x = Math.PI / 2;
+earthSpin.add(earthMeshGroup);
 
 let earthMesh = null;
 let birthMarker = null;
@@ -918,10 +928,12 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'jupiter') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -934,6 +946,7 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'uranus') {
     sphere.rotation.z = Math.PI / 2 * 0.97;
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
@@ -944,10 +957,12 @@ function buildPlanet(pc) {
     );
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
+
   if (pc.id === 'neptune') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
@@ -996,16 +1011,19 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
+// ★ 核心修復 3：精準計算並映射出生地標點，使其永遠對齊命盤方位
 function updateEarthOrientation() {
-  if (!userData.jd) return;
+  if (!userData.jd || isNaN(currentGMST)) return;
   
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
+    // THREE.js 經度紋理接縫修正
     const theta = (userData.lng + 90) * DEG;
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   
-  earthContainer.rotation.z = curGeo.gmst * DEG;
+  // 地球絕對自轉同步於恆星時：讓紅點永遠對齊子午線 (MC天頂)
+  earthSpin.rotation.z = currentGMST * DEG;
 }
 
 OCtrl.addEventListener('change', () => {
@@ -1076,6 +1094,7 @@ function placePlanets(geo, lst, aya) {
     houseG.remove(c);
   }
   
+  // ★ 核心修復 2：雙軌宮位制繪圖邏輯
   for (let i = 0; i < 12; i++) {
     const a = geo.houses[i] * DEG;
     let isAxis = false;
@@ -1096,6 +1115,7 @@ function placePlanets(geo, lst, aya) {
       else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
       else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
     } else {
+      // 恆星黃道：整宮制網格
       houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
         new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
@@ -1104,6 +1124,7 @@ function placePlanets(geo, lst, aya) {
     }
   }
 
+  // 恆星黃道：單獨繪製懸浮的 ASC/MC 天干軸線
   if (S.sidereal) {
     const ascA = geo.asc * DEG;
     const dscA = geo.dsc * DEG;
@@ -1262,6 +1283,7 @@ function updatePositions() {
   const T   = T_jd(tJD);
   const res = calcAll(T, tJD, userData.lng, userData.lat, S.sidereal);
   curGeo = res.geo;
+  currentGMST = res.gmst; // ★ 存儲恆星時，防止矩陣崩潰
   manG.rotation.z = S.sidereal ? 0 : res.aya * DEG;
   placePlanets(curGeo, res.lst, res.aya);
   renderPlanetList(curGeo, S.sidereal, tJD, '');
@@ -1363,14 +1385,15 @@ function animate() {
   
   OCtrl.update();
   
-  if (playingTime) {
+  // ★ 僅在時間流逝時（自動旋轉開啟），讓行星根據順逆行進行自轉
+  if (playingTime && curGeo && curGeo.retrograde) {
     const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18,
       jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06,
       rahu:0, ketu:0, yapo:0, ziqi:0 };
     PCONF.forEach(pc => {
-      if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined && curGeo.retrograde) {
+      if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined) {
         const dir = curGeo.retrograde[pc.id] ? -1 : 1;
-        pMesh[pc.id].rotation.y += dt * rotSpeeds[pc.id] * dir;
+        pMesh[pc.id].rotateY(dt * rotSpeeds[pc.id] * dir);
       }
     });
   }
