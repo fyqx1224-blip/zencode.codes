@@ -25,7 +25,6 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
 
-/* 語言切換：全平台絕對鎖定右上角 */
 #global-lang-toggle{position:absolute;top:20px;right:25px;z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
@@ -295,8 +294,8 @@ const S = {
 let userData = {}, curGeo = {}, curHelio = {};
 let currentGMST = 0, currentLST = 0, currentAscDeg = 0;
 let playingTime = false, playInterval = null, ascHintTimer = null;
-let earthMesh = null, birthMarker = null;
-let zenithLine = null, zenithLabel = null; // ★ 新增：天頂實體標線
+let earthMesh = null, birthMarker = null, earthMathGroup = null;
+let zenithLine = null, zenithLabel = null; 
 const pMesh = {}, pLbl = {}, dropLines = {};
 
 const PE = {
@@ -365,7 +364,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道',helio:'日心黄道',helioMsg:'☉ 日心模式 · 恒星参考系固定 · 视黄道不适用',zenith:'天顶'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐萤幕绝对正中心'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指萤幕正上方'},
     ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
@@ -770,7 +769,11 @@ const eqRingG = new THREE.Group(); eqRingG.rotation.x = -OBL; universeG.add(eqRi
 
 const earthContainer = new THREE.Group(); earthContainer.rotation.x = -OBL; universeG.add(earthContainer);
 const earthSpin = new THREE.Group(); earthContainer.add(earthSpin);
-const earthMeshGroup = new THREE.Group(); earthMeshGroup.rotation.x = Math.PI / 2; earthSpin.add(earthMeshGroup);
+
+// 建立專門承載數學與貼圖對齊的 earthMathGroup
+const earthMathGroup = new THREE.Group(); 
+earthMathGroup.rotation.x = Math.PI / 2; 
+earthSpin.add(earthMathGroup);
 
 const helioOrbitsG = new THREE.Group(); universeG.add(helioOrbitsG); helioOrbitsG.visible = false;
 const houseG = new THREE.Group(); universeG.add(houseG);
@@ -892,7 +895,7 @@ function clearGroup(group) {
     }
 }
 
-// ★ 核心修復：相機完美對焦測者中心，強制鎖定北極向上，絕對對齊 MC 中天
+// ★ 核心修復 1.2：相機完美對焦測者中心，強制鎖定北極向上，絕對對齊 MC 中天
 function pointCameraAtBirthplace() {
   if (!birthMarker || !earthMesh) return;
   scene.updateMatrixWorld(true);
@@ -924,7 +927,7 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng - 90) * DEG; 
+    const theta = (userData.lng + 90) * DEG; // 修正幾何偏移，讓 Lon 0 = +X
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
 
     // ★ 更新天頂延長線
@@ -996,6 +999,7 @@ function placePlanets(geo, helio, lst, aya) {
         if (orbit.userData.isOut) orbit.visible = S.showOut;
     });
 
+    // 日心模式：絕對恆星背景固定不動
     manG.rotation.z = 0;
     eclRingG.rotation.z = 0;
 
@@ -1004,6 +1008,7 @@ function placePlanets(geo, helio, lst, aya) {
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
       else if (pc.id === 'moon' || pc.type === 'fict') {
+        // ★ 核心修復：虛點與月亮在日心模式下，圍繞著地球系統渲染
         const hData = helio[pc.id]; if(!hData) return;
         const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
         z = r_m * Math.sin(lat_r) * Z_EXAG;
@@ -1028,9 +1033,11 @@ function placePlanets(geo, helio, lst, aya) {
     helioOrbitsG.visible = false; houseG.visible = true; moonOrbitHelio.visible = false;
     earthContainer.position.set(0, 0, 0);
 
+    // 地心模式：依據回歸/恆星制旋轉
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
+    // 確保相位圖層切換回地心時開啟
     if (S.aspects) aspG.visible = true;
 
     PCONF.forEach(pc => {
@@ -1149,6 +1156,7 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
     const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     
+    // 日心經度標註
     const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
     
     const row = document.createElement('div'); row.className = 'pr';
@@ -1449,26 +1457,25 @@ function buildEarth() {
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
   earthMesh.rotation.y = -Math.PI / 2;
-  earthMeshGroup.add(earthMesh);
+  earthMathGroup.add(earthMesh);
   
   const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.15 });
   const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
   earthMesh.add(graticule);
  
-  earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+  earthMathGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
     new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
   birthMarker = new THREE.Group();
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
   birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-  earthMesh.add(birthMarker);
+  earthMathGroup.add(birthMarker);
 
-  // ★ 新增天頂延長線與標籤
   const zGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
   const zMat = new THREE.LineDashedMaterial({ color: 0xFF6B6B, dashSize: 0.15, gapSize: 0.1, transparent: true, opacity: 0.8 });
   zenithLine = new THREE.Line(zGeo, zMat);
-  earthMesh.add(zenithLine);
+  earthMathGroup.add(zenithLine);
 
   const zDiv = document.createElement('div');
   zDiv.className = 'lbl lasc';
@@ -1477,7 +1484,7 @@ function buildEarth() {
   zDiv.setAttribute('data-3d-id', 'zenith');
   zDiv.innerHTML = LANGS[currLang].ui.zenith || '天頂';
   zenithLabel = new CSS2DObject(zDiv);
-  earthMesh.add(zenithLabel);
+  earthMathGroup.add(zenithLabel);
 }
 
 function buildPlanet(pc) {
