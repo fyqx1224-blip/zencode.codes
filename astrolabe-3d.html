@@ -598,7 +598,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   
   geo.prev = posPrev;
 
-  // ★ 核心修復 2：日心模式下的虛點與月球向量疊加 (使用誇張比例 0.3 AU 確保可見性)
+  // ★ 核心修復 2：日心模式下，將月球與虛點作為地月系統附屬物渲染
   const helio = {};
   helio.sun = { l: 0, r: 0, lat: 0 };
   helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
@@ -609,7 +609,8 @@ function calcAll(T, jd, lng, lat, isSid) {
   ['moon', 'rahu', 'ketu', 'yapo', 'ziqi', 'fortune'].forEach(id => {
       const l_geo = geo[id] * DEG;
       const lat_geo = (geo[id+'_lat'] || 0) * DEG;
-      const r_geo = 0.3; // 放大日心下的地月系半徑，使虛點清晰可見不再消失
+      // 在日心模型中，为了清晰可见，将地月系统微观半径夸张为 0.3 AU
+      const r_geo = 0.3; 
       const dx = r_geo * Math.cos(lat_geo) * Math.cos(l_geo);
       const dy = r_geo * Math.cos(lat_geo) * Math.sin(l_geo);
       const dz = r_geo * Math.sin(lat_geo);
@@ -764,8 +765,7 @@ universeG.rotation.x = -Math.PI / 2;
 scene.add(universeG);
 
 const eclRingG = new THREE.Group(); universeG.add(eclRingG);
-
-// ★ 核心修復 1.1：修正赤道環與地球的傾角矩陣 (確保與黃道投影完全一致)
+// ★ 修正赤道環傾角
 const eqRingG = new THREE.Group(); eqRingG.rotation.x = -OBL; universeG.add(eqRingG);
 
 const earthContainer = new THREE.Group(); earthContainer.rotation.x = -OBL; universeG.add(earthContainer);
@@ -844,6 +844,7 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
+// 真實克卜勒橢圓軌道渲染
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const pts = [];
     if (id === 'earth') {
@@ -891,12 +892,11 @@ function clearGroup(group) {
     }
 }
 
-// ★ 核心修復 1.2：相機完美對焦測者中心 (Topocentric)
+// ★ 核心修復 1：相機完美對焦測者中心 (Topocentric)，對齊地球北極以指向 MC
 function pointCameraAtBirthplace() {
   if (!birthMarker) return;
   scene.updateMatrixWorld(true);
   
-  // 獲取地球中心與紅點絕對座標
   const targetPos = new THREE.Vector3();
   birthMarker.getWorldPosition(targetPos);
   const centerPos = new THREE.Vector3();
@@ -925,8 +925,8 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng - 90) * DEG; // THREE.js 經度縫隙修正
-    birthMarker.position.setFromSphericalCoords(2.05, phi, theta);
+    const theta = (userData.lng - 90) * DEG; // 修正地球經度與世界座標映射
+    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
 }
@@ -1019,7 +1019,7 @@ function placePlanets(geo, helio, lst, aya) {
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
-    // ★ 修復：切回地心且打開相位時，確保圖層恢復顯示
+    // 確保相位圖層切換回地心時開啟
     if (S.aspects) aspG.visible = true;
 
     PCONF.forEach(pc => {
@@ -1138,7 +1138,7 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
     const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     
-    // ★ 虛點的日心經度標註修正
+    // 日心經度標註
     const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
     
     const row = document.createElement('div'); row.className = 'pr';
@@ -1269,7 +1269,6 @@ function updatePositions() {
 function launch() {
   updatePositions();
   
-  // ★ 強制相機完美居中紅點
   pointCameraAtBirthplace();
 
   const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
@@ -1338,7 +1337,6 @@ const setupEvents = () => {
     bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
     bindBtn('cb-spin','spin', () => { if(!playingTime && tbPlay) tbPlay.click(); }, () => { if(playingTime && tbPlay) tbPlay.click(); });
     
-    // ★ 綁定對齊天頂按鈕
     bindClick('cb-zenith', pointCameraAtBirthplace);
 
     const helioBtn = document.getElementById('cb-helio');
@@ -1440,10 +1438,10 @@ function buildEarth() {
     roughness: 0.8, metalness: 0.1
   });
   earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
-  earthMesh.rotation.y = Math.PI / 2; // 校正地球貼圖經度
+  earthMesh.rotation.y = Math.PI / 2;
   earthMeshGroup.add(earthMesh);
   
-  // ★ 增加黃色的地球經緯度網格
+  // ★ 加入地球金色網格 (Graticule)
   const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
   const graticuleMat = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.15 });
   const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
