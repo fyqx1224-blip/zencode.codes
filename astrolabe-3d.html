@@ -25,7 +25,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
 
-/* 語言切換：全平台右上角定位，徹底避免重合 */
+/* 語言切換：全平台絕對鎖定右上角 */
 #global-lang-toggle{position:absolute;top:20px;right:25px;z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
@@ -181,12 +181,14 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <body>
 <div id="loading-overlay"><div class="loading-spinner"></div><div class="loading-text" id="loading-text-el">載入星象引擎與高精貼圖…</div></div>
 <div class="top-left-panel"><a href="/" class="btn-back" title="返回主頁">⟨</a></div>
+
 <div id="global-lang-toggle">
-  <button class="mlbtn active" data-lang="zh-TW" id="lang-tw">繁</button>
-  <button class="mlbtn" data-lang="zh-CN" id="lang-cn">简</button>
-  <button class="mlbtn" data-lang="en" id="lang-en">EN</button>
-  <button class="mlbtn" data-lang="ko" id="lang-ko">KR</button>
+  <button class="mlbtn active" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
+  <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
+  <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
+  <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
 </div>
+
 <div id="three-canvas"></div>
 <div id="topbar">
   <div>
@@ -416,70 +418,69 @@ try { currLang = localStorage.getItem('zc_lang') || 'zh-TW'; } catch(e) {}
 if (!LANGS[currLang]) currLang = 'zh-TW';
 
 window.switchLang = function(l) {
-  if (!LANGS[l]) return;
-  currLang = l;
-  try { localStorage.setItem('zc_lang', l); } catch(e) {}
-  
-  document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
-  const d = LANGS[l];
-  document.querySelectorAll('[data-3d-type]').forEach(el => {
-    const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id');
-    if (t === 'zod') el.innerHTML = d.zod[id];
-    if (t === 'man') el.innerHTML = d.man[id] + d.ui.mansion;
-    if (t === 'pl')  el.innerHTML = d.pl[id];
-    if (t === 'ui')  el.innerHTML = d.ui[id];
-    if (t === 'raw') el.innerHTML = id;
-  });
-  
-  const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
-  const setHTML = (id, v) => { const e = document.getElementById(id); if(e) e.innerHTML = v; };
-  set('tb-title', d.dom.tbTitle); set('tb-sub', d.dom.tbSub);
-  set('modal-title', d.dom.modalTitle); set('modal-sub', d.dom.modalSub);
-  set('lbl-nm', d.dom.lblNm); set('lbl-dt', d.dom.lblDt);
-  set('lbl-tm', d.dom.lblTm); set('lbl-loc', d.dom.lblLoc);
-  setHTML('lbl-dst', d.dst.label+'<br><span style="font-size:.44rem;opacity:.55">'+d.dst.hint+'</span>');
-  const fNm = document.getElementById('f-nm'); if(fNm) fNm.placeholder = d.dom.plhNm;
-  set('btn-sub', d.dom.btnSub); set('btn-demo', d.dom.btnDemo);
-  set('mobile-drawer-label', d.dom.drwLbl);
-  ['pct-ecl', 'pct-ana', 'pct-hou', 'pct-ecl-m', 'pct-ana-m', 'pct-hou-m', 'asc-hint'].forEach((id, i) => {
-    set(id, d.dom[['pEcl','pAna','pHou','pEcl','pAna','pHouM','ascAligned'][i]]);
-  });
-  
-  const dstChk = document.getElementById('f-dst');
-  const dstBdg = document.getElementById('dst-badge');
-  if(dstChk && dstBdg) {
-      dstBdg.textContent = dstChk.checked ? d.dst.on : d.dst.off;
-      dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
-  }
-  
-  ['cb-zen','cb-spin','cb-helio','cb-sys','cb-out','cb-ecl','cb-eq','cb-man','cb-pl','cb-asp','cb-tm','cb-orb'].forEach((id, i) => { 
-    const e = document.getElementById(id); 
-    if(e) e.setAttribute('data-tt', d.ctrl[['zen','spin','helio','sys','out','ecl','eq','man','pl','asp','tm','orb'][i]]); 
-  });
-  
-  const cbH = document.getElementById('cb-helio'); if(cbH) cbH.textContent = d.ctrl.btnHelio;
-  const cbS = document.getElementById('cb-sys'); if(cbS) cbS.textContent = S.sidereal ? d.ctrl.btnSysS : d.ctrl.btnSysT;
-  const cbO = document.getElementById('cb-out'); if(cbO) cbO.textContent = d.ctrl.btnOut;
-  const cbM = document.getElementById('cb-man'); if(cbM) cbM.textContent = d.ctrl.btnMan;
-  const cbPl = document.getElementById('cb-pl'); if(cbPl) cbPl.textContent = d.ctrl.btnPl;
-  
-  const tbPlay = document.getElementById('tb-play');
-  if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
-  set('tb-reset', d.dom.tbReset); set('loading-text-el', d.dom.loadTxt);
+  try {
+    if (!LANGS[l]) return;
+    currLang = l;
+    localStorage.setItem('zc_lang', l);
+    
+    document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+    const d = LANGS[l];
+    document.querySelectorAll('[data-3d-type]').forEach(el => {
+      const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id');
+      if (t === 'zod') el.innerHTML = d.zod[id];
+      if (t === 'man') el.innerHTML = d.man[id] + d.ui.mansion;
+      if (t === 'pl')  el.innerHTML = d.pl[id];
+      if (t === 'ui')  el.innerHTML = d.ui[id];
+      if (t === 'raw') el.innerHTML = id;
+    });
+    
+    const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+    const setHTML = (id, v) => { const e = document.getElementById(id); if(e) e.innerHTML = v; };
+    set('tb-title', d.dom.tbTitle); set('tb-sub', d.dom.tbSub);
+    set('modal-title', d.dom.modalTitle); set('modal-sub', d.dom.modalSub);
+    set('lbl-nm', d.dom.lblNm); set('lbl-dt', d.dom.lblDt);
+    set('lbl-tm', d.dom.lblTm); set('lbl-loc', d.dom.lblLoc);
+    setHTML('lbl-dst', d.dst.label+'<br><span style="font-size:.44rem;opacity:.55">'+d.dst.hint+'</span>');
+    const fNm = document.getElementById('f-nm'); if(fNm) fNm.placeholder = d.dom.plhNm;
+    set('btn-sub', d.dom.btnSub); set('btn-demo', d.dom.btnDemo);
+    set('mobile-drawer-label', d.dom.drwLbl);
+    ['pct-ecl', 'pct-ana', 'pct-hou', 'pct-ecl-m', 'pct-ana-m', 'pct-hou-m', 'asc-hint'].forEach((id, i) => {
+      set(id, d.dom[['pEcl','pAna','pHou','pEcl','pAna','pHouM','ascAligned'][i]]);
+    });
+    
+    const dstChk = document.getElementById('f-dst');
+    const dstBdg = document.getElementById('dst-badge');
+    if(dstChk && dstBdg) {
+        dstBdg.textContent = dstChk.checked ? d.dst.on : d.dst.off;
+        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
+    }
+    
+    ['cb-zen','cb-spin','cb-helio','cb-sys','cb-out','cb-ecl','cb-eq','cb-man','cb-pl','cb-asp','cb-tm','cb-orb'].forEach((id, i) => { 
+      const e = document.getElementById(id); 
+      if(e) e.setAttribute('data-tt', d.ctrl[['zen','spin','helio','sys','out','ecl','eq','man','pl','asp','tm','orb'][i]]); 
+    });
+    
+    const cbH = document.getElementById('cb-helio'); if(cbH) cbH.textContent = d.ctrl.btnHelio;
+    const cbS = document.getElementById('cb-sys'); if(cbS) cbS.textContent = S.sidereal ? d.ctrl.btnSysS : d.ctrl.btnSysT;
+    const cbO = document.getElementById('cb-out'); if(cbO) cbO.textContent = d.ctrl.btnOut;
+    const cbM = document.getElementById('cb-man'); if(cbM) cbM.textContent = d.ctrl.btnMan;
+    const cbPl = document.getElementById('cb-pl'); if(cbPl) cbPl.textContent = d.ctrl.btnPl;
+    
+    const tbPlay = document.getElementById('tb-play');
+    if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
+    set('tb-reset', d.dom.tbReset); set('loading-text-el', d.dom.loadTxt);
 
-  updateHelioBadge();
+    updateHelioBadge();
 
-  if (userData.jd) {
-    renderPlanetList(curGeo, S.sidereal, userData.jd, '');
-    renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
-    renderHouseGrid(curGeo, S.sidereal, userData.jd, '');
-    renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
-    renderAnalysis(curGeo, S.sidereal, userData.jd, '');
-    renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
-    const tr = document.getElementById('time-range'); if(tr) tr.dispatchEvent(new Event('input'));
-  } else {
-    set('time-lbl', d.dom.timeLbl);
-  }
+    if (userData.jd) {
+      renderPlanetList(curGeo, S.sidereal, userData.jd, '');
+      renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
+      renderHouseGrid(curGeo, S.sidereal, userData.jd, '');
+      renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
+      renderAnalysis(curGeo, S.sidereal, userData.jd, '');
+      renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
+    }
+  } catch(e) { console.error("Language switch error:", e); }
 };
 
 window.toggleDrawer = () => {
@@ -620,7 +621,6 @@ function calcAll(T, jd, lng, lat, isSid) {
   
   geo.prev = posPrev;
 
-  // ★ 嚴謹的日心坐標推算 (包含月亮與所有虛點向量轉換)
   const helio = {};
   helio.sun = { l: 0, r: 0, lat: 0 };
   helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
@@ -631,7 +631,7 @@ function calcAll(T, jd, lng, lat, isSid) {
   ['moon', 'rahu', 'ketu', 'yapo', 'ziqi', 'fortune'].forEach(id => {
       const l_geo = geo[id] * DEG;
       const lat_geo = (geo[id+'_lat'] || 0) * DEG;
-      const r_geo = 0.00257; // 視覺與實際近似月地距離比
+      const r_geo = 0.00257; 
       const dx = r_geo * Math.cos(lat_geo) * Math.cos(l_geo);
       const dy = r_geo * Math.cos(lat_geo) * Math.sin(l_geo);
       const dz = r_geo * Math.sin(lat_geo);
@@ -864,7 +864,6 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
-// ★ 真實克卜勒橢圓軌道渲染
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
     const pts = [];
     if (id === 'earth') {
@@ -912,27 +911,20 @@ function clearGroup(group) {
     }
 }
 
-// 初始啟動時強制讓相機看往出生地軸線
 function pointCameraAtBirthplace() {
-  if (!userData.lat || !userData.lng) return;
-  const lat = userData.lat, lng = userData.lng;
-  const phi   = (90 - lat) * DEG;
-  const theta = (lng + 90) * DEG; 
-
-  const vLocal = new THREE.Vector3(
-    Math.sin(phi) * Math.cos(theta),
-    Math.cos(phi),
-    Math.sin(phi) * Math.sin(theta)
-  );
-  const vSpin = new THREE.Vector3(vLocal.x, -vLocal.z, vLocal.y);
-  const cosObl = Math.cos(OBL), sinObl = Math.sin(OBL);
-  const vECon = new THREE.Vector3(vSpin.x, vSpin.y*cosObl - vSpin.z*sinObl, vSpin.y*sinObl + vSpin.z*cosObl);
-  const vUni = new THREE.Vector3(vECon.x, vECon.z, -vECon.y);
-
+  if (!birthMarker) return;
+  scene.updateMatrixWorld(true);
+  const targetPos = new THREE.Vector3();
+  birthMarker.getWorldPosition(targetPos);
+  
   const camDist = camera.position.length() || 115;
-  camera.position.copy(vUni.normalize().multiplyScalar(camDist));
+  camera.position.copy(targetPos.clone().normalize().multiplyScalar(camDist));
   camera.lookAt(0, 0, 0);
-  if(OCtrl && OCtrl.update) OCtrl.update();
+  
+  if(OCtrl) {
+      OCtrl.target.set(0, 0, 0);
+      OCtrl.update();
+  }
 }
 
 function updateEarthOrientation() {
@@ -997,7 +989,6 @@ function placePlanets(geo, helio, lst, aya) {
         if (orbit.userData.isOut) orbit.visible = S.showOut;
     });
 
-    // ★ 日心模式：絕對恆星背景固定不動
     manG.rotation.z = 0;
     eclRingG.rotation.z = 0;
 
@@ -1006,7 +997,6 @@ function placePlanets(geo, helio, lst, aya) {
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
       else if (pc.id === 'moon' || pc.type === 'fict') {
-        // ★ 核心修復：虛點與月亮在日心模式下，圍繞著地球系統渲染
         const mA = geo[pc.id] * DEG, mRr = 3; 
         x = eX + Math.cos(mA) * mRr; y = eY + Math.sin(mA) * mRr;
         z = Math.sin((geo[pc.id+'_lat'] || 0) * DEG) * mRr * Z_EXAG;
@@ -1029,7 +1019,6 @@ function placePlanets(geo, helio, lst, aya) {
     helioOrbitsG.visible = false; houseG.visible = true; moonOrbitHelio.visible = false;
     earthContainer.position.set(0, 0, 0);
 
-    // 地心模式：依據回歸/恆星制旋轉
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
 
@@ -1149,7 +1138,6 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
     const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     
-    // ★ 虛點的日心經度標註
     const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
     
     const row = document.createElement('div'); row.className = 'pr';
@@ -1279,6 +1267,8 @@ function updatePositions() {
 
 function launch() {
   updatePositions();
+  
+  // ★ 啟動時視角完美正對出生地
   pointCameraAtBirthplace();
 
   const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
@@ -1361,6 +1351,8 @@ const setupEvents = () => {
     bindBtn('cb-eq', 'equator', ()=>{ if(!S.helio) eqRingG.visible=true; }, ()=>eqRingG.visible=false);
     bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
     bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
+    
+    // ★ 修正二：日/地心切換與轉動時間不再導致相位消失
     bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
 
     const btnSys = document.getElementById('cb-sys');
@@ -1574,20 +1566,7 @@ const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
-  
-  // ★ 核心修復：動態視角追蹤，使出生地永遠位於畫面正中心 (Topocentric)
-  if (birthMarker) {
-      const targetPos = new THREE.Vector3();
-      if (S.helio) {
-          targetPos.set(0, 0, 0); // 日心模式中心點為太陽
-      } else {
-          birthMarker.getWorldPosition(targetPos); // 地心模式中心點為觀測者出生地
-      }
-      OCtrl.target.lerp(targetPos, 0.1);
-  }
-
   if(OCtrl && OCtrl.update) OCtrl.update();
-  
   if (playingTime && curGeo && curGeo.retrograde) {
     const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18, jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06 };
     PCONF.forEach(pc => { if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined && !S.helio) { pMesh[pc.id].rotateY(dt * rotSpeeds[pc.id] * (curGeo.retrograde[pc.id] ? -1 : 1)); } });
