@@ -338,7 +338,7 @@ const PCONF = [
 ];
 
 const EMISSIVE = {
-  sun:    { col:0xFFCC00, i:2.0 }, moon:   { col:0x445566, i:0.18 },
+  sun:    { col:0xFFCC00, i:3.5 }, moon:   { col:0x445566, i:0.18 },
   mercury:{ col:0x776655, i:0.12 }, venus: { col:0xFFAA00, i:0.35 },
   mars:   { col:0xCC2200, i:0.22 }, jupiter:{ col:0xDD7700, i:0.28 },
   saturn: { col:0x998855, i:0.22 }, uranus: { col:0x006699, i:0.18 },
@@ -363,7 +363,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天頂',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
-    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 觀測地標已對齊天頂與上升點'},
+    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 觀測地標已對齊天頂與上升點'},
     ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星體顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'zh-CN':{
@@ -374,7 +374,7 @@ const LANGS = {
     ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天顶',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
     ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
   },
   'en':{
@@ -669,6 +669,9 @@ function analyzeChart(geo, isSid, jd) {
   return lines;
 }
 
+// ==========================================
+// 4. 基礎 3D 渲染與圖層設定
+// ==========================================
 const wrap = document.getElementById('three-canvas');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020204);
@@ -696,12 +699,11 @@ composer.addPass(new OutputPass());
 const OCtrl = new TrackballControls(camera, renderer.domElement);
 OCtrl.rotateSpeed = isMobile ? 2.5 : 3.5;
 OCtrl.zoomSpeed = isMobile ? 0.8 : 1.2;
-OCtrl.noPan = true;  // 禁用平移防走丟
+OCtrl.noPan = true;  
 OCtrl.staticMoving = false;
 OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
-// 修復 2: 放寬最大距離至 800，三王星軌道清楚可見
-OCtrl.maxDistance = 800; 
+OCtrl.maxDistance = 800; // 修復: 拉大距離，日心可見三王星
 
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
@@ -743,7 +745,7 @@ function updateMeteors(dt) {
   });
 }
 
-// 修復 1: 增加強效平行光與環境光，星系不再黑乎乎
+// 補回被遺忘的強烈光源
 const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
 sunLight.position.set(0, 10, 50);
 scene.add(sunLight);
@@ -866,7 +868,7 @@ function updateEarthOrientation() {
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
     const theta = (userData.lng + 90) * DEG;
-    // 修復 1: 紅點半徑加大至 2.05，徹底防埋沒
+    // 修復 3: 紅點半徑加大至 2.05，徹底防埋沒
     birthMarker.position.setFromSphericalCoords(2.05, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
@@ -1093,9 +1095,6 @@ function showTip(e, h, p) {
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
-// ==========================================
-// 5. 事件與啟動邏輯
-// ==========================================
 window.toggleDST = function() {
     const dstChk = document.getElementById('f-dst');
     const dstBdg = document.getElementById('dst-badge');
@@ -1206,7 +1205,6 @@ const setupEvents = () => {
     ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', window.hst); });
     const bindClick = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
     bindClick('btn-sub', window.submitForm); bindClick('btn-demo', window.loadDemo);
-    bindClick('lang-tw', () => window.switchLang('zh-TW')); bindClick('lang-cn', () => window.switchLang('zh-CN')); bindClick('lang-en', () => window.switchLang('en')); bindClick('lang-ko', () => window.switchLang('ko'));
     const dstEl = document.getElementById('f-dst'); if(dstEl) dstEl.addEventListener('change', () => { window.toggleDST(); window.hst(); });
     if(isMobile) bindClick('mobile-drawer-handle', window.toggleDrawer);
     
@@ -1267,52 +1265,175 @@ const setupEvents = () => {
 // 6. 動畫迴圈與啟動程序 (還原高精貼圖邏輯)
 // ==========================================
 
-// 高精貼圖 URL 註冊中心 (使用穩定的 unpkg CDN)
 const TEX_URLS = {
-    earth: 'https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg',
-    moon: 'https://unpkg.com/three@0.160.0/examples/textures/planets/moon_1024.jpg'
-    // 若你有其他高精貼圖 URL 可自行在下方補回：
-    // sun: '...', mars: '...'
+  earth:   'https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg',
+  moon:    'https://unpkg.com/three@0.160.0/examples/textures/planets/moon_1024.jpg',
+  mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
+  venus:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
+  mars:    'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
+  jupiter: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',
+  saturn:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',
+  uranus:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
+  neptune: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg',
+  pluto:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/plutomap1k.jpg',
 };
 
+const loadedTex = {};
 const texLoader = new THREE.TextureLoader();
-const texPromises = Object.entries(TEX_URLS).map(([id, url]) => {
-    return new Promise(resolve => {
-        texLoader.load(url, tex => {
-            tex.colorSpace = THREE.SRGBColorSpace;
-            resolve({ id, tex });
-        }, undefined, () => resolve({ id, tex: null })); // 失敗不報錯，優雅降級
-    });
-});
-if (texPromises.length === 0) texPromises.push(Promise.resolve(null));
+texLoader.crossOrigin = 'anonymous';
+
+const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
+  new Promise(res => {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const t = new THREE.Texture(img);
+      t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
+      loadedTex[k] = t; res();
+    };
+    img.onerror = () => res(); 
+    img.src = url;
+  })
+);
+
+function makeSaturnRingTex() {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d'), cx = 256, cy = 256;
+  const g = ctx.createRadialGradient(cx,cy,95, cx,cy,252);
+  g.addColorStop(0.00, 'rgba(0,0,0,0)');          
+  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    
+  g.addColorStop(0.18, 'rgba(215,195,165,1)');     
+  g.addColorStop(0.30, 'rgba(235,215,185,1)');     
+  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   
+  g.addColorStop(0.44, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.48, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   
+  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   
+  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   
+  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   
+  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    
+  g.addColorStop(1.00, 'rgba(0,0,0,0)');           
+  ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
+  return new THREE.CanvasTexture(c);
+}
+const satRingTex = makeSaturnRingTex();
+
 
 function buildEarth() {
-    const geo = new THREE.SphereGeometry(2, 64, 64); 
-    const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8, metalness: 0.1 });
-    earthMesh = new THREE.Mesh(geo, mat);
+    const mat = new THREE.MeshStandardMaterial({
+        map: loadedTex.earth || null,
+        emissive: 0xffffff,
+        emissiveMap: loadedTex.earth || null, 
+        emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
+        color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
+        roughness: 0.8, metalness: 0.1
+    });
+    earthMesh = new THREE.Mesh(new THREE.SphereGeometry(2, 64, 64), mat);
     earthMeshGroup.add(earthMesh);
 
-    birthMarker = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    // 大氣層發光層
+    earthMeshGroup.add(new THREE.Mesh(new THREE.SphereGeometry(2.15, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+
+    // 無貼圖備用網格
+    if (!loadedTex.earth) {
+        const wireMat = new THREE.LineBasicMaterial({ color: 0x4488cc, transparent: true, opacity: 0.4 });
+        const wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(2, 32, 32)), wireMat);
+        earthMeshGroup.add(wire);
+    }
+
+    birthMarker = new THREE.Group();
+    birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
+    birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
     earthMeshGroup.add(birthMarker);
 }
 
 function buildPlanet(pc) {
-    // 修復 1: 放大了行星渲染倍率，讓恆星/行星/衛星大小差異立體化
-    const geo = new THREE.SphereGeometry(pc.sz * 0.8, 64, 64);
-    
-    // 如果是太陽(star)，改用發光材質，其餘採用物理標準材質
-    if (pc.type === 'star') {
-        return new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: pc.col }));
+    const tex = loadedTex[pc.id];
+    let mat;
+    const R = pc.sz * 0.8;
+
+    if (pc.type === 'fict') {
+      mat = new THREE.MeshBasicMaterial({ color: pc.col });
+    } else if (pc.id === 'sun') {
+      mat = new THREE.MeshStandardMaterial({
+        color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
+        roughness: 1, metalness: 0
+      });
+    } else {
+      if (tex) {
+        mat = new THREE.MeshStandardMaterial({
+          map: tex,
+          emissive: 0xffffff,
+          emissiveMap: tex,
+          emissiveIntensity: 0.15,
+          roughness: 0.9,
+          metalness: 0.05
+        });
+      } else {
+        const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
+        mat = new THREE.MeshStandardMaterial({
+          color: pc.col,
+          emissive: new THREE.Color(em.col),
+          emissiveIntensity: em.i,
+          roughness: 0.8, metalness: 0.1
+        });
+      }
     }
 
-    let emCol = pc.col;
-    let emInt = 0.2;
-    if (EMISSIVE[pc.id]) {
-        emCol = EMISSIVE[pc.id].col;
-        emInt = EMISSIVE[pc.id].i;
+    const sphere = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), mat);
+
+    // 特效與光環
+    if (pc.type === 'fict') {
+      sphere.add(new THREE.Mesh(new THREE.TorusGeometry(R*1.9, .09, 8, 32),
+        new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
     }
-    const mat = new THREE.MeshStandardMaterial({ color: pc.col, emissive: emCol, emissiveIntensity: emInt, roughness: 0.6 });
-    return new THREE.Mesh(geo, mat);
+
+    if (pc.id === 'venus') {
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
+        new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    }
+
+    if (pc.id === 'jupiter') {
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.1, 32, 32),
+        new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    }
+
+    if (pc.id === 'saturn') {
+      const ringGeo = new THREE.RingGeometry(R*1.55, R*2.85, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI/2 + 0.466;
+      sphere.add(ring);
+      
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.08, 24, 24),
+        new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    }
+
+    if (pc.id === 'uranus') {
+      sphere.rotation.z = Math.PI / 2 * 0.97;
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
+        new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+      const urRing = new THREE.Mesh(
+        new THREE.RingGeometry(R*1.4, R*1.55, 64),
+        new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
+      );
+      urRing.rotation.x = Math.PI/2; sphere.add(urRing);
+    }
+
+    if (pc.id === 'neptune') {
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.12, 24, 24),
+        new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    }
+
+    if (pc.id === 'sun') {
+      sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.4, 32, 32),
+        new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+      sphere.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.9, 32, 32),
+        new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    }
+
+    return sphere;
 }
 
 function buildBaseMeshes() {
@@ -1344,39 +1465,28 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
-// 初始化幾何體與 UI
-buildBaseMeshes();
-setupEvents();
-window.switchLang(currLang);
-window.hst();
+// 核心初始化啟動：等待所有貼圖加載完後再構建模型，徹底避免黑畫面
+Promise.all(texPromises).then(() => {
+    buildBaseMeshes();
+    setupEvents();
+    window.switchLang(currLang);
+    window.hst();
 
-// 高精貼圖加載完成後統一賦予材質，並解除 Loading 畫面
-Promise.all(texPromises).then((results) => {
     const ov = document.getElementById('loading-overlay');
     if (ov) { 
         ov.classList.add('hide'); 
         setTimeout(() => ov.style.display = 'none', 700); 
     }
-    results.forEach(res => {
-        if (!res || !res.tex) return;
-        const target = res.id === 'earth' ? earthMesh : pMesh[res.id];
-        if (target && target.material) {
-            target.material.map = res.tex;
-            target.material.color.setHex(0xffffff); // 貼上高精貼圖後，清除底色避免混色
-            if (EMISSIVE[res.id]) target.material.emissiveMap = res.tex;
-            target.material.needsUpdate = true;
-        }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+      bloom.setSize(window.innerWidth, window.innerHeight); lblR.setSize(window.innerWidth, window.innerHeight);
+      if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
     });
-});
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
-  bloom.setSize(window.innerWidth, window.innerHeight); lblR.setSize(window.innerWidth, window.innerHeight);
-  if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
+    animate();
 });
-
-animate();
 
 } catch (err) {
     alert("3D星象引擎加載失敗，錯誤訊息: " + err.message);
