@@ -131,23 +131,23 @@ input::placeholder{color:rgba(255,255,255,.17)}
 #asc-hint.show{opacity:1}
 
 @media(max-width:768px){
-  .side-panel{display:none!important}
-  .top-left-panel { top: 15px; left: 15px; }
-  .btn-back { width: 34px; height: 34px; font-size: 1.1rem; }
-  #topbar{padding:16px 14px 24px 60px}
-  #tb-title{font-size:1.1rem}
-  #tb-sub{display:none}
-  #global-lang-toggle{top:15px; right:15px; left:auto; transform:none; gap:5px; width:auto; justify-content: flex-end;}
-  .mlbtn{padding:4px 8px;font-size:.52rem}
-  #ctrl-bar { bottom: 58px; right: 0; left: 0; flex-direction: row; flex-wrap: wrap; padding: 10px 14px; gap: 8px; justify-content: center; background: linear-gradient(to top, rgba(2,2,4,0.95) 30%, transparent); }
-  #ctrl-bar::-webkit-scrollbar { display: none; }
-  .cb[data-tt]:hover::after{display:none}
-  #time-bar { bottom: 155px; min-width: 0; width: 92%; }
-  #legend { top: 75px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
-  #helio-badge { top: 110px; }
-  #asc-hint { top: 125px; bottom: auto; }
-  #modal{padding:24px 18px;margin:16px}
-  #mw{align-items:flex-start;padding-top:10px}
+  .side-panel{display:none!important}
+  .top-left-panel { top: 15px; left: 15px; }
+  .btn-back { width: 34px; height: 34px; font-size: 1.1rem; }
+  #topbar{padding:16px 14px 24px 60px}
+  #tb-title{font-size:1.1rem}
+  #tb-sub{display:none}
+  #global-lang-toggle{top:15px; right:15px; left:auto; transform:none; gap:5px; width:auto; justify-content: flex-end;}
+  .mlbtn{padding:4px 8px;font-size:.52rem}
+  #ctrl-bar { bottom: 58px; right: 0; left: 0; flex-direction: row; flex-wrap: wrap; padding: 10px 14px; gap: 8px; justify-content: center; background: linear-gradient(to top, rgba(2,2,4,0.95) 30%, transparent); }
+  #ctrl-bar::-webkit-scrollbar { display: none; }
+  .cb[data-tt]:hover::after{display:none}
+  #time-bar { bottom: 155px; min-width: 0; width: 92%; }
+  #legend { top: 75px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
+  #helio-badge { top: 110px; }
+  #asc-hint { top: 125px; bottom: auto; }
+  #modal{padding:24px 18px;margin:16px}
+  #mw{align-items:flex-start;padding-top:10px}
 }
 </style>
 <script type="importmap">
@@ -159,112 +159,112 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div class="top-left-panel"><a href="/" class="btn-back" title="返回主頁">⟨</a></div>
 
 <div id="global-lang-toggle">
-  <button class="mlbtn active" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
-  <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
-  <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
-  <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
+  <button class="mlbtn active" data-lang="zh-TW" onclick="window.switchLang('zh-TW')">繁</button>
+  <button class="mlbtn" data-lang="zh-CN" onclick="window.switchLang('zh-CN')">简</button>
+  <button class="mlbtn" data-lang="en" onclick="window.switchLang('en')">EN</button>
+  <button class="mlbtn" data-lang="ko" onclick="window.switchLang('ko')">KR</button>
 </div>
 
 <div id="three-canvas"></div>
 <div id="topbar">
-  <div>
-    <div id="tb-title">星象座標系 · 天球儀</div>
-    <div id="tb-sub">GEOCENTRIC ASTROLABE · 物理光影宇宙</div>
-  </div>
-  <div class="tb-right">
-    <div id="tb-info" style="display:none">
-      <div id="tb-name"></div>
-      <div id="tb-date"></div>
-      <div id="tb-place"></div>
-    </div>
-  </div>
+  <div>
+    <div id="tb-title">星象座標系 · 天球儀</div>
+    <div id="tb-sub">GEOCENTRIC ASTROLABE · 物理光影宇宙</div>
+  </div>
+  <div class="tb-right">
+    <div id="tb-info" style="display:none">
+      <div id="tb-name"></div>
+      <div id="tb-date"></div>
+      <div id="tb-place"></div>
+    </div>
+  </div>
 </div>
 <div id="helio-badge">☉ 日心模式 · 恆星參考系固定 · 視黃道不適用</div>
 
 <div id="mw">
 <div id="modal">
-  <div class="ml" id="modal-title">星象座標系</div>
-  <div class="ms" id="modal-sub">真3D地心儀 · 晝夜更替 · 二十八宿</div>
-  <div class="fl" id="lbl-nm">命主姓名</div>
-  <input type="text" id="f-nm" placeholder="姓名（可留空）">
-  
-  <div class="fl" id="lbl-dt">出生日期（公曆）</div>
-  <div class="r3">
-    <input type="number" id="f-y" placeholder="年" min="1900" max="2100" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-m" placeholder="月" min="1" max="12" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-d" placeholder="日" min="1" max="31" oninput="if(window.hst) window.hst()">
-  </div>
-  
-  <div class="fl" id="lbl-tm">出生時間（24小時）</div>
-  <div class="r2">
-    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="if(window.hst) window.hst()">
-  </div>
-  
-  <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
-  <div class="r3">
-    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
-  </div>
-  
-  <div class="dst-row">
-    <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
-    <span class="dst-badge" id="dst-badge">標準時</span>
-    <label class="dst-toggle">
-      <input type="checkbox" id="f-dst" onchange="if(window.toggleDST) window.toggleDST()">
-      <span class="dst-slider"></span>
-    </label>
-  </div>
-  <div id="st-hint"></div>
-  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">觀 測 星 象 能 量</button>
-  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
+  <div class="ml" id="modal-title">星象座標系</div>
+  <div class="ms" id="modal-sub">真3D地心儀 · 晝夜更替 · 二十八宿</div>
+  <div class="fl" id="lbl-nm">命主姓名</div>
+  <input type="text" id="f-nm" placeholder="姓名（可留空）">
+  
+  <div class="fl" id="lbl-dt">出生日期（公曆）</div>
+  <div class="r3">
+    <input type="number" id="f-y" placeholder="年" min="1900" max="2100" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-m" placeholder="月" min="1" max="12" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-d" placeholder="日" min="1" max="31" oninput="if(window.hst) window.hst()">
+  </div>
+  
+  <div class="fl" id="lbl-tm">出生時間（24小時）</div>
+  <div class="r2">
+    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="if(window.hst) window.hst()">
+  </div>
+  
+  <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
+  <div class="r3">
+    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
+  </div>
+  
+  <div class="dst-row">
+    <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
+    <span class="dst-badge" id="dst-badge">標準時</span>
+    <label class="dst-toggle">
+      <input type="checkbox" id="f-dst" onchange="if(window.toggleDST) window.toggleDST()">
+      <span class="dst-slider"></span>
+    </label>
+  </div>
+  <div id="st-hint"></div>
+  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">觀 測 星 象 能 量</button>
+  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
 </div>
 </div>
 
 <div class="side-panel" id="lp" style="display:none">
-  <div class="pc"><div class="pc-t" id="pct-ecl">星象 · 視黃道度數</div><div id="plist"></div></div>
-  <div class="pc"><div class="pc-t" id="pct-ana">命盤分析摘要</div><div id="abody"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-ecl">星象 · 視黃道度數</div><div id="plist"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-ana">命盤分析摘要</div><div id="abody"></div></div>
 </div>
 <div class="side-panel" id="rp" style="display:none">
-  <div class="pc"><div class="pc-t" id="pct-hou">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-hou">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
 </div>
 <div id="mobile-drawer" style="display:none">
-  <div id="mobile-drawer-handle" onclick="if(window.toggleDrawer) window.toggleDrawer()">
-    <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象資料</span><div class="pill"></div>
-  </div>
-  <div id="mobile-drawer-content">
-    <div class="pc"><div class="pc-t" id="pct-ecl-m">星象 · 視黃道度數</div><div id="plist-m"></div></div>
-    <div class="pc"><div class="pc-t" id="pct-ana-m">命盤分析摘要</div><div id="abody-m"></div></div>
-    <div class="pc"><div class="pc-t" id="pct-hou-m">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
-  </div>
+  <div id="mobile-drawer-handle" onclick="if(window.toggleDrawer) window.toggleDrawer()">
+    <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象資料</span><div class="pill"></div>
+  </div>
+  <div id="mobile-drawer-content">
+    <div class="pc"><div class="pc-t" id="pct-ecl-m">星象 · 視黃道度數</div><div id="plist-m"></div></div>
+    <div class="pc"><div class="pc-t" id="pct-ana-m">命盤分析摘要</div><div id="abody-m"></div></div>
+    <div class="pc"><div class="pc-t" id="pct-hou-m">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
+  </div>
 </div>
 <div id="legend">
-  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黃道</span></div>
-  <div class="li"><div class="ld" style="background:#63A3ED"></div><span>赤道</span></div>
-  <div class="li"><div class="ld" style="background:#7DE09A"></div><span>二十八宿</span></div>
-  <div class="li"><div class="ld" style="background:#FF6B6B"></div><span>ASC/MC中天</span></div>
+  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黃道</span></div>
+  <div class="li"><div class="ld" style="background:#63A3ED"></div><span>赤道</span></div>
+  <div class="li"><div class="ld" style="background:#7DE09A"></div><span>二十八宿</span></div>
+  <div class="li"><div class="ld" style="background:#FF6B6B"></div><span>ASC/MC中天</span></div>
 </div>
 <div id="ctrl-bar">
-  <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
-  <button class="cb" id="cb-zenith" data-tt="對齊中天" style="font-size:.85rem">🎯</button>
-  <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
-  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
-  <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
-  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
-  <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
-  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
-  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
-  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
+  <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
+  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
+  <button class="cb" id="cb-zenith" data-tt="對齊中天" style="font-size:.85rem">🎯</button>
+  <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
+  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
+  <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
+  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
+  <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
+  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
+  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
+  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
+  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
 </div>
 <div id="time-bar">
-  <button class="tbtn" id="tb-play">▶ 播放</button>
-  <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
-  <div id="time-lbl">當前時間</div>
-  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
+  <button class="tbtn" id="tb-play">▶ 播放</button>
+  <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
+  <div id="time-lbl">當前時間</div>
+  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
 <div id="asc-hint">☽ 測者中心已完美鎖定，中天直指螢幕正上方</div>
@@ -291,9 +291,9 @@ const OBL = 23.4365 * DEG;
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
 
 const S = {
-  zen:false, spin:false, sidereal:false, helio:false,
-  showOut:true, ecliptic:true, equator:true, mansion:true,
-  planets:true, aspects:false, time:false, orb:false
+  zen:false, spin:false, sidereal:false, helio:false,
+  showOut:true, ecliptic:true, equator:true, mansion:true,
+  planets:true, aspects:false, time:false, orb:false
 };
 let userData = {}, curGeo = {}, curHelio = {};
 let currentGMST = 0, currentLST = 0, currentAscDeg = 0;
@@ -303,40 +303,40 @@ let zenithLine = null, zenithLabel = null;
 const pMesh = {}, pLbl = {}, dropLines = {};
 
 const PE = {
-  mercury:{L:252.250,a:0.3871,e:0.2056,i:7.0049,w:77.456, Node:48.331, n:4.0923173},
-  venus:  {L:181.979,a:0.7233,e:0.0068,i:3.3947,w:131.533,Node:76.680, n:1.6021302},
-  mars:   {L:355.453,a:1.5237,e:0.0934,i:1.8506,w:336.040,Node:49.557, n:0.5240208},
-  jupiter:{L:34.404, a:5.2026,e:0.0485,i:1.3030,w:14.754, Node:100.454,n:0.0830853},
-  saturn: {L:50.077, a:9.5371,e:0.0555,i:2.4845,w:92.432, Node:113.663,n:0.0334442},
-  uranus: {L:313.232,a:19.189,e:0.0463,i:0.7733,w:170.964,Node:74.006, n:0.0117258},
-  neptune:{L:304.880,a:30.070,e:0.0090,i:1.7700,w:44.971, Node:131.784,n:0.0059951},
-  pluto:  {L:238.929,a:39.482,e:0.2488,i:17.140,w:224.067,Node:110.303,n:0.0039648}
+  mercury:{L:252.250,a:0.3871,e:0.2056,i:7.0049,w:77.456, Node:48.331, n:4.0923173},
+  venus:  {L:181.979,a:0.7233,e:0.0068,i:3.3947,w:131.533,Node:76.680, n:1.6021302},
+  mars:   {L:355.453,a:1.5237,e:0.0934,i:1.8506,w:336.040,Node:49.557, n:0.5240208},
+  jupiter:{L:34.404, a:5.2026,e:0.0485,i:1.3030,w:14.754, Node:100.454,n:0.0830853},
+  saturn: {L:50.077, a:9.5371,e:0.0555,i:2.4845,w:92.432, Node:113.663,n:0.0334442},
+  uranus: {L:313.232,a:19.189,e:0.0463,i:0.7733,w:170.964,Node:74.006, n:0.0117258},
+  neptune:{L:304.880,a:30.070,e:0.0090,i:1.7700,w:44.971, Node:131.784,n:0.0059951},
+  pluto:  {L:238.929,a:39.482,e:0.2488,i:17.140,w:224.067,Node:110.303,n:0.0039648}
 };
 
 const PCONF = [
-  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
-  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
-  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:17 },
-  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:21 },
-  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:25 },
-  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:29 },
-  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:33 },
-  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
-  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
-  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
-  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:11 }
+  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
+  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
+  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:17 },
+  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:21 },
+  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:25 },
+  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:29 },
+  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:33 },
+  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
+  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
+  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
+  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:11 }
 ];
 
 const EMISSIVE = {
-  sun:    { col:0xFFCC00, i:3.5 }, moon:   { col:0x445566, i:0.18 },
-  mercury:{ col:0x776655, i:0.12 }, venus: { col:0xFFAA00, i:0.35 },
-  mars:   { col:0xCC2200, i:0.22 }, jupiter:{ col:0xDD7700, i:0.28 },
-  saturn: { col:0x998855, i:0.22 }, uranus: { col:0x006699, i:0.18 },
-  neptune:{ col:0x0033BB, i:0.22 }, pluto:  { col:0x554433, i:0.1  }
+  sun:    { col:0xFFCC00, i:3.5 }, moon:   { col:0x445566, i:0.18 },
+  mercury:{ col:0x776655, i:0.12 }, venus: { col:0xFFAA00, i:0.35 },
+  mars:   { col:0xCC2200, i:0.22 }, jupiter:{ col:0xDD7700, i:0.28 },
+  saturn: { col:0x998855, i:0.22 }, uranus: { col:0x006699, i:0.18 },
+  neptune:{ col:0x0033BB, i:0.22 }, pluto:  { col:0x554433, i:0.1  }
 };
 
 const ZSYM = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
@@ -344,55 +344,55 @@ const MANSION_W = [12,9,15,5,5,18,11,26,8,12,10,17,16,9,16,12,14,11,16,2,9,33,4,
 const MANS = [];
 let _macc = 180;
 for (let i = 0; i < 28; i++) {
-  MANS.push({ id: i, s: _macc, w: MANSION_W[i] * 360 / 365 });
-  _macc += MANSION_W[i] * 360 / 365;
+  MANS.push({ id: i, s: _macc, w: MANSION_W[i] * 360 / 365 });
+  _macc += MANSION_W[i] * 360 / 365;
 }
 
 const LANGS = {
-  'zh-TW':{
-    zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
-    man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
-    pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁',fortune:'福點'},
-    wx:{sun:'純陽·父·君主',moon:'純陰·母·情感',mercury:'陽水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·责任',rahu:'火之餘·羅睺',ketu:'土之餘·計都',yapo:'水之餘·月孛',ziqi:'木之餘·紫炁',uranus:'陽土·改革·突變',neptune:'陰木·夢幻·潛意識',pluto:'陰火·毀滅·重生',fortune:'吉星·財富與機遇'},
-    ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道',helio:'日心黃道',helioMsg:'☉ 日心模式 · 恆星參考系固定 · 視黃道不適用',zenith:'天頂'},
-    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
-    dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
-    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 測者中心已完美鎖定，中天直指螢幕正上方'},
-    ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星体顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
-  },
-  'zh-CN':{
-    zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
-    man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
-    pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁',fortune:'福点'},
-    wx:{sun:'纯阳·父·君主',moon:'纯阴·母·情感',mercury:'阳水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'火之余·罗睺',ketu:'土之余·计都',yapo:'水之余·月孛',ziqi:'木之余·紫炁',uranus:'阳土·改革·突变',neptune:'阴木·梦幻·潜意识',pluto:'阴火·毁灭·重生',fortune:'吉星·财富与机遇'},
-    ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道',helio:'日心黄道',helioMsg:'☉ 日心模式 · 恒星参考系固定 · 视黄道不适用',zenith:'天顶'},
-    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
-    dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
-    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指萤幕正上方'},
-    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
-  },
-  'en':{
-    zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
-    man:['Jiao','Kang','Di','Fang','Xin','Wei','Ji','Dou','Niu','Nu','Xu','Wei2','Shi','Bi','Kui','Lou','Wei3','Mao','Bi2','Zi','Shen','Jing','Gui','Liu','Xing','Zhang','Yi','Zhen'],
-    pl:{sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',rahu:'Rahu',ketu:'Ketu',yapo:'Lilith',ziqi:'Ziqi',fortune:'Fortune'},
-    wx:{sun:'Pure Yang·Father',moon:'Pure Yin·Mother',mercury:'Yang Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'Fire Remainder',ketu:'Earth Remainder',yapo:'Water Remainder',ziqi:'Wood Remainder',uranus:'Yang Earth·Revolution',neptune:'Yin Wood·Illusion',pluto:'Yin Fire·Rebirth',fortune:'Luck & Opportunities'},
-    ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mc:'MC Midheaven',ic:'IC Nadir',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal',helio:'Heliocentric',helioMsg:'☉ Heliocentric Mode · Fixed Sidereal Frame · Tropical NA',zenith:'Zenith'},
-    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
-    dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
-    dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Topocentric focus locked, MC points straight up'},
-    ctrl:{zen:'Zen Mode',spin:'Time Spin',helio:'Toggle Helio/Geo',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl',btnHelio:'Sun'}
-  },
-  'ko':{
-    zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
-    man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
-    pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기',fortune:'포춘'},
-    wx:{sun:'순양·아버지',moon:'순음·어머니',mercury:'양수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'화의 여기',ketu:'토의 여기',yapo:'수의 여기',ziqi:'목의 여기',uranus:'양토·개혁',neptune:'음목·환상',pluto:'음화·재생',fortune:'행운과 기회'},
-    ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 중천',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도',helio:'일심 황도',helioMsg:'☉ 일심 모드 · 항성 기준계 고정 · 시황도 비적용',zenith:'천정'},
-    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
-    dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
-    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 화면 정중앙에 정렬되었습니다 (MC 위)'},
-    ctrl:{zen:'몰입 모드',spin:'시간 회전',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
-  }
+  'zh-TW':{
+    zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
+    man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
+    pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁',fortune:'福點'},
+    wx:{sun:'純陽·父·君主',moon:'純陰·母·情感',mercury:'陽水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·责任',rahu:'火之餘·羅睺',ketu:'土之餘·計都',yapo:'水之餘·月孛',ziqi:'木之餘·紫炁',uranus:'陽土·改革·突變',neptune:'陰木·夢幻·潛意識',pluto:'陰火·毀滅·重生',fortune:'吉星·財富與機遇'},
+    ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道',helio:'日心黃道',helioMsg:'☉ 日心模式 · 恆星參考系固定 · 視黃道不適用',zenith:'天頂'},
+    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
+    dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
+    dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎與高精貼圖…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 測者中心已完美鎖定，中天直指螢幕正上方'},
+    ctrl:{zen:'沉浸星空',spin:'時間自轉 (流逝)',helio:'切換日心/地心',sys:'切換回歸/恆星',out:'三王星',ecl:'黃道環',eq:'赤道環',man:'二十八宿',pl:'星体顯示',asp:'相位連線',tm:'時間推移',orb:'黃緯垂線',btnSysT:'歸',btnSysS:'恆',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
+  },
+  'zh-CN':{
+    zod:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],
+    man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
+    pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁',fortune:'福点'},
+    wx:{sun:'纯阳·父·君主',moon:'纯阴·母·情感',mercury:'阳水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'火之余·罗睺',ketu:'土之余·计都',yapo:'水之余·月孛',ziqi:'木之余·紫炁',uranus:'阳土·改革·突变',neptune:'阴木·梦幻·潜意识',pluto:'阴火·毁灭·重生',fortune:'吉星·财富与机遇'},
+    ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC中天',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道',helio:'日心黄道',helioMsg:'☉ 日心模式 · 恒星参考系固定 · 视黄道不适用',zenith:'天顶'},
+    al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
+    dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
+    dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎与高精贴图…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 测者中心已完美锁定，中天直指萤幕正上方'},
+    ctrl:{zen:'沉浸星空',spin:'时间自转 (流逝)',helio:'切换日心/地心',sys:'切换回归/恒星',out:'三王星',ecl:'黄道环',eq:'赤道环',man:'二十八宿',pl:'星体显示',asp:'相位连线',tm:'时间推移',orb:'黄纬垂线',btnSysT:'归',btnSysS:'恒',btnOut:'王',btnMan:'宿',btnPl:'政',btnHelio:'日'}
+  },
+  'en':{
+    zod:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagitt.','Capric.','Aquarius','Pisces'],
+    man:['Jiao','Kang','Di','Fang','Xin','Wei','Ji','Dou','Niu','Nu','Xu','Wei2','Shi','Bi','Kui','Lou','Wei3','Mao','Bi2','Zi','Shen','Jing','Gui','Liu','Xing','Zhang','Yi','Zhen'],
+    pl:{sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',rahu:'Rahu',ketu:'Ketu',yapo:'Lilith',ziqi:'Ziqi',fortune:'Fortune'},
+    wx:{sun:'Pure Yang·Father',moon:'Pure Yin·Mother',mercury:'Yang Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'Fire Remainder',ketu:'Earth Remainder',yapo:'Water Remainder',ziqi:'Wood Remainder',uranus:'Yang Earth·Revolution',neptune:'Yin Wood·Illusion',pluto:'Yin Fire·Rebirth',fortune:'Luck & Opportunities'},
+    ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mc:'MC Midheaven',ic:'IC Nadir',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal',helio:'Heliocentric',helioMsg:'☉ Heliocentric Mode · Fixed Sidereal Frame · Tropical NA',zenith:'Zenith'},
+    al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
+    dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
+    dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Topocentric focus locked, MC points straight up'},
+    ctrl:{zen:'Zen Mode',spin:'Time Spin',helio:'Toggle Helio/Geo',sys:'Toggle Trop/Sid',out:'Outer Planets',ecl:'Ecliptic',eq:'Equator',man:'Mansions',pl:'Planets',asp:'Aspects',tm:'Time Control',orb:'Latitude Lines',btnSysT:'Trop',btnSysS:'Sid',btnOut:'Out',btnMan:'Man',btnPl:'Pl',btnHelio:'Sun'}
+  },
+  'ko':{
+    zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
+    man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
+    pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기',fortune:'포춘'},
+    wx:{sun:'순양·아버지',moon:'순음·어머니',mercury:'양수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'화의 여기',ketu:'토의 여기',yapo:'수의 여기',ziqi:'목의 여기',uranus:'양토·개혁',neptune:'음목·환상',pluto:'음화·재생',fortune:'행운과 기회'},
+    ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 중천',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도',helio:'일심 황도',helioMsg:'☉ 일심 모드 · 항성 기준계 고정 · 시황도 비적용',zenith:'천정'},
+    al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
+    dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
+    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 화면 정중앙에 정렬되었습니다 (MC 위)'},
+    ctrl:{zen:'몰입 모드',spin:'시간 회전',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
+  }
 };
 
 let currLang = 'zh-TW';
@@ -400,289 +400,289 @@ try { currLang = localStorage.getItem('zc_lang') || 'zh-TW'; } catch(e) {}
 if (!LANGS[currLang]) currLang = 'zh-TW';
 
 window.switchLang = function(l) {
-  try {
-    if (!LANGS[l]) return;
-    currLang = l;
-    localStorage.setItem('zc_lang', l);
-    
-    document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
-    const d = LANGS[l];
-    document.querySelectorAll('[data-3d-type]').forEach(el => {
-      const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id');
-      if (t === 'zod') el.innerHTML = d.zod[id];
-      if (t === 'man') el.innerHTML = d.man[id] + d.ui.mansion;
-      if (t === 'pl')  el.innerHTML = d.pl[id];
-      if (t === 'ui')  el.innerHTML = d.ui[id];
-      if (t === 'raw') el.innerHTML = id;
-    });
-    
-    const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
-    const setHTML = (id, v) => { const e = document.getElementById(id); if(e) e.innerHTML = v; };
-    set('tb-title', d.dom.tbTitle); set('tb-sub', d.dom.tbSub);
-    set('modal-title', d.dom.modalTitle); set('modal-sub', d.dom.modalSub);
-    set('lbl-nm', d.dom.lblNm); set('lbl-dt', d.dom.lblDt);
-    set('lbl-tm', d.dom.lblTm); set('lbl-loc', d.dom.lblLoc);
-    setHTML('lbl-dst', d.dst.label+'<br><span style="font-size:.44rem;opacity:.55">'+d.dst.hint+'</span>');
-    const fNm = document.getElementById('f-nm'); if(fNm) fNm.placeholder = d.dom.plhNm;
-    set('btn-sub', d.dom.btnSub); set('btn-demo', d.dom.btnDemo);
-    set('mobile-drawer-label', d.dom.drwLbl);
-    ['pct-ecl', 'pct-ana', 'pct-hou', 'pct-ecl-m', 'pct-ana-m', 'pct-hou-m', 'asc-hint'].forEach((id, i) => {
-      set(id, d.dom[['pEcl','pAna','pHou','pEcl','pAna','pHouM','ascAligned'][i]]);
-    });
-    
-    const dstChk = document.getElementById('f-dst');
-    const dstBdg = document.getElementById('dst-badge');
-    if(dstChk && dstBdg) {
-        dstBdg.textContent = dstChk.checked ? d.dst.on : d.dst.off;
-        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
-    }
-    
-    ['cb-zen','cb-spin','cb-helio','cb-sys','cb-out','cb-ecl','cb-eq','cb-man','cb-pl','cb-asp','cb-tm','cb-orb'].forEach((id, i) => { 
-      const e = document.getElementById(id); 
-      if(e) e.setAttribute('data-tt', d.ctrl[['zen','spin','helio','sys','out','ecl','eq','man','pl','asp','tm','orb'][i]]); 
-    });
-    
-    const cbH = document.getElementById('cb-helio'); if(cbH) cbH.textContent = d.ctrl.btnHelio;
-    const cbS = document.getElementById('cb-sys'); if(cbS) cbS.textContent = S.sidereal ? d.ctrl.btnSysS : d.ctrl.btnSysT;
-    const cbO = document.getElementById('cb-out'); if(cbO) cbO.textContent = d.ctrl.btnOut;
-    const cbM = document.getElementById('cb-man'); if(cbM) cbM.textContent = d.ctrl.btnMan;
-    const cbPl = document.getElementById('cb-pl'); if(cbPl) cbPl.textContent = d.ctrl.btnPl;
-    
-    const tbPlay = document.getElementById('tb-play');
-    if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
-    set('tb-reset', d.dom.tbReset); set('loading-text-el', d.dom.loadTxt);
+  try {
+    if (!LANGS[l]) return;
+    currLang = l;
+    localStorage.setItem('zc_lang', l);
+    
+    document.querySelectorAll('.mlbtn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+    const d = LANGS[l];
+    document.querySelectorAll('[data-3d-type]').forEach(el => {
+      const t = el.getAttribute('data-3d-type'), id = el.getAttribute('data-3d-id');
+      if (t === 'zod') el.innerHTML = d.zod[id];
+      if (t === 'man') el.innerHTML = d.man[id] + d.ui.mansion;
+      if (t === 'pl')  el.innerHTML = d.pl[id];
+      if (t === 'ui')  el.innerHTML = d.ui[id];
+      if (t === 'raw') el.innerHTML = id;
+    });
+    
+    const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+    const setHTML = (id, v) => { const e = document.getElementById(id); if(e) e.innerHTML = v; };
+    set('tb-title', d.dom.tbTitle); set('tb-sub', d.dom.tbSub);
+    set('modal-title', d.dom.modalTitle); set('modal-sub', d.dom.modalSub);
+    set('lbl-nm', d.dom.lblNm); set('lbl-dt', d.dom.lblDt);
+    set('lbl-tm', d.dom.lblTm); set('lbl-loc', d.dom.lblLoc);
+    setHTML('lbl-dst', d.dst.label+'<br><span style="font-size:.44rem;opacity:.55">'+d.dst.hint+'</span>');
+    const fNm = document.getElementById('f-nm'); if(fNm) fNm.placeholder = d.dom.plhNm;
+    set('btn-sub', d.dom.btnSub); set('btn-demo', d.dom.btnDemo);
+    set('mobile-drawer-label', d.dom.drwLbl);
+    ['pct-ecl', 'pct-ana', 'pct-hou', 'pct-ecl-m', 'pct-ana-m', 'pct-hou-m', 'asc-hint'].forEach((id, i) => {
+      set(id, d.dom[['pEcl','pAna','pHou','pEcl','pAna','pHouM','ascAligned'][i]]);
+    });
+    
+    const dstChk = document.getElementById('f-dst');
+    const dstBdg = document.getElementById('dst-badge');
+    if(dstChk && dstBdg) {
+        dstBdg.textContent = dstChk.checked ? d.dst.on : d.dst.off;
+        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
+    }
+    
+    ['cb-zen','cb-spin','cb-helio','cb-sys','cb-out','cb-ecl','cb-eq','cb-man','cb-pl','cb-asp','cb-tm','cb-orb'].forEach((id, i) => { 
+      const e = document.getElementById(id); 
+      if(e) e.setAttribute('data-tt', d.ctrl[['zen','spin','helio','sys','out','ecl','eq','man','pl','asp','tm','orb'][i]]); 
+    });
+    
+    const cbH = document.getElementById('cb-helio'); if(cbH) cbH.textContent = d.ctrl.btnHelio;
+    const cbS = document.getElementById('cb-sys'); if(cbS) cbS.textContent = S.sidereal ? d.ctrl.btnSysS : d.ctrl.btnSysT;
+    const cbO = document.getElementById('cb-out'); if(cbO) cbO.textContent = d.ctrl.btnOut;
+    const cbM = document.getElementById('cb-man'); if(cbM) cbM.textContent = d.ctrl.btnMan;
+    const cbPl = document.getElementById('cb-pl'); if(cbPl) cbPl.textContent = d.ctrl.btnPl;
+    
+    const tbPlay = document.getElementById('tb-play');
+    if (tbPlay) tbPlay.textContent = playingTime ? d.dom.tbPause : d.dom.tbPlay;
+    set('tb-reset', d.dom.tbReset); set('loading-text-el', d.dom.loadTxt);
 
-    updateHelioBadge();
+    updateHelioBadge();
 
-    if (userData.jd) {
-      renderPlanetList(curGeo, S.sidereal, userData.jd, '');
-      renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
-      renderHouseGrid(curGeo, S.sidereal, userData.jd, '');
-      renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
-      renderAnalysis(curGeo, S.sidereal, userData.jd, '');
-      renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
-    }
-  } catch(e) { console.error("Language switch error:", e); }
+    if (userData.jd) {
+      renderPlanetList(curGeo, S.sidereal, userData.jd, '');
+      renderPlanetList(curGeo, S.sidereal, userData.jd, '-m');
+      renderHouseGrid(curGeo, S.sidereal, userData.jd, '');
+      renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
+      renderAnalysis(curGeo, S.sidereal, userData.jd, '');
+      renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
+    }
+  } catch(e) { console.error("Language switch error:", e); }
 };
 
 window.toggleDrawer = () => {
-    const d = document.getElementById('mobile-drawer');
-    if(d) d.classList.toggle('open');
+    const d = document.getElementById('mobile-drawer');
+    if(d) d.classList.toggle('open');
 };
 
 function auToR(au) { return au === 0 ? 0 : 18 * Math.pow(au, 0.42); }
 
 function solveKepler(M, e) {
-  let E = M;
-  for (let i = 0; i < 10; i++) {
-    const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
-    E -= dE;
-    if (Math.abs(dE) < 1e-6) break;
-  }
-  return E;
+  let E = M;
+  for (let i = 0; i < 10; i++) {
+    const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    E -= dE;
+    if (Math.abs(dE) < 1e-6) break;
+  }
+  return E;
 }
 
 function getHelio(id, d) {
-  const p = PE[id];
-  const M = norm(p.L + p.n * d - p.w);
-  const E = solveKepler(M * DEG, p.e);
-  const xv = p.a * (Math.cos(E) - p.e), yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
-  const r = Math.sqrt(xv * xv + yv * yv), l = norm(Math.atan2(yv, xv) * R2D + p.w);
-  const lat = p.i * Math.sin((l - p.Node) * DEG);
-  return { l, r, lat, a: p.a };
+  const p = PE[id];
+  const M = norm(p.L + p.n * d - p.w);
+  const E = solveKepler(M * DEG, p.e);
+  const xv = p.a * (Math.cos(E) - p.e), yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
+  const r = Math.sqrt(xv * xv + yv * yv), l = norm(Math.atan2(yv, xv) * R2D + p.w);
+  const lat = p.i * Math.sin((l - p.Node) * DEG);
+  return { l, r, lat, a: p.a };
 }
 
 function getAstroPositions(jd) {
-  const d = jd - 2451545.0;
-  const pos = {};
-  const L_sun = norm(280.460 + 0.9856474 * d);
-  const g_sun = norm(357.528 + 0.9856003 * d);
-  pos.sun = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
-  
-  const xe = Math.cos(norm(pos.sun + 180) * DEG);
-  const ye = Math.sin(norm(pos.sun + 180) * DEG);
-  const D  = norm(297.85036 + 12.190749 * d);
-  const M  = norm(357.52772 + 0.985600 * d);
-  const Mp = norm(134.96298 + 13.064992 * d);
-  const F  = norm(93.27191  + 13.229350 * d);
-  pos.moon = norm(218.3165 + 13.176396 * d
-    + 6.289 * Math.sin(Mp * DEG) + 1.274 * Math.sin((2*D - Mp) * DEG)
-    + 0.658 * Math.sin(2*D * DEG) + 0.214 * Math.sin(2*Mp * DEG)
-    - 0.186 * Math.sin(M * DEG) - 0.114 * Math.sin(2*F * DEG));
-    
-  ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
-    const h = getHelio(id, d);
-    const rProj = h.r * Math.cos(h.lat * DEG);
-    const X = rProj * Math.cos(h.l * DEG) - xe, Y = rProj * Math.sin(h.l * DEG) - ye;
-    pos[id] = norm(Math.atan2(Y, X) * R2D);
-    const z = h.r * Math.sin(h.lat * DEG);
-    pos[id + '_lat'] = Math.atan2(z, Math.sqrt(X*X + Y*Y)) * R2D;
-  });
-  
-  const ascNode = norm(125.04452 - 0.0529538 * d);
-  pos.ketu = ascNode;
-  pos.rahu = norm(ascNode + 180);
-  pos.moon_lat = 5.145 * Math.sin((pos.moon - pos.ketu) * DEG);
-  pos.yapo = norm(norm(83.3532465 + 0.11140353 * d) + 180);
-  pos.ziqi = norm(ZIQI_BASE + ZIQI_SPEED * d);
-  
-  return pos;
+  const d = jd - 2451545.0;
+  const pos = {};
+  const L_sun = norm(280.460 + 0.9856474 * d);
+  const g_sun = norm(357.528 + 0.9856003 * d);
+  pos.sun = norm(L_sun + 1.915 * Math.sin(g_sun * DEG) + 0.020 * Math.sin(2 * g_sun * DEG));
+  
+  const xe = Math.cos(norm(pos.sun + 180) * DEG);
+  const ye = Math.sin(norm(pos.sun + 180) * DEG);
+  const D  = norm(297.85036 + 12.190749 * d);
+  const M  = norm(357.52772 + 0.985600 * d);
+  const Mp = norm(134.96298 + 13.064992 * d);
+  const F  = norm(93.27191  + 13.229350 * d);
+  pos.moon = norm(218.3165 + 13.176396 * d
+    + 6.289 * Math.sin(Mp * DEG) + 1.274 * Math.sin((2*D - Mp) * DEG)
+    + 0.658 * Math.sin(2*D * DEG) + 0.214 * Math.sin(2*Mp * DEG)
+    - 0.186 * Math.sin(M * DEG) - 0.114 * Math.sin(2*F * DEG));
+    
+  ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
+    const h = getHelio(id, d);
+    const rProj = h.r * Math.cos(h.lat * DEG);
+    const X = rProj * Math.cos(h.l * DEG) - xe, Y = rProj * Math.sin(h.l * DEG) - ye;
+    pos[id] = norm(Math.atan2(Y, X) * R2D);
+    const z = h.r * Math.sin(h.lat * DEG);
+    pos[id + '_lat'] = Math.atan2(z, Math.sqrt(X*X + Y*Y)) * R2D;
+  });
+  
+  const ascNode = norm(125.04452 - 0.0529538 * d);
+  pos.ketu = ascNode;
+  pos.rahu = norm(ascNode + 180);
+  pos.moon_lat = 5.145 * Math.sin((pos.moon - pos.ketu) * DEG);
+  pos.yapo = norm(norm(83.3532465 + 0.11140353 * d) + 180);
+  pos.ziqi = norm(ZIQI_BASE + ZIQI_SPEED * d);
+  
+  return pos;
 }
 
 function calcAll(T, jd, lng, lat, isSid) {
-  const d = jd - 2451545.0;
-  const geo = getAstroPositions(jd);
-  geo.sun_lat = 0; geo.rahu_lat = 0; geo.ketu_lat = 0; geo.yapo_lat = 0; geo.ziqi_lat = 0;
-  
-  const posPrev = getAstroPositions(jd - 0.02); 
-  geo.retrograde = {};
-  for(let id in geo) {
-    if(id.includes('_lat')) continue;
-    if(id==='sun'||id==='moon'||id==='yapo'||id==='ziqi') geo.retrograde[id] = false;
-    else if(id==='rahu'||id==='ketu') geo.retrograde[id] = true; 
-    else if(posPrev[id] !== undefined) {
-      let diff = geo[id] - posPrev[id];
-      if(diff > 180) diff -= 360;
-      if(diff < -180) diff += 360;
-      geo.retrograde[id] = diff < 0;
-    }
-  }
+  const d = jd - 2451545.0;
+  const geo = getAstroPositions(jd);
+  geo.sun_lat = 0; geo.rahu_lat = 0; geo.ketu_lat = 0; geo.yapo_lat = 0; geo.ziqi_lat = 0;
+  
+  const posPrev = getAstroPositions(jd - 0.02); 
+  geo.retrograde = {};
+  for(let id in geo) {
+    if(id.includes('_lat')) continue;
+    if(id==='sun'||id==='moon'||id==='yapo'||id==='ziqi') geo.retrograde[id] = false;
+    else if(id==='rahu'||id==='ketu') geo.retrograde[id] = true; 
+    else if(posPrev[id] !== undefined) {
+      let diff = geo[id] - posPrev[id];
+      if(diff > 180) diff -= 360;
+      if(diff < -180) diff += 360;
+      geo.retrograde[id] = diff < 0;
+    }
+  }
 
-  const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
-  const lst = norm(gmst + lng) * DEG;
-  const lat_r = lat * DEG;
-  
-  let rawAsc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(OBL) + Math.tan(lat_r) * Math.sin(OBL))) * R2D);
-  let rawMc = norm(Math.atan2(Math.sin(lst), Math.cos(lst) * Math.cos(OBL)) * R2D);
-  let rawDsc = norm(rawAsc + 180);
-  let rawIc = norm(rawMc + 180);
+  const gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T;
+  const lst = norm(gmst + lng) * DEG;
+  const lat_r = lat * DEG;
+  
+  let rawAsc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(OBL) + Math.tan(lat_r) * Math.sin(OBL))) * R2D);
+  let rawMc = norm(Math.atan2(Math.sin(lst), Math.cos(lst) * Math.cos(OBL)) * R2D);
+  let rawDsc = norm(rawAsc + 180);
+  let rawIc = norm(rawMc + 180);
 
-  const isDay = norm(rawAsc - geo.sun) < 180;
-  if (!isNaN(rawAsc) && !isNaN(geo.sun) && !isNaN(geo.moon)) {
-      geo.fortune = isDay ? norm(rawAsc + geo.moon - geo.sun) : norm(rawAsc + geo.sun - geo.moon);
-  } else {
-      geo.fortune = 0;
-  }
-  geo.fortune_lat = 0;
-  geo.retrograde.fortune = false;
+  const isDay = norm(rawAsc - geo.sun) < 180;
+  if (!isNaN(rawAsc) && !isNaN(geo.sun) && !isNaN(geo.moon)) {
+      geo.fortune = isDay ? norm(rawAsc + geo.moon - geo.sun) : norm(rawAsc + geo.sun - geo.moon);
+  } else {
+      geo.fortune = 0;
+  }
+  geo.fortune_lat = 0;
+  geo.retrograde.fortune = false;
 
-  const aya = 24.03 + d * (50.29 / 36525);
-  
-  if (isSid) {
-    const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
-    for (const k in geo) {
-      if (!latKeys.has(k) && typeof geo[k] === 'number') geo[k] = norm(geo[k] - aya);
-    }
-    geo.asc = norm(rawAsc - aya);
-    geo.mc = norm(rawMc - aya);
-    geo.dsc = norm(rawDsc - aya);
-    geo.ic = norm(rawIc - aya);
+  const aya = 24.03 + d * (50.29 / 36525);
+  
+  if (isSid) {
+    const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
+    for (const k in geo) {
+      if (!latKeys.has(k) && typeof geo[k] === 'number') geo[k] = norm(geo[k] - aya);
+    }
+    geo.asc = norm(rawAsc - aya);
+    geo.mc = norm(rawMc - aya);
+    geo.dsc = norm(rawDsc - aya);
+    geo.ic = norm(rawIc - aya);
 
-    const ascSign = Math.floor(geo.asc / 30);
-    geo.houses = [];
-    for (let i = 0; i < 12; i++) {
-        geo.houses.push(norm((ascSign + i) * 30));
-    }
-  } else {
-    geo.asc = rawAsc;
-    geo.mc = rawMc;
-    geo.dsc = rawDsc;
-    geo.ic = rawIc;
+    const ascSign = Math.floor(geo.asc / 30);
+    geo.houses = [];
+    for (let i = 0; i < 12; i++) {
+        geo.houses.push(norm((ascSign + i) * 30));
+    }
+  } else {
+    geo.asc = rawAsc;
+    geo.mc = rawMc;
+    geo.dsc = rawDsc;
+    geo.ic = rawIc;
 
-    const q1 = norm(geo.ic - geo.asc);
-    const q2 = norm(geo.dsc - geo.ic);
-    const q3 = norm(geo.mc - geo.dsc);
-    const q4 = norm(geo.asc - geo.mc);
-    geo.houses = [
-        geo.asc, norm(geo.asc + q1/3), norm(geo.asc + 2*q1/3),
-        geo.ic,  norm(geo.ic + q2/3),  norm(geo.ic + 2*q2/3),
-        geo.dsc, norm(geo.dsc + q3/3), norm(geo.dsc + 2*q3/3),
-        geo.mc,  norm(geo.mc + q4/3),  norm(geo.mc + 2*q4/3)
-    ];
-  }
-  
-  geo.prev = posPrev;
+    const q1 = norm(geo.ic - geo.asc);
+    const q2 = norm(geo.dsc - geo.ic);
+    const q3 = norm(geo.mc - geo.dsc);
+    const q4 = norm(geo.asc - geo.mc);
+    geo.houses = [
+        geo.asc, norm(geo.asc + q1/3), norm(geo.asc + 2*q1/3),
+        geo.ic,  norm(geo.ic + q2/3),  norm(geo.ic + 2*q2/3),
+        geo.dsc, norm(geo.dsc + q3/3), norm(geo.dsc + 2*q3/3),
+        geo.mc,  norm(geo.mc + q4/3),  norm(geo.mc + 2*q4/3)
+    ];
+  }
+  
+  geo.prev = posPrev;
 
-  const helio = {};
-  helio.sun = { l: 0, r: 0, lat: 0 };
-  helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
-  ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
-    helio[id] = getHelio(id, d);
-  });
-  
-  ['moon', 'rahu', 'ketu', 'yapo', 'ziqi', 'fortune'].forEach(id => {
-      const l_geo = geo[id] * DEG;
-      const lat_geo = (geo[id+'_lat'] || 0) * DEG;
-      const r_geo = 0.3;
-      const dx = r_geo * Math.cos(lat_geo) * Math.cos(l_geo);
-      const dy = r_geo * Math.cos(lat_geo) * Math.sin(l_geo);
-      const dz = r_geo * Math.sin(lat_geo);
+  const helio = {};
+  helio.sun = { l: 0, r: 0, lat: 0 };
+  helio.earth = { l: norm(geo.sun + 180), r: 1.0, lat: 0 }; 
+  ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
+    helio[id] = getHelio(id, d);
+  });
+  
+  ['moon', 'rahu', 'ketu', 'yapo', 'ziqi', 'fortune'].forEach(id => {
+      const l_geo = geo[id] * DEG;
+      const lat_geo = (geo[id+'_lat'] || 0) * DEG;
+      const r_geo = 0.3;
+      const dx = r_geo * Math.cos(lat_geo) * Math.cos(l_geo);
+      const dy = r_geo * Math.cos(lat_geo) * Math.sin(l_geo);
+      const dz = r_geo * Math.sin(lat_geo);
 
-      const ex = Math.cos(helio.earth.l * DEG) * helio.earth.r;
-      const ey = Math.sin(helio.earth.l * DEG) * helio.earth.r;
-      const ez = Math.sin(helio.earth.lat * DEG) * helio.earth.r;
+      const ex = Math.cos(helio.earth.l * DEG) * helio.earth.r;
+      const ey = Math.sin(helio.earth.l * DEG) * helio.earth.r;
+      const ez = Math.sin(helio.earth.lat * DEG) * helio.earth.r;
 
-      const hx = ex + dx;
-      const hy = ey + dy;
-      const hz = ez + dz;
+      const hx = ex + dx;
+      const hy = ey + dy;
+      const hz = ez + dz;
 
-      helio[id] = {
-          l: norm(Math.atan2(hy, hx) * R2D),
-          r: Math.sqrt(hx*hx + hy*hy + hz*hz),
-          lat: Math.atan2(hz, Math.sqrt(hx*hx + hy*hy)) * R2D
-      };
-  });
+      helio[id] = {
+          l: norm(Math.atan2(hy, hx) * R2D),
+          r: Math.sqrt(hx*hx + hy*hy + hz*hz),
+          lat: Math.atan2(hz, Math.sqrt(hx*hx + hy*hy)) * R2D
+      };
+  });
 
-  return { geo, helio, lst: norm(gmst + lng), gmst: norm(gmst), aya };
+  return { geo, helio, lst: norm(gmst + lng), gmst: norm(gmst), aya };
 }
 
 function jdn(y, m, d, h = 12, mn = 0) {
-  if (m <= 2) { y--; m += 12; }
-  const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
-  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5 + (h + mn / 60) / 24;
+  if (m <= 2) { y--; m += 12; }
+  const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5 + (h + mn / 60) / 24;
 }
 const T_jd = jd => (jd - 2451545.0) / 36525;
 
 function stCorr(lng, tz) { 
-  if(isNaN(lng) || isNaN(tz)) return 0;
-  return Math.round((lng - tz * 15) * 4);
+  if(isNaN(lng) || isNaN(tz)) return 0;
+  return Math.round((lng - tz * 15) * 4);
 }
 
 const zodiac = lon => ({ s: LANGS[currLang].zod[Math.floor(lon/30)], sym: ZSYM[Math.floor(lon/30)], d: (lon%30).toFixed(1) });
 
 function getMansionSid(sidLon) {
-  const s = norm(sidLon);
-  for (const m of MANS) {
-    const ms = m.s % 360, me = (m.s + m.w) % 360;
-    if (ms < me) { if (s >= ms && s < me) return LANGS[currLang].man[m.id]; }
-    else         { if (s >= ms || s < me) return LANGS[currLang].man[m.id]; }
-  }
-  return LANGS[currLang].man[0];
+  const s = norm(sidLon);
+  for (const m of MANS) {
+    const ms = m.s % 360, me = (m.s + m.w) % 360;
+    if (ms < me) { if (s >= ms && s < me) return LANGS[currLang].man[m.id]; }
+    else         { if (s >= ms || s < me) return LANGS[currLang].man[m.id]; }
+  }
+  return LANGS[currLang].man[0];
 }
 
 function getMansion(tropLon, isSid, jd) {
-  let sid = tropLon;
-  if (!isSid && jd) {
-    const d = jd - 2451545.0;
-    const aya = 24.03 + d * (50.29 / 36525);
-    sid = norm(tropLon - aya);
-  }
-  return getMansionSid(sid);
+  let sid = tropLon;
+  if (!isSid && jd) {
+    const d = jd - 2451545.0;
+    const aya = 24.03 + d * (50.29 / 36525);
+    sid = norm(tropLon - aya);
+  }
+  return getMansionSid(sid);
 }
 
 function analyzeChart(geo, isSid, jd) {
-  const D = LANGS[currLang], lines = [];
-  const sz = zodiac(geo.sun), mz = zodiac(geo.moon), az = zodiac(geo.asc);
-  const mm = getMansion(geo.moon, isSid, jd);
-  const elong = norm(geo.moon - geo.sun);
-  const phase = elong < 45 ? D.ui.p1 : elong < 135 ? D.ui.p2 : elong < 225 ? D.ui.p3 : elong < 315 ? D.ui.p4 : D.ui.p5;
-  lines.push(`<span class="at">${D.pl.sun}</span>${D.al.sun} <span class="av">${sz.s} ${sz.d}°</span>`);
-  lines.push(`<span class="at">${D.pl.moon}</span>${D.al.moon} <span class="av">${mz.s}·${mm}${D.ui.mansion}</span>`);
-  lines.push(`<span class="at">${D.al.phase}</span><span class="av">${phase}</span> ${D.ui.deg} ${elong.toFixed(0)}°`);
-  lines.push(`<span class="at">${D.pl.rahu}</span>${D.al.rahu} <span class="av">${zodiac(geo.rahu).s}</span>`);
-  lines.push(`<span class="at">${D.pl.jupiter}</span>${D.al.jup} <span class="av">${zodiac(geo.jupiter).s}</span>`);
-  lines.push(`<span class="at">${D.pl.saturn}</span>${D.al.sat} <span class="av">${zodiac(geo.saturn).s}</span>`);
-  return lines;
+  const D = LANGS[currLang], lines = [];
+  const sz = zodiac(geo.sun), mz = zodiac(geo.moon), az = zodiac(geo.asc);
+  const mm = getMansion(geo.moon, isSid, jd);
+  const elong = norm(geo.moon - geo.sun);
+  const phase = elong < 45 ? D.ui.p1 : elong < 135 ? D.ui.p2 : elong < 225 ? D.ui.p3 : elong < 315 ? D.ui.p4 : D.ui.p5;
+  lines.push(`<span class="at">${D.pl.sun}</span>${D.al.sun} <span class="av">${sz.s} ${sz.d}°</span>`);
+  lines.push(`<span class="at">${D.pl.moon}</span>${D.al.moon} <span class="av">${mz.s}·${mm}${D.ui.mansion}</span>`);
+  lines.push(`<span class="at">${D.al.phase}</span><span class="av">${phase}</span> ${D.ui.deg} ${elong.toFixed(0)}°`);
+  lines.push(`<span class="at">${D.pl.rahu}</span>${D.al.rahu} <span class="av">${zodiac(geo.rahu).s}</span>`);
+  lines.push(`<span class="at">${D.pl.jupiter}</span>${D.al.jup} <span class="av">${zodiac(geo.jupiter).s}</span>`);
+  lines.push(`<span class="at">${D.pl.saturn}</span>${D.al.sat} <span class="av">${zodiac(geo.saturn).s}</span>`);
+  return lines;
 }
 
 const wrap = document.getElementById('three-canvas');
@@ -719,11 +719,11 @@ OCtrl.minDistance = 3;
 OCtrl.maxDistance = 800; 
 
 function mkStars(n, sz, sp, col, op) {
-  const pos = new Float32Array(n * 3);
-  for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - 0.5) * sp;
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  return new THREE.Points(g, new THREE.PointsMaterial({ size:sz, color:col, transparent:true, opacity:op, sizeAttenuation:true }));
+  const pos = new Float32Array(n * 3);
+  for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - 0.5) * sp;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  return new THREE.Points(g, new THREE.PointsMaterial({ size:sz, color:col, transparent:true, opacity:op, sizeAttenuation:true }));
 }
 scene.add(mkStars(5000, 0.45, 600, 0xCCDDFF, 0.65));
 scene.add(mkStars(1500, 0.85, 500, 0xFFFFFF, 0.42));
@@ -731,31 +731,31 @@ scene.add(mkStars(500,  1.3,  460, 0xFFEEDD, 0.32));
 
 const meteors = [];
 function spawnMeteor(m) {
-  m.dir = new THREE.Vector3((Math.random()-0.5)*1.2,-0.5-Math.random()*0.6,(Math.random()-0.5)*1.2).normalize();
-  m.origin = new THREE.Vector3((Math.random()-0.5)*280,50+Math.random()*60,(Math.random()-0.5)*280);
-  m.speed = 90 + Math.random()*130; m.len = 10 + Math.random()*22;
-  m.life = 0; m.maxLife = 0.6 + m.len/m.speed; m.active = true; m.cooldown = 0;
+  m.dir = new THREE.Vector3((Math.random()-0.5)*1.2,-0.5-Math.random()*0.6,(Math.random()-0.5)*1.2).normalize();
+  m.origin = new THREE.Vector3((Math.random()-0.5)*280,50+Math.random()*60,(Math.random()-0.5)*280);
+  m.speed = 90 + Math.random()*130; m.len = 10 + Math.random()*22;
+  m.life = 0; m.maxLife = 0.6 + m.len/m.speed; m.active = true; m.cooldown = 0;
 }
 for (let i = 0; i < 7; i++) {
-  const positions = new Float32Array(6), g = new THREE.BufferGeometry();
-  const pa = new THREE.BufferAttribute(positions, 3); pa.setUsage(THREE.DynamicDrawUsage);
-  g.setAttribute('position', pa);
-  const mat = new THREE.LineBasicMaterial({ color:0xEEEEFF, transparent:true, opacity:0 });
-  const line = new THREE.Line(g, mat); scene.add(line);
-  meteors.push({ line, mat, positions:pa, dir:new THREE.Vector3(), origin:new THREE.Vector3(), speed:100, len:15, life:0, maxLife:1, active:false, cooldown:Math.random()*5 });
+  const positions = new Float32Array(6), g = new THREE.BufferGeometry();
+  const pa = new THREE.BufferAttribute(positions, 3); pa.setUsage(THREE.DynamicDrawUsage);
+  g.setAttribute('position', pa);
+  const mat = new THREE.LineBasicMaterial({ color:0xEEEEFF, transparent:true, opacity:0 });
+  const line = new THREE.Line(g, mat); scene.add(line);
+  meteors.push({ line, mat, positions:pa, dir:new THREE.Vector3(), origin:new THREE.Vector3(), speed:100, len:15, life:0, maxLife:1, active:false, cooldown:Math.random()*5 });
 }
 function updateMeteors(dt) {
-  meteors.forEach(m => {
-    if (!m.active) { m.cooldown -= dt; if (m.cooldown <= 0) spawnMeteor(m); return; }
-    m.life += dt;
-    if (m.life > m.maxLife) { m.active = false; m.cooldown = 3+Math.random()*7; m.mat.opacity = 0; return; }
-    const f = m.life/m.maxLife;
-    m.mat.opacity = (f < 0.15 ? f/0.15 : f > 0.7 ? (1-f)/0.3 : 1) * 0.88;
-    const head = m.origin.clone().addScaledVector(m.dir, m.life*m.speed);
-    const tail = head.clone().addScaledVector(m.dir, -m.len);
-    m.positions.setXYZ(0,tail.x,tail.y,tail.z); m.positions.setXYZ(1,head.x,head.y,head.z);
-    m.positions.needsUpdate = true;
-  });
+  meteors.forEach(m => {
+    if (!m.active) { m.cooldown -= dt; if (m.cooldown <= 0) spawnMeteor(m); return; }
+    m.life += dt;
+    if (m.life > m.maxLife) { m.active = false; m.cooldown = 3+Math.random()*7; m.mat.opacity = 0; return; }
+    const f = m.life/m.maxLife;
+    m.mat.opacity = (f < 0.15 ? f/0.15 : f > 0.7 ? (1-f)/0.3 : 1) * 0.88;
+    const head = m.origin.clone().addScaledVector(m.dir, m.life*m.speed);
+    const tail = head.clone().addScaledVector(m.dir, -m.len);
+    m.positions.setXYZ(0,tail.x,tail.y,tail.z); m.positions.setXYZ(1,head.x,head.y,head.z);
+    m.positions.needsUpdate = true;
+  });
 }
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
@@ -785,600 +785,600 @@ const aspG = new THREE.Group(); universeG.add(aspG);
 
 eqRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.065, 16, 200), new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:0.72 })));
 for (let i = 0; i < 36; i++) {
-  const a = i/36*Math.PI*2, isH = i%9===0;
-  eqRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(Math.cos(a)*(isH ? 38.5 : 39.3), Math.sin(a)*(isH ? 38.5 : 39.3), 0),
-    new THREE.Vector3(Math.cos(a)*41, Math.sin(a)*41, 0)
-  ]), new THREE.LineBasicMaterial({ color:0x5599DD, transparent:true, opacity: isH ? 0.85 : 0.3 })));
+  const a = i/36*Math.PI*2, isH = i%9===0;
+  eqRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(Math.cos(a)*(isH ? 38.5 : 39.3), Math.sin(a)*(isH ? 38.5 : 39.3), 0),
+    new THREE.Vector3(Math.cos(a)*41, Math.sin(a)*41, 0)
+  ]), new THREE.LineBasicMaterial({ color:0x5599DD, transparent:true, opacity: isH ? 0.85 : 0.3 })));
 }
 
 function lbl2D(parent, cls, r, angle, type, id) {
-  const el = document.createElement('div'); el.className = 'lbl ' + cls;
-  if (type) el.setAttribute('data-3d-type', type);
-  if (id !== undefined) el.setAttribute('data-3d-id', id);
-  const D = LANGS[currLang];
-  if (type === 'raw') el.innerHTML = id;
-  else if (type === 'ui') el.innerHTML = D.ui[id];
-  else if (type === 'zod') el.innerHTML = D.zod[id];
-  else if (type === 'man') el.innerHTML = D.man[id] + D.ui.mansion;
-  else if (type === 'pl') el.innerHTML = D.pl[id];
-  const o = new CSS2DObject(el);
-  o.position.set(Math.cos(angle)*r, Math.sin(angle)*r, 0);
-  parent.add(o); return o;
+  const el = document.createElement('div'); el.className = 'lbl ' + cls;
+  if (type) el.setAttribute('data-3d-type', type);
+  if (id !== undefined) el.setAttribute('data-3d-id', id);
+  const D = LANGS[currLang];
+  if (type === 'raw') el.innerHTML = id;
+  else if (type === 'ui') el.innerHTML = D.ui[id];
+  else if (type === 'zod') el.innerHTML = D.zod[id];
+  else if (type === 'man') el.innerHTML = D.man[id] + D.ui.mansion;
+  else if (type === 'pl') el.innerHTML = D.pl[id];
+  const o = new CSS2DObject(el);
+  o.position.set(Math.cos(angle)*r, Math.sin(angle)*r, 0);
+  parent.add(o); return o;
 }
 lbl2D(eqRingG, 'leq', 43, 0.4, 'ui', 'eq');
 
 eclRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.1, 16, 300), new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:0.95 })));
 eclRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.4, 8, 200), new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:0.12, blending:THREE.AdditiveBlending })));
 for (let i = 0; i < 36; i++) {
-  const a = i/36*Math.PI*2, isH = i%9===0;
-  eclRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(Math.cos(a)*(isH ? 38.5 : 39.2), Math.sin(a)*(isH ? 38.5 : 39.2), 0),
-    new THREE.Vector3(Math.cos(a)*41, Math.sin(a)*41, 0)
-  ]), new THREE.LineBasicMaterial({ color:0xFFDD00, transparent:true, opacity: isH ? 0.9 : 0.38 })));
+  const a = i/36*Math.PI*2, isH = i%9===0;
+  eclRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(Math.cos(a)*(isH ? 38.5 : 39.2), Math.sin(a)*(isH ? 38.5 : 39.2), 0),
+    new THREE.Vector3(Math.cos(a)*41, Math.sin(a)*41, 0)
+  ]), new THREE.LineBasicMaterial({ color:0xFFDD00, transparent:true, opacity: isH ? 0.9 : 0.38 })));
 }
 lbl2D(eclRingG, 'lecl', 43, 1.5, 'ui', 'ecl');
 
 for (let i = 0; i < 12; i++) {
-  const a = i/12*Math.PI*2;
-  eclRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(Math.cos(a)*35, Math.sin(a)*35, 0),
-    new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
-  ]), new THREE.LineBasicMaterial({ color:0xFFDD00, transparent:true, opacity:0.55 })));
-  lbl2D(eclRingG, 'lzod', 43.5, a + Math.PI/12, 'zod', i);
+  const a = i/12*Math.PI*2;
+  eclRingG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(Math.cos(a)*35, Math.sin(a)*35, 0),
+    new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
+  ]), new THREE.LineBasicMaterial({ color:0xFFDD00, transparent:true, opacity:0.55 })));
+  lbl2D(eclRingG, 'lzod', 43.5, a + Math.PI/12, 'zod', i);
 }
 
 const mR = 54, mO = 57.8;
 {
-  const pts = [];
-  for (let i = 0; i <= 240; i++) { pts.push(new THREE.Vector3(Math.cos(i/240*Math.PI*2)*mR, Math.sin(i/240*Math.PI*2)*mR, 0)); }
-  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color:0x3A8C5C, transparent:true, opacity:0.4 })));
+  const pts = [];
+  for (let i = 0; i <= 240; i++) { pts.push(new THREE.Vector3(Math.cos(i/240*Math.PI*2)*mR, Math.sin(i/240*Math.PI*2)*mR, 0)); }
+  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color:0x3A8C5C, transparent:true, opacity:0.4 })));
 }
 MANS.forEach(m => {
-  const a0 = m.s*DEG, a1 = (m.s+m.w)*DEG;
-  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(Math.cos(a0)*mR,Math.sin(a0)*mR,0),
-    new THREE.Vector3(Math.cos(a0)*mO,Math.sin(a0)*mO,0)
-  ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.65 })));
-  const arc = [];
-  for (let t = 0; t <= 24; t++) {
-    const aa = a0+(a1-a0)*t/24;
-    arc.push(new THREE.Vector3(Math.cos(aa)*(mR+0.5),Math.sin(aa)*(mR+0.5),0));
-  }
-  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.5 })));
-  lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
+  const a0 = m.s*DEG, a1 = (m.s+m.w)*DEG;
+  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(Math.cos(a0)*mR,Math.sin(a0)*mR,0),
+    new THREE.Vector3(Math.cos(a0)*mO,Math.sin(a0)*mO,0)
+  ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.65 })));
+  const arc = [];
+  for (let t = 0; t <= 24; t++) {
+    const aa = a0+(a1-a0)*t/24;
+    arc.push(new THREE.Vector3(Math.cos(aa)*(mR+0.5),Math.sin(aa)*(mR+0.5),0));
+  }
+  manG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.5 })));
+  lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
-    const pts = [];
-    if (id === 'earth') {
-        const r = auToR(1.0);
-        for(let i=0; i<=64; i++) { pts.push(new THREE.Vector3(Math.cos(i/64*Math.PI*2)*r, Math.sin(i/64*Math.PI*2)*r, 0)); }
-    } else {
-        const p = PE[id];
-        for(let i=0; i<=64; i++) {
-            const E = (i/64) * Math.PI * 2;
-            const xv = p.a * (Math.cos(E) - p.e);
-            const yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
-            const r_au = Math.sqrt(xv*xv + yv*yv);
-            const l = norm(Math.atan2(yv, xv) * R2D + p.w);
-            const lat = p.i * Math.sin((l - p.Node) * DEG);
-            
-            const r_mapped = auToR(r_au);
-            const z = r_mapped * Math.sin(lat * DEG) * Z_EXAG;
-            const rProj = r_mapped * Math.cos(lat * DEG);
-            pts.push(new THREE.Vector3(Math.cos(l * DEG) * rProj, Math.sin(l * DEG) * rProj, z));
-        }
-    }
-    const geoLine = new THREE.BufferGeometry().setFromPoints(pts);
-    const pc = PCONF.find(p=>p.id===id);
-    const col = id==='earth' ? 0x5599DD : (pc ? pc.col : 0x888888);
-    const orbitLine = new THREE.Line(geoLine, new THREE.LineBasicMaterial({ color: col, transparent:true, opacity:0.3 }));
-    if (pc && pc.isOut) orbitLine.userData.isOut = true;
-    helioOrbitsG.add(orbitLine);
+    const pts = [];
+    if (id === 'earth') {
+        const r = auToR(1.0);
+        for(let i=0; i<=64; i++) { pts.push(new THREE.Vector3(Math.cos(i/64*Math.PI*2)*r, Math.sin(i/64*Math.PI*2)*r, 0)); }
+    } else {
+        const p = PE[id];
+        for(let i=0; i<=64; i++) {
+            const E = (i/64) * Math.PI * 2;
+            const xv = p.a * (Math.cos(E) - p.e);
+            const yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
+            const r_au = Math.sqrt(xv*xv + yv*yv);
+            const l = norm(Math.atan2(yv, xv) * R2D + p.w);
+            const lat = p.i * Math.sin((l - p.Node) * DEG);
+            
+            const r_mapped = auToR(r_au);
+            const z = r_mapped * Math.sin(lat * DEG) * Z_EXAG;
+            const rProj = r_mapped * Math.cos(lat * DEG);
+            pts.push(new THREE.Vector3(Math.cos(l * DEG) * rProj, Math.sin(l * DEG) * rProj, z));
+        }
+    }
+    const geoLine = new THREE.BufferGeometry().setFromPoints(pts);
+    const pc = PCONF.find(p=>p.id===id);
+    const col = id==='earth' ? 0x5599DD : (pc ? pc.col : 0x888888);
+    const orbitLine = new THREE.Line(geoLine, new THREE.LineBasicMaterial({ color: col, transparent:true, opacity:0.3 }));
+    if (pc && pc.isOut) orbitLine.userData.isOut = true;
+    helioOrbitsG.add(orbitLine);
 });
 
 const moonOrbitHelio = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(Array.from({length:65}, (_,i) => new THREE.Vector3(Math.cos(i/64*Math.PI*2)*3, Math.sin(i/64*Math.PI*2)*3, 0))),
-    new THREE.LineBasicMaterial({ color: 0xD8EEFF, transparent:true, opacity:0.3 })
+    new THREE.BufferGeometry().setFromPoints(Array.from({length:65}, (_,i) => new THREE.Vector3(Math.cos(i/64*Math.PI*2)*3, Math.sin(i/64*Math.PI*2)*3, 0))),
+    new THREE.LineBasicMaterial({ color: 0xD8EEFF, transparent:true, opacity:0.3 })
 );
 moonOrbitHelio.visible = false;
 earthContainer.add(moonOrbitHelio);
 
 function clearGroup(group) {
-    if (!group || !group.children) return;
-    for (let i = group.children.length - 1; i >= 0; i--) {
-        const c = group.children[i];
-        if (c.isCSS2DObject && c.element) c.element.remove();
-        if (c.geometry) c.geometry.dispose();
-        if (c.material) c.material.dispose();
-        group.remove(c);
-    }
+    if (!group || !group.children) return;
+    for (let i = group.children.length - 1; i >= 0; i--) {
+        const c = group.children[i];
+        if (c.isCSS2DObject && c.element) c.element.remove();
+        if (c.geometry) c.geometry.dispose();
+        if (c.material) c.material.dispose();
+        group.remove(c);
+    }
 }
 
 function pointCameraAtBirthplace() {
-  if (!birthMarker || !earthMesh) return;
-  scene.updateMatrixWorld(true);
-  
-  const targetPos = new THREE.Vector3();
-  birthMarker.getWorldPosition(targetPos);
-  const centerPos = new THREE.Vector3();
-  earthSpin.getWorldPosition(centerPos);
-  
-  const camDist = camera.position.length() || 115;
-  const zenithDir = targetPos.clone().sub(centerPos).normalize();
-  
-  camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
-  camera.lookAt(centerPos);
+  if (!birthMarker || !earthMesh) return;
+  scene.updateMatrixWorld(true);
+  
+  const targetPos = new THREE.Vector3();
+  birthMarker.getWorldPosition(targetPos);
+  const centerPos = new THREE.Vector3();
+  earthSpin.getWorldPosition(centerPos);
+  
+  const camDist = camera.position.length() || 115;
+  const zenithDir = targetPos.clone().sub(centerPos).normalize();
+  
+  camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
+  camera.lookAt(centerPos);
 
-  const northPoleLocal = new THREE.Vector3(0, 1.5, 0); 
-  const northPoleWorld = northPoleLocal.applyMatrix4(earthMathGroup.matrixWorld);
-  const northDir = northPoleWorld.sub(centerPos).normalize();
-  camera.up.copy(northDir);
-  
-  if(OCtrl) {
-      OCtrl.target.copy(centerPos);
-      OCtrl.update();
-  }
+  const northPoleLocal = new THREE.Vector3(0, 1.5, 0); 
+  const northPoleWorld = northPoleLocal.applyMatrix4(earthMathGroup.matrixWorld);
+  const northDir = northPoleWorld.sub(centerPos).normalize();
+  camera.up.copy(northDir);
+  
+  if(OCtrl) {
+      OCtrl.target.copy(centerPos);
+      OCtrl.update();
+  }
 }
 
 function updateEarthOrientation() {
-  if (!userData.jd || isNaN(currentGMST)) return;
-  if (birthMarker) {
-    const phi = (90 - userData.lat) * DEG;
-    const theta = (userData.lng + 90) * DEG; 
-    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
+  if (!userData.jd || isNaN(currentGMST)) return;
+  if (birthMarker) {
+    const phi = (90 - userData.lat) * DEG;
+    const theta = (userData.lng + 180) * DEG; 
+    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
 
-    if (zenithLine && zenithLabel) {
-        const p1 = new THREE.Vector3().setFromSphericalCoords(1.52, phi, theta);
-        const p2 = new THREE.Vector3().setFromSphericalCoords(4.5, phi, theta);
-        zenithLine.geometry.setFromPoints([p1, p2]);
-        zenithLine.computeLineDistances();
-        zenithLabel.position.copy(p2);
-    }
-  }
-  earthSpin.rotation.z = currentGMST * DEG;
+    if (zenithLine && zenithLabel) {
+        const p1 = new THREE.Vector3().setFromSphericalCoords(1.52, phi, theta);
+        const p2 = new THREE.Vector3().setFromSphericalCoords(4.5, phi, theta);
+        zenithLine.geometry.setFromPoints([p1, p2]);
+        zenithLine.computeLineDistances();
+        zenithLabel.position.copy(p2);
+    }
+  }
+  earthSpin.rotation.z = currentGMST * DEG;
 }
 
 OCtrl.addEventListener('change', () => {
-  if (userData.jd && !S.helio) { updateEarthOrientation(); checkAscAlignment(); }
+  if (userData.jd && !S.helio) { updateEarthOrientation(); checkAscAlignment(); }
 });
 
 function checkAscAlignment() {
-  const ascAngle = currentAscDeg * DEG;
-  const ascLocal = new THREE.Vector3(Math.cos(ascAngle) * 41, Math.sin(ascAngle) * 41, 0);
-  const ascWorld = ascLocal.clone().applyMatrix4(universeG.matrixWorld);
-  const ascNDC = ascWorld.clone().project(camera);
-  const hint = document.getElementById('asc-hint');
-  if (ascNDC.x < -0.3 && ascNDC.x > -0.95 && Math.abs(ascNDC.y) < 0.5) {
-    if(hint) hint.classList.add('show');
-    if (ascHintTimer) clearTimeout(ascHintTimer);
-    ascHintTimer = setTimeout(() => { if(hint) hint.classList.remove('show'); }, 2500);
-  }
+  const ascAngle = currentAscDeg * DEG;
+  const ascLocal = new THREE.Vector3(Math.cos(ascAngle) * 41, Math.sin(ascAngle) * 41, 0);
+  const ascWorld = ascLocal.clone().applyMatrix4(universeG.matrixWorld);
+  const ascNDC = ascWorld.clone().project(camera);
+  const hint = document.getElementById('asc-hint');
+  if (ascNDC.x < -0.3 && ascNDC.x > -0.95 && Math.abs(ascNDC.y) < 0.5) {
+    if(hint) hint.classList.add('show');
+    if (ascHintTimer) clearTimeout(ascHintTimer);
+    ascHintTimer = setTimeout(() => { if(hint) hint.classList.remove('show'); }, 2500);
+  }
 }
 
 function bindBtn(id, key, onFn, offFn) {
-  const b = document.getElementById(id); if (!b) return;
-  b.classList.toggle('on', S[key]);
-  b.addEventListener('click', () => { S[key] = !S[key]; b.classList.toggle('on', S[key]); S[key] ? onFn() : offFn(); });
+  const b = document.getElementById(id); if (!b) return;
+  b.classList.toggle('on', S[key]);
+  b.addEventListener('click', () => { S[key] = !S[key]; b.classList.toggle('on', S[key]); S[key] ? onFn() : offFn(); });
 }
 
 function updateHelioBadge() {
-  const badge = document.getElementById('helio-badge');
-  if (!badge) return;
-  const D = LANGS[currLang];
-  badge.classList.toggle('show', S.helio);
-  if(D.ui.helioMsg) badge.textContent = D.ui.helioMsg;
+  const badge = document.getElementById('helio-badge');
+  if (!badge) return;
+  const D = LANGS[currLang];
+  badge.classList.toggle('show', S.helio);
+  if(D.ui.helioMsg) badge.textContent = D.ui.helioMsg;
 }
 
 function setHelioUIState(isHelio) {
-  const aspBtn = document.getElementById('cb-asp'); if(aspBtn) aspBtn.style.display = isHelio ? 'none' : 'flex';
-  const eqBtn = document.getElementById('cb-eq'); if(eqBtn) eqBtn.style.display = isHelio ? 'none' : 'flex';
-  if (isHelio) { eqRingG.visible = false; } else { eqRingG.visible = S.equator; }
-  
-  if(zenithLine) zenithLine.visible = !isHelio;
-  if(zenithLabel) zenithLabel.element.style.display = isHelio ? 'none' : 'block';
+  const aspBtn = document.getElementById('cb-asp'); if(aspBtn) aspBtn.style.display = isHelio ? 'none' : 'flex';
+  const eqBtn = document.getElementById('cb-eq'); if(eqBtn) eqBtn.style.display = isHelio ? 'none' : 'flex';
+  if (isHelio) { eqRingG.visible = false; } else { eqRingG.visible = S.equator; }
+  
+  if(zenithLine) zenithLine.visible = !isHelio;
+  if(zenithLabel) zenithLabel.element.style.display = isHelio ? 'none' : 'block';
 
-  updateHelioBadge();
+  updateHelioBadge();
 }
 
 function placePlanets(geo, helio, lst, aya) {
-  currentLST = lst;
-  currentAscDeg = geo.asc;
+  currentLST = lst;
+  currentAscDeg = geo.asc;
 
-  if (S.helio) {
-    helioOrbitsG.visible = true; houseG.visible = false; aspG.visible = false; moonOrbitHelio.visible = true;
-    const eR = auToR(1.0); const eA = helio.earth.l * DEG;
-    const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
-    earthContainer.position.set(eX, eY, 0);
-    
-    helioOrbitsG.children.forEach(orbit => {
-        if (orbit.userData.isOut) orbit.visible = S.showOut;
-    });
+  if (S.helio) {
+    helioOrbitsG.visible = true; houseG.visible = false; aspG.visible = false; moonOrbitHelio.visible = true;
+    const eR = auToR(1.0); const eA = helio.earth.l * DEG;
+    const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
+    earthContainer.position.set(eX, eY, 0);
+    
+    helioOrbitsG.children.forEach(orbit => {
+        if (orbit.userData.isOut) orbit.visible = S.showOut;
+    });
 
-    manG.rotation.z = 0;
-    eclRingG.rotation.z = 0;
+    manG.rotation.z = 0;
+    eclRingG.rotation.z = 0;
 
-    PCONF.forEach(pc => {
-      const vis = !pc.isOut || S.showOut;
-      let x, y, z;
-      if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
-      else if (pc.id === 'moon' || pc.type === 'fict') {
-        const hData = helio[pc.id]; if(!hData) return;
-        const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
-        z = r_m * Math.sin(lat_r) * Z_EXAG;
-        const rP = r_m * Math.cos(lat_r);
-        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
-      } else {
-        const hData = helio[pc.id]; if(!hData) return;
-        const r_m = auToR(hData.r), lat_r = hData.lat * DEG, l_r = hData.l * DEG;
-        z = r_m * Math.sin(lat_r) * Z_EXAG;
-        const rP = r_m * Math.cos(lat_r);
-        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
-      }
-      if (pMesh[pc.id]) { pMesh[pc.id].position.set(x, y, z); pMesh[pc.id].visible = vis; }
-      if (pLbl[pc.id]) {
-        pLbl[pc.id].position.set(x + 0.2, y + 0.2, z + pc.sz + 0.5);
-        pLbl[pc.id].element.style.display = vis ? 'flex' : 'none';
-        const rEl = document.getElementById('r_' + pc.id); if (rEl) rEl.textContent = ''; 
-      }
-      if (dropLines[pc.id]) dropLines[pc.id].visible = false;
-    });
-  } else {
-    helioOrbitsG.visible = false; houseG.visible = true; moonOrbitHelio.visible = false;
-    earthContainer.position.set(0, 0, 0);
+    PCONF.forEach(pc => {
+      const vis = !pc.isOut || S.showOut;
+      let x, y, z;
+      if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
+      else if (pc.id === 'moon' || pc.type === 'fict') {
+        const hData = helio[pc.id]; if(!hData) return;
+        const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
+        z = r_m * Math.sin(lat_r) * Z_EXAG;
+        const rP = r_m * Math.cos(lat_r);
+        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
+      } else {
+        const hData = helio[pc.id]; if(!hData) return;
+        const r_m = auToR(hData.r), lat_r = hData.lat * DEG, l_r = hData.l * DEG;
+        z = r_m * Math.sin(lat_r) * Z_EXAG;
+        const rP = r_m * Math.cos(lat_r);
+        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
+      }
+      if (pMesh[pc.id]) { pMesh[pc.id].position.set(x, y, z); pMesh[pc.id].visible = vis; }
+      if (pLbl[pc.id]) {
+        pLbl[pc.id].position.set(x + 0.2, y + 0.2, z + pc.sz + 0.5);
+        pLbl[pc.id].element.style.display = vis ? 'flex' : 'none';
+        const rEl = document.getElementById('r_' + pc.id); if (rEl) rEl.textContent = ''; 
+      }
+      if (dropLines[pc.id]) dropLines[pc.id].visible = false;
+    });
+  } else {
+    helioOrbitsG.visible = false; houseG.visible = true; moonOrbitHelio.visible = false;
+    earthContainer.position.set(0, 0, 0);
 
-    manG.rotation.z = S.sidereal ? 0 : aya * DEG;
-    eclRingG.rotation.z = 0;
-    
-    if (S.aspects) aspG.visible = true;
+    manG.rotation.z = S.sidereal ? 0 : aya * DEG;
+    eclRingG.rotation.z = 0;
+    
+    if (S.aspects) aspG.visible = true;
 
-    PCONF.forEach(pc => {
-      const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
-      if (lon === undefined || isNaN(lon)) return;
-      const a = lon * DEG, beta = (geo[pc.id + '_lat'] || 0) * DEG;
-      const rProj = Math.cos(beta) * pc.R;
-      const x = Math.cos(a)*rProj, y = Math.sin(a)*rProj;
-      const z = Math.sin(beta) * pc.R * (pc.id === 'moon' ? 1.5 : Z_EXAG);
-      
-      if (pMesh[pc.id]) { pMesh[pc.id].position.set(x,y,z); pMesh[pc.id].visible = vis; }
-      if (pLbl[pc.id])  { 
-        pLbl[pc.id].position.set(x+0.2,y+0.2,z+pc.sz+0.3); 
-        pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; 
-        const rEl = document.getElementById('r_' + pc.id);
-        if (rEl) rEl.textContent = (geo.retrograde && geo.retrograde[pc.id]) ? '(逆)' : '';
-      }
-      const dl = dropLines[pc.id];
-      if (dl) {
-        const show = vis && S.orb && Math.abs(z) > 0.05; dl.visible = show;
-        if (show) { dl.userData.buf[0]=x; dl.userData.buf[1]=y; dl.userData.buf[2]=z; dl.userData.buf[3]=x; dl.userData.buf[4]=y; dl.userData.buf[5]=0; dl.userData.pa.needsUpdate = true; }
-      }
-    });
+    PCONF.forEach(pc => {
+      const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
+      if (lon === undefined || isNaN(lon)) return;
+      const a = lon * DEG, beta = (geo[pc.id + '_lat'] || 0) * DEG;
+      const rProj = Math.cos(beta) * pc.R;
+      const x = Math.cos(a)*rProj, y = Math.sin(a)*rProj;
+      const z = Math.sin(beta) * pc.R * (pc.id === 'moon' ? 1.5 : Z_EXAG);
+      
+      if (pMesh[pc.id]) { pMesh[pc.id].position.set(x,y,z); pMesh[pc.id].visible = vis; }
+      if (pLbl[pc.id])  { 
+        pLbl[pc.id].position.set(x+0.2,y+0.2,z+pc.sz+0.3); 
+        pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; 
+        const rEl = document.getElementById('r_' + pc.id);
+        if (rEl) rEl.textContent = (geo.retrograde && geo.retrograde[pc.id]) ? '(逆)' : '';
+      }
+      const dl = dropLines[pc.id];
+      if (dl) {
+        const show = vis && S.orb && Math.abs(z) > 0.05; dl.visible = show;
+        if (show) { dl.userData.buf[0]=x; dl.userData.buf[1]=y; dl.userData.buf[2]=z; dl.userData.buf[3]=x; dl.userData.buf[4]=y; dl.userData.buf[5]=0; dl.userData.pa.needsUpdate = true; }
+      }
+    });
 
-    if (S.aspects) buildAspects(geo); else clearGroup(aspG);
+    if (S.aspects) buildAspects(geo); else clearGroup(aspG);
 
-    clearGroup(houseG);
-    if (geo.houses && geo.houses.length === 12) {
-      for (let i = 0; i < 12; i++) {
-        const a = geo.houses[i] * DEG; if (isNaN(a)) continue;
-        let isAxis = false, col = 0xFFFFFF;
-        if (!S.sidereal) {
-          isAxis = (i === 0 || i === 3 || i === 6 || i === 9);
-          col = (i===0||i===6) ? 0xFF4444 : ((i===3||i===9) ? 0x7DE09A : 0xFFFFFF);
-          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
-            new THREE.Vector3(Math.cos(a)*(isAxis ? 43 : 40.5), Math.sin(a)*(isAxis ? 43 : 40.5), 0)
-          ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis ? 0.68 : 0.18 })));
-          
-          if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
-          else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
-          else if (i === 9) lbl2D(houseG, 'lmc', 46, a, 'ui', 'mc');
-          else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
-          else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
-        } else {
-          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
-            new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
-          ]), new THREE.LineBasicMaterial({ color:0x888888, transparent:true, opacity:0.18 })));
-          lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
-        }
-      }
-      if (S.sidereal) {
-        const ascA = geo.asc * DEG, dscA = geo.dsc * DEG, mcA = geo.mc * DEG, icA = geo.ic * DEG;
-        if(!isNaN(ascA) && !isNaN(dscA)) {
-            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(dscA)*43, Math.sin(dscA)*43, 0),
-            new THREE.Vector3(Math.cos(ascA)*43, Math.sin(ascA)*43, 0)
-            ]), new THREE.LineBasicMaterial({ color:0xFF4444, transparent:true, opacity:0.68 })));
-            lbl2D(houseG, 'lasc', 46, ascA, 'ui', 'asc'); lbl2D(houseG, 'ldsc', 46, dscA, 'ui', 'dsc');
-        }
-        if(!isNaN(mcA) && !isNaN(icA)) {
-            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
-            new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
-            ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
-            lbl2D(houseG, 'lmc', 46, mcA, 'ui', 'mc'); lbl2D(houseG, 'lmc', 46, icA, 'ui', 'ic');
-        }
-      }
-    }
-  }
-  updateEarthOrientation();
+    clearGroup(houseG);
+    if (geo.houses && geo.houses.length === 12) {
+      for (let i = 0; i < 12; i++) {
+        const a = geo.houses[i] * DEG; if (isNaN(a)) continue;
+        let isAxis = false, col = 0xFFFFFF;
+        if (!S.sidereal) {
+          isAxis = (i === 0 || i === 3 || i === 6 || i === 9);
+          col = (i===0||i===6) ? 0xFF4444 : ((i===3||i===9) ? 0x7DE09A : 0xFFFFFF);
+          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+            new THREE.Vector3(Math.cos(a)*(isAxis ? 43 : 40.5), Math.sin(a)*(isAxis ? 43 : 40.5), 0)
+          ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis ? 0.68 : 0.18 })));
+          
+          if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
+          else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
+          else if (i === 9) lbl2D(houseG, 'lmc', 46, a, 'ui', 'mc');
+          else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
+          else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+        } else {
+          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+            new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
+          ]), new THREE.LineBasicMaterial({ color:0x888888, transparent:true, opacity:0.18 })));
+          lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+        }
+      }
+      if (S.sidereal) {
+        const ascA = geo.asc * DEG, dscA = geo.dsc * DEG, mcA = geo.mc * DEG, icA = geo.ic * DEG;
+        if(!isNaN(ascA) && !isNaN(dscA)) {
+            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(dscA)*43, Math.sin(dscA)*43, 0),
+            new THREE.Vector3(Math.cos(ascA)*43, Math.sin(ascA)*43, 0)
+            ]), new THREE.LineBasicMaterial({ color:0xFF4444, transparent:true, opacity:0.68 })));
+            lbl2D(houseG, 'lasc', 46, ascA, 'ui', 'asc'); lbl2D(houseG, 'ldsc', 46, dscA, 'ui', 'dsc');
+        }
+        if(!isNaN(mcA) && !isNaN(icA)) {
+            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
+            new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
+            ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
+            lbl2D(houseG, 'lmc', 46, mcA, 'ui', 'mc'); lbl2D(houseG, 'lmc', 46, icA, 'ui', 'ic');
+        }
+      }
+    }
+  }
+  updateEarthOrientation();
 }
 
 const ASP_A = [0,60,90,120,150,180];
 const ASP_C = [0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
 
 function buildAspects(geo) {
-  clearGroup(aspG);
-  const bp = ['sun','moon','mercury','venus','mars','jupiter','saturn','rahu','ketu','yapo','ziqi','fortune'];
-  if (S.showOut) bp.push('uranus','neptune','pluto');
-  
-  for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
-    if(geo[bp[i]] === undefined || geo[bp[j]] === undefined || isNaN(geo[bp[i]]) || isNaN(geo[bp[j]])) continue;
-    const diff = Math.min(norm(geo[bp[i]]-geo[bp[j]]), norm(geo[bp[j]]-geo[bp[i]]));
-    const orb = (bp[i]==='sun'||bp[j]==='sun'||bp[i]==='moon'||bp[j]==='moon') ? 10 : 8;
-    for (let k = 0; k < ASP_A.length; k++) {
-      if (Math.abs(diff-ASP_A[k]) < orb) {
-        const p1 = pMesh[bp[i]] ? pMesh[bp[i]].position.clone() : new THREE.Vector3();
-        const p2 = pMesh[bp[j]] ? pMesh[bp[j]].position.clone() : new THREE.Vector3();
-        let curDiff = Math.abs(geo[bp[i]] - geo[bp[j]]); if (curDiff > 180) curDiff = 360 - curDiff;
-        let prevDiff = 0;
-        if(geo.prev && geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
-           prevDiff = Math.abs(geo.prev[bp[i]] - geo.prev[bp[j]]); if (prevDiff > 180) prevDiff = 360 - prevDiff;
-        } else { prevDiff = curDiff + 1; }
-        
-        const isApplying = Math.abs(curDiff - ASP_A[k]) < Math.abs(prevDiff - ASP_A[k]);
-        const geoLine = new THREE.BufferGeometry().setFromPoints([p1,p2]);
-        let mat = isApplying ? new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: 0.65 }) 
-                             : new THREE.LineDashedMaterial({ color: ASP_C[k], transparent: true, opacity: 0.25, dashSize: 1.5, gapSize: 1.5 });
-        const line = new THREE.Line(geoLine, mat);
-        if (!isApplying) line.computeLineDistances(); 
-        aspG.add(line);
-        break;
-      }
-    }
-  }
+  clearGroup(aspG);
+  const bp = ['sun','moon','mercury','venus','mars','jupiter','saturn','rahu','ketu','yapo','ziqi','fortune'];
+  if (S.showOut) bp.push('uranus','neptune','pluto');
+  
+  for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
+    if(geo[bp[i]] === undefined || geo[bp[j]] === undefined || isNaN(geo[bp[i]]) || isNaN(geo[bp[j]])) continue;
+    const diff = Math.min(norm(geo[bp[i]]-geo[bp[j]]), norm(geo[bp[j]]-geo[bp[i]]));
+    const orb = (bp[i]==='sun'||bp[j]==='sun'||bp[i]==='moon'||bp[j]==='moon') ? 10 : 8;
+    for (let k = 0; k < ASP_A.length; k++) {
+      if (Math.abs(diff-ASP_A[k]) < orb) {
+        const p1 = pMesh[bp[i]] ? pMesh[bp[i]].position.clone() : new THREE.Vector3();
+        const p2 = pMesh[bp[j]] ? pMesh[bp[j]].position.clone() : new THREE.Vector3();
+        let curDiff = Math.abs(geo[bp[i]] - geo[bp[j]]); if (curDiff > 180) curDiff = 360 - curDiff;
+        let prevDiff = 0;
+        if(geo.prev && geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
+           prevDiff = Math.abs(geo.prev[bp[i]] - geo.prev[bp[j]]); if (prevDiff > 180) prevDiff = 360 - prevDiff;
+        } else { prevDiff = curDiff + 1; }
+        
+        const isApplying = Math.abs(curDiff - ASP_A[k]) < Math.abs(prevDiff - ASP_A[k]);
+        const geoLine = new THREE.BufferGeometry().setFromPoints([p1,p2]);
+        let mat = isApplying ? new THREE.LineBasicMaterial({ color: ASP_C[k], transparent: true, opacity: 0.65 }) 
+                             : new THREE.LineDashedMaterial({ color: ASP_C[k], transparent: true, opacity: 0.25, dashSize: 1.5, gapSize: 1.5 });
+        const line = new THREE.Line(geoLine, mat);
+        if (!isApplying) line.computeLineDistances(); 
+        aspG.add(line);
+        break;
+      }
+    }
+  }
 }
 
 function renderPlanetList(geo, isSid, jd, sfx='') {
-  const el = document.getElementById('plist'+sfx); if (!el) return;
-  el.innerHTML = '';
-  PCONF.filter(pc => !pc.isOut || S.showOut).forEach(pc => {
-    const lon = geo[pc.id]; if (lon === undefined || isNaN(lon)) return;
-    const z = zodiac(lon), man = getMansion(lon, isSid, jd);
-    const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
-    const hex = '#' + pc.col.toString(16).padStart(6,'0');
-    
-    const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
-    
-    const row = document.createElement('div'); row.className = 'pr';
-    row.innerHTML = `<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
-      <div class="pr-info"><div class="pr-n">${LANGS[currLang].pl[pc.id]}${retroStr}</div>
-      <div class="pr-s">${man}${LANGS[currLang].ui.mansion}·${z.s}</div></div>
-      <div class="pr-d">${lonLabel}</div>`;
-    row.addEventListener('mouseenter', e => showTip(e, `${pc.ic} ${LANGS[currLang].pl[pc.id]}`, `黃道：${lon.toFixed(2)}°<br>${z.sym}${z.s} ${z.d}°<br>${man}${LANGS[currLang].ui.mansion}<br>${LANGS[currLang].wx[pc.id]||''}`));
-    row.addEventListener('mouseleave', hideTip);
-    el.appendChild(row);
-  });
+  const el = document.getElementById('plist'+sfx); if (!el) return;
+  el.innerHTML = '';
+  PCONF.filter(pc => !pc.isOut || S.showOut).forEach(pc => {
+    const lon = geo[pc.id]; if (lon === undefined || isNaN(lon)) return;
+    const z = zodiac(lon), man = getMansion(lon, isSid, jd);
+    const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
+    const hex = '#' + pc.col.toString(16).padStart(6,'0');
+    
+    const lonLabel = S.helio && curHelio[pc.id] ? curHelio[pc.id].l.toFixed(1)+'°☉' : lon.toFixed(1)+'°';
+    
+    const row = document.createElement('div'); row.className = 'pr';
+    row.innerHTML = `<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
+      <div class="pr-info"><div class="pr-n">${LANGS[currLang].pl[pc.id]}${retroStr}</div>
+      <div class="pr-s">${man}${LANGS[currLang].ui.mansion}·${z.s}</div></div>
+      <div class="pr-d">${lonLabel}</div>`;
+    row.addEventListener('mouseenter', e => showTip(e, `${pc.ic} ${LANGS[currLang].pl[pc.id]}`, `黃道：${lon.toFixed(2)}°<br>${z.sym}${z.s} ${z.d}°<br>${man}${LANGS[currLang].ui.mansion}<br>${LANGS[currLang].wx[pc.id]||''}`));
+    row.addEventListener('mouseleave', hideTip);
+    el.appendChild(row);
+  });
 }
 
 function renderHouseGrid(geo, isSid, jd, sfx='') {
-  const g = document.getElementById('hgrid'+sfx); if (!g) return;
-  g.innerHTML = ''; if (!geo || !geo.houses) return;
-  for (let i = 0; i < 12; i++) {
-    const cLon = geo.houses[i]; if(cLon === undefined || isNaN(cLon)) continue;
-    const z = zodiac(cLon), nCusp = geo.houses[(i+1)%12], man = getMansion(cLon, isSid, jd);
-    const ph = PCONF.filter(pc => {
-      if(pc.isOut && !S.showOut) return false;
-      const pLon = geo[pc.id]; if(pLon===undefined || isNaN(pLon)) return false;
-      if (cLon < nCusp) return pLon >= cLon && pLon < nCusp; else return pLon >= cLon || pLon < nCusp;
-    }).map(p=>`<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
-    
-    const cell = document.createElement('div'); cell.className = 'hc';
-    cell.innerHTML = `<div class="hc-n">${i+1}</div><div class="hc-s">${z.sym}${z.s}</div>${ph?`<div class="hc-p">${ph}</div>`:''}`;
-    cell.addEventListener('mouseenter', e => showTip(e, `${i+1}${LANGS[currLang].ui.house}·${z.s}`, `${cLon.toFixed(1)}°<br>${man}${LANGS[currLang].ui.mansion}`));
-    cell.addEventListener('mouseleave', hideTip);
-    g.appendChild(cell);
-  }
+  const g = document.getElementById('hgrid'+sfx); if (!g) return;
+  g.innerHTML = ''; if (!geo || !geo.houses) return;
+  for (let i = 0; i < 12; i++) {
+    const cLon = geo.houses[i]; if(cLon === undefined || isNaN(cLon)) continue;
+    const z = zodiac(cLon), nCusp = geo.houses[(i+1)%12], man = getMansion(cLon, isSid, jd);
+    const ph = PCONF.filter(pc => {
+      if(pc.isOut && !S.showOut) return false;
+      const pLon = geo[pc.id]; if(pLon===undefined || isNaN(pLon)) return false;
+      if (cLon < nCusp) return pLon >= cLon && pLon < nCusp; else return pLon >= cLon || pLon < nCusp;
+    }).map(p=>`<span style="color:#${p.col.toString(16).padStart(6,'0')}">${p.ic}</span>`).join('');
+    
+    const cell = document.createElement('div'); cell.className = 'hc';
+    cell.innerHTML = `<div class="hc-n">${i+1}</div><div class="hc-s">${z.sym}${z.s}</div>${ph?`<div class="hc-p">${ph}</div>`:''}`;
+    cell.addEventListener('mouseenter', e => showTip(e, `${i+1}${LANGS[currLang].ui.house}·${z.s}`, `${cLon.toFixed(1)}°<br>${man}${LANGS[currLang].ui.mansion}`));
+    cell.addEventListener('mouseleave', hideTip);
+    g.appendChild(cell);
+  }
 }
 
 function renderAnalysis(geo, isSid, jd, sfx='') {
-  const el = document.getElementById('abody'+sfx); if (!el) return;
-  if(!geo || geo.sun === undefined || isNaN(geo.sun)) { el.innerHTML = ''; return; }
-  el.innerHTML = analyzeChart(geo, isSid, jd).map(l=>`<div class="al">${l}</div>`).join('');
+  const el = document.getElementById('abody'+sfx); if (!el) return;
+  if(!geo || geo.sun === undefined || isNaN(geo.sun)) { el.innerHTML = ''; return; }
+  el.innerHTML = analyzeChart(geo, isSid, jd).map(l=>`<div class="al">${l}</div>`).join('');
 }
 
 function showTip(e, h, p) {
-  document.getElementById('tip-h').textContent = h; document.getElementById('tip-p').innerHTML = p;
-  const t = document.getElementById('tip'); t.style.display = 'block'; t.style.left = Math.min(e.clientX+16, window.innerWidth-215)+'px'; t.style.top = Math.max(e.clientY-14, 8)+'px';
+  document.getElementById('tip-h').textContent = h; document.getElementById('tip-p').innerHTML = p;
+  const t = document.getElementById('tip'); t.style.display = 'block'; t.style.left = Math.min(e.clientX+16, window.innerWidth-215)+'px'; t.style.top = Math.max(e.clientY-14, 8)+'px';
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
 window.toggleDST = function() {
-    const dstChk = document.getElementById('f-dst');
-    const dstBdg = document.getElementById('dst-badge');
-    if (dstChk && dstBdg) {
-        dstBdg.textContent = dstChk.checked ? LANGS[currLang].dst.on : LANGS[currLang].dst.off;
-        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
-    }
+    const dstChk = document.getElementById('f-dst');
+    const dstBdg = document.getElementById('dst-badge');
+    if (dstChk && dstBdg) {
+        dstBdg.textContent = dstChk.checked ? LANGS[currLang].dst.on : LANGS[currLang].dst.off;
+        dstBdg.className = 'dst-badge' + (dstChk.checked ? ' active' : '');
+    }
 };
 
 window.hst = function() {
-  try {
-      const lngEl = document.getElementById('f-lg'), tzEl  = document.getElementById('f-tz'), hEl = document.getElementById('f-h'), mEl = document.getElementById('f-mi');
-      if(!lngEl || !tzEl || !hEl || !mEl) return;
-      const lng = lngEl.value === "" ? NaN : parseFloat(lngEl.value), tz = tzEl.value === "" ? NaN : parseInt(tzEl.value);
-      let h = hEl.value === "" ? 0 : parseInt(hEl.value), mn = mEl.value === "" ? 0 : parseInt(mEl.value);
-      const dstEl = document.getElementById('f-dst'); const dst = dstEl ? dstEl.checked : false; if (dst) h += 1;
-      const hint = document.getElementById('st-hint');
-      
-      if (!isNaN(lng) && !isNaN(tz) && !isNaN(h) && !isNaN(mn)) {
-        let totalM = mn + Math.round((lng - tz * 15) * 4);
-        let newH = ((h + Math.floor(totalM / 60)) % 24 + 24) % 24;
-        let newM = ((totalM % 60) + 60) % 60;
-        if(hint) { hint.textContent = `✦ 真太陽時${dst?' [DST+1h]':''} → 校正後 ${String(newH).padStart(2,'0')}:${String(newM).padStart(2,'0')}`; hint.style.display = 'block'; }
-      } else { if(hint) hint.style.display = 'none'; }
-  } catch (e) { console.error(e); }
+  try {
+      const lngEl = document.getElementById('f-lg'), tzEl  = document.getElementById('f-tz'), hEl = document.getElementById('f-h'), mEl = document.getElementById('f-mi');
+      if(!lngEl || !tzEl || !hEl || !mEl) return;
+      const lng = lngEl.value === "" ? NaN : parseFloat(lngEl.value), tz = tzEl.value === "" ? NaN : parseInt(tzEl.value);
+      let h = hEl.value === "" ? 0 : parseInt(hEl.value), mn = mEl.value === "" ? 0 : parseInt(mEl.value);
+      const dstEl = document.getElementById('f-dst'); const dst = dstEl ? dstEl.checked : false; if (dst) h += 1;
+      const hint = document.getElementById('st-hint');
+      
+      if (!isNaN(lng) && !isNaN(tz) && !isNaN(h) && !isNaN(mn)) {
+        let totalM = mn + Math.round((lng - tz * 15) * 4);
+        let newH = ((h + Math.floor(totalM / 60)) % 24 + 24) % 24;
+        let newM = ((totalM % 60) + 60) % 60;
+        if(hint) { hint.textContent = `✦ 真太陽時${dst?' [DST+1h]':''} → 校正後 ${String(newH).padStart(2,'0')}:${String(newM).padStart(2,'0')}`; hint.style.display = 'block'; }
+      } else { if(hint) hint.style.display = 'none'; }
+  } catch (e) { console.error(e); }
 };
 
 window.submitForm = function() {
-  try {
-      const nmEl = document.getElementById('f-nm'); const name = nmEl ? nmEl.value.trim() || '命主' : '命主';
-      const y = parseInt(document.getElementById('f-y').value), m = parseInt(document.getElementById('f-m').value), d = parseInt(document.getElementById('f-d').value);
-      let h = parseInt(document.getElementById('f-h').value) || 0, mn = parseInt(document.getElementById('f-mi').value) || 0;
+  try {
+      const nmEl = document.getElementById('f-nm'); const name = nmEl ? nmEl.value.trim() || '命主' : '命主';
+      const y = parseInt(document.getElementById('f-y').value), m = parseInt(document.getElementById('f-m').value), d = parseInt(document.getElementById('f-d').value);
+      let h = parseInt(document.getElementById('f-h').value) || 0, mn = parseInt(document.getElementById('f-mi').value) || 0;
 
-      if (isNaN(y) || isNaN(m) || isNaN(d) || isNaN(h) || isNaN(mn)) { alert('請輸入完整的年月日時分！'); return; }
+      if (isNaN(y) || isNaN(m) || isNaN(d) || isNaN(h) || isNaN(mn)) { alert('請輸入完整的年月日時分！'); return; }
 
-      const lng = parseFloat(document.getElementById('f-lg').value) || 120, lat = parseFloat(document.getElementById('f-lat').value) || 30, tz = parseInt(document.getElementById('f-tz').value) || 8;
-      const dstEl = document.getElementById('f-dst'); const dst = dstEl ? dstEl.checked : false;
-      const effectiveH = dst ? h + 1 : h; 
-      const jd_utc = jdn(y, m, d, effectiveH - tz, mn);
-      if (isNaN(jd_utc)) { alert('時間計算錯誤，請檢查輸入'); return; }
-      
-      let totalM = mn + Math.round((lng - tz * 15) * 4);
-      let newH = ((effectiveH + Math.floor(totalM / 60)) % 24 + 24) % 24;
-      let newM = ((totalM % 60) + 60) % 60;
+      const lng = parseFloat(document.getElementById('f-lg').value) || 120, lat = parseFloat(document.getElementById('f-lat').value) || 30, tz = parseInt(document.getElementById('f-tz').value) || 8;
+      const dstEl = document.getElementById('f-dst'); const dst = dstEl ? dstEl.checked : false;
+      const effectiveH = dst ? h + 1 : h; 
+      const jd_utc = jdn(y, m, d, effectiveH - tz, mn);
+      if (isNaN(jd_utc)) { alert('時間計算錯誤，請檢查輸入'); return; }
+      
+      let totalM = mn + Math.round((lng - tz * 15) * 4);
+      let newH = ((effectiveH + Math.floor(totalM / 60)) % 24 + 24) % 24;
+      let newM = ((totalM % 60) + 60) % 60;
 
-      userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
-      launch();
-  } catch(e) { alert('計算模組出錯: ' + e.message); console.error(e); }
+      userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
+      launch();
+  } catch(e) { alert('計算模組出錯: ' + e.message); console.error(e); }
 };
 
 window.loadDemo = function() {
-  ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach((id,i) => { const el = document.getElementById(id); if(el) el.value = ['演示','2002','12','24','0','0','109','31','8'][i]; });
-  const dstEl = document.getElementById('f-dst'); if(dstEl) dstEl.checked = false;
-  if(window.toggleDST) window.toggleDST(); if(window.submitForm) window.submitForm();
+  ['f-nm','f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach((id,i) => { const el = document.getElementById(id); if(el) el.value = ['演示','2002','12','24','0','0','109','31','8'][i]; });
+  const dstEl = document.getElementById('f-dst'); if(dstEl) dstEl.checked = false;
+  if(window.toggleDST) window.toggleDST(); if(window.submitForm) window.submitForm();
 };
 
 function updatePositions() {
-  if (!userData || !userData.jd || isNaN(userData.jd)) return;
-  const tr = document.getElementById('time-range');
-  const tJD = userData.jd + (tr ? parseInt(tr.value) || 0 : 0) * 0.5 / 24;
-  
-  const res = calcAll(T_jd(tJD), tJD, userData.lng, userData.lat, S.sidereal);
-  curGeo = res.geo; curHelio = res.helio; currentGMST = res.gmst;
-  if(isNaN(currentGMST)) return; 
-  
-  if (!S.helio) {
-    manG.rotation.z = S.sidereal ? 0 : res.aya * DEG;
-  }
-  placePlanets(curGeo, curHelio, res.lst, res.aya);
-  
-  renderPlanetList(curGeo, S.sidereal, tJD, ''); renderPlanetList(curGeo, S.sidereal, tJD, '-m');
-  renderHouseGrid(curGeo, S.sidereal, tJD, ''); renderHouseGrid(curGeo, S.sidereal, tJD, '-m');
-  renderAnalysis(curGeo, S.sidereal, tJD, ''); renderAnalysis(curGeo, S.sidereal, tJD, '-m');
-  
-  const placeEl = document.getElementById('tb-place');
-  if(placeEl) {
-    const D = LANGS[currLang];
-    const modeStr = S.helio ? D.ui.helio : (S.sidereal ? D.ui.sid : D.ui.trop);
-    placeEl.textContent = `lng ${userData.lng.toFixed(1)}° · lat ${userData.lat.toFixed(1)}° · ${modeStr}${userData.dst?' · DST':''}`;
-  }
+  if (!userData || !userData.jd || isNaN(userData.jd)) return;
+  const tr = document.getElementById('time-range');
+  const tJD = userData.jd + (tr ? parseInt(tr.value) || 0 : 0) * 0.5 / 24;
+  
+  const res = calcAll(T_jd(tJD), tJD, userData.lng, userData.lat, S.sidereal);
+  curGeo = res.geo; curHelio = res.helio; currentGMST = res.gmst;
+  if(isNaN(currentGMST)) return; 
+  
+  if (!S.helio) {
+    manG.rotation.z = S.sidereal ? 0 : res.aya * DEG;
+  }
+  placePlanets(curGeo, curHelio, res.lst, res.aya);
+  
+  renderPlanetList(curGeo, S.sidereal, tJD, ''); renderPlanetList(curGeo, S.sidereal, tJD, '-m');
+  renderHouseGrid(curGeo, S.sidereal, tJD, ''); renderHouseGrid(curGeo, S.sidereal, tJD, '-m');
+  renderAnalysis(curGeo, S.sidereal, tJD, ''); renderAnalysis(curGeo, S.sidereal, tJD, '-m');
+  
+  const placeEl = document.getElementById('tb-place');
+  if(placeEl) {
+    const D = LANGS[currLang];
+    const modeStr = S.helio ? D.ui.helio : (S.sidereal ? D.ui.sid : D.ui.trop);
+    placeEl.textContent = `lng ${userData.lng.toFixed(1)}° · lat ${userData.lat.toFixed(1)}° · ${modeStr}${userData.dst?' · DST':''}`;
+  }
 }
 
 function launch() {
-  updatePositions();
-  
-  pointCameraAtBirthplace();
+  updatePositions();
+  
+  pointCameraAtBirthplace();
 
-  const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
-  const dateEl = document.getElementById('tb-date'); if(dateEl) dateEl.textContent = `${userData.y}.${String(userData.m).padStart(2,'0')}.${String(userData.d).padStart(2,'0')} ${String(userData.h).padStart(2,'0')}:${String(userData.mn).padStart(2,'0')}${userData.dst?' (DST)':''}`;
-  const infoEl = document.getElementById('tb-info'); if(infoEl) infoEl.style.display = 'block';
-  
-  const isMob = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
-  const drw = document.getElementById('mobile-drawer');
-  const lp = document.getElementById('lp');
-  const rp = document.getElementById('rp');
+  const nameEl = document.getElementById('tb-name'); if(nameEl) nameEl.textContent = userData.name;
+  const dateEl = document.getElementById('tb-date'); if(dateEl) dateEl.textContent = `${userData.y}.${String(userData.m).padStart(2,'0')}.${String(userData.d).padStart(2,'0')} ${String(userData.h).padStart(2,'0')}:${String(userData.mn).padStart(2,'0')}${userData.dst?' (DST)':''}`;
+  const infoEl = document.getElementById('tb-info'); if(infoEl) infoEl.style.display = 'block';
+  
+  const isMob = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
+  const drw = document.getElementById('mobile-drawer');
+  const lp = document.getElementById('lp');
+  const rp = document.getElementById('rp');
 
-  if (isMob) {
-      if (drw) drw.style.display = 'flex';
-      if (lp) lp.style.display = 'none';
-      if (rp) rp.style.display = 'none';
-  } else {
-      if (lp) lp.style.display = 'flex';
-      if (rp) rp.style.display = 'flex';
-      if (drw) drw.style.display = 'none';
-  }
+  if (isMob) {
+      if (drw) drw.style.display = 'flex';
+      if (lp) lp.style.display = 'none';
+      if (rp) rp.style.display = 'none';
+  } else {
+      if (lp) lp.style.display = 'flex';
+      if (rp) rp.style.display = 'flex';
+      if (drw) drw.style.display = 'none';
+  }
 
-  const mw = document.getElementById('mw');
-  if (mw && mw.style.display !== 'none') {
-      mw.style.transition = 'opacity .6s';
-      mw.style.opacity = '0';
-      mw.style.pointerEvents = 'none'; 
-      setTimeout(() => { mw.style.display = 'none'; }, 600); 
-  }
+  const mw = document.getElementById('mw');
+  if (mw && mw.style.display !== 'none') {
+      mw.style.transition = 'opacity .6s';
+      mw.style.opacity = '0';
+      mw.style.pointerEvents = 'none'; 
+      setTimeout(() => { mw.style.display = 'none'; }, 600); 
+  }
 }
 
 const setupEvents = () => {
-    ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', window.hst); });
-    const bindClick = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
-    bindClick('btn-sub', window.submitForm); bindClick('btn-demo', window.loadDemo);
-    const dstEl = document.getElementById('f-dst'); if(dstEl) dstEl.addEventListener('change', () => { window.toggleDST(); window.hst(); });
-    if(isMobile) bindClick('mobile-drawer-handle', window.toggleDrawer);
-    
-    const tRange = document.getElementById('time-range'), tLbl = document.getElementById('time-lbl');
-    if(tRange) {
-        tRange.addEventListener('input', () => {
-          if (!userData || !userData.jd) return; updatePositions();
-          const offMs = parseInt(tRange.value) * 30 * 60 * 1000, tgt = new Date(new Date(Date.UTC(userData.y, userData.m-1, userData.d, userData.h, userData.mn)).getTime() + offMs);
-          if(tLbl) tLbl.textContent = `${tgt.getUTCFullYear()}.${String(tgt.getUTCMonth()+1).padStart(2,'0')}.${String(tgt.getUTCDate()).padStart(2,'0')} ${String(tgt.getUTCHours()).padStart(2,'0')}:${String(tgt.getUTCMinutes()).padStart(2,'0')}`;
-        });
-    }
+    ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', window.hst); });
+    const bindClick = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
+    bindClick('btn-sub', window.submitForm); bindClick('btn-demo', window.loadDemo);
+    const dstEl = document.getElementById('f-dst'); if(dstEl) dstEl.addEventListener('change', () => { window.toggleDST(); window.hst(); });
+    if(isMobile) bindClick('mobile-drawer-handle', window.toggleDrawer);
+    
+    const tRange = document.getElementById('time-range'), tLbl = document.getElementById('time-lbl');
+    if(tRange) {
+        tRange.addEventListener('input', () => {
+          if (!userData || !userData.jd) return; updatePositions();
+          const offMs = parseInt(tRange.value) * 30 * 60 * 1000, tgt = new Date(new Date(Date.UTC(userData.y, userData.m-1, userData.d, userData.h, userData.mn)).getTime() + offMs);
+          if(tLbl) tLbl.textContent = `${tgt.getUTCFullYear()}.${String(tgt.getUTCMonth()+1).padStart(2,'0')}.${String(tgt.getUTCDate()).padStart(2,'0')} ${String(tgt.getUTCHours()).padStart(2,'0')}:${String(tgt.getUTCMinutes()).padStart(2,'0')}`;
+        });
+    }
 
-    const tbPlay = document.getElementById('tb-play');
-    if (tbPlay) {
-        tbPlay.addEventListener('click', function() {
-          if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = LANGS[currLang].dom.tbPlay; return; }
-          playingTime = true; this.textContent = LANGS[currLang].dom.tbPause;
-          playInterval = setInterval(() => {
-            const v = Math.min(parseInt(tRange.value)+1, 87660); tRange.value = v; tRange.dispatchEvent(new Event('input'));
-            if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].dom.tbPlay; }
-          }, 80);
-        });
-    }
+    const tbPlay = document.getElementById('tb-play');
+    if (tbPlay) {
+        tbPlay.addEventListener('click', function() {
+          if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = LANGS[currLang].dom.tbPlay; return; }
+          playingTime = true; this.textContent = LANGS[currLang].dom.tbPause;
+          playInterval = setInterval(() => {
+            const v = Math.min(parseInt(tRange.value)+1, 87660); tRange.value = v; tRange.dispatchEvent(new Event('input'));
+            if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = LANGS[currLang].dom.tbPlay; }
+          }, 80);
+        });
+    }
 
-    window.resetTime = function() {
-      clearInterval(playInterval); playingTime = false; 
-      if (tbPlay) tbPlay.textContent = LANGS[currLang].dom.tbPlay;
-      if (tRange) { tRange.value = 0; tRange.dispatchEvent(new Event('input')); }
-      if (tLbl) tLbl.textContent = LANGS[currLang].dom.timeLbl;
-    };
-    bindClick('tb-reset', window.resetTime);
-    bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
-    bindBtn('cb-spin','spin', () => { if(!playingTime && tbPlay) tbPlay.click(); }, () => { if(playingTime && tbPlay) tbPlay.click(); });
-    
-    bindClick('cb-zenith', pointCameraAtBirthplace);
+    window.resetTime = function() {
+      clearInterval(playInterval); playingTime = false; 
+      if (tbPlay) tbPlay.textContent = LANGS[currLang].dom.tbPlay;
+      if (tRange) { tRange.value = 0; tRange.dispatchEvent(new Event('input')); }
+      if (tLbl) tLbl.textContent = LANGS[currLang].dom.timeLbl;
+    };
+    bindClick('tb-reset', window.resetTime);
+    bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
+    bindBtn('cb-spin','spin', () => { if(!playingTime && tbPlay) tbPlay.click(); }, () => { if(playingTime && tbPlay) tbPlay.click(); });
+    
+    bindClick('cb-zenith', pointCameraAtBirthplace);
 
-    const helioBtn = document.getElementById('cb-helio');
-    if(helioBtn) {
-      helioBtn.addEventListener('click', () => {
-        S.helio = !S.helio;
-        helioBtn.classList.toggle('on', S.helio);
-        setHelioUIState(S.helio);
-        if(userData.jd) updatePositions();
-      });
-    }
+    const helioBtn = document.getElementById('cb-helio');
+    if(helioBtn) {
+      helioBtn.addEventListener('click', () => {
+        S.helio = !S.helio;
+        helioBtn.classList.toggle('on', S.helio);
+        setHelioUIState(S.helio);
+        if(userData.jd) updatePositions();
+      });
+    }
 
-    bindBtn('cb-ecl','ecliptic',()=>eclRingG.visible=true, ()=>eclRingG.visible=false);
-    bindBtn('cb-eq', 'equator', ()=>{ if(!S.helio) eqRingG.visible=true; }, ()=>eqRingG.visible=false);
-    bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
-    bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
-    bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
+    bindBtn('cb-ecl','ecliptic',()=>eclRingG.visible=true, ()=>eclRingG.visible=false);
+    bindBtn('cb-eq', 'equator', ()=>{ if(!S.helio) eqRingG.visible=true; }, ()=>eqRingG.visible=false);
+    bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
+    bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
+    bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
 
-    const btnSys = document.getElementById('cb-sys');
-    if(btnSys) btnSys.addEventListener('click', () => {
-        S.sidereal=!S.sidereal; btnSys.classList.toggle('on',S.sidereal); btnSys.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT;
-        if (userData.jd) updatePositions();
-    });
+    const btnSys = document.getElementById('cb-sys');
+    if(btnSys) btnSys.addEventListener('click', () => {
+        S.sidereal=!S.sidereal; btnSys.classList.toggle('on',S.sidereal); btnSys.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT;
+        if (userData.jd) updatePositions();
+    });
 
-    const btnOut = document.getElementById('cb-out');
-    if(btnOut) btnOut.addEventListener('click', () => { S.showOut=!S.showOut; btnOut.classList.toggle('on',S.showOut); if(userData.jd)updatePositions(); });
+    const btnOut = document.getElementById('cb-out');
+    if(btnOut) btnOut.addEventListener('click', () => { S.showOut=!S.showOut; btnOut.classList.toggle('on',S.showOut); if(userData.jd)updatePositions(); });
 
-    const tb = document.getElementById('time-bar'), btnTm = document.getElementById('cb-tm');
-    if(btnTm && tb) btnTm.addEventListener('click', () => { S.time=!S.time; btnTm.classList.toggle('on',S.time); S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime()); });
+    const tb = document.getElementById('time-bar'), btnTm = document.getElementById('cb-tm');
+    if(btnTm && tb) btnTm.addEventListener('click', () => { S.time=!S.time; btnTm.classList.toggle('on',S.time); S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime()); });
 
-    const btnOrb = document.getElementById('cb-orb');
-    if(btnOrb) btnOrb.addEventListener('click', () => { S.orb=!S.orb; btnOrb.classList.toggle('on',S.orb); if (!S.orb) Object.values(dropLines).forEach(dl=>{dl.visible=false;}); else if (userData.jd) updatePositions(); });
+    const btnOrb = document.getElementById('cb-orb');
+    if(btnOrb) btnOrb.addEventListener('click', () => { S.orb=!S.orb; btnOrb.classList.toggle('on',S.orb); if (!S.orb) Object.values(dropLines).forEach(dl=>{dl.visible=false;}); else if (userData.jd) updatePositions(); });
 };
 
 // ==========================================
@@ -1386,253 +1386,253 @@ const setupEvents = () => {
 // ==========================================
 
 const TEX_URLS = {
-  earth: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
-  moon: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
-  venus: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
-  mars: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
-  jupiter: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',
-  saturn: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',
-  uranus: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
-  neptune: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg',
-  pluto: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/plutomap1k.jpg',
+  earth: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
+  moon: 'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
+  mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
+  venus: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
+  mars: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
+  jupiter: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',
+  saturn: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',
+  uranus: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
+  neptune: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg',
+  pluto: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/plutomap1k.jpg',
 };
 
 const loadedTex = {};
 
 const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
-  new Promise(res => {
-    const img = new Image(); 
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const t = new THREE.Texture(img);
-      t.colorSpace = THREE.SRGBColorSpace; 
-      t.needsUpdate = true;
-      loadedTex[k] = t; 
-      res();
-    };
-    img.onerror = () => res(); 
-    img.src = url;
-    setTimeout(res, 8000); // 增加超時保護，避免網路因素導致卡死
-  })
+  new Promise(res => {
+    const img = new Image(); 
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const t = new THREE.Texture(img);
+      t.colorSpace = THREE.SRGBColorSpace; 
+      t.needsUpdate = true;
+      loadedTex[k] = t; 
+      res();
+    };
+    img.onerror = () => res(); 
+    img.src = url;
+    setTimeout(res, 8000); // 增加超時保護，避免網路因素導致卡死
+  })
 );
 
 function makeSaturnRingTex() {
-  const c = document.createElement('canvas'); c.width = 512; c.height = 512;
-  const ctx = c.getContext('2d'), cx = 256, cy = 256;
-  const g = ctx.createRadialGradient(cx,cy,95, cx,cy,252);
-  g.addColorStop(0.00, 'rgba(0,0,0,0)');          
-  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    
-  g.addColorStop(0.18, 'rgba(215,195,165,1)');     
-  g.addColorStop(0.30, 'rgba(235,215,185,1)');     
-  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   
-  g.addColorStop(0.44, 'rgba(0,0,0,0)');           
-  g.addColorStop(0.48, 'rgba(0,0,0,0)');           
-  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   
-  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   
-  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   
-  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   
-  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    
-  g.addColorStop(1.00, 'rgba(0,0,0,0)');           
-  ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
-  return new THREE.CanvasTexture(c);
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d'), cx = 256, cy = 256;
+  const g = ctx.createRadialGradient(cx,cy,95, cx,cy,252);
+  g.addColorStop(0.00, 'rgba(0,0,0,0)');          
+  g.addColorStop(0.08, 'rgba(190,170,140,.9)');    
+  g.addColorStop(0.18, 'rgba(215,195,165,1)');     
+  g.addColorStop(0.30, 'rgba(235,215,185,1)');     
+  g.addColorStop(0.40, 'rgba(200,182,150,.85)');   
+  g.addColorStop(0.44, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.48, 'rgba(0,0,0,0)');           
+  g.addColorStop(0.52, 'rgba(235,215,185,.95)');   
+  g.addColorStop(0.65, 'rgba(220,200,168,.88)');   
+  g.addColorStop(0.75, 'rgba(195,175,140,.68)');   
+  g.addColorStop(0.85, 'rgba(170,150,118,.42)');   
+  g.addColorStop(0.93, 'rgba(140,120,88,.18)');    
+  g.addColorStop(1.00, 'rgba(0,0,0,0)');           
+  ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
+  return new THREE.CanvasTexture(c);
 }
 const satRingTex = makeSaturnRingTex();
 
 function buildEarth() {
-  const mat = new THREE.MeshStandardMaterial({
-    map: loadedTex.earth || null,
-    emissive: 0xffffff,
-    emissiveMap: loadedTex.earth || null,
-    emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
-    color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
-    roughness: 0.8, metalness: 0.1
-  });
-  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
-  
-  // ★ 修正：精準對齊經緯度 (將原本的 -Math.PI / 2 改為正的)
-  earthMesh.rotation.y = Math.PI / 2; 
-  
-  earthMathGroup.add(earthMesh);
-  
-  const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
-  const graticuleMat = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.15 });
-  const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
-  earthMesh.add(graticule);
+  const mat = new THREE.MeshStandardMaterial({
+    map: loadedTex.earth || null,
+    emissive: 0xffffff,
+    emissiveMap: loadedTex.earth || null,
+    emissiveIntensity: loadedTex.earth ? 0.35 : 0.1,
+    color: loadedTex.earth ? 0xffffff : 0x1a4a9a,
+    roughness: 0.8, metalness: 0.1
+  });
+  earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
+  
+  // ★ 修正：精準對齊經緯度 (將原本的 -Math.PI / 2 改為正的)
+  earthMesh.rotation.y = Math.PI / 2; 
+  
+  earthMathGroup.add(earthMesh);
+  
+  const graticuleGeo = new THREE.SphereGeometry(1.51, 24, 12);
+  const graticuleMat = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.15 });
+  const graticule = new THREE.LineSegments(new THREE.WireframeGeometry(graticuleGeo), graticuleMat);
+  earthMesh.add(graticule);
  
-  earthMathGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
-    new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  earthMathGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.68, 32, 32),
+    new THREE.MeshBasicMaterial({ color:0x4488CC, transparent:true, opacity:.13, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
 
-  birthMarker = new THREE.Group();
-  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
-  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
-  earthMathGroup.add(birthMarker); 
+  birthMarker = new THREE.Group();
+  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF3333 })));
+  birthMarker.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })));
+  earthMathGroup.add(birthMarker); 
 
-  const zGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
-  const zMat = new THREE.LineDashedMaterial({ color: 0xFF6B6B, dashSize: 0.15, gapSize: 0.1, transparent: true, opacity: 0.8 });
-  zenithLine = new THREE.Line(zGeo, zMat);
-  earthMathGroup.add(zenithLine); 
+  const zGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
+  const zMat = new THREE.LineDashedMaterial({ color: 0xFF6B6B, dashSize: 0.15, gapSize: 0.1, transparent: true, opacity: 0.8 });
+  zenithLine = new THREE.Line(zGeo, zMat);
+  earthMathGroup.add(zenithLine); 
 
-  const zDiv = document.createElement('div');
-  zDiv.className = 'lbl lasc';
-  zDiv.style.fontSize = '0.7rem';
-  zDiv.setAttribute('data-3d-type', 'ui');
-  zDiv.setAttribute('data-3d-id', 'zenith');
-  zDiv.innerHTML = LANGS[currLang].ui.zenith || '天頂';
-  zenithLabel = new CSS2DObject(zDiv);
-  earthMathGroup.add(zenithLabel); 
+  const zDiv = document.createElement('div');
+  zDiv.className = 'lbl lasc';
+  zDiv.style.fontSize = '0.7rem';
+  zDiv.setAttribute('data-3d-type', 'ui');
+  zDiv.setAttribute('data-3d-id', 'zenith');
+  zDiv.innerHTML = LANGS[currLang].ui.zenith || '天頂';
+  zenithLabel = new CSS2DObject(zDiv);
+  earthMathGroup.add(zenithLabel); 
 }
 
 function buildPlanet(pc) {
-  const tex = loadedTex[pc.id];
-  let mat;
+  const tex = loadedTex[pc.id];
+  let mat;
 
-  if (pc.type === 'fict') {
-    mat = new THREE.MeshBasicMaterial({ color: pc.col });
-  } else if (pc.id === 'sun') {
-    mat = new THREE.MeshStandardMaterial({
-      color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
-      roughness: 1, metalness: 0
-    });
-  } else {
-    if (tex) {
-      mat = new THREE.MeshStandardMaterial({
-        map: tex,
-        emissive: 0xffffff,
-        emissiveMap: tex,
-        emissiveIntensity: 0.15,
-        roughness: 0.9,
-        metalness: 0.05
-      });
-    } else {
-      const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
-      mat = new THREE.MeshStandardMaterial({
-        color: pc.col,
-        emissive: new THREE.Color(em.col),
-        emissiveIntensity: em.i,
-        roughness: 0.8, metalness: 0.1
-      });
-    }
-  }
+  if (pc.type === 'fict') {
+    mat = new THREE.MeshBasicMaterial({ color: pc.col });
+  } else if (pc.id === 'sun') {
+    mat = new THREE.MeshStandardMaterial({
+      color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
+      roughness: 1, metalness: 0
+    });
+  } else {
+    if (tex) {
+      mat = new THREE.MeshStandardMaterial({
+        map: tex,
+        emissive: 0xffffff,
+        emissiveMap: tex,
+        emissiveIntensity: 0.15,
+        roughness: 0.9,
+        metalness: 0.05
+      });
+    } else {
+      const em = EMISSIVE[pc.id] || { col: pc.col, i: 0.1 };
+      mat = new THREE.MeshStandardMaterial({
+        color: pc.col,
+        emissive: new THREE.Color(em.col),
+        emissiveIntensity: em.i,
+        roughness: 0.8, metalness: 0.1
+      });
+    }
+  }
 
-  const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 64, 64), mat);
+  const sphere = new THREE.Mesh(new THREE.SphereGeometry(pc.sz, 64, 64), mat);
 
-  if (pc.type === 'fict') {
-    sphere.add(new THREE.Mesh(new THREE.TorusGeometry(pc.sz*1.9, .09, 8, 32),
-      new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
-  }
+  if (pc.type === 'fict') {
+    sphere.add(new THREE.Mesh(new THREE.TorusGeometry(pc.sz*1.9, .09, 8, 32),
+      new THREE.MeshBasicMaterial({ color:pc.col, transparent:true, opacity:.45 })));
+  }
 
-  if (pc.id === 'venus') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
+  if (pc.id === 'venus') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-  if (pc.id === 'jupiter') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
-      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
+  if (pc.id === 'jupiter') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-  if (pc.id === 'saturn') {
-    const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
-    const ringMat = new THREE.MeshBasicMaterial({
-      map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI/2 + 0.466;
-    sphere.add(ring);
-    
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
+  if (pc.id === 'saturn') {
+    const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      map: satRingTex, transparent: true, opacity: 0.93, side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI/2 + 0.466;
+    sphere.add(ring);
+    
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-  if (pc.id === 'uranus') {
-    sphere.rotation.z = Math.PI / 2 * 0.97;
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    const urRing = new THREE.Mesh(
-      new THREE.RingGeometry(pc.sz*1.4, pc.sz*1.55, 64),
-      new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
-    );
-    urRing.rotation.x = Math.PI/2; sphere.add(urRing);
-  }
+  if (pc.id === 'uranus') {
+    sphere.rotation.z = Math.PI / 2 * 0.97;
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0x44CCCC, transparent:true, opacity:.1, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    const urRing = new THREE.Mesh(
+      new THREE.RingGeometry(pc.sz*1.4, pc.sz*1.55, 64),
+      new THREE.MeshBasicMaterial({ color:0x88CCCC, transparent:true, opacity:.35, side:THREE.DoubleSide })
+    );
+    urRing.rotation.x = Math.PI/2; sphere.add(urRing);
+  }
 
-  if (pc.id === 'neptune') {
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
-      new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
+  if (pc.id === 'neptune') {
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
+      new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-  if (pc.id === 'sun') {
-    sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
-      new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.9, 32, 32),
-      new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
-  }
+  if (pc.id === 'sun') {
+    sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xFFAA00, transparent:true, opacity:.16, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+    sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.9, 32, 32),
+      new THREE.MeshBasicMaterial({ color:0xFF8800, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
+  }
 
-  return sphere;
+  return sphere;
 }
 
 function buildBaseMeshes() {
-  buildEarth();
-  PCONF.forEach(pc => {
-    const sphere = buildPlanet(pc);
-    if (pc.isOut) sphere.visible = false;
-    plG.add(sphere); pMesh[pc.id] = sphere;
+  buildEarth();
+  PCONF.forEach(pc => {
+    const sphere = buildPlanet(pc);
+    if (pc.isOut) sphere.visible = false;
+    plG.add(sphere); pMesh[pc.id] = sphere;
 
-    const hex = '#' + pc.col.toString(16).padStart(6, '0');
-    const el = document.createElement('div'); el.className = 'lbl lpl';
-    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
-    const obj = new CSS2DObject(el);
-    if (pc.isOut) obj.element.style.display = 'none';
-    plG.add(obj); pLbl[pc.id] = obj;
+    const hex = '#' + pc.col.toString(16).padStart(6, '0');
+    const el = document.createElement('div'); el.className = 'lbl lpl';
+    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
+    const obj = new CSS2DObject(el);
+    if (pc.isOut) obj.element.style.display = 'none';
+    plG.add(obj); pLbl[pc.id] = obj;
 
-    const buf = new Float32Array(6);
-    const dg = new THREE.BufferGeometry();
-    const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
-    dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
-    const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:.6 }));
-    dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa;
-    plG.add(dl); dropLines[pc.id] = dl;
-  });
+    const buf = new Float32Array(6);
+    const dg = new THREE.BufferGeometry();
+    const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
+    dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
+    const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:.6 }));
+    dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa;
+    plG.add(dl); dropLines[pc.id] = dl;
+  });
 }
 
 const clock = new THREE.Clock();
 function animate() {
-  requestAnimationFrame(animate);
-  const dt = clock.getDelta();
-  if(OCtrl && OCtrl.update) OCtrl.update();
-  if (playingTime && curGeo && curGeo.retrograde) {
-    const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18, jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06 };
-    PCONF.forEach(pc => { if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined && !S.helio) { pMesh[pc.id].rotateY(dt * rotSpeeds[pc.id] * (curGeo.retrograde[pc.id] ? -1 : 1)); } });
-  }
-  updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  if(OCtrl && OCtrl.update) OCtrl.update();
+  if (playingTime && curGeo && curGeo.retrograde) {
+    const rotSpeeds = { moon:0.04, mercury:0.08, venus:0.02, sun:0.12, mars:0.18, jupiter:0.44, saturn:0.38, uranus:0.30, neptune:0.34, pluto:0.06 };
+    PCONF.forEach(pc => { if (pMesh[pc.id] && rotSpeeds[pc.id] !== undefined && !S.helio) { pMesh[pc.id].rotateY(dt * rotSpeeds[pc.id] * (curGeo.retrograde[pc.id] ? -1 : 1)); } });
+  }
+  updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
 Promise.all(texPromises).then(() => {
-    buildBaseMeshes();
-    setupEvents();
-    window.switchLang(currLang);
-    window.hst();
+    buildBaseMeshes();
+    setupEvents();
+    window.switchLang(currLang);
+    window.hst();
 
-    const ov = document.getElementById('loading-overlay');
-    if (ov) { 
-        ov.classList.add('hide'); 
-        setTimeout(() => ov.style.display = 'none', 700); 
-    }
+    const ov = document.getElementById('loading-overlay');
+    if (ov) { 
+        ov.classList.add('hide'); 
+        setTimeout(() => ov.style.display = 'none', 700); 
+    }
 
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
-      bloom.setSize(window.innerWidth, window.innerHeight); lblR.setSize(window.innerWidth, window.innerHeight);
-      if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
-    });
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+      bloom.setSize(window.innerWidth, window.innerHeight); lblR.setSize(window.innerWidth, window.innerHeight);
+      if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
+    });
 
-    animate();
+    animate();
 });
 
 } catch (err) {
-    alert("3D星象引擎加載失敗，錯誤訊息: " + err.message);
-    console.error(err);
+    alert("3D星象引擎加載失敗，錯誤訊息: " + err.message);
+    console.error(err);
 }
 </script>
 </body>
