@@ -412,7 +412,6 @@ window.toggleDST = function() {
   hst();
 };
 
-// ★ 日期算法：修復可能的浮點精度問題
 function jdn(y, m, d, h = 12, mn = 0) {
   if (m <= 2) { y--; m += 12; }
   const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
@@ -575,7 +574,6 @@ function auToR(au) {
     return 18 * Math.pow(au, 0.42); 
 }
 
-// ★ 核心修復 1：無迴圈防卡死恆星時轉換
 function stCorr(lng, tz) { 
   const val = (lng - tz * 15) * 4;
   return Math.round(val);
@@ -716,7 +714,6 @@ function updateMeteors(dt) {
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
-// ── Textures ──
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
@@ -771,8 +768,10 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-const eclG = new THREE.Group(); eclG.rotation.x = -Math.PI / 2; scene.add(eclG);
+// ★ 核心修復 1：黃道面設為絕對水平 (0,0,0)
+const eclG = new THREE.Group(); scene.add(eclG);
 
+// 赤道面傾斜 OBL 度
 const eqG = new THREE.Group(); eqG.rotation.x = OBL; eclG.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -800,6 +799,7 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
+// 黃道面網格
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -852,6 +852,25 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
+// ★ 核心修復 5：必須在構造 PCONF 前定義！！！
+const PCONF = [
+  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
+  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
+  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:17 },
+  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:21 },
+  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:25 },
+  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:29 },
+  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:33 },
+  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
+  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
+  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
+  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
+  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:11 }, 
+];
+
 const helioOrbitsG = new THREE.Group(); eclG.add(helioOrbitsG);
 helioOrbitsG.visible = false;
 ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto'].forEach(id => {
@@ -871,24 +890,6 @@ helioOrbitsG.visible = false;
 
 const plG = new THREE.Group(); eclG.add(plG);
 const aspG = new THREE.Group(); plG.add(aspG);
-
-const PCONF = [
-  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
-  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
-  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:17 },
-  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:21 },
-  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:25 },
-  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:29 },
-  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:33 },
-  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
-  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
-  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
-  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:11 }, 
-];
 
 const EMISSIVE = {
   sun:    { col:0xFFCC00, i:3.5 }, moon:   { col:0x445566, i:0.18 },
@@ -987,12 +988,10 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'jupiter') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -1005,7 +1004,6 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'uranus') {
     sphere.rotation.z = Math.PI / 2 * 0.97;
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
@@ -1016,12 +1014,10 @@ function buildPlanet(pc) {
     );
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
-
   if (pc.id === 'neptune') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
-
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
@@ -1070,6 +1066,17 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
+// ★ 核心修復：清理幾何體防崩潰
+function clearGroup(group) {
+    while (group.children.length > 0) {
+        const c = group.children[0];
+        if (c.isCSS2DObject && c.element) c.element.remove();
+        if (c.geometry) c.geometry.dispose();
+        if (c.material) c.material.dispose();
+        group.remove(c);
+    }
+}
+
 function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   
@@ -1106,17 +1113,6 @@ function bindBtn(id, key, onFn, offFn) {
   const b = document.getElementById(id); if (!b) return;
   b.classList.toggle('on', S[key]);
   b.addEventListener('click', () => { S[key] = !S[key]; b.classList.toggle('on', S[key]); S[key] ? onFn() : offFn(); });
-}
-
-// ★ 核心修復：清理遺留幾何體，防內存洩漏
-function clearGroup(group) {
-    while (group.children.length > 0) {
-        const c = group.children[0];
-        if (c.isCSS2DObject && c.element) c.element.remove();
-        if (c.geometry) c.geometry.dispose();
-        if (c.material) c.material.dispose();
-        group.remove(c);
-    }
 }
 
 function placePlanets(geo, helio, lst, aya) {
@@ -1288,11 +1284,11 @@ function buildAspects(geo) {
         if (curDiff > 180) curDiff = 360 - curDiff;
         
         let prevDiff = 0;
-        if(geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
+        if(geo.prev && geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
            prevDiff = Math.abs(geo.prev[bp[i]] - geo.prev[bp[j]]);
            if (prevDiff > 180) prevDiff = 360 - prevDiff;
         } else {
-           prevDiff = curDiff + 1; // 兜底：如果沒有過去數據，默認當作入相位處理
+           prevDiff = curDiff + 1; 
         }
         
         const isApplying = Math.abs(curDiff - ASP_A[k]) < Math.abs(prevDiff - ASP_A[k]);
@@ -1320,7 +1316,7 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
   PCONF.filter(pc => !pc.isOut || S.showOut).forEach(pc => {
     const lon = geo[pc.id]; if (lon === undefined || isNaN(lon)) return;
     const z = zodiac(lon), man = getMansion(lon, isSid, jd);
-    const retroStr = (geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
+    const retroStr = (geo.retrograde && geo.retrograde[pc.id] && !S.helio) ? ' <span style="color:var(--red)">(逆)</span>' : '';
     const hex = '#' + pc.col.toString(16).padStart(6,'0');
     const row = document.createElement('div'); row.className = 'pr';
     row.innerHTML = `<div class="pr-ic" style="color:${hex}">${pc.ic}</div>
@@ -1337,6 +1333,7 @@ function renderPlanetList(geo, isSid, jd, sfx='') {
 function renderHouseGrid(geo, isSid, jd, sfx='') {
   const g = document.getElementById('hgrid'+sfx); if (!g) return;
   g.innerHTML = '';
+  if (!geo || !geo.houses) return;
   for (let i = 0; i < 12; i++) {
     const cLon = geo.houses[i];
     if(cLon === undefined || isNaN(cLon)) continue;
@@ -1378,8 +1375,11 @@ const hideTip = () => { document.getElementById('tip').style.display = 'none'; }
 window.hst = function() {
   const lng = parseFloat(document.getElementById('f-lg').value);
   const tz  = parseInt(document.getElementById('f-tz').value) || 8;
-  let h  = parseInt(document.getElementById('f-h').value) || 0;
-  let mn = parseInt(document.getElementById('f-mi').value) || 0;
+  const hInput = document.getElementById('f-h').value;
+  const mInput = document.getElementById('f-mi').value;
+  
+  let h  = hInput === "" ? 0 : parseInt(hInput);
+  let mn = mInput === "" ? 0 : parseInt(mInput);
   const dst = document.getElementById('f-dst').checked;
   if (dst) h += 1;
   const hint = document.getElementById('st-hint');
@@ -1389,7 +1389,9 @@ window.hst = function() {
     const dstTxt = dst ? ' [DST+1h]' : '';
     hint.textContent = `✦ 真太陽時${dstTxt} 偏差${c>=0?'+':''}${c}分 → 校正後 ${String(st.h).padStart(2,'0')}:${String(st.m).padStart(2,'0')}`;
     hint.style.display = 'block';
-  } else hint.style.display = 'none';
+  } else {
+    hint.style.display = 'none';
+  }
 };
 
 window.submitForm = function() {
@@ -1397,16 +1399,26 @@ window.submitForm = function() {
   const y = parseInt(document.getElementById('f-y').value);
   const m = parseInt(document.getElementById('f-m').value);
   const d = parseInt(document.getElementById('f-d').value);
-  let h  = parseInt(document.getElementById('f-h').value) || 0;
-  let mn = parseInt(document.getElementById('f-mi').value) || 0;
   
-  const lng = parseFloat(document.getElementById('f-lg').value) || 120;
-  const lat = parseFloat(document.getElementById('f-lat').value) || 30;
-  const tz  = parseInt(document.getElementById('f-tz').value) || 8;
+  const hInput = document.getElementById('f-h').value;
+  const mInput = document.getElementById('f-mi').value;
+  let h  = hInput === "" ? 0 : parseInt(hInput);
+  let mn = mInput === "" ? 0 : parseInt(mInput);
+
+  if (isNaN(y) || isNaN(m) || isNaN(d) || isNaN(h) || isNaN(mn)) { 
+    alert('請輸入完整的年月日時分！'); 
+    return; 
+  }
+
+  const lngStr = document.getElementById('f-lg').value;
+  const latStr = document.getElementById('f-lat').value;
+  const tzStr  = document.getElementById('f-tz').value;
+  const lng = lngStr === "" ? 120 : parseFloat(lngStr);
+  const lat = latStr === "" ? 30 : parseFloat(latStr);
+  const tz  = tzStr === "" ? 8 : parseInt(tzStr);
+
   const dst = document.getElementById('f-dst').checked;
-  
   const effectiveH = dst ? h + 1 : h; 
-  if (isNaN(y) || isNaN(m) || isNaN(d)) { alert('請輸入完整的年月日！'); return; }
   
   const utcH = effectiveH - tz;
   const jd_utc = jdn(y, m, d, utcH, mn);
@@ -1440,7 +1452,7 @@ function updatePositions() {
   curHelio = res.helio;
   currentGMST = res.gmst;
   
-  if(isNaN(currentGMST)) return; // 終極防禦：若計算失效直接終止渲染，防止黑屏
+  if(isNaN(currentGMST)) return; 
   
   manG.rotation.z = S.sidereal ? 0 : res.aya * DEG;
   placePlanets(curGeo, curHelio, res.lst, res.aya);
@@ -1513,7 +1525,7 @@ bindBtn('cb-ecl','ecliptic',()=>eclG.visible=true, ()=>eclG.visible=false);
 bindBtn('cb-eq', 'equator', ()=>eqG.visible=true,  ()=>eqG.visible=false);
 bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
 bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
-bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>aspG.clear());
+bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
 
 { const b = document.getElementById('cb-sys');
   b.addEventListener('click', () => {
