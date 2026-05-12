@@ -247,8 +247,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
 <div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
 
 <script type="module">
-try {
-
+// 將模組 import 移到最外層，這是 ES6 模組的硬性規定！
 import * as THREE from 'three';
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
@@ -256,6 +255,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+try {
 
 // ==========================================
 // 1. 唯一宣告的全局變數與常數
