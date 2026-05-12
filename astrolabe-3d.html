@@ -24,9 +24,11 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .top-left-panel{position:absolute;top:30px;left:30px;pointer-events:auto;z-index:40}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
+
 #global-lang-toggle{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
+
 .side-panel{position:absolute;top:80px;z-index:20;width:220px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 #lp{left:14px}#rp{right:14px}
 .pc{background:rgba(2,2,4,.87);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(99,163,237,.16);border-radius:10px;padding:13px 15px}
@@ -257,6 +259,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const DEG = Math.PI / 180, R2D = 180 / Math.PI;
 const norm = x => ((x % 360) + 360) % 360;
+
 const ZIQI_BASE = 111.41;
 const ZIQI_SPEED = 0.11140353;
 const Z_EXAG = 3.5;
@@ -383,9 +386,6 @@ window.switchLang = l => {
     renderHouseGrid(curGeo, S.sidereal, userData.jd, '-m');
     renderAnalysis(curGeo, S.sidereal, userData.jd, '');
     renderAnalysis(curGeo, S.sidereal, userData.jd, '-m');
-    document.getElementById('time-range').dispatchEvent(new Event('input'));
-  } else {
-    document.getElementById('time-lbl').textContent = d.dom.timeLbl;
   }
 };
 
@@ -394,7 +394,7 @@ window.toggleDST = function() {
   const d = LANGS[currLang];
   document.getElementById('dst-badge').textContent = on ? d.dst.on : d.dst.off;
   document.getElementById('dst-badge').className = 'dst-badge' + (on ? ' active' : '');
-  hst();
+  if(window.hst) window.hst();
 };
 
 function jdn(y, m, d, h = 12, mn = 0) {
@@ -560,8 +560,8 @@ function auToR(au) {
 }
 
 function stCorr(lng, tz) { 
-  const val = (lng - tz * 15) * 4;
-  return Math.round(val);
+  if(isNaN(lng) || isNaN(tz)) return 0;
+  return Math.round((lng - tz * 15) * 4);
 }
 
 function applyST(h, mn, c) {
@@ -655,7 +655,6 @@ OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
 OCtrl.maxDistance = 250;
 
-// ── Starfield ──
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
   for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - .5) * sp;
@@ -699,7 +698,6 @@ function updateMeteors(dt) {
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
-// ── Textures ──
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
@@ -835,7 +833,7 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
-// ★ 核心修復 5：保證 PCONF 定義在所有使用它的邏輯之前
+// ★ 核心修復：保證 PCONF 定義在軌道構建之前
 const PCONF = [
   { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
   { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
@@ -1054,10 +1052,11 @@ let birthLng = 120, birthLat = 30;
 let currentAscDeg = 0;
 let ascHintTimer = null;
 
-// ★ 核心修復：清理幾何體防崩潰
+// ★ 核心修復：使用倒序 FOR 循環清理群組，100% 杜絕 while 死循環導致瀏覽器卡死
 function clearGroup(group) {
-    while (group.children.length > 0) {
-        const c = group.children[0];
+    if (!group || !group.children) return;
+    for (let i = group.children.length - 1; i >= 0; i--) {
+        const c = group.children[i];
         if (c.isCSS2DObject && c.element) c.element.remove();
         if (c.geometry) c.geometry.dispose();
         if (c.material) c.material.dispose();
@@ -1165,7 +1164,7 @@ function placePlanets(geo, helio, lst, aya) {
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut;
       const lon = geo[pc.id];
-      if (lon === undefined) return;
+      if (lon === undefined || isNaN(lon)) return;
       const a = lon * DEG;
       const beta = (geo[pc.id + '_lat'] || 0) * DEG;
       const rProj = Math.cos(beta) * pc.R;
@@ -1177,7 +1176,7 @@ function placePlanets(geo, helio, lst, aya) {
         pLbl[pc.id].position.set(x+0.2,y+0.2,z+pc.sz+0.3); 
         pLbl[pc.id].element.style.display = vis ? 'flex' : 'none'; 
         const rEl = document.getElementById('r_' + pc.id);
-        if (rEl) rEl.textContent = geo.retrograde[pc.id] ? '(逆)' : '';
+        if (rEl) rEl.textContent = (geo.retrograde && geo.retrograde[pc.id]) ? '(逆)' : '';
       }
       
       const dl = dropLines[pc.id];
@@ -1196,53 +1195,60 @@ function placePlanets(geo, helio, lst, aya) {
 
     clearGroup(houseG);
     
-    for (let i = 0; i < 12; i++) {
-      const a = geo.houses[i] * DEG;
-      let isAxis = false;
-      let col = 0xFFFFFF;
-      
-      if (!S.sidereal) {
-        isAxis = (i === 0 || i === 3 || i === 6 || i === 9);
-        col = (i===0||i===6) ? 0xFF4444 : ((i===3||i===9) ? 0x7DE09A : 0xFFFFFF);
+    if (geo.houses && geo.houses.length === 12) {
+      for (let i = 0; i < 12; i++) {
+        const a = geo.houses[i] * DEG;
+        if (isNaN(a)) continue;
+        let isAxis = false;
+        let col = 0xFFFFFF;
         
-        houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
-          new THREE.Vector3(Math.cos(a)*(isAxis?43:40.5), Math.sin(a)*(isAxis?43:40.5), 0)
-        ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis?.68:.18 })));
-        
-        if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
-        else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
-        else if (i === 9) lbl2D(houseG, 'lmc', 46, a, 'ui', 'mc');
-        else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
-        else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
-      } else {
-        houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
-          new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
-        ]), new THREE.LineBasicMaterial({ color:0x888888, transparent:true, opacity:0.18 })));
-        lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+        if (!S.sidereal) {
+          isAxis = (i === 0 || i === 3 || i === 6 || i === 9);
+          col = (i===0||i===6) ? 0xFF4444 : ((i===3||i===9) ? 0x7DE09A : 0xFFFFFF);
+          
+          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+            new THREE.Vector3(Math.cos(a)*(isAxis?43:40.5), Math.sin(a)*(isAxis?43:40.5), 0)
+          ]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:isAxis?.68:.18 })));
+          
+          if (i === 0) lbl2D(houseG, 'lasc', 46, a, 'ui', 'asc');
+          else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
+          else if (i === 9) lbl2D(houseG, 'lmc', 46, a, 'ui', 'mc');
+          else if (i === 3) lbl2D(houseG, 'lmc', 46, a, 'ui', 'ic');
+          else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+        } else {
+          houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(a)*17, Math.sin(a)*17, 0),
+            new THREE.Vector3(Math.cos(a)*40.5, Math.sin(a)*40.5, 0)
+          ]), new THREE.LineBasicMaterial({ color:0x888888, transparent:true, opacity:0.18 })));
+          lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
+        }
       }
-    }
 
-    if (S.sidereal) {
-      const ascA = geo.asc * DEG;
-      const dscA = geo.dsc * DEG;
-      const mcA = geo.mc * DEG;
-      const icA = geo.ic * DEG;
-      
-      houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(Math.cos(dscA)*43, Math.sin(dscA)*43, 0),
-        new THREE.Vector3(Math.cos(ascA)*43, Math.sin(ascA)*43, 0)
-      ]), new THREE.LineBasicMaterial({ color:0xFF4444, transparent:true, opacity:0.68 })));
-      lbl2D(houseG, 'lasc', 46, ascA, 'ui', 'asc');
-      lbl2D(houseG, 'ldsc', 46, dscA, 'ui', 'dsc');
-      
-      houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
-        new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
-      ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
-      lbl2D(houseG, 'lmc', 46, mcA, 'ui', 'mc');
-      lbl2D(houseG, 'lmc', 46, icA, 'ui', 'ic');
+      if (S.sidereal) {
+        const ascA = geo.asc * DEG;
+        const dscA = geo.dsc * DEG;
+        const mcA = geo.mc * DEG;
+        const icA = geo.ic * DEG;
+        
+        if(!isNaN(ascA) && !isNaN(dscA)) {
+            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(dscA)*43, Math.sin(dscA)*43, 0),
+            new THREE.Vector3(Math.cos(ascA)*43, Math.sin(ascA)*43, 0)
+            ]), new THREE.LineBasicMaterial({ color:0xFF4444, transparent:true, opacity:0.68 })));
+            lbl2D(houseG, 'lasc', 46, ascA, 'ui', 'asc');
+            lbl2D(houseG, 'ldsc', 46, dscA, 'ui', 'dsc');
+        }
+        
+        if(!isNaN(mcA) && !isNaN(icA)) {
+            houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
+            new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
+            ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
+            lbl2D(houseG, 'lmc', 46, mcA, 'ui', 'mc');
+            lbl2D(houseG, 'lmc', 46, icA, 'ui', 'ic');
+        }
+      }
     }
   }
 
@@ -1258,7 +1264,7 @@ function buildAspects(geo) {
   if (S.showOut) bp.push('uranus','neptune','pluto');
   
   for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
-    if(geo[bp[i]] === undefined || geo[bp[j]] === undefined) continue;
+    if(geo[bp[i]] === undefined || geo[bp[j]] === undefined || isNaN(geo[bp[i]]) || isNaN(geo[bp[j]])) continue;
     
     const diff = Math.min(norm(geo[bp[i]]-geo[bp[j]]), norm(geo[bp[j]]-geo[bp[i]]));
     const orb = (bp[i]==='sun'||bp[j]==='sun'||bp[i]==='moon'||bp[j]==='moon') ? 10 : 8;
@@ -1360,6 +1366,7 @@ function showTip(e, h, p) {
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
+// ★ 核心修復 2：安全計算真太陽時，避免 NaN
 window.hst = function() {
   const lngStr = document.getElementById('f-lg').value;
   const tzStr  = document.getElementById('f-tz').value;
@@ -1373,12 +1380,18 @@ window.hst = function() {
   
   const dst = document.getElementById('f-dst').checked;
   if (dst) h += 1;
+  
   const hint = document.getElementById('st-hint');
   
   if (!isNaN(lng) && !isNaN(tz) && !isNaN(h) && !isNaN(mn)) {
-    const c = stCorr(lng, tz), st = applyST(h, mn, c);
+    const c = stCorr(lng, tz);
+    let totalM = mn + c;
+    let newH = h + Math.floor(totalM / 60);
+    let newM = ((totalM % 60) + 60) % 60;
+    newH = ((newH % 24) + 24) % 24;
+
     const dstTxt = dst ? ' [DST+1h]' : '';
-    hint.textContent = `✦ 真太陽時${dstTxt} 偏差${c>=0?'+':''}${c}分 → 校正後 ${String(st.h).padStart(2,'0')}:${String(st.m).padStart(2,'0')}`;
+    hint.textContent = `✦ 真太陽時${dstTxt} 偏差${c>=0?'+':''}${c}分 → 校正後 ${String(newH).padStart(2,'0')}:${String(newM).padStart(2,'0')}`;
     hint.style.display = 'block';
   } else {
     hint.style.display = 'none';
@@ -1387,9 +1400,14 @@ window.hst = function() {
 
 window.submitForm = function() {
   const name = document.getElementById('f-nm').value.trim() || '命主';
-  const y = parseInt(document.getElementById('f-y').value);
-  const m = parseInt(document.getElementById('f-m').value);
-  const d = parseInt(document.getElementById('f-d').value);
+  
+  // 安全獲取並轉換，防止產生 NaN
+  const yStr = document.getElementById('f-y').value;
+  const mStr = document.getElementById('f-m').value;
+  const dStr = document.getElementById('f-d').value;
+  const y = parseInt(yStr);
+  const m = parseInt(mStr);
+  const d = parseInt(dStr);
   
   const hInput = document.getElementById('f-h').value;
   const mInput = document.getElementById('f-mi').value;
@@ -1416,10 +1434,14 @@ window.submitForm = function() {
   
   if (isNaN(jd_utc)) { alert('時間計算錯誤，請檢查輸入'); return; }
   
-  const st = applyST(effectiveH, mn, stCorr(lng, tz));
+  const c = stCorr(lng, tz);
+  let totalM = mn + c;
+  let newH = effectiveH + Math.floor(totalM / 60);
+  let newM = ((totalM % 60) + 60) % 60;
+  newH = ((newH % 24) + 24) % 24;
+
   birthLng = lng; birthLat = lat;
-  
-  userData = { name, y, m, d, h:st.h, mn:st.m, lng, lat, tz, dst, jd:jd_utc };
+  userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
   launch();
 };
 
@@ -1432,7 +1454,7 @@ window.loadDemo = function() {
 };
 
 function updatePositions() {
-  if (!userData.jd) return;
+  if (!userData || !userData.jd || isNaN(userData.jd)) return;
   const offHalfH = parseInt(document.getElementById('time-range').value) || 0;
   const offDays  = offHalfH * 0.5 / 24;
   const tJD = userData.jd + offDays;
@@ -1592,6 +1614,7 @@ Promise.all(texPromises).then(() => {
   });
   animate();
 });
+
 </script>
 </body>
 </html>
