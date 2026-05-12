@@ -24,11 +24,9 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .top-left-panel{position:absolute;top:30px;left:30px;pointer-events:auto;z-index:40}
 .btn-back{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(99,163,237,.08);border:1px solid rgba(99,163,237,.4);color:var(--blue);text-decoration:none;font-size:1.2rem;transition:all .3s;box-shadow:0 0 10px rgba(99,163,237,.2)}
 .btn-back:hover{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 20px rgba(99,163,237,.6);color:#fff}
-
 #global-lang-toggle{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px;pointer-events:auto}
 .mlbtn{background:rgba(99,163,237,.1);border:1px solid rgba(99,163,237,.3);font-size:.6rem;color:rgba(255,255,255,.6);cursor:pointer;letter-spacing:.05em;transition:.3s;padding:5px 10px;border-radius:6px;font-family:'Noto Sans TC',sans-serif}
 .mlbtn:hover,.mlbtn.active{color:var(--gold);border-color:var(--gold);background:rgba(240,201,106,.15);box-shadow:0 0 12px rgba(240,201,106,.2)}
-
 .side-panel{position:absolute;top:80px;z-index:20;width:220px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 #lp{left:14px}#rp{right:14px}
 .pc{background:rgba(2,2,4,.87);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(99,163,237,.16);border-radius:10px;padding:13px 15px}
@@ -67,12 +65,7 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
   #tb-sub{display:none}
   #global-lang-toggle{top:12px;left:50%;transform:translateX(-50%);gap:5px}
   .mlbtn{padding:4px 8px;font-size:.52rem}
-  
-  #ctrl-bar {
-    bottom: 80px; right: 0; left: 0;
-    flex-direction: row; overflow-x: auto;
-    padding: 0 14px 10px; gap: 10px; justify-content: flex-start;
-  }
+  #ctrl-bar { bottom: 80px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 0 14px 10px; gap: 10px; justify-content: flex-start; }
   #ctrl-bar::-webkit-scrollbar { display: none; }
   #time-bar { bottom: 20px; min-width: 0; width: 92%; }
   #legend { top: 75px; bottom: auto; flex-wrap: wrap; justify-content: center; }
@@ -112,8 +105,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .sbtn:hover{background:var(--blue);color:#000;box-shadow:0 0 32px rgba(99,163,237,.55)}
 .demo{text-align:center;margin-top:11px;font-size:.56rem;color:rgba(255,255,255,.28);cursor:pointer;transition:.18s}
 .demo:hover{color:var(--blue-l)}
-
-/* ── DST Toggle ── */
 .dst-row{display:flex;align-items:center;gap:10px;margin-top:10px}
 .dst-label{font-size:.52rem;color:rgba(255,255,255,.55);flex:1}
 .dst-badge{font-size:.46rem;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.12);color:#FF9A9A;border:1px solid rgba(255,107,107,.3);letter-spacing:.06em}
@@ -124,7 +115,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .dst-slider:before{content:'';position:absolute;height:16px;width:16px;left:2px;bottom:2px;background:rgba(144,196,255,.6);border-radius:50%;transition:.3s}
 .dst-toggle input:checked + .dst-slider{background:rgba(255,180,50,.22);border-color:rgba(255,180,50,.5)}
 .dst-toggle input:checked + .dst-slider:before{transform:translateX(18px);background:#FFD080}
-
 .lbl{pointer-events:none;font-family:'Noto Sans TC',sans-serif}
 .lecl{color:#FFD700;font-size:.72rem;font-weight:600;text-shadow:0 0 14px #D4A843,0 0 5px #000}
 .leq{color:#90C4FF;font-size:.72rem;font-weight:500;text-shadow:0 0 12px #63A3ED,0 0 5px #000}
@@ -137,13 +127,11 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .lasc{color:var(--red);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--red),0 0 5px #000;letter-spacing:.05em}
 .ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000;letter-spacing:.05em}
 .lmc{color:#7DE09A;font-size:.8rem;font-weight:bold;text-shadow:0 0 12px #7DE09A,0 0 5px #000;letter-spacing:.05em}
-
 #loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(2,2,4,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
 #loading-overlay.hide{opacity:0;pointer-events:none}
 .loading-spinner{width:48px;height:48px;border:2px solid rgba(99,163,237,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:.65rem;color:var(--blue);letter-spacing:.25em}
-
 #asc-hint{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(2,2,4,.82);backdrop-filter:blur(12px);border:1px solid rgba(240,201,106,.25);border-radius:20px;padding:5px 16px;font-size:.52rem;color:rgba(240,201,106,.7);letter-spacing:.12em;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
 #asc-hint.show{opacity:1}
 </style>
@@ -198,7 +186,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="hst()">
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="hst()">
   </div>
-
   <div class="dst-row">
     <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
     <span class="dst-badge" id="dst-badge">標準時</span>
@@ -207,7 +194,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
       <span class="dst-slider"></span>
     </label>
   </div>
-
   <div id="st-hint"></div>
   <button class="sbtn" id="btn-sub" onclick="submitForm()">觀 測 星 象 能 量</button>
   <div class="demo" id="btn-demo" onclick="loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
@@ -271,7 +257,6 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const DEG = Math.PI / 180, R2D = 180 / Math.PI;
 const norm = x => ((x % 360) + 360) % 360;
-
 const ZIQI_BASE = 111.41;
 const ZIQI_SPEED = 0.11140353;
 const Z_EXAG = 3.5;
@@ -714,6 +699,7 @@ function updateMeteors(dt) {
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
+// ── Textures ──
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
@@ -768,10 +754,8 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-// ★ 核心修復 1：黃道面設為絕對水平 (0,0,0)
-const eclG = new THREE.Group(); scene.add(eclG);
+const eclG = new THREE.Group(); eclG.rotation.x = -Math.PI / 2; scene.add(eclG);
 
-// 赤道面傾斜 OBL 度
 const eqG = new THREE.Group(); eqG.rotation.x = OBL; eclG.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -799,7 +783,6 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
-// 黃道面網格
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .4, 8, 200),
@@ -852,7 +835,7 @@ MANS.forEach(m => {
   lbl2D(manG, 'lman', 61, a0+(a1-a0)/2, 'man', m.id);
 });
 
-// ★ 核心修復 5：必須在構造 PCONF 前定義！！！
+// ★ 核心修復 5：保證 PCONF 定義在所有使用它的邏輯之前
 const PCONF = [
   { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
   { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
@@ -988,10 +971,12 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xFFEE88, transparent:true, opacity:.12, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'jupiter') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.1, 32, 32),
       new THREE.MeshBasicMaterial({ color:0xCC8844, transparent:true, opacity:.08, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'saturn') {
     const ringGeo = new THREE.RingGeometry(pc.sz*1.55, pc.sz*2.85, 64);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -1004,6 +989,7 @@ function buildPlanet(pc) {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.08, 24, 24),
       new THREE.MeshBasicMaterial({ color:0xDDCC88, transparent:true, opacity:.06, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'uranus') {
     sphere.rotation.z = Math.PI / 2 * 0.97;
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
@@ -1014,10 +1000,12 @@ function buildPlanet(pc) {
     );
     urRing.rotation.x = Math.PI/2; sphere.add(urRing);
   }
+
   if (pc.id === 'neptune') {
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.12, 24, 24),
       new THREE.MeshBasicMaterial({ color:0x2244BB, transparent:true, opacity:.14, blending:THREE.AdditiveBlending, side:THREE.BackSide })));
   }
+
   if (pc.id === 'sun') {
     sphere.add(new THREE.PointLight(0xFFF5CC, 1100, 0, 2.0));
     sphere.add(new THREE.Mesh(new THREE.SphereGeometry(pc.sz*1.4, 32, 32),
@@ -1373,13 +1361,16 @@ function showTip(e, h, p) {
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
 window.hst = function() {
-  const lng = parseFloat(document.getElementById('f-lg').value);
-  const tz  = parseInt(document.getElementById('f-tz').value) || 8;
+  const lngStr = document.getElementById('f-lg').value;
+  const tzStr  = document.getElementById('f-tz').value;
   const hInput = document.getElementById('f-h').value;
   const mInput = document.getElementById('f-mi').value;
   
+  const lng = lngStr === "" ? NaN : parseFloat(lngStr);
+  const tz  = tzStr === "" ? NaN : parseInt(tzStr);
   let h  = hInput === "" ? 0 : parseInt(hInput);
   let mn = mInput === "" ? 0 : parseInt(mInput);
+  
   const dst = document.getElementById('f-dst').checked;
   if (dst) h += 1;
   const hint = document.getElementById('st-hint');
@@ -1601,7 +1592,6 @@ Promise.all(texPromises).then(() => {
   });
   animate();
 });
-
 </script>
 </body>
 </html>
