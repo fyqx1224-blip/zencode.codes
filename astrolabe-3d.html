@@ -53,7 +53,6 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .at{display:inline-block;font-size:.48rem;padding:1px 5px;border-radius:3px;background:rgba(99,163,237,.14);color:var(--blue-l);margin-right:4px}
 .av{color:var(--gold);font-family:'Noto Serif TC',serif}
 .retro{color:var(--red);font-size:.48rem;margin-left:3px;vertical-align:top}
-
 @media(max-width:768px){
   .side-panel{display:none!important}
   #mobile-drawer{position:fixed;bottom:0;left:0;right:0;z-index:25;background:rgba(2,2,4,.96);backdrop-filter:blur(28px);border-top:1px solid rgba(99,163,237,.22);border-radius:18px 18px 0 0;transform:translateY(calc(100% - 48px));transition:transform .38s cubic-bezier(.4,0,.2,1);max-height:72vh;display:flex;flex-direction:column}
@@ -68,19 +67,12 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
   #tb-sub{display:none}
   #global-lang-toggle{top:12px;left:50%;transform:translateX(-50%);gap:5px}
   .mlbtn{padding:4px 8px;font-size:.52rem}
-  
-  /* 解決移動端被遮擋的核心：橫向滾動控制列 */
-  #ctrl-bar {
-    bottom: 80px; right: 0; left: 0;
-    flex-direction: row; overflow-x: auto;
-    padding: 0 14px 10px; gap: 10px; justify-content: flex-start;
-  }
+  #ctrl-bar { bottom: 80px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 0 14px 10px; gap: 10px; justify-content: flex-start; }
   #ctrl-bar::-webkit-scrollbar { display: none; }
   #time-bar { bottom: 20px; min-width: 0; width: 92%; }
   #legend { top: 75px; bottom: auto; flex-wrap: wrap; justify-content: center; }
   #asc-hint { top: 120px; bottom: auto; }
 }
-
 #legend{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:none;background:rgba(2,2,4,.8);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:6px 22px;display:flex;gap:18px;align-items:center}
 .li{display:flex;align-items:center;gap:5px;font-size:.56rem;color:rgba(255,255,255,.42);white-space:nowrap}
 .ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -90,7 +82,6 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 .cb.on{background:rgba(99,163,237,.2);border-color:var(--blue-l);box-shadow:0 0 16px rgba(99,163,237,.4)}
 .cb[data-tt]:hover::after{content:attr(data-tt);position:absolute;right:44px;top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(2,2,4,.94);border:1px solid rgba(99,163,237,.28);color:var(--blue-l);font-size:.56rem;padding:4px 9px;border-radius:4px;pointer-events:none;z-index:99}
 @media(max-width:768px){ .cb[data-tt]:hover::after{display:none} }
-
 #time-bar{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;background:rgba(2,2,4,.84);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.09);border-radius:30px;padding:7px 20px;display:none;gap:12px;align-items:center;min-width:360px}
 #time-bar.show{display:flex}
 #time-lbl{font-size:.6rem;color:var(--gold);white-space:nowrap;min-width:120px;text-align:center}
@@ -100,7 +91,6 @@ body.zen-mode #ctrl-bar:hover{opacity:1}
 #tip{position:absolute;z-index:50;pointer-events:none;background:rgba(5,3,16,.95);border:1px solid rgba(240,201,106,.25);border-radius:8px;padding:11px 15px;display:none;max-width:210px;box-shadow:0 8px 32px rgba(0,0,0,.7)}
 #tip h4{font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:5px}
 #tip p{font-size:.63rem;color:rgba(255,255,255,.63);line-height:1.72}
-
 #mw{position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.74);backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;overflow-y:auto}
 #modal{background:rgba(5,3,18,.97);border:1px solid rgba(99,163,237,.3);border-radius:14px;padding:38px 34px;width:92%;max-width:406px;box-shadow:0 48px 96px rgba(0,0,0,.92),0 0 80px rgba(99,163,237,.1);margin:auto}
 @media(max-width:768px){#modal{padding:24px 18px;margin:16px}#mw{align-items:flex-start;padding-top:10px}}
@@ -117,7 +107,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .sbtn:hover{background:var(--blue);color:#000;box-shadow:0 0 32px rgba(99,163,237,.55)}
 .demo{text-align:center;margin-top:11px;font-size:.56rem;color:rgba(255,255,255,.28);cursor:pointer;transition:.18s}
 .demo:hover{color:var(--blue-l)}
-
 .dst-row{display:flex;align-items:center;gap:10px;margin-top:10px}
 .dst-label{font-size:.52rem;color:rgba(255,255,255,.55);flex:1}
 .dst-badge{font-size:.46rem;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.12);color:#FF9A9A;border:1px solid rgba(255,107,107,.3);letter-spacing:.06em}
@@ -128,7 +117,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .dst-slider:before{content:'';position:absolute;height:16px;width:16px;left:2px;bottom:2px;background:rgba(144,196,255,.6);border-radius:50%;transition:.3s}
 .dst-toggle input:checked + .dst-slider{background:rgba(255,180,50,.22);border-color:rgba(255,180,50,.5)}
 .dst-toggle input:checked + .dst-slider:before{transform:translateX(18px);background:#FFD080}
-
 .lbl{pointer-events:none;font-family:'Noto Sans TC',sans-serif}
 .lecl{color:#FFD700;font-size:.72rem;font-weight:600;text-shadow:0 0 14px #D4A843,0 0 5px #000}
 .leq{color:#90C4FF;font-size:.72rem;font-weight:500;text-shadow:0 0 12px #63A3ED,0 0 5px #000}
@@ -141,13 +129,11 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .lasc{color:var(--red);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--red),0 0 5px #000;letter-spacing:.05em}
 .ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000;letter-spacing:.05em}
 .lmc{color:#7DE09A;font-size:.8rem;font-weight:bold;text-shadow:0 0 12px #7DE09A,0 0 5px #000;letter-spacing:.05em}
-
 #loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(2,2,4,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
 #loading-overlay.hide{opacity:0;pointer-events:none}
 .loading-spinner{width:48px;height:48px;border:2px solid rgba(99,163,237,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:.65rem;color:var(--blue);letter-spacing:.25em}
-
 #asc-hint{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(2,2,4,.82);backdrop-filter:blur(12px);border:1px solid rgba(240,201,106,.25);border-radius:20px;padding:5px 16px;font-size:.52rem;color:rgba(240,201,106,.7);letter-spacing:.12em;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
 #asc-hint.show{opacity:1}
 </style>
@@ -187,32 +173,32 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <input type="text" id="f-nm" placeholder="姓名（可留空）">
   <div class="fl" id="lbl-dt">出生日期（公曆）</div>
   <div class="r3">
-    <input type="number" id="f-y" placeholder="年" min="1900" max="2100">
-    <input type="number" id="f-m" placeholder="月" min="1" max="12">
-    <input type="number" id="f-d" placeholder="日" min="1" max="31">
+    <input type="number" id="f-y" placeholder="年" min="1900" max="2100" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-m" placeholder="月" min="1" max="12" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-d" placeholder="日" min="1" max="31" oninput="if(window.hst) window.hst()">
   </div>
   <div class="fl" id="lbl-tm">出生時間（24小時）</div>
   <div class="r2">
-    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23">
-    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59">
+    <input type="number" id="f-h" placeholder="时 0-23" min="0" max="23" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="if(window.hst) window.hst()">
   </div>
   <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
   <div class="r3">
-    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120">
-    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30">
-    <input type="number" id="f-tz" placeholder="時區" step="1" value="8">
+    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
   </div>
   <div class="dst-row">
     <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
     <span class="dst-badge" id="dst-badge">標準時</span>
     <label class="dst-toggle">
-      <input type="checkbox" id="f-dst">
+      <input type="checkbox" id="f-dst" onchange="if(window.toggleDST) window.toggleDST()">
       <span class="dst-slider"></span>
     </label>
   </div>
   <div id="st-hint"></div>
-  <button class="sbtn" id="btn-sub">觀 測 星 象 能 量</button>
-  <div class="demo" id="btn-demo">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
+  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">觀 測 星 象 能 量</button>
+  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
 </div>
 </div>
 
@@ -224,7 +210,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="pc"><div class="pc-t" id="pct-hou">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
 </div>
 <div id="mobile-drawer" style="display:none">
-  <div id="mobile-drawer-handle" id="btn-drawer">
+  <div id="mobile-drawer-handle" onclick="if(window.toggleDrawer) window.toggleDrawer()">
     <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象資料</span><div class="pill"></div>
   </div>
   <div id="mobile-drawer-content">
@@ -257,7 +243,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="tbtn" id="tb-play">▶ 播放</button>
   <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
   <div id="time-lbl">當前時間</div>
-  <button class="tbtn" id="tb-reset">重置</button>
+  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
 <div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
@@ -274,7 +260,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // ==========================================
-// 1. 絕對置頂的基礎數學與天文常數，杜絕 TDZ 報錯
+// 1. 絕對置頂的變量、常數與數學公式 (防 TDZ 報錯)
 // ==========================================
 const DEG = Math.PI / 180, R2D = 180 / Math.PI;
 const norm = x => ((x % 360) + 360) % 360;
@@ -294,11 +280,6 @@ const PE = {
   neptune:{L:304.880,a:30.070,e:0.0090,i:1.7700,w:44.971, Node:131.784,n:0.0059951},
   pluto:  {L:238.929,a:39.482,e:0.2488,i:17.140,w:224.067,Node:110.303,n:0.0039648}
 };
-
-function auToR(au) {
-    if (au === 0) return 0;
-    return 18 * Math.pow(au, 0.42); 
-}
 
 const PCONF = [
   { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
@@ -340,8 +321,24 @@ for (let i = 0; i < 28; i++) {
 
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 769;
 
+const S = {
+  zen:false, spin:false, sidereal:false, helio:false, showOut:true,
+  ecliptic:true, equator:true, mansion:true, planets:true,
+  aspects:false, time:false, orb:false
+};
+let userData = {}, curGeo = {}, curHelio = {}, currentLST = 0;
+let playingTime = false, playInterval = null;
+let birthLng = 120, birthLat = 30;
+let currentAscDeg = 0;
+let ascHintTimer = null;
+let currentGMST = 0;
+
+const pMesh = {}, pLbl = {}, dropLines = {};
+let earthMesh = null;
+let birthMarker = null;
+
 // ==========================================
-// 2. 多語言設定
+// 2. 語言與初始化
 // ==========================================
 const LANGS = {
   'zh-TW':{
@@ -380,7 +377,7 @@ const LANGS = {
   'ko':{
     zod:['백양','황소','쌍둥이','게','사자','처녀','천칭','전갈','사수','염소','물병','물고기'],
     man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
-    pl:{태양:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기',fortune:'포춘'},
+    pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기',fortune:'포춘'},
     wx:{sun:'순양·아버지',moon:'순음·어머니',mercury:'양수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'화의 여기',ketu:'토의 여기',yapo:'수의 여기',ziqi:'목의 여기',uranus:'양토·개혁',neptune:'음목·환상',pluto:'음화·재생',fortune:'행운과 기회'},
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 천정',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
@@ -471,6 +468,11 @@ window.toggleDrawer = () => {
 // ==========================================
 // 3. 核心算法與數據結構 (無死角防禦)
 // ==========================================
+function auToR(au) {
+    if (au === 0) return 0;
+    return 18 * Math.pow(au, 0.42); 
+}
+
 function solveKepler(M, e) {
   let E = M;
   for (let i = 0; i < 10; i++) {
@@ -525,9 +527,6 @@ function getAstroPositions(jd) {
   
   return pos;
 }
-
-let currentGMST = 0;
-let curHelio = {};
 
 function calcAll(T, jd, lng, lat, isSid) {
   const d = jd - 2451545.0;
@@ -611,6 +610,41 @@ function calcAll(T, jd, lng, lat, isSid) {
   });
 
   return { geo, helio, lst: norm(gmst + lng), gmst: norm(gmst), aya };
+}
+
+function getMansionSid(sidLon) {
+  const s = norm(sidLon);
+  for (const m of MANS) {
+    const ms = m.s % 360, me = (m.s + m.w) % 360;
+    if (ms < me) { if (s >= ms && s < me) return LANGS[currLang].man[m.id]; }
+    else         { if (s >= ms || s < me) return LANGS[currLang].man[m.id]; }
+  }
+  return LANGS[currLang].man[0];
+}
+
+function getMansion(tropLon, isSid, jd) {
+  let sid = tropLon;
+  if (!isSid && jd) {
+    const d = jd - 2451545.0;
+    const aya = 24.03 + d * (50.29 / 36525);
+    sid = norm(tropLon - aya);
+  }
+  return getMansionSid(sid);
+}
+
+function analyzeChart(geo, isSid, jd) {
+  const D = LANGS[currLang], lines = [];
+  const sz = zodiac(geo.sun), mz = zodiac(geo.moon), az = zodiac(geo.asc);
+  const mm = getMansion(geo.moon, isSid, jd);
+  const elong = norm(geo.moon - geo.sun);
+  const phase = elong < 45 ? D.ui.p1 : elong < 135 ? D.ui.p2 : elong < 225 ? D.ui.p3 : elong < 315 ? D.ui.p4 : D.ui.p5;
+  lines.push(`<span class="at">${D.pl.sun}</span>${D.al.sun} <span class="av">${sz.s} ${sz.d}°</span>`);
+  lines.push(`<span class="at">${D.pl.moon}</span>${D.al.moon} <span class="av">${mz.s}·${mm}${D.ui.mansion}</span>`);
+  lines.push(`<span class="at">${D.al.phase}</span><span class="av">${phase}</span> ${D.ui.deg} ${elong.toFixed(0)}°`);
+  lines.push(`<span class="at">${D.pl.rahu}</span>${D.al.rahu} <span class="av">${zodiac(geo.rahu).s}</span>`);
+  lines.push(`<span class="at">${D.pl.jupiter}</span>${D.al.jup} <span class="av">${zodiac(geo.jupiter).s}</span>`);
+  lines.push(`<span class="at">${D.pl.saturn}</span>${D.al.sat} <span class="av">${zodiac(geo.saturn).s}</span>`);
+  return lines;
 }
 
 // ==========================================
@@ -739,6 +773,22 @@ for (let i = 0; i < 36; i++) {
   ]), new THREE.LineBasicMaterial({ color:0x5599DD, transparent:true, opacity: isH ? 0.85 : 0.3 })));
 }
 
+function lbl2D(parent, cls, r, angle, type, id) {
+  const el = document.createElement('div'); el.className = 'lbl ' + cls;
+  if (type) el.setAttribute('data-3d-type', type);
+  if (id !== undefined) el.setAttribute('data-3d-id', id);
+  const D = LANGS[currLang];
+  if (type === 'raw') el.innerHTML = id;
+  else if (type === 'ui') el.innerHTML = D.ui[id];
+  else if (type === 'zod') el.innerHTML = D.zod[id];
+  else if (type === 'man') el.innerHTML = D.man[id] + D.ui.mansion;
+  else if (type === 'pl') el.innerHTML = D.pl[id];
+  const o = new CSS2DObject(el);
+  o.position.set(Math.cos(angle)*r, Math.sin(angle)*r, 0);
+  parent.add(o); return o;
+}
+lbl2D(eqRingG, 'leq', 43, 0.4, 'ui', 'eq');
+
 eclRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:0.95 })));
 eclRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.4, 8, 200),
@@ -802,8 +852,6 @@ MANS.forEach(m => {
     helioOrbitsG.add(line);
 });
 
-const pMesh = {}, pLbl = {}, dropLines = {};
-
 const moonOrbitHelio = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(
         Array.from({length:65}, (_,i) => new THREE.Vector3(Math.cos(i/64*Math.PI*2)*3, Math.sin(i/64*Math.PI*2)*3, 0))
@@ -812,9 +860,6 @@ const moonOrbitHelio = new THREE.Line(
 );
 moonOrbitHelio.visible = false;
 earthContainer.add(moonOrbitHelio);
-
-let earthMesh = null;
-let birthMarker = null;
 
 function buildEarth() {
   const mat = new THREE.MeshStandardMaterial({
@@ -887,75 +932,29 @@ function buildPlanet(pc) {
   return sphere;
 }
 
-// 同步初始化星體 (無貼圖，保證瞬間渲染)
-buildEarth();
-PCONF.forEach(pc => {
-  const sphere = buildPlanet(pc);
-  if (pc.isOut) sphere.visible = false;
-  plG.add(sphere); pMesh[pc.id] = sphere;
+function buildAllPlanets() {
+  buildEarth();
+  PCONF.forEach(pc => {
+    const sphere = buildPlanet(pc);
+    if (pc.isOut) sphere.visible = false;
+    plG.add(sphere); pMesh[pc.id] = sphere;
 
-  const hex = '#' + pc.col.toString(16).padStart(6, '0');
-  const el = document.createElement('div'); el.className = 'lbl lpl';
-  el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
-  const obj = new CSS2DObject(el);
-  if (pc.isOut) obj.element.style.display = 'none';
-  plG.add(obj); pLbl[pc.id] = obj;
+    const hex = '#' + pc.col.toString(16).padStart(6, '0');
+    const el = document.createElement('div'); el.className = 'lbl lpl';
+    el.innerHTML = `<div class="lpl-ic" style="color:${hex}">${pc.ic}<span class="retro" id="r_${pc.id}"></span></div><div class="lpl-nm" style="color:${hex}" data-3d-type="pl" data-3d-id="${pc.id}"></div>`;
+    const obj = new CSS2DObject(el);
+    if (pc.isOut) obj.element.style.display = 'none';
+    plG.add(obj); pLbl[pc.id] = obj;
 
-  const buf = new Float32Array(6);
-  const dg = new THREE.BufferGeometry();
-  const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
-  dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
-  const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:0.6 }));
-  dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa;
-  plG.add(dl); dropLines[pc.id] = dl;
-});
-window.switchLang(currLang);
-
-// 非同步懶加載貼圖
-const texLoader = new THREE.TextureLoader();
-texLoader.crossOrigin = 'anonymous';
-const TEX_URLS = {
-  earth:   'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/earth_atmos_2048.jpg',
-  moon:    'https://testingcf.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg',
-  mercury: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/mercurymap.jpg',
-  venus:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/venusmap.jpg',
-  mars:    'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',
-  jupiter: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',
-  saturn:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',
-  uranus:  'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
-  neptune: 'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg',
-  pluto:   'https://testingcf.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/plutomap1k.jpg',
-};
-Object.entries(TEX_URLS).forEach(([id, url]) => {
-  texLoader.load(url, (tex) => {
-      tex.colorSpace = THREE.SRGBColorSpace;
-      if (id === 'earth' && earthMesh) {
-          earthMesh.material.map = tex;
-          earthMesh.material.emissiveMap = tex;
-          earthMesh.material.emissiveIntensity = 0.35;
-          earthMesh.material.color.setHex(0xffffff);
-          earthMesh.material.needsUpdate = true;
-      } else if (pMesh[id]) {
-          pMesh[id].material.map = tex;
-          pMesh[id].material.emissiveMap = tex;
-          pMesh[id].material.emissiveIntensity = 0.15;
-          pMesh[id].material.color.setHex(0xffffff);
-          pMesh[id].material.needsUpdate = true;
-      }
+    const buf = new Float32Array(6);
+    const dg = new THREE.BufferGeometry();
+    const pa = new THREE.BufferAttribute(buf, 3); pa.setUsage(THREE.DynamicDrawUsage);
+    dg.setAttribute('position', pa); dg.setDrawRange(0, 2);
+    const dl = new THREE.Line(dg, new THREE.LineBasicMaterial({ color:pc.col, transparent:true, opacity:0.6 }));
+    dl.visible = false; dl.userData.buf = buf; dl.userData.pa = pa;
+    plG.add(dl); dropLines[pc.id] = dl;
   });
-});
-
-const S = {
-  zen:false, spin:false, sidereal:false, helio:false, showOut:true,
-  ecliptic:true, equator:true, mansion:true, planets:true,
-  aspects:false, time:false, orb:false
-};
-let userData = {}, curGeo = {}, curHelio = {}, currentLST = 0;
-let playingTime = false, playInterval = null;
-let birthLng = 120, birthLat = 30;
-
-let currentAscDeg = 0;
-let ascHintTimer = null;
+}
 
 function clearGroup(group) {
     if (!group || !group.children) return;
@@ -1268,46 +1267,6 @@ function showTip(e, h, p) {
 }
 const hideTip = () => { document.getElementById('tip').style.display = 'none'; };
 
-window.hst = function() {
-  try {
-      const lngEl = document.getElementById('f-lg');
-      const tzEl  = document.getElementById('f-tz');
-      const hEl   = document.getElementById('f-h');
-      const mEl   = document.getElementById('f-mi');
-      
-      if(!lngEl || !tzEl || !hEl || !mEl) return;
-      
-      const lngStr = lngEl.value;
-      const tzStr  = tzEl.value;
-      const hInput = hEl.value;
-      const mInput = mEl.value;
-      
-      const lng = lngStr === "" ? 120 : parseFloat(lngStr);
-      const tz  = tzStr === "" ? 8 : parseInt(tzStr);
-      let h  = hInput === "" ? 0 : parseInt(hInput);
-      let mn = mInput === "" ? 0 : parseInt(mInput);
-      
-      const dstEl = document.getElementById('f-dst');
-      const dst = dstEl ? dstEl.checked : false;
-      if (dst) h += 1;
-      
-      const hint = document.getElementById('st-hint');
-      if (hint) {
-        const val = (lng - tz * 15) * 4;
-        const c = Math.round(val);
-        let totalM = mn + c;
-        let newH = h + Math.floor(totalM / 60);
-        let newM = ((totalM % 60) + 60) % 60;
-        newH = ((newH % 24) + 24) % 24;
-        const dstTxt = dst ? ' [DST+1h]' : '';
-        hint.innerHTML = `✦ 真太陽時${dstTxt} 偏差${c>=0?'+':''}${c}分 → 校正後 ${String(newH).padStart(2,'0')}:${String(newM).padStart(2,'0')}`;
-        hint.style.display = 'block';
-      }
-  } catch (e) {
-      console.error(e);
-  }
-};
-
 window.submitForm = function() {
   try {
       const nmEl = document.getElementById('f-nm');
@@ -1354,7 +1313,6 @@ window.submitForm = function() {
       newH = ((newH % 24) + 24) % 24;
 
       birthLng = lng; birthLat = lat;
-      
       userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
       launch();
   } catch(e) {
@@ -1432,105 +1390,126 @@ function launch() {
   }
 }
 
-// 嚴格解耦的事件綁定
-const setupEvents = () => {
+// ★ 等待所有腳本解析完畢後，綁定事件並啟動 Promise
+const initApp = () => {
+    // 綁定基礎事件
     ['f-y','f-m','f-d','f-h','f-mi','f-lg','f-lat','f-tz'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', window.hst);
     });
 
-    const bindClick = (id, fn) => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('click', fn);
-    };
-
-    bindClick('btn-sub', window.submitForm);
-    bindClick('btn-demo', window.loadDemo);
-    
-    bindClick('lang-tw', () => window.switchLang('zh-TW'));
-    bindClick('lang-cn', () => window.switchLang('zh-CN'));
-    bindClick('lang-en', () => window.switchLang('en'));
-    bindClick('lang-ko', () => window.switchLang('ko'));
+    document.getElementById('lang-tw').addEventListener('click', () => window.switchLang('zh-TW'));
+    document.getElementById('lang-cn').addEventListener('click', () => window.switchLang('zh-CN'));
+    document.getElementById('lang-en').addEventListener('click', () => window.switchLang('en'));
+    document.getElementById('lang-ko').addEventListener('click', () => window.switchLang('ko'));
     
     const dstEl = document.getElementById('f-dst');
     if(dstEl) dstEl.addEventListener('change', window.toggleDST);
+    if(isMobile) document.getElementById('mobile-drawer-handle').addEventListener('click', window.toggleDrawer);
     
-    if(isMobile) bindClick('mobile-drawer-handle', window.toggleDrawer);
-};
+    const tRange = document.getElementById('time-range');
+    const tLbl   = document.getElementById('time-lbl');
+    if(tRange) {
+        tRange.addEventListener('input', () => {
+          if (!userData || !userData.jd) return;
+          updatePositions();
+          const offHalfH = parseInt(tRange.value);
+          const offMs = offHalfH * 30 * 60 * 1000;
+          const base = new Date(Date.UTC(userData.y, userData.m-1, userData.d, userData.h, userData.mn));
+          const tgt  = new Date(base.getTime() + offMs);
+          if(tLbl) tLbl.textContent = `${tgt.getUTCFullYear()}.${String(tgt.getUTCMonth()+1).padStart(2,'0')}.${String(tgt.getUTCDate()).padStart(2,'0')} ${String(tgt.getUTCHours()).padStart(2,'0')}:${String(tgt.getUTCMinutes()).padStart(2,'0')}`;
+        });
+    }
 
-const tRange = document.getElementById('time-range');
-const tLbl   = document.getElementById('time-lbl');
-if(tRange) {
-    tRange.addEventListener('input', () => {
-      if (!userData || !userData.jd) return;
-      updatePositions();
-      const offHalfH = parseInt(tRange.value);
-      const offMs = offHalfH * 30 * 60 * 1000;
-      const base = new Date(Date.UTC(userData.y, userData.m-1, userData.d, userData.h, userData.mn));
-      const tgt  = new Date(base.getTime() + offMs);
-      if(tLbl) tLbl.textContent = `${tgt.getUTCFullYear()}.${String(tgt.getUTCMonth()+1).padStart(2,'0')}.${String(tgt.getUTCDate()).padStart(2,'0')} ${String(tgt.getUTCHours()).padStart(2,'0')}:${String(tgt.getUTCMinutes()).padStart(2,'0')}`;
+    const tbPlay = document.getElementById('tb-play');
+    if (tbPlay) {
+        tbPlay.addEventListener('click', function() {
+          const d = LANGS[currLang].dom;
+          if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = d.tbPlay; return; }
+          playingTime = true; this.textContent = d.tbPause;
+          playInterval = setInterval(() => {
+            const v = Math.min(parseInt(tRange.value)+1, 87660);
+            tRange.value = v; tRange.dispatchEvent(new Event('input'));
+            if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = d.tbPlay; }
+          }, 80);
+        });
+    }
+
+    window.resetTime = function() {
+      clearInterval(playInterval); playingTime = false; 
+      if (tbPlay) tbPlay.textContent = LANGS[currLang].dom.tbPlay;
+      if (tRange) { tRange.value = 0; tRange.dispatchEvent(new Event('input')); }
+      if (tLbl) tLbl.textContent = LANGS[currLang].dom.timeLbl;
+    };
+    const tbReset = document.getElementById('tb-reset');
+    if(tbReset) tbReset.addEventListener('click', window.resetTime);
+
+    bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
+    bindBtn('cb-spin','spin', () => { 
+      if(!playingTime && tbPlay) tbPlay.click(); 
+    }, () => { 
+      if(playingTime && tbPlay) tbPlay.click(); 
     });
-}
+    bindBtn('cb-helio','helio', () => { if(userData.jd) updatePositions(); }, () => { if(userData.jd) updatePositions(); });
+    bindBtn('cb-ecl','ecliptic',()=>eclRingG.visible=true, ()=>eclRingG.visible=false);
+    bindBtn('cb-eq', 'equator', ()=>eqRingG.visible=true,  ()=>eqRingG.visible=false);
+    bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
+    bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
+    bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
 
-const tbPlay = document.getElementById('tb-play');
-if (tbPlay) {
-    tbPlay.addEventListener('click', function() {
-      const d = LANGS[currLang].dom;
-      if (playingTime) { clearInterval(playInterval); playingTime = false; this.textContent = d.tbPlay; return; }
-      playingTime = true; this.textContent = d.tbPause;
-      playInterval = setInterval(() => {
-        const v = Math.min(parseInt(tRange.value)+1, 87660);
-        tRange.value = v; tRange.dispatchEvent(new Event('input'));
-        if (v >= 87660) { clearInterval(playInterval); playingTime = false; tbPlay.textContent = d.tbPlay; }
-      }, 80);
+    const btnSys = document.getElementById('cb-sys');
+    if(btnSys) btnSys.addEventListener('click', () => {
+        S.sidereal=!S.sidereal; btnSys.classList.toggle('on',S.sidereal);
+        btnSys.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT;
+        if (userData.jd) updatePositions();
     });
-}
 
-window.resetTime = function() {
-  clearInterval(playInterval); playingTime = false; 
-  if (tbPlay) tbPlay.textContent = LANGS[currLang].dom.tbPlay;
-  if (tRange) { tRange.value = 0; tRange.dispatchEvent(new Event('input')); }
-  if (tLbl) tLbl.textContent = LANGS[currLang].dom.timeLbl;
+    const btnOut = document.getElementById('cb-out');
+    if(btnOut) btnOut.addEventListener('click', () => { S.showOut=!S.showOut; btnOut.classList.toggle('on',S.showOut); if(userData.jd)updatePositions(); });
+
+    const tb = document.getElementById('time-bar'), btnTm = document.getElementById('cb-tm');
+    if(btnTm && tb) btnTm.addEventListener('click', () => {
+        S.time=!S.time; btnTm.classList.toggle('on',S.time);
+        S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime());
+    });
+
+    const btnOrb = document.getElementById('cb-orb');
+    if(btnOrb) btnOrb.addEventListener('click', () => {
+        S.orb=!S.orb; btnOrb.classList.toggle('on',S.orb);
+        if (!S.orb) Object.values(dropLines).forEach(dl=>{dl.visible=false;});
+        else if (userData.jd) updatePositions();
+    });
+
+    // 啟動加載
+    Promise.all(texPromises).then(() => {
+      buildAllPlanets();
+      const ov = document.getElementById('loading-overlay');
+      if(ov) { ov.classList.add('hide'); setTimeout(()=>ov.style.display='none', 700); }
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+        bloom.setSize(window.innerWidth, window.innerHeight);
+        lblR.setSize(window.innerWidth, window.innerHeight);
+        if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
+      });
+      animate();
+    }).catch((e) => {
+      console.error("貼圖加載失敗，切換降級模式", e);
+      buildAllPlanets();
+      const ov = document.getElementById('loading-overlay');
+      if(ov) ov.style.display = 'none';
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+        bloom.setSize(window.innerWidth, window.innerHeight);
+        lblR.setSize(window.innerWidth, window.innerHeight);
+        if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
+      });
+      animate();
+    });
 };
-const tbReset = document.getElementById('tb-reset');
-if(tbReset) tbReset.addEventListener('click', window.resetTime);
-
-bindBtn('cb-zen','zen',()=>document.body.classList.add('zen-mode'),()=>document.body.classList.remove('zen-mode'));
-bindBtn('cb-spin','spin', () => { 
-  if(!playingTime && tbPlay) tbPlay.click(); 
-}, () => { 
-  if(playingTime && tbPlay) tbPlay.click(); 
-});
-bindBtn('cb-helio','helio', () => { if(userData.jd) updatePositions(); }, () => { if(userData.jd) updatePositions(); });
-bindBtn('cb-ecl','ecliptic',()=>eclRingG.visible=true, ()=>eclRingG.visible=false);
-bindBtn('cb-eq', 'equator', ()=>eqRingG.visible=true,  ()=>eqRingG.visible=false);
-bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
-bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
-bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
-
-{ const b = document.getElementById('cb-sys');
-  if(b) b.addEventListener('click', () => {
-    S.sidereal=!S.sidereal; b.classList.toggle('on',S.sidereal);
-    b.textContent = S.sidereal ? LANGS[currLang].ctrl.btnSysS : LANGS[currLang].ctrl.btnSysT;
-    if (userData.jd) updatePositions();
-  });
-}
-{ const b = document.getElementById('cb-out');
-  if(b) b.addEventListener('click', () => { S.showOut=!S.showOut; b.classList.toggle('on',S.showOut); if(userData.jd)updatePositions(); });
-}
-{ const tb = document.getElementById('time-bar'), b = document.getElementById('cb-tm');
-  if(b) b.addEventListener('click', () => {
-    S.time=!S.time; b.classList.toggle('on',S.time);
-    if(tb) S.time ? tb.classList.add('show') : (tb.classList.remove('show'), window.resetTime());
-  });
-}
-{ const b = document.getElementById('cb-orb');
-  if(b) b.addEventListener('click', () => {
-    S.orb=!S.orb; b.classList.toggle('on',S.orb);
-    if (!S.orb) Object.values(dropLines).forEach(dl=>{dl.visible=false;});
-    else if (userData.jd) updatePositions();
-  });
-}
 
 const clock = new THREE.Clock();
 function animate() {
@@ -1556,26 +1535,10 @@ function animate() {
   lblR.render(scene, camera);
 }
 
-// 移除 Loading，綁定所有事件後啟動
-const ov = document.getElementById('loading-overlay');
-if(ov) { ov.classList.add('hide'); setTimeout(()=>ov.style.display='none', 700); }
-
-setupEvents();
-
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-    bloom.setSize(window.innerWidth, window.innerHeight);
-    lblR.setSize(window.innerWidth, window.innerHeight);
-    if(OCtrl && OCtrl.handleResize) OCtrl.handleResize();
-});
-
-animate();
-window.hst(); // 初始化預設時間的真太陽時
+initApp();
 
 } catch (globalErr) {
-    alert("3D星象引擎加載失敗，請使用最新版 Chrome/Safari。錯誤訊息: " + globalErr.message);
+    alert("3D星象引擎加載失敗，錯誤訊息: " + globalErr.message);
     console.error(globalErr);
 }
 </script>
