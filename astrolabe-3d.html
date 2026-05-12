@@ -127,6 +127,9 @@ input::placeholder{color:rgba(255,255,255,.17)}
 .lax{color:rgba(255,255,255,.6);font-size:.75rem;letter-spacing:.1em;text-shadow:0 0 8px #000;font-weight:bold}
 .lasc{color:var(--red);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--red),0 0 5px #000;letter-spacing:.05em}
 .ldsc{color:var(--blue-l);font-size:.8rem;font-weight:bold;text-shadow:0 0 12px var(--blue-l),0 0 5px #000;letter-spacing:.05em}
+/* ★ MC/IC 專屬樣式 */
+.lmc{color:#7DE09A;font-size:.8rem;font-weight:bold;text-shadow:0 0 12px #7DE09A,0 0 5px #000;letter-spacing:.05em}
+
 #loading-overlay{position:fixed;inset:0;z-index:55;background:rgba(2,2,4,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s}
 #loading-overlay.hide{opacity:0;pointer-events:none}
 .loading-spinner{width:48px;height:48px;border:2px solid rgba(99,163,237,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
@@ -185,7 +188,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
   <div class="r3">
     <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="hst()">
-    <input type="number" id="f-lat" placeholder="北纬" step="0.1" value="30" oninput="hst()">
+    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="hst()">
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="hst()">
   </div>
 
@@ -277,7 +280,7 @@ const LANGS = {
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虛','危','室','壁','奎','婁','胃','昴','畢','觜','參','井','鬼','柳','星','張','翼','軫'],
     pl:{sun:'太陽',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'羅睺',ketu:'計都',yapo:'月孛',ziqi:'紫炁'},
     wx:{sun:'純陽·父·君主',moon:'純陰·母·情感',mercury:'陽水·思維·溝通',venus:'陰金·財·美感',mars:'陽火·行動·剛毅',jupiter:'陽木·福·擴張',saturn:'陰土·克制·責任',rahu:'火之餘·羅睺',ketu:'土之餘·計都',yapo:'水之餘·月孛',ziqi:'木之餘·紫炁',uranus:'陽土·改革·突變',neptune:'陰木·夢幻·潛意識',pluto:'陰火·毀滅·重生'},
-    ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
+    ui:{eq:'赤道',ecl:'黃道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天頂',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'滿月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回歸黃道',sid:'恆星黃道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交點在',jup:'福星在',sat:'剋星在'},
     dst:{off:'標準時',on:'夏令時 +1h',label:'夏令時（DST）',hint:'開啟後自動 +1 小時'},
     dom:{modalTitle:'星象座標系',modalSub:'真3D地心儀 · 晝夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公曆）',lblTm:'出生時間（24小時）',lblLoc:'出生地經緯度與時區',plhNm:'姓名（可留空）',btnSub:'觀 測 星 象 能 量',btnDemo:'→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）',tbTitle:'星象座標系 · 天球儀',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暫停',tbReset:'重置',timeLbl:'當前時間',loadTxt:'載入星象引擎…',drwLbl:'星象資料',pEcl:'星象 · 視黃道度數',pAna:'命盤分析摘要',pHou:'黃道十二宮 · 宮位星曜',pHouM:'黃道十二宮',ascAligned:'☽ 觀測地標已對齊天頂與上升點'},
@@ -287,7 +290,7 @@ const LANGS = {
     man:['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'],
     pl:{sun:'太阳',moon:'月亮',mercury:'水星',venus:'金星',mars:'火星',jupiter:'木星',saturn:'土星',uranus:'天王星',neptune:'海王星',pluto:'冥王星',rahu:'罗睺',ketu:'计都',yapo:'月孛',ziqi:'紫炁'},
     wx:{sun:'纯阳·父·君主',moon:'纯阴·母·情感',mercury:'阳水·思维·沟通',venus:'阴金·财·美感',mars:'阳火·行动·刚毅',jupiter:'阳木·福·扩张',saturn:'阴土·克制·责任',rahu:'火之余·罗睺',ketu:'土之余·计都',yapo:'水之余·月孛',ziqi:'木之余·紫炁',uranus:'阳土·改革·突变',neptune:'阴木·梦幻·潜意识',pluto:'阴火·毁灭·重生'},
-    ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
+    ui:{eq:'赤道',ecl:'黄道',asc:'ASC上升',dsc:'DSC下降',mc:'MC天顶',ic:'IC天底',mansion:'宿',house:'宫',p1:'新月(朔)',p2:'上弦月',p3:'满月(望)',p4:'下弦月',p5:'晦日',deg:'距角',trop:'回归黄道',sid:'恒星黄道'},
     al:{asc:'命宫在',sun:'太阳在',moon:'月在',phase:'月相',rahu:'南交点在',jup:'福星在',sat:'克星在'},
     dst:{off:'标准时',on:'夏令时 +1h',label:'夏令时（DST）',hint:'开启后自动 +1 小时'},
     dom:{modalTitle:'星象坐标系',modalSub:'真3D地心仪 · 昼夜更替 · 二十八宿',lblNm:'命主姓名',lblDt:'出生日期（公历）',lblTm:'出生时间（24小时）',lblLoc:'出生地经纬度与时区',plhNm:'姓名（可留空）',btnSub:'观 测 星 象 能 量',btnDemo:'→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）',tbTitle:'星象坐标系 · 天球仪',tbSub:'GEOCENTRIC ASTROLABE · 物理光影宇宙',tbPlay:'▶ 播放',tbPause:'⏸ 暂停',tbReset:'重置',timeLbl:'当前时间',loadTxt:'载入星象引擎…',drwLbl:'星象资料',pEcl:'星象 · 视黄道度数',pAna:'命盘分析摘要',pHou:'黄道十二宫 · 宫位星曜',pHouM:'黄道十二宫',ascAligned:'☽ 观测地标已对齐天顶与上升点'},
@@ -297,7 +300,7 @@ const LANGS = {
     man:['Jiao','Kang','Di','Fang','Xin','Wei','Ji','Dou','Niu','Nu','Xu','Wei2','Shi','Bi','Kui','Lou','Wei3','Mao','Bi2','Zi','Shen','Jing','Gui','Liu','Xing','Zhang','Yi','Zhen'],
     pl:{sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',rahu:'Rahu',ketu:'Ketu',yapo:'Lilith',ziqi:'Ziqi'},
     wx:{sun:'Pure Yang·Father',moon:'Pure Yin·Mother',mercury:'Yang Water·Mind',venus:'Yin Metal·Wealth',mars:'Yang Fire·Action',jupiter:'Yang Wood·Luck',saturn:'Yin Earth·Karma',rahu:'Fire Remainder',ketu:'Earth Remainder',yapo:'Water Remainder',ziqi:'Wood Remainder',uranus:'Yang Earth·Revolution',neptune:'Yin Wood·Illusion',pluto:'Yin Fire·Rebirth'},
-    ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal'},
+    ui:{eq:'Equator',ecl:'Ecliptic',asc:'ASC',dsc:'DSC',mc:'MC Zenith',ic:'IC Nadir',mansion:' M.',house:'H.',p1:'New Moon',p2:'1st Qtr',p3:'Full Moon',p4:'Last Qtr',p5:'Dark Moon',deg:'Elong.',trop:'Tropical',sid:'Sidereal'},
     al:{asc:'ASC in',sun:'Sun in',moon:'Moon in',phase:'Phase',rahu:'S.Node in',jup:'Jupiter in',sat:'Saturn in'},
     dst:{off:'Standard',on:'DST +1h',label:'Daylight Saving Time',hint:'Adds +1h to birth time'},
     dom:{modalTitle:'Astro Coordinates',modalSub:'True 3D Geocentric Astrolabe',lblNm:'Native Name',lblDt:'Birth Date (Gregorian)',lblTm:'Birth Time (24h)',lblLoc:'Location & Timezone',plhNm:'Name (Optional)',btnSub:'OBSERVE ASTRO ENERGY',btnDemo:'→ Load Demo (2002.12.24 Midnight · 109°E · 31°N)',tbTitle:'Geocentric Astrolabe',tbSub:'TRUE 3D PHYSICAL UNIVERSE',tbPlay:'▶ Play',tbPause:'⏸ Pause',tbReset:'Reset',timeLbl:'Current Time',loadTxt:'Loading Engine...',drwLbl:'Astro Data',pEcl:'Ecliptic Longitudes',pAna:'Chart Summary',pHou:'12 Zodiac Houses',pHouM:'Zodiac Houses',ascAligned:'☽ Observer landmark aligned to Zenith & ASC'},
@@ -307,7 +310,7 @@ const LANGS = {
     man:['각','항','저','방','심','미','기','두','우','여','허','위','실','벽','규','루','위2','묘','필','자','삼','정','귀','류','성','장','익','진'],
     pl:{sun:'태양',moon:'달',mercury:'수성',venus:'금성',mars:'화성',jupiter:'목성',saturn:'토성',uranus:'천왕성',neptune:'해왕성',pluto:'명왕성',rahu:'라후',ketu:'케투',yapo:'월패',ziqi:'자기'},
     wx:{sun:'순양·아버지',moon:'순음·어머니',mercury:'양수·사고',venus:'음금·재물',mars:'양화·행동',jupiter:'양목·복',saturn:'음토·책임',rahu:'화의 여기',ketu:'토의 여기',yapo:'수의 여기',ziqi:'목의 여기',uranus:'양토·개혁',neptune:'음목·환상',pluto:'음화·재생'},
-    ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
+    ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 천정',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
     dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
@@ -457,6 +460,11 @@ function calcAll(T, jd, lng, lat, isSid) {
   const lat_r = lat * DEG;
   geo.asc = norm(Math.atan2(Math.cos(lst), -(Math.sin(lst) * Math.cos(obliq) + Math.tan(lat_r) * Math.sin(obliq))) * R2D);
   geo.dsc = norm(geo.asc + 180);
+  
+  // ★ 核心修復 2：精准計算天頂 (MC) 與天底 (IC)
+  geo.mc = norm(Math.atan2(Math.sin(lst), Math.cos(lst) * Math.cos(obliq)) * R2D);
+  geo.ic = norm(geo.mc + 180);
+
   const aya = 24.03 + d * (50.29 / 36525);
   if (isSid) {
     const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
@@ -658,7 +666,7 @@ const satRingTex = makeSaturnRingTex();
 
 const OBL = 23.4365 * DEG;
 
-// ★ 核心修復 1：赤道平面倒轉，糾正天球極點朝向
+// ★ 核心修復 1：赤道平面倒轉，糾正天球極點朝向（-Math.PI / 2）
 const eqG = new THREE.Group(); eqG.rotation.x = -Math.PI / 2; scene.add(eqG);
 eqG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .065, 16, 200),
   new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:.72 })));
@@ -686,7 +694,7 @@ function lbl2D(parent, cls, r, angle, type, id) {
 }
 lbl2D(eqG, 'leq', 43, 0.4, 'ui', 'eq');
 
-// ★ 核心修復 1：黃道平面同步倒轉
+// ★ 核心修復 1：黃道平面同步倒轉（-Math.PI / 2 + OBL）
 const eclG = new THREE.Group(); eclG.rotation.x = -Math.PI / 2 + OBL; scene.add(eclG);
 eclG.add(new THREE.Mesh(new THREE.TorusGeometry(40, .1, 16, 300),
   new THREE.MeshBasicMaterial({ color:0xFFDD00, transparent:true, opacity:.95 })));
@@ -928,16 +936,11 @@ function updateEarthOrientation() {
   const ascAngle = currentAscDeg * DEG;
   const ascLocal = new THREE.Vector3(Math.cos(ascAngle), Math.sin(ascAngle), 0);
   const ascWorld = ascLocal.clone().applyQuaternion(eclG.quaternion).normalize();
-  const ascXZ = new THREE.Vector2(ascWorld.x, ascWorld.z).normalize();
-  const ascAzimuth = Math.atan2(ascXZ.y, ascXZ.x); 
+  const ascAzimuth = Math.atan2(ascWorld.z, ascWorld.x); 
   
-  // 保持地球自轉同步於命盤
-  earthG.rotation.y = ascAzimuth - birthLng * DEG + Math.PI;
-
   // 動態更新出生地紅色信標的三維球面坐標
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    // THREE.js 貼圖映射校正：經度需偏移 -90 度以匹配標準地球貼圖的格林威治子午線
     const theta = -userData.lng * DEG - Math.PI / 2;
     birthMarker.position.set(
         1.52 * Math.sin(phi) * Math.cos(theta),
@@ -945,6 +948,10 @@ function updateEarthOrientation() {
         1.52 * Math.sin(phi) * Math.sin(theta)
     );
   }
+  
+  // 保持地球自轉同步於命盤
+  const markerLocalAngle = Math.atan2(birthMarker.position.z, birthMarker.position.x);
+  earthG.rotation.y = ascAzimuth - markerLocalAngle;
 }
 
 OCtrl.addEventListener('change', () => {
@@ -1007,6 +1014,8 @@ function placePlanets(geo, lst, aya) {
     if (c.isCSS2DObject && c.element) c.element.remove();
     houseG.remove(c);
   }
+  
+  // 繪製黃道十二宮（等宮制）
   for (let i = 0; i < 12; i++) {
     const a = norm(geo.asc + i*30) * DEG;
     const isAxis = i === 0 || i === 6;
@@ -1019,6 +1028,17 @@ function placePlanets(geo, lst, aya) {
     else if (i === 6) lbl2D(houseG, 'ldsc', 46, a, 'ui', 'dsc');
     else lbl2D(houseG, 'lax', 43, a, 'raw', i+1);
   }
+
+  // ★ 核心修復 3：繪製天頂 (MC) 與天底 (IC) 軸線
+  const mcA = geo.mc * DEG;
+  const icA = geo.ic * DEG;
+  houseG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(Math.cos(icA)*43, Math.sin(icA)*43, 0),
+    new THREE.Vector3(Math.cos(mcA)*43, Math.sin(mcA)*43, 0)
+  ]), new THREE.LineBasicMaterial({ color:0x7DE09A, transparent:true, opacity:0.68 })));
+  
+  lbl2D(houseG, 'lmc', 48, mcA, 'ui', 'mc');
+  lbl2D(houseG, 'lmc', 48, icA, 'ui', 'ic');
 
   updateEarthOrientation();
 }
