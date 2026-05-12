@@ -136,26 +136,30 @@ input::placeholder{color:rgba(255,255,255,.17)}
 #asc-hint.show{opacity:1}
 
 /* =========================================================
-   手機版響應式 (必須放在 CSS 最底端，確保完美覆蓋桌面版樣式)
+   手機版響應式
    ========================================================= */
 @media(max-width:768px){
   .side-panel{display:none!important}
-  #topbar{padding:10px 14px 24px}
+  
+  .top-left-panel { top: 12px; left: 12px; }
+  .btn-back { width: 32px; height: 32px; font-size: 1rem; }
+  
+  #topbar{padding:12px 14px 24px 54px}
   #tb-title{font-size:1.1rem}
   #tb-sub{display:none}
-  #global-lang-toggle{top:12px;left:50%;transform:translateX(-50%);gap:5px}
+  
+  #global-lang-toggle{top:50px;left:50%;transform:translateX(-50%);gap:5px; width: 100%; justify-content: center;}
   .mlbtn{padding:4px 8px;font-size:.52rem}
   
-  #ctrl-bar { bottom: 80px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 0 14px 10px; gap: 10px; justify-content: flex-start; }
+  #ctrl-bar { bottom: 105px; right: 0; left: 0; flex-direction: row; overflow-x: auto; padding: 0 14px 10px; gap: 10px; justify-content: flex-start; }
   #ctrl-bar::-webkit-scrollbar { display: none; }
   .cb[data-tt]:hover::after{display:none}
   
-  #time-bar { bottom: 20px; min-width: 0; width: 92%; }
+  #time-bar { bottom: 62px; min-width: 0; width: 92%; }
   
-  /* 圖例 (Legend) 排版修正：強制清除 bottom 設定，避免元素被上下拉伸 */
-  #legend { top: 75px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
+  #legend { top: 85px; bottom: auto !important; flex-wrap: wrap; justify-content: center; width: 90%; }
   
-  #asc-hint { top: 120px; bottom: auto; }
+  #asc-hint { top: 135px; bottom: auto; }
   #modal{padding:24px 18px;margin:16px}
   #mw{align-items:flex-start;padding-top:10px}
 }
@@ -242,34 +246,6 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <div class="pc"><div class="pc-t" id="pct-hou-m">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
   </div>
 </div>
-<div id="legend">
-  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黃道</span></div>
-  <div class="li"><div class="ld" style="background:#63A3ED"></div><span>赤道</span></div>
-  <div class="li"><div class="ld" style="background:#7DE09A"></div><span>二十八宿</span></div>
-  <div class="li"><div class="ld" style="background:#FF6B6B"></div><span>ASC/宫位</span></div>
-</div>
-<div id="ctrl-bar">
-  <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
-  <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
-  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
-  <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
-  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
-  <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
-  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
-  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
-  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
-</div>
-<div id="time-bar">
-  <button class="tbtn" id="tb-play">▶ 播放</button>
-  <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
-  <div id="time-lbl">當前時間</div>
-  <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
-</div>
-<div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
-<div id="asc-hint">☽ 觀測地標已對齊天頂與上升點</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -282,9 +258,6 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 try {
 
-// ==========================================
-// 1. 唯一宣告的全局變數與常數
-// ==========================================
 const DEG = Math.PI / 180;
 const R2D = 180 / Math.PI;
 const norm = x => ((x % 360) + 360) % 360;
@@ -348,9 +321,6 @@ for (let i = 0; i < 28; i++) {
   _macc += MANSION_W[i] * 360 / 365;
 }
 
-// ==========================================
-// 2. 多語言支援 (I18N)
-// ==========================================
 const LANGS = {
   'zh-TW':{
     zod:['白羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],
@@ -393,7 +363,7 @@ const LANGS = {
     ui:{eq:'적도',ecl:'황도',asc:'ASC 상승',dsc:'DSC 하강',mc:'MC 천정',ic:'IC 천저',mansion:'수',house:'궁',p1:'신월',p2:'상현',p3:'만월',p4:'하현',p5:'그믐',deg:'이각',trop:'회귀 황도',sid:'항성 황도'},
     al:{asc:'명궁:',sun:'태양:',moon:'달:',phase:'위상',rahu:'남교점:',jup:'목성:',sat:'토성:'},
     dst:{off:'표준시',on:'서머타임 +1h',label:'서머타임(DST)',hint:'+1시간 자동 추가'},
-    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
+    dom:{modalTitle:'점성술 좌표계',modalSub:'3D 지구 중심 천구의',lblNm:'이름',lblDt:'생년월일 (양력)',lblTm:'태어난 시간 (24시간)',lblLoc:'출생지 좌표 및 시간대',plhNm:'이름 (선택)',btnSub:'천 체 관 측',btnDemo:'→ 데모 불러오기 (2002.12.24 자정 · 동경 109 · 북위 31)',tbTitle:'지구 중심 천구의',tbSub:'3D 물리적 우 우주 시뮬레이션',tbPlay:'▶ 재생',tbPause:'⏸ 일시정지',tbReset:'초기화',timeLbl:'현재 시간',loadTxt:'엔진 불러오는 중...',drwLbl:'점성술 데이터',pEcl:'황도 좌표',pAna:'차트 요약',pHou:'12 하우스',pHouM:'하우스',ascAligned:'☽ 관측 지표가 천정과 ASC에 정렬되었습니다'},
     ctrl:{zen:'몰입 모드',spin:'시간 회전',helio:'일심/지심 전환',sys:'회귀/항성 전환',out:'외행성',ecl:'황도환',eq:'적도환',man:'28수',pl:'행성',asp:'애스펙트',tm:'시간 제어',orb:'황위 수직선',btnSysT:'회귀',btnSysS:'항성',btnOut:'외',btnMan:'수',btnPl:'성',btnHelio:'일'}
   }
 };
@@ -476,9 +446,6 @@ window.toggleDrawer = () => {
     if(d) d.classList.toggle('open');
 };
 
-// ==========================================
-// 3. 核心天文算法
-// ==========================================
 function auToR(au) { return au === 0 ? 0 : 18 * Math.pow(au, 0.42); }
 
 function solveKepler(M, e) {
@@ -669,9 +636,6 @@ function analyzeChart(geo, isSid, jd) {
   return lines;
 }
 
-// ==========================================
-// 4. 基礎 3D 渲染與圖層設定
-// ==========================================
 const wrap = document.getElementById('three-canvas');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020204);
@@ -703,7 +667,8 @@ OCtrl.noPan = true;
 OCtrl.staticMoving = false;
 OCtrl.dynamicDampingFactor = 0.1;
 OCtrl.minDistance = 3;
-OCtrl.maxDistance = 250;
+// 修復 2：大幅增加最大視距，日心模式可清楚看到三王星軌道
+OCtrl.maxDistance = 800; 
 
 function mkStars(n, sz, sp, col, op) {
   const pos = new Float32Array(n * 3);
@@ -747,7 +712,7 @@ function updateMeteors(dt) {
 scene.add(new THREE.AmbientLight(0xffffff, 0.07));
 
 const universeG = new THREE.Group(); 
-universeG.rotation.x = -Math.PI / 2; // 宇宙反轉
+universeG.rotation.x = -Math.PI / 2; 
 scene.add(universeG);
 
 const eclRingG = new THREE.Group(); universeG.add(eclRingG);
@@ -763,7 +728,6 @@ const manG = new THREE.Group(); universeG.add(manG);
 const plG = new THREE.Group(); universeG.add(plG);
 const aspG = new THREE.Group(); universeG.add(aspG);
 
-// 建立靜態圖層
 eqRingG.add(new THREE.Mesh(new THREE.TorusGeometry(40, 0.065, 16, 200), new THREE.MeshBasicMaterial({ color:0x5599DD, transparent:true, opacity:0.72 })));
 for (let i = 0; i < 36; i++) {
   const a = i/36*Math.PI*2, isH = i%9===0;
@@ -864,7 +828,8 @@ function updateEarthOrientation() {
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
     const theta = (userData.lng + 90) * DEG;
-    birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
+    // 修復 1: 半徑需大於地球 2，紅點才會露出來
+    birthMarker.position.setFromSphericalCoords(2.03, phi, theta);
   }
   earthSpin.rotation.z = currentGMST * DEG;
 }
@@ -1265,12 +1230,29 @@ const setupEvents = () => {
 // ==========================================
 
 function buildEarth() {
-    const geo = new THREE.SphereGeometry(2, 32, 32); 
-    const mat = new THREE.MeshStandardMaterial({ color: 0x336699, roughness: 0.8, metalness: 0.2 });
+    // 建立半徑為 2 的地球模型
+    const geo = new THREE.SphereGeometry(2, 64, 64); 
+    const mat = new THREE.MeshStandardMaterial({ 
+        color: 0xffffff, 
+        roughness: 0.6, 
+        metalness: 0.1 
+    });
     earthMesh = new THREE.Mesh(geo, mat);
     earthMeshGroup.add(earthMesh);
 
-    birthMarker = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    // 非同步加載地球精細貼圖 (2K 解析度)
+    const texLoader = new THREE.TextureLoader();
+    texLoader.load('https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg', (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        earthMesh.material.map = tex;
+        earthMesh.material.needsUpdate = true;
+    });
+
+    // 定位紅點 (Birth Marker)
+    birthMarker = new THREE.Mesh(
+        new THREE.SphereGeometry(0.06, 16, 16), 
+        new THREE.MeshBasicMaterial({ color: 0xff3333 })
+    );
     earthMeshGroup.add(birthMarker);
 }
 
@@ -1315,13 +1297,11 @@ function animate() {
   updateMeteors(dt); composer.render(dt); lblR.render(scene, camera);
 }
 
-// 瞬間初始化核心模型與事件
 buildBaseMeshes();
 setupEvents();
 window.switchLang(currLang);
 window.hst();
 
-// 解除 Loading 畫面
 const ov = document.getElementById('loading-overlay');
 if(ov) { 
     ov.classList.add('hide'); 
