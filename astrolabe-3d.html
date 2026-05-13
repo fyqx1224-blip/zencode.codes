@@ -255,7 +255,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
   <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
   <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體显示" style="font-size:.68rem">政</button>
+  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
   <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
   <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
   <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
@@ -883,7 +883,6 @@ const moonOrbitHelio = new THREE.Line(
     new THREE.LineBasicMaterial({ color: 0xD8EEFF, transparent:true, opacity:0.3 })
 );
 moonOrbitHelio.visible = false;
-// 將地月軌道直接掛載到宇宙全局中，避免受地球自轉傾角干擾
 universeG.add(moonOrbitHelio);
 
 function clearGroup(group) {
@@ -1008,7 +1007,7 @@ function placePlanets(geo, helio, lst, aya) {
     const eR = auToR(1.0); const eA = helio.earth.l * DEG;
     const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
     earthContainer.position.set(eX, eY, 0);
-    moonOrbitHelio.position.set(eX, eY, 0); // 地月軌道跟隨地球
+    moonOrbitHelio.position.set(eX, eY, 0); 
     
     helioOrbitsG.children.forEach(orbit => {
         if (orbit.userData.isOut) orbit.visible = S.showOut;
@@ -1022,12 +1021,11 @@ function placePlanets(geo, helio, lst, aya) {
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
       else if (pc.id === 'moon' || pc.type === 'fict') {
-        // 在日心模式下，月亮及虛點直接掛載在地球實時座標周圍
         const l_geo = geo[pc.id];
         if (l_geo === undefined || isNaN(l_geo)) return;
         const a = l_geo * DEG;
         const beta = (geo[pc.id + '_lat'] || 0) * DEG;
-        const rVis = 3; // 匹配 moonOrbitHelio 半徑
+        const rVis = 3; 
         const rProj = Math.cos(beta) * rVis;
         x = eX + Math.cos(a) * rProj;
         y = eY + Math.sin(a) * rProj;
@@ -1054,7 +1052,7 @@ function placePlanets(geo, helio, lst, aya) {
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
-    if (S.aspects) aspG.visible = true;
+    aspG.visible = true;
 
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
@@ -1256,7 +1254,7 @@ window.submitForm = function() {
       const dstEl = document.getElementById('f-dst'); const dst = dstEl ? dstEl.checked : false;
       const effectiveH = dst ? h + 1 : h; 
       const jd_utc = jdn(y, m, d, effectiveH - tz, mn);
-      if (isNaN(jd_utc)) { alert('時間計算錯誤，請檢查輸入'); return; }
+      if (isNaN(jd_utc)) { alert('时间计算错误，请检查输入'); return; }
       
       let totalM = mn + Math.round((lng - tz * 15) * 4);
       let newH = ((effectiveH + Math.floor(totalM / 60)) % 24 + 24) % 24;
@@ -1264,7 +1262,7 @@ window.submitForm = function() {
 
       userData = { name, y, m, d, h:newH, mn:newM, lng, lat, tz, dst, jd:jd_utc };
       launch();
-  } catch(e) { alert('計算模組出錯: ' + e.message); console.error(e); }
+  } catch(e) { alert('计算模组出错: ' + e.message); console.error(e); }
 };
 
 window.loadDemo = function() {
@@ -1436,7 +1434,7 @@ const texPromises = Object.entries(TEX_URLS).map(([k, url]) =>
     };
     img.onerror = () => res(); 
     img.src = url;
-    setTimeout(res, 8000); // 增加超時保護，避免網路因素導致卡死
+    setTimeout(res, 8000); // 增加超時保護，避免網路因素导致卡死
   })
 );
 
@@ -1500,7 +1498,7 @@ function buildEarth() {
   zDiv.style.fontSize = '0.7rem';
   zDiv.setAttribute('data-3d-type', 'ui');
   zDiv.setAttribute('data-3d-id', 'zenith');
-  zDiv.innerHTML = LANGS[currLang].ui.zenith || '天頂';
+  zDiv.innerHTML = LANGS[currLang].ui.zenith || '天顶';
   zenithLabel = new CSS2DObject(zDiv);
   earthMathGroup.add(zenithLabel); 
 }
@@ -1512,7 +1510,7 @@ function buildPlanet(pc) {
   if (pc.type === 'fict') {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
-    mat = new THREE.MeshStandardMaterial({
+    mat = new MeshStandardMaterial({
       color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
       roughness: 1, metalness: 0
     });
