@@ -255,7 +255,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
   <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
   <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
+  <button class="cb on" id="cb-pl"  data-tt="星體显示" style="font-size:.68rem">政</button>
   <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
   <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
   <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
@@ -883,7 +883,8 @@ const moonOrbitHelio = new THREE.Line(
     new THREE.LineBasicMaterial({ color: 0xD8EEFF, transparent:true, opacity:0.3 })
 );
 moonOrbitHelio.visible = false;
-earthContainer.add(moonOrbitHelio);
+// 將地月軌道直接掛載到宇宙全局中，避免受地球自轉傾角干擾
+universeG.add(moonOrbitHelio);
 
 function clearGroup(group) {
     if (!group || !group.children) return;
@@ -911,26 +912,21 @@ function pointCameraAtBirthplace() {
   camera.position.copy(centerPos.clone().add(zenithDir.multiplyScalar(camDist)));
   camera.lookAt(centerPos);
 
-  // 完美投影 2D 星盤視角：將相機 UP 向量精準指向黃道中天 (MC) 的投影
   if (curGeo && curGeo.mc !== undefined) {
       const mcAngle = curGeo.mc * DEG;
       const mcLocal = new THREE.Vector3(Math.cos(mcAngle), Math.sin(mcAngle), 0);
-      // MC 所在的黃道 3D 物理絕對方向
       const mcWorld = mcLocal.applyMatrix4(universeG.matrixWorld).sub(centerPos).normalize();
       
-      // 將 MC 向量精準投影到相機的視角平面（即地平圈）上，確保 12 點鐘方向絕對垂直
       const dot = mcWorld.dot(zenithDir);
       let upDir = mcWorld.clone().sub(zenithDir.clone().multiplyScalar(dot));
       
-      // 防止在極端緯度下（如中天剛好垂直過天頂）導致的平行計算向量歸零報錯
       if (upDir.lengthSq() < 0.0001) {
           const northPoleWorld = new THREE.Vector3(0, 1, 0).applyMatrix4(earthMathGroup.matrixWorld).sub(centerPos).normalize();
           let localEast = new THREE.Vector3().crossVectors(northPoleWorld, zenithDir).normalize();
           const localNorth = new THREE.Vector3().crossVectors(zenithDir, localEast).normalize();
-          upDir = localNorth.clone().negate(); // 備用：退回計算本地正南
+          upDir = localNorth.clone().negate(); 
       }
       
-      // 設定 UP，完成最終 2D 星盤拓撲映射
       camera.up.copy(upDir.normalize());
   } else {
       const northPoleWorld = new THREE.Vector3(0, 1, 0).applyMatrix4(earthMathGroup.matrixWorld).sub(centerPos).normalize();
@@ -947,7 +943,6 @@ function updateEarthOrientation() {
   if (!userData.jd || isNaN(currentGMST)) return;
   if (birthMarker) {
     const phi = (90 - userData.lat) * DEG;
-    // 【核心修正】把 theta 恢復為 + 90 度，將天文幾何算法與 EarthMesh 的外觀貼圖徹底解耦！
     const theta = (userData.lng + 90) * DEG; 
     birthMarker.position.setFromSphericalCoords(1.52, phi, theta);
 
@@ -1013,6 +1008,7 @@ function placePlanets(geo, helio, lst, aya) {
     const eR = auToR(1.0); const eA = helio.earth.l * DEG;
     const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
     earthContainer.position.set(eX, eY, 0);
+    moonOrbitHelio.position.set(eX, eY, 0); // 地月軌道跟隨地球
     
     helioOrbitsG.children.forEach(orbit => {
         if (orbit.userData.isOut) orbit.visible = S.showOut;
@@ -1026,11 +1022,16 @@ function placePlanets(geo, helio, lst, aya) {
       let x, y, z;
       if (pc.id === 'sun') { x = 0; y = 0; z = 0; } 
       else if (pc.id === 'moon' || pc.type === 'fict') {
-        const hData = helio[pc.id]; if(!hData) return;
-        const r_m = hData.r, lat_r = hData.lat * DEG, l_r = hData.l * DEG;
-        z = r_m * Math.sin(lat_r) * Z_EXAG;
-        const rP = r_m * Math.cos(lat_r);
-        x = Math.cos(l_r)*rP; y = Math.sin(l_r)*rP;
+        // 在日心模式下，月亮及虛點直接掛載在地球實時座標周圍
+        const l_geo = geo[pc.id];
+        if (l_geo === undefined || isNaN(l_geo)) return;
+        const a = l_geo * DEG;
+        const beta = (geo[pc.id + '_lat'] || 0) * DEG;
+        const rVis = 3; // 匹配 moonOrbitHelio 半徑
+        const rProj = Math.cos(beta) * rVis;
+        x = eX + Math.cos(a) * rProj;
+        y = eY + Math.sin(a) * rProj;
+        z = Math.sin(beta) * rVis * (pc.id === 'moon' ? 1.5 : Z_EXAG);
       } else {
         const hData = helio[pc.id]; if(!hData) return;
         const r_m = auToR(hData.r), lat_r = hData.lat * DEG, l_r = hData.l * DEG;
