@@ -988,7 +988,6 @@ function updateHelioBadge() {
 }
 
 function setHelioUIState(isHelio) {
-  const aspBtn = document.getElementById('cb-asp'); if(aspBtn) aspBtn.style.display = isHelio ? 'none' : 'flex';
   const eqBtn = document.getElementById('cb-eq'); if(eqBtn) eqBtn.style.display = isHelio ? 'none' : 'flex';
   if (isHelio) { eqRingG.visible = false; } else { eqRingG.visible = S.equator; }
   
@@ -1003,7 +1002,7 @@ function placePlanets(geo, helio, lst, aya) {
   currentAscDeg = geo.asc;
 
   if (S.helio) {
-    helioOrbitsG.visible = true; houseG.visible = false; aspG.visible = false; moonOrbitHelio.visible = true;
+    helioOrbitsG.visible = true; houseG.visible = false; moonOrbitHelio.visible = true;
     const eR = auToR(1.0); const eA = helio.earth.l * DEG;
     const eX = Math.cos(eA) * eR, eY = Math.sin(eA) * eR;
     earthContainer.position.set(eX, eY, 0);
@@ -1015,6 +1014,8 @@ function placePlanets(geo, helio, lst, aya) {
 
     manG.rotation.z = 0;
     eclRingG.rotation.z = 0;
+
+    aspG.visible = S.aspects; 
 
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut;
@@ -1045,6 +1046,9 @@ function placePlanets(geo, helio, lst, aya) {
       }
       if (dropLines[pc.id]) dropLines[pc.id].visible = false;
     });
+
+    if (S.aspects) buildAspects(geo, helio); else clearGroup(aspG);
+
   } else {
     helioOrbitsG.visible = false; houseG.visible = true; moonOrbitHelio.visible = false;
     earthContainer.position.set(0, 0, 0);
@@ -1052,7 +1056,7 @@ function placePlanets(geo, helio, lst, aya) {
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
-    if (S.aspects) aspG.visible = true; // 這裡改了！無論之前狀態如何，只要打開 S.aspects 就顯示圖層
+    aspG.visible = S.aspects; 
 
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
@@ -1076,7 +1080,7 @@ function placePlanets(geo, helio, lst, aya) {
       }
     });
 
-    if (S.aspects) buildAspects(geo); else clearGroup(aspG);
+    if (S.aspects) buildAspects(geo, helio); else clearGroup(aspG);
 
     clearGroup(houseG);
     if (geo.houses && geo.houses.length === 12) {
@@ -1129,20 +1133,33 @@ function placePlanets(geo, helio, lst, aya) {
 const ASP_A = [0,60,90,120,150,180];
 const ASP_C = [0xFFFF00,0x44FF88,0xFF4444,0x44AAFF,0xFF8844,0xFF4444];
 
-function buildAspects(geo) {
+function buildAspects(geo, helio) {
   clearGroup(aspG);
   const bp = ['sun','moon','mercury','venus','mars','jupiter','saturn','rahu','ketu','yapo','ziqi','fortune'];
   if (S.showOut) bp.push('uranus','neptune','pluto');
   
   for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
-    if(geo[bp[i]] === undefined || geo[bp[j]] === undefined || isNaN(geo[bp[i]]) || isNaN(geo[bp[j]])) continue;
-    const diff = Math.min(norm(geo[bp[i]]-geo[bp[j]]), norm(geo[bp[j]]-geo[bp[i]]));
+    
+    // 獲取當前模式下的角度值：地心模式讀取 geo，日心模式讀取 helio
+    let valI, valJ;
+    if (S.helio) {
+      valI = (bp[i] === 'moon' || PCONF.find(p=>p.id===bp[i]).type === 'fict') ? geo[bp[i]] : helio[bp[i]]?.l;
+      valJ = (bp[j] === 'moon' || PCONF.find(p=>p.id===bp[j]).type === 'fict') ? geo[bp[j]] : helio[bp[j]]?.l;
+    } else {
+      valI = geo[bp[i]];
+      valJ = geo[bp[j]];
+    }
+
+    if(valI === undefined || valJ === undefined || isNaN(valI) || isNaN(valJ)) continue;
+    
+    const diff = Math.min(norm(valI - valJ), norm(valJ - valI));
     const orb = (bp[i]==='sun'||bp[j]==='sun'||bp[i]==='moon'||bp[j]==='moon') ? 10 : 8;
+    
     for (let k = 0; k < ASP_A.length; k++) {
       if (Math.abs(diff-ASP_A[k]) < orb) {
         const p1 = pMesh[bp[i]] ? pMesh[bp[i]].position.clone() : new THREE.Vector3();
         const p2 = pMesh[bp[j]] ? pMesh[bp[j]].position.clone() : new THREE.Vector3();
-        let curDiff = Math.abs(geo[bp[i]] - geo[bp[j]]); if (curDiff > 180) curDiff = 360 - curDiff;
+        let curDiff = Math.abs(valI - valJ); if (curDiff > 180) curDiff = 360 - curDiff;
         let prevDiff = 0;
         if(geo.prev && geo.prev[bp[i]] !== undefined && geo.prev[bp[j]] !== undefined) {
            prevDiff = Math.abs(geo.prev[bp[i]] - geo.prev[bp[j]]); if (prevDiff > 180) prevDiff = 360 - prevDiff;
@@ -1384,7 +1401,23 @@ const setupEvents = () => {
     bindBtn('cb-eq', 'equator', ()=>{ if(!S.helio) eqRingG.visible=true; }, ()=>eqRingG.visible=false);
     bindBtn('cb-man','mansion', ()=>manG.visible=true,  ()=>manG.visible=false);
     bindBtn('cb-pl', 'planets', ()=>plG.visible=true,   ()=>plG.visible=false);
-    bindBtn('cb-asp','aspects', ()=>{if(userData.jd)buildAspects(curGeo);}, ()=>clearGroup(aspG));
+    
+    // 修復狀態殘留 Bug：無論當前處於什麼模式，切換按鈕本身必須將 S.aspects 的狀態同步到 UI 和渲染層
+    const btnAsp = document.getElementById('cb-asp');
+    if(btnAsp) {
+      btnAsp.addEventListener('click', () => {
+        S.aspects = !S.aspects;
+        btnAsp.classList.toggle('on', S.aspects);
+        if(userData.jd) {
+          if (S.aspects) {
+            aspG.visible = true; // 強制顯示圖層
+            buildAspects(curGeo, curHelio);
+          } else {
+            clearGroup(aspG);
+          }
+        }
+      });
+    }
 
     const btnSys = document.getElementById('cb-sys');
     if(btnSys) btnSys.addEventListener('click', () => {
