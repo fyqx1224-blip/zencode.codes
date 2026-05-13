@@ -204,7 +204,7 @@ input::placeholder{color:rgba(255,255,255,.17)}
   <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
   <div class="r3">
     <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
-    <input type="number" id="f-lat" placeholder="北緯" step="0.1" value="30" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-lat" placeholder="北纬" step="0.1" value="30" oninput="if(window.hst) window.hst()">
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
   </div>
   
@@ -1052,7 +1052,7 @@ function placePlanets(geo, helio, lst, aya) {
     manG.rotation.z = S.sidereal ? 0 : aya * DEG;
     eclRingG.rotation.z = 0;
     
-    aspG.visible = true;
+    if (S.aspects) aspG.visible = true; // 這裡改了！無論之前狀態如何，只要打開 S.aspects 就顯示圖層
 
     PCONF.forEach(pc => {
       const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
@@ -1510,7 +1510,7 @@ function buildPlanet(pc) {
   if (pc.type === 'fict') {
     mat = new THREE.MeshBasicMaterial({ color: pc.col });
   } else if (pc.id === 'sun') {
-    mat = new MeshStandardMaterial({
+    mat = new THREE.MeshStandardMaterial({
       color: 0xFFFAE0, emissive: 0xFFCC00, emissiveIntensity: 3.5,
       roughness: 1, metalness: 0
     });
