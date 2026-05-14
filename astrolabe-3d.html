@@ -201,73 +201,73 @@ input::placeholder{color:rgba(255,255,255,.17)}
     <input type="number" id="f-mi" placeholder="分 0-59" min="0" max="59" oninput="if(window.hst) window.hst()">
   </div>
   
-  <div class="fl" id="lbl-loc">出生地經緯度與時區</div>
+  <div class="fl" id="lbl-loc">出生地经纬度与时区</div>
   <div class="r3">
-    <input type="number" id="f-lg" placeholder="東經" step="0.1" value="120" oninput="if(window.hst) window.hst()">
+    <input type="number" id="f-lg" placeholder="東经" step="0.1" value="120" oninput="if(window.hst) window.hst()">
     <input type="number" id="f-lat" placeholder="北纬" step="0.1" value="30" oninput="if(window.hst) window.hst()">
     <input type="number" id="f-tz" placeholder="時區" step="1" value="8" oninput="if(window.hst) window.hst()">
   </div>
   
   <div class="dst-row">
-    <div class="dst-label" id="lbl-dst">夏令時（DST）<br><span style="font-size:.44rem;opacity:.55">開啟後自動 +1 小時</span></div>
-    <span class="dst-badge" id="dst-badge">標準時</span>
+    <div class="dst-label" id="lbl-dst">夏令时（DST）<br><span style="font-size:.44rem;opacity:.55">开启后自动 +1 小时</span></div>
+    <span class="dst-badge" id="dst-badge">标准时</span>
     <label class="dst-toggle">
       <input type="checkbox" id="f-dst" onchange="if(window.toggleDST) window.toggleDST()">
       <span class="dst-slider"></span>
     </label>
   </div>
   <div id="st-hint"></div>
-  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">觀 測 星 象 能 量</button>
-  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 載入演示（2002.12.24 子夜 · 東經109 · 北緯31）</div>
+  <button class="sbtn" id="btn-sub" onclick="if(window.submitForm) window.submitForm()">观 测 星 象 能 量</button>
+  <div class="demo" id="btn-demo" onclick="if(window.loadDemo) window.loadDemo()">→ 载入演示（2002.12.24 子夜 · 东经109 · 北纬31）</div>
 </div>
 </div>
 
 <div class="side-panel" id="lp" style="display:none">
-  <div class="pc"><div class="pc-t" id="pct-ecl">星象 · 視黃道度數</div><div id="plist"></div></div>
-  <div class="pc"><div class="pc-t" id="pct-ana">命盤分析摘要</div><div id="abody"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-ecl">星象 · 视黄道度数</div><div id="plist"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-ana">命盘分析摘要</div><div id="abody"></div></div>
 </div>
 <div class="side-panel" id="rp" style="display:none">
-  <div class="pc"><div class="pc-t" id="pct-hou">黃道十二宫 · 宮位星曜</div><div class="hg" id="hgrid"></div></div>
+  <div class="pc"><div class="pc-t" id="pct-hou">黄道十二宫 · 宫位星曜</div><div class="hg" id="hgrid"></div></div>
 </div>
 <div id="mobile-drawer" style="display:none">
   <div id="mobile-drawer-handle" onclick="if(window.toggleDrawer) window.toggleDrawer()">
-    <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象資料</span><div class="pill"></div>
+    <div class="pill"></div><span id="mobile-drawer-label" style="font-size:.55rem;color:rgba(255,255,255,.4);letter-spacing:.2em">星象资料</span><div class="pill"></div>
   </div>
   <div id="mobile-drawer-content">
-    <div class="pc"><div class="pc-t" id="pct-ecl-m">星象 · 視黃道度數</div><div id="plist-m"></div></div>
-    <div class="pc"><div class="pc-t" id="pct-ana-m">命盤分析摘要</div><div id="abody-m"></div></div>
-    <div class="pc"><div class="pc-t" id="pct-hou-m">黃道十二宮</div><div class="hg" id="hgrid-m"></div></div>
+    <div class="pc"><div class="pc-t" id="pct-ecl-m">星象 · 视黄道度数</div><div id="plist-m"></div></div>
+    <div class="pc"><div class="pc-t" id="pct-ana-m">命盘分析摘要</div><div id="abody-m"></div></div>
+    <div class="pc"><div class="pc-t" id="pct-hou-m">黄道十二宫</div><div class="hg" id="hgrid-m"></div></div>
   </div>
 </div>
 <div id="legend">
-  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黃道</span></div>
+  <div class="li"><div class="ld" style="background:#FFD700"></div><span>黄道</span></div>
   <div class="li"><div class="ld" style="background:#63A3ED"></div><span>赤道</span></div>
   <div class="li"><div class="ld" style="background:#7DE09A"></div><span>二十八宿</span></div>
   <div class="li"><div class="ld" style="background:#FF6B6B"></div><span>ASC/MC中天</span></div>
 </div>
 <div id="ctrl-bar">
   <button class="cb" id="cb-zen"  data-tt="沉浸星空" style="font-size:.9rem">🌌</button>
-  <button class="cb" id="cb-spin" data-tt="時間自轉 (流逝)">⟳</button>
-  <button class="cb" id="cb-zenith" data-tt="對齊天頂 (2D星盤)" style="font-size:.85rem">🎯</button>
-  <button class="cb" id="cb-helio" data-tt="切換日心/地心">日</button>
-  <button class="cb" id="cb-sys"  data-tt="切換回歸/恆星" style="font-size:.68rem">歸</button>
+  <button class="cb" id="cb-spin" data-tt="时间自转 (流逝)">⟳</button>
+  <button class="cb" id="cb-zenith" data-tt="对齐天顶 (2D星盘)" style="font-size:.85rem">🎯</button>
+  <button class="cb" id="cb-helio" data-tt="切换日心/地心">日</button>
+  <button class="cb" id="cb-sys"  data-tt="切换回归/恒星" style="font-size:.68rem">归</button>
   <button class="cb on" id="cb-out" data-tt="三王星" style="font-size:.68rem">王</button>
-  <button class="cb on" id="cb-ecl" data-tt="黃道環" style="color:#FFD700">◉</button>
-  <button class="cb on" id="cb-eq"  data-tt="赤道環">⊕</button>
+  <button class="cb on" id="cb-ecl" data-tt="黄道环" style="color:#FFD700">◉</button>
+  <button class="cb on" id="cb-eq"  data-tt="赤道环">⊕</button>
   <button class="cb on" id="cb-man" data-tt="二十八宿" style="font-size:.68rem">宿</button>
-  <button class="cb on" id="cb-pl"  data-tt="星體顯示" style="font-size:.68rem">政</button>
-  <button class="cb"    id="cb-asp" data-tt="相位連線">⋆</button>
-  <button class="cb"    id="cb-tm"  data-tt="時間推移">⏱</button>
-  <button class="cb"    id="cb-orb" data-tt="黃緯垂線">◎</button>
+  <button class="cb on" id="cb-pl"  data-tt="星体显示" style="font-size:.68rem">政</button>
+  <button class="cb"    id="cb-asp" data-tt="相位连线">⋆</button>
+  <button class="cb"    id="cb-tm"  data-tt="时间推移">⏱</button>
+  <button class="cb"    id="cb-orb" data-tt="黄纬垂线">◎</button>
 </div>
 <div id="time-bar">
   <button class="tbtn" id="tb-play">▶ 播放</button>
   <input type="range" id="time-range" min="-87660" max="87660" value="0" step="1">
-  <div id="time-lbl">當前時間</div>
+  <div id="time-lbl">当前时间</div>
   <button class="tbtn" id="tb-reset" onclick="if(window.resetTime) window.resetTime()">重置</button>
 </div>
 <div id="tip"><h4 id="tip-h"></h4><p id="tip-p"></p></div>
-<div id="asc-hint">☽ 測者中心已完美鎖定，中天直指螢幕正上方</div>
+<div id="asc-hint">☽ 测者中心已完美锁定，中天直指萤幕正上方</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -314,21 +314,21 @@ const PE = {
 };
 
 const PCONF = [
-  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:11 },
-  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:14 },
-  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:17 },
-  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:21 },
-  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:25 },
-  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:29 },
-  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:33 },
-  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:37 },
-  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:41 },
-  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:45 },
-  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:11 },
-  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:11 }
+  { id:'moon',    ic:'☽', col:0xD8EEFF, sz:0.65, type:'sat',    isOut:false, R:10 },
+  { id:'mercury', ic:'☿', col:0xBBBBBB, sz:0.75, type:'planet', isOut:false, R:13 },
+  { id:'venus',   ic:'♀', col:0xFFEE88, sz:1.05, type:'planet', isOut:false, R:16 },
+  { id:'sun',     ic:'☉', col:0xFFCC00, sz:2.6,  type:'star',   isOut:false, R:19 },
+  { id:'mars',    ic:'♂', col:0xFF4422, sz:0.85, type:'planet', isOut:false, R:22 },
+  { id:'jupiter', ic:'♃', col:0xFFAA66, sz:2.1,  type:'planet', isOut:false, R:25.5 },
+  { id:'saturn',  ic:'♄', col:0xEEDDAA, sz:1.9,  type:'planet', isOut:false, R:29 },
+  { id:'uranus',  ic:'♅', col:0x88DDFF, sz:1.35, type:'planet', isOut:true,  R:32.5 },
+  { id:'neptune', ic:'♆', col:0x4466FF, sz:1.25, type:'planet', isOut:true,  R:36 },
+  { id:'pluto',   ic:'♇', col:0xAA9988, sz:0.45, type:'planet', isOut:true,  R:39 },
+  { id:'rahu',    ic:'☋', col:0xCC44FF, sz:0.42, type:'fict',   isOut:false, R:10 },
+  { id:'ketu',    ic:'☊', col:0xAA22EE, sz:0.42, type:'fict',   isOut:false, R:10 },
+  { id:'yapo',    ic:'⚸', col:0x8899FF, sz:0.42, type:'fict',   isOut:false, R:10 },
+  { id:'ziqi',    ic:'✦', col:0x44DDAA, sz:0.42, type:'fict',   isOut:false, R:10 },
+  { id:'fortune', ic:'⊗', col:0x22DD88, sz:0.35, type:'fict',   isOut:false, R:10 }
 ];
 
 const EMISSIVE = {
@@ -487,9 +487,13 @@ function getHelio(id, d) {
   const M = norm(p.L + p.n * d - p.w);
   const E = solveKepler(M * DEG, p.e);
   const xv = p.a * (Math.cos(E) - p.e), yv = p.a * Math.sqrt(1 - p.e * p.e) * Math.sin(E);
-  const r = Math.sqrt(xv * xv + yv * yv), l = norm(Math.atan2(yv, xv) * R2D + p.w);
-  const lat = p.i * Math.sin((l - p.Node) * DEG);
-  return { l, r, lat, a: p.a };
+  // 【核心修復 1】計算基礎 J2000 黃經
+  const l_j2000 = Math.atan2(yv, xv) * R2D + p.w;
+  // 加上自 J2000.0 起的歲差，統一與太陽月亮歸入「回歸黃道 (Tropical of Date)」座標系
+  const precession = 3.82394E-5 * d;
+  const l = norm(l_j2000 + precession);
+  const lat = p.i * Math.sin((l_j2000 - p.Node) * DEG);
+  return { l, r: Math.sqrt(xv * xv + yv * yv), lat, a: p.a };
 }
 
 function getAstroPositions(jd) {
@@ -567,41 +571,6 @@ function calcAll(T, jd, lng, lat, isSid) {
   geo.retrograde.fortune = false;
 
   const aya = 24.03 + d * (50.29 / 36525);
-  
-  if (isSid) {
-    const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
-    for (const k in geo) {
-      if (!latKeys.has(k) && typeof geo[k] === 'number') geo[k] = norm(geo[k] - aya);
-    }
-    geo.asc = norm(rawAsc - aya);
-    geo.mc = norm(rawMc - aya);
-    geo.dsc = norm(rawDsc - aya);
-    geo.ic = norm(rawIc - aya);
-
-    const ascSign = Math.floor(geo.asc / 30);
-    geo.houses = [];
-    for (let i = 0; i < 12; i++) {
-        geo.houses.push(norm((ascSign + i) * 30));
-    }
-  } else {
-    geo.asc = rawAsc;
-    geo.mc = rawMc;
-    geo.dsc = rawDsc;
-    geo.ic = rawIc;
-
-    const q1 = norm(geo.ic - geo.asc);
-    const q2 = norm(geo.dsc - geo.ic);
-    const q3 = norm(geo.mc - geo.dsc);
-    const q4 = norm(geo.asc - geo.mc);
-    geo.houses = [
-        geo.asc, norm(geo.asc + q1/3), norm(geo.asc + 2*q1/3),
-        geo.ic,  norm(geo.ic + q2/3),  norm(geo.ic + 2*q2/3),
-        geo.dsc, norm(geo.dsc + q3/3), norm(geo.dsc + 2*q3/3),
-        geo.mc,  norm(geo.mc + q4/3),  norm(geo.mc + 2*q4/3)
-    ];
-  }
-  
-  geo.prev = posPrev;
 
   const helio = {};
   helio.sun = { l: 0, r: 0, lat: 0 };
@@ -632,7 +601,47 @@ function calcAll(T, jd, lng, lat, isSid) {
           lat: Math.atan2(hz, Math.sqrt(hx*hx + hy*hy)) * R2D
       };
   });
+  
+  if (isSid) {
+    const latKeys = new Set(Object.keys(geo).filter(k => k.endsWith('_lat')));
+    for (const k in geo) {
+      if (!latKeys.has(k) && typeof geo[k] === 'number') geo[k] = norm(geo[k] - aya);
+    }
+    geo.asc = norm(rawAsc - aya);
+    geo.mc = norm(rawMc - aya);
+    geo.dsc = norm(rawDsc - aya);
+    geo.ic = norm(rawIc - aya);
 
+    for (const k in helio) {
+      if (helio[k] && typeof helio[k].l === 'number' && k !== 'sun') {
+          helio[k].l = norm(helio[k].l - aya);
+      }
+    }
+
+    const ascSign = Math.floor(geo.asc / 30);
+    geo.houses = [];
+    for (let i = 0; i < 12; i++) {
+        geo.houses.push(norm((ascSign + i) * 30));
+    }
+  } else {
+    geo.asc = rawAsc;
+    geo.mc = rawMc;
+    geo.dsc = rawDsc;
+    geo.ic = rawIc;
+
+    const q1 = norm(geo.ic - geo.asc);
+    const q2 = norm(geo.dsc - geo.ic);
+    const q3 = norm(geo.mc - geo.dsc);
+    const q4 = norm(geo.asc - geo.mc);
+    geo.houses = [
+        geo.asc, norm(geo.asc + q1/3), norm(geo.asc + 2*q1/3),
+        geo.ic,  norm(geo.ic + q2/3),  norm(geo.ic + 2*q2/3),
+        geo.dsc, norm(geo.dsc + q3/3), norm(geo.dsc + 2*q3/3),
+        geo.mc,  norm(geo.mc + q4/3),  norm(geo.mc + 2*q4/3)
+    ];
+  }
+  
+  geo.prev = posPrev;
   return { geo, helio, lst: norm(gmst + lng), gmst: norm(gmst), aya };
 }
 
@@ -1012,7 +1021,8 @@ function placePlanets(geo, helio, lst, aya) {
         if (orbit.userData.isOut) orbit.visible = S.showOut;
     });
 
-    manG.rotation.z = 0;
+    // 【核心修復 3】日心模式下，二十八宿的星盤必須隨 回歸/恆星 狀態作對應物理旋轉
+    manG.rotation.z = S.sidereal ? 0 : aya * DEG; 
     eclRingG.rotation.z = 0;
 
     aspG.visible = S.aspects; 
@@ -1062,6 +1072,7 @@ function placePlanets(geo, helio, lst, aya) {
       const vis = !pc.isOut || S.showOut; const lon = geo[pc.id];
       if (lon === undefined || isNaN(lon)) return;
       const a = lon * DEG, beta = (geo[pc.id + '_lat'] || 0) * DEG;
+      // 【核心修復 2】這裡配合 PCONF 陣列的 R 值壓縮，解決視覺溢出黃道環的問題
       const rProj = Math.cos(beta) * pc.R;
       const x = Math.cos(a)*rProj, y = Math.sin(a)*rProj;
       const z = Math.sin(beta) * pc.R * (pc.id === 'moon' ? 1.5 : Z_EXAG);
@@ -1140,7 +1151,6 @@ function buildAspects(geo, helio) {
   
   for (let i = 0; i < bp.length; i++) for (let j = i+1; j < bp.length; j++) {
     
-    // 獲取當前模式下的角度值：地心模式讀取 geo，日心模式讀取 helio
     let valI, valJ;
     if (S.helio) {
       valI = (bp[i] === 'moon' || PCONF.find(p=>p.id===bp[i]).type === 'fict') ? geo[bp[i]] : helio[bp[i]]?.l;
