@@ -47,8 +47,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sect-hd::after{transform:scaleX(-1);}
 .sect-hd-txt{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;letter-spacing:0.5em;color:rgba(212,168,67,0.55);white-space:nowrap;}
 .sizhu-outer{padding:0 16px;margin-bottom:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.sizhu-main{display:grid;grid-template-columns:repeat(4,1fr) 1px repeat(4,1fr);min-width:520px;border:1px solid rgba(212,168,67,0.14);background:rgba(0,0,0,0.28);position:relative;}
-.grp-row{grid-column:1/-1;display:grid;grid-template-columns:4fr 1px 1fr 1fr 1fr 1fr;}
+/* 修改网格：左4柱(原盘) + 1条线 + 右5柱(流时) */
+.sizhu-main{display:grid;grid-template-columns:repeat(4,1fr) 1px repeat(5,1fr);min-width:640px;border:1px solid rgba(212,168,67,0.14);background:rgba(0,0,0,0.28);position:relative;}
+.grp-row{grid-column:1/-1;display:grid;grid-template-columns:4fr 1px 1fr 1fr 1fr 1fr 1fr;}
 .grp-cell{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;letter-spacing:0.32em;padding:5px 2px 4px;border-bottom:1px solid rgba(212,168,67,0.08);}
 .grp-bazi{color:rgba(212,168,67,0.65);background:rgba(212,168,67,0.035);}
 .grp-sep{background:rgba(212,168,67,0.1);padding:0;}
@@ -56,6 +57,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .grp-liuyear{color:rgba(150,100,220,0.7);background:rgba(150,100,220,0.03);}
 .grp-liumonth{color:rgba(80,160,220,0.7);background:rgba(80,160,220,0.03);}
 .grp-liuday{color:rgba(212,168,67,0.9);background:rgba(212,168,67,0.06);border-bottom:1px solid rgba(212,168,67,0.28);}
+/* 新增流时样式 (玉青色) */
+.grp-liuhour{color:rgba(130,200,160,0.85);background:rgba(130,200,160,0.05);border-bottom:1px solid rgba(130,200,160,0.25);}
+.sz-col.sz-liuhour{background:rgba(130,200,160,0.03);}
+.sz-col.sz-liuhour:hover,.sz-col.sz-liuhour.open{background:rgba(130,200,160,0.08);}
+.sz-col.sz-liuhour .sz-head{color:rgba(130,200,160,0.75);border-bottom:1px solid rgba(130,200,160,0.2);}
+
 .sz-vsep{background:rgba(212,168,67,0.12);width:1px;grid-row:span 6;}
 .sz-col{display:flex;flex-direction:column;align-items:center;border-right:1px solid rgba(212,168,67,0.07);cursor:pointer;transition:background .18s;position:relative;overflow:visible;}
 .sz-col:last-child{border-right:none;}
@@ -70,7 +77,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-col.sz-liuday .sz-head{color:rgba(212,168,67,0.8);border-bottom:1px solid rgba(212,168,67,0.22);}
 .sz-col.sz-rizhu .sz-head{color:rgba(212,168,67,0.5);}
 
-/* 修改了天干地支的內邊距，讓它能容納上下兩個十神 */
 .sz-tg{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:2px 4px 1px;}
 .sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:1px 4px 3px;}
 .sz-ten{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
@@ -86,7 +92,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
 .sd-tip{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);text-align:center;line-height:1.7;}
 .sd-tip em{color:rgba(212,168,67,0.55);font-style:normal;}
-.rel-outer{padding:4px 16px 10px;min-width:520px;}
+.rel-outer{padding:4px 16px 10px;min-width:640px;}
 .rel-badges{display:flex;gap:5px;flex-wrap:wrap;}
 .rel-badge{font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;padding:3px 9px;letter-spacing:0.06em;border:1px solid;white-space:nowrap;cursor:default;}
 .rb-he{color:#7DE09A;border-color:rgba(125,224,154,0.28);background:rgba(125,224,154,0.04);}
@@ -260,13 +266,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 </div><script>
 /* ═════════════════════════════════════════════════════════
-   多語言支援庫 (包含全新的純前端運勢推演引擎文本)
+   多語言支援庫
 ═════════════════════════════════════════════════════════ */
 const HL_I18N = {
   'zh-TW': {
     logo: '黃道吉日', sub: '個人命盤 · 每日流日',
     tab_today: '今日', tab_chart: '命盤', tab_luck: '大運', btn_today: '回到今天',
-    hd_pillars: '命 盤 × 今 日 四 柱', grp_base: '原 命 盤', grp_luck: '大 運', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日',
+    hd_pillars: '命 盤 × 今 日 四 柱', grp_base: '原 命 盤', grp_luck: '大 運', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 時',
     lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '時柱',
     rel_he: '相合', rel_chong: '相沖', rel_liuhe: '六合', rel_hai: '相害',
     vd_title: '今日綜評：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 讀',
@@ -323,7 +329,7 @@ const HL_I18N = {
   'zh-CN': {
     logo: '黄道吉日', sub: '个人命盘 · 每日流日',
     tab_today: '今日', tab_chart: '命盘', tab_luck: '大运', btn_today: '回到今天',
-    hd_pillars: '命 盘 × 今 日 四 柱', grp_base: '原 命 盘', grp_luck: '大 运', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日',
+    hd_pillars: '命 盘 × 今 日 四 柱', grp_base: '原 命 盘', grp_luck: '大 运', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 时',
     lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '时柱',
     rel_he: '相合', rel_chong: '相冲', rel_liuhe: '六合', rel_hai: '相害',
     vd_title: '今日综评：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 读',
@@ -377,7 +383,7 @@ const HL_I18N = {
   'en': {
     logo: 'Daily Horoscope', sub: 'Personal Chart · Transits',
     tab_today: 'Today', tab_chart: 'Chart', tab_luck: 'Cycles', btn_today: 'Back to Today',
-    hd_pillars: 'CHART × DAILY TRANSITS', grp_base: 'BASE CHART', grp_luck: 'LUCK', grp_year: 'YEAR', grp_month: 'MONTH', grp_day: 'DAY',
+    hd_pillars: 'CHART × DAILY TRANSITS', grp_base: 'BASE CHART', grp_luck: 'LUCK', grp_year: 'YEAR', grp_month: 'MONTH', grp_day: 'DAY', grp_hour: 'HOUR',
     lbl_year: 'Year', lbl_month: 'Month', lbl_day: 'Day', lbl_hour: 'Hour',
     rel_he: 'Combines', rel_chong: 'Clashes', rel_liuhe: 'Combines', rel_hai: 'Harms',
     vd_title: 'Daily Verdict: ', hd_ss: 'DIVINE STARS', hd_interp: 'STAR INTERPRETATION',
@@ -431,7 +437,7 @@ const HL_I18N = {
   'ko': {
     logo: '오늘의 운세', sub: '개인 명식 · 일일 운세',
     tab_today: '오늘', tab_chart: '명식', tab_luck: '대운', btn_today: '오늘로 돌아가기',
-    hd_pillars: '명 식 × 오 늘 의 사 주', grp_base: '원 명 식', grp_luck: '대 운', grp_year: '유 년', grp_month: '유 월', grp_day: '유 일',
+    hd_pillars: '명 식 × 오 늘 의 사 주', grp_base: '원 명 식', grp_luck: '대 운', grp_year: '유 년', grp_month: '유 월', grp_day: '유 일', grp_hour: '유 시',
     lbl_year: '년주', lbl_month: '월주', lbl_day: '일주', lbl_hour: '시주',
     rel_he: '합(合)', rel_chong: '충(沖)', rel_liuhe: '육합', rel_hai: '해(害)',
     vd_title: '오늘의 총평: ', hd_ss: '오 늘 의 신 살', hd_interp: '신 살 해 석',
@@ -561,7 +567,7 @@ try {
 })();
 
 /* ════════════════════════════════════════
-   基础数据定义 (新增地支藏干本氣陣列)
+   基础数据定义
 ════════════════════════════════════════ */
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
@@ -708,9 +714,9 @@ function getDynamicReading(ssType, tenRaw) {
 /* ════════════════════════════════════════
    状态 & Tab切换
 ════════════════════════════════════════ */
-let curDate=new Date();curDate.setHours(0,0,0,0);
+let curDate=new Date(); // 不锁定0点，保留真实流时
 function shiftDay(delta){ curDate.setDate(curDate.getDate()+delta); renderJiari(); }
-function goToday(){curDate=new Date();curDate.setHours(0,0,0,0);renderJiari();}
+function goToday(){curDate=new Date();renderJiari();}
 
 function switchTab(tab){
   ['jiari','mingpan','dayun'].forEach(t=>{ document.getElementById('tab-'+t).style.display=t===tab?'block':'none'; });
@@ -720,7 +726,7 @@ function switchTab(tab){
 }
 
 /* ════════════════════════════════════════
-   构建一个柱的HTML (新增地支十神雙行顯示)
+   构建一个柱的HTML (多語言適配)
 ════════════════════════════════════════ */
 function pillarHTML(p){
   const tgName = t('tg_name')[p.tg];
@@ -807,16 +813,24 @@ function renderJiari(){
   const lyGZ=getYrGZ(y,m,day);
   const lmGZ=getMoGZ(y,m,day);
   const ldGZ=getDayGZ(y,m,day);
+  
+  // 實時獲取流時
+  const currentHour = curDate.getHours();
+  const lhGZ = getHrGZ(currentHour, ldGZ.tg);
 
   const pillars=[
     {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]], colCls:''},
     {label: t('lbl_month'), tg:mGZ.tg, dz:mGZ.dz, tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]], colCls:''},
     {label: t('lbl_day'), tg:dGZ.tg, dz:dGZ.dz, tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]], colCls:'sz-rizhu'},
     {label: t('lbl_hour'), tg:hGZ.tg, dz:hGZ.dz, tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]], colCls:''},
+    
     {label: t('grp_luck'), tg:dyTg, dz:dyDz, tgTenRaw:curDy?SS_TABLE[ri][dyTg]:'—', dzTenRaw:curDy?SS_TABLE[ri][HIDDEN_MAIN_QI[dyDz]]:'—', colCls:'sz-dayun'},
     {label: t('grp_year'), tg:lyGZ.tg, dz:lyGZ.dz, tgTenRaw:SS_TABLE[ri][lyGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lyGZ.dz]], colCls:'sz-liuyear'},
     {label: t('grp_month'), tg:lmGZ.tg, dz:lmGZ.dz, tgTenRaw:SS_TABLE[ri][lmGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lmGZ.dz]], colCls:'sz-liumonth'},
     {label: t('grp_day'), tg:ldGZ.tg, dz:ldGZ.dz, tgTenRaw:SS_TABLE[ri][ldGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[ldGZ.dz]], colCls:'sz-liuday'},
+    
+    // 【新增】流時柱
+    {label: t('grp_hour'), tg:lhGZ.tg, dz:lhGZ.dz, tgTenRaw:SS_TABLE[ri][lhGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lhGZ.dz]], colCls:'sz-liuhour'},
   ];
 
   const main=document.getElementById('sizhu-main');
@@ -828,6 +842,7 @@ function renderJiari(){
       <div class="grp-cell grp-liuyear">${t('grp_year')}</div>
       <div class="grp-cell grp-liumonth">${t('grp_month')}</div>
       <div class="grp-cell grp-liuday">${t('grp_day')}</div>
+      <div class="grp-cell grp-liuhour" style="color:rgba(130,200,160,0.85);background:rgba(130,200,160,0.05);border-bottom:1px solid rgba(130,200,160,0.25);">${t('grp_hour')}</div>
     </div>`;
   
   pillars.slice(0,4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
