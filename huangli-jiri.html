@@ -111,7 +111,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .ic-hint{display:block;margin-top:6px;font-size:0.5rem;color:rgba(212,168,67,0.5);letter-spacing:0.15em;}
 .divider{height:1px;margin:14px 20px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.13),transparent);}
 
-/* 日期滾輪 - 全新 CSS Scroll Snap 架構，絲滑不卡頓 */
+/* 日期滾輪 - CSS Scroll Snap */
 .datepicker-bar{display:flex;align-items:center;gap:6px;padding:10px 16px 8px;background:rgba(0,0,0,0.18);border-bottom:1px solid rgba(212,168,67,0.07);}
 .dp-label{font-size:0.52rem;color:rgba(212,168,67,0.45);letter-spacing:0.3em;flex-shrink:0;}
 .dp-drums{display:flex;gap:2px;flex:1;justify-content:center;}
@@ -150,7 +150,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .info-card{margin:0 16px 12px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;}
 .info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:0.66rem;}
 .info-row:last-child{margin-bottom:0;}
-/* 強制固定左側標籤的明亮度 */
 .ir-lbl{color:rgba(240,234,214,0.75); font-weight:500;} 
 .ir-val{color:var(--text-d);} 
 .ir-val.gold{color:var(--gold);}
@@ -511,7 +510,7 @@ function changeLang(lang) {
   if(document.getElementById('appLangSelect')) document.getElementById('appLangSelect').value = lang;
   
   if (USER && USER.year) {
-    initDrums(); 
+    if(document.getElementById('drum-year')) { initDrums(); }
     renderJiari();
     renderMingpan();
     renderDayun();
@@ -742,67 +741,59 @@ function toggleDetail(el){const was=el.classList.contains('open');document.query
 document.addEventListener('click',e=>{if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));});
 function approxLunar(date){const base=Date.UTC(2000,0,6);const diff=Math.floor((date.getTime()-base)/86400000);const cycleYr=Math.floor(diff/365.25);return`${t('tg_name')[((cycleYr%10)+10)%10]}${t('dz_name')[((cycleYr%12)+12)%12]}`;}
 
-/* ===== 滾輪邏輯 (CSS Scroll Snap + 原生滾動事件) ===== */
-function buildDrum(innerId,items,selected){
-  const inner=document.getElementById(innerId);if(!inner)return;
-  inner.innerHTML=items.map(v=>`<div class="dp-drum-item" data-val="${v}">${v}</div>`).join('');
+/* 解決 iOS 滾動衝突的全新綁定機制 */
+function buildDrum(innerId, items, selected) {
+  const inner = document.getElementById(innerId);
+  if (!inner) return;
+  inner.innerHTML = items.map(v => `<div class="dp-drum-item" data-val="${v}">${v}</div>`).join('');
   const drum = inner.parentElement;
   const idx = items.indexOf(selected);
-  if(idx !== -1){
-    setTimeout(()=>{ drum.scrollTop = idx * 24; updateDrumHighlight(innerId, selected); }, 10);
+  if (idx !== -1) {
+    drum.scrollTop = idx * 24;
+    updateDrumHighlight(innerId, selected);
   }
 }
+
 function getDaysInMonth(y,m){return new Date(y,m,0).getDate();}
-function initDrums(){
-  const d=curDate;const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();
-  const years=[],months=[],days=[];
-  for(let i=y-5;i<=y+5;i++)years.push(i);
-  for(let i=1;i<=12;i++)months.push(i);
-  for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);
-  buildDrum('drum-year-inner',years,y);
-  buildDrum('drum-month-inner',months,m);
-  buildDrum('drum-day-inner',days,day);
-  setupDrumEvents('drum-year','drum-year-inner',years,()=>getSelectedVal('drum-year-inner'),v=>{curDate.setFullYear(v);rebuildDayDrum();renderJiari();});
-  setupDrumEvents('drum-month','drum-month-inner',months,()=>getSelectedVal('drum-month-inner'),v=>{curDate.setMonth(v-1);rebuildDayDrum();renderJiari();});
-  setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});
-}
-function getSelectedVal(innerId){
-  const el=document.querySelector(`#${innerId} .dp-drum-item.active`);
-  return el?parseInt(el.dataset.val):null;
-}
-function rebuildDayDrum(){
-  const y=curDate.getFullYear(),m=curDate.getMonth()+1;
-  const safeDay=Math.min(curDate.getDate(),getDaysInMonth(y,m));
-  curDate.setDate(safeDay);const days=[];
-  for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);
-  buildDrum('drum-day-inner',days,safeDay);
-  setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});
-}
-function updateDrumHighlight(innerId,val){
-  document.querySelectorAll(`#${innerId} .dp-drum-item`).forEach(el=>{
-    const v=parseInt(el.dataset.val);
-    el.classList.toggle('active',v===val);
-    el.classList.toggle('near',v===val-1||v===val+1);
+function initDrums(){const d=curDate;const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();const years=[],months=[],days=[];for(let i=y-5;i<=y+5;i++)years.push(i);for(let i=1;i<=12;i++)months.push(i);for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);buildDrum('drum-year-inner',years,y);buildDrum('drum-month-inner',months,m);buildDrum('drum-day-inner',days,day);setupDrumEvents('drum-year','drum-year-inner',years,()=>getSelectedVal('drum-year-inner'),v=>{curDate.setFullYear(v);rebuildDayDrum();renderJiari();});setupDrumEvents('drum-month','drum-month-inner',months,()=>getSelectedVal('drum-month-inner'),v=>{curDate.setMonth(v-1);rebuildDayDrum();renderJiari();});setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});}
+function getSelectedVal(innerId){const el=document.querySelector(`#${innerId} .dp-drum-item.active`);return el?parseInt(el.dataset.val):null;}
+
+function rebuildDayDrum(){const y=curDate.getFullYear(),m=curDate.getMonth()+1;const safeDay=Math.min(curDate.getDate(),getDaysInMonth(y,m));curDate.setDate(safeDay);const days=[];for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);buildDrum('drum-day-inner',days,safeDay);setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});}
+
+function updateDrumHighlight(innerId, val) {
+  document.querySelectorAll(`#${innerId} .dp-drum-item`).forEach(el => {
+    const v = parseInt(el.dataset.val);
+    el.classList.toggle('active', v === val);
+    el.classList.toggle('near', v === val - 1 || v === val + 1);
   });
 }
-function setupDrumEvents(drumId,innerId,items,getVal,onChange){
-  const drum=document.getElementById(drumId);if(!drum)return;
+
+function setupDrumEvents(drumId, innerId, items, getVal, onChange) {
+  const drum = document.getElementById(drumId);
+  if (!drum) return;
   let scrollTimeout;
-  drum.addEventListener('scroll', ()=>{
+  let lastNotifiedVal = getVal(); 
+
+  drum.onscroll = () => {
     const idx = Math.round(drum.scrollTop / 24);
     const safeIdx = Math.max(0, Math.min(items.length - 1, idx));
     const val = items[safeIdx];
+
     updateDrumHighlight(innerId, val);
-    
+
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
-      if (getVal() !== val) { onChange(val); }
-    }, 150);
-  }, {passive: true});
+      if (lastNotifiedVal !== val) {
+         lastNotifiedVal = val;
+         onChange(val);
+      }
+    }, 150); 
+  };
 }
 
 function calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score){const jiCnt=ss.filter(s=>s.type==='ji').length,xiongCnt=ss.filter(s=>s.type==='xiong').length,ldTen=SS_TABLE[ri][ldGZ.tg];let w=3,c=3,l=3,h=3,s=3,t=3;if(['正財','偏財'].includes(ldTen))w+=1.5;if(['劫財','七殺'].includes(ldTen))w-=1.5;if(jiCnt>=2)w+=0.5;if(xiongCnt>=2)w-=0.5;if(ss.find(x=>x.apiKey==='TianYiGuiRen'))w+=1;if(ss.find(x=>x.apiKey==='JianLu'))w+=0.8;if(['正官','七殺'].includes(ldTen))c+=1;if(['食神','傷官'].includes(ldTen))c+=0.7;if(['比肩','劫財'].includes(ldTen))c-=0.3;if(ss.find(x=>x.apiKey==='WenChang'))c+=0.8;if(xiongCnt>=2)c-=0.8;if(ss.find(x=>x.apiKey==='HongYan'||x.apiKey==='TianXi'))l+=1.5;if(ss.find(x=>x.apiKey==='Tao'))l+=0.5;if(['傷官'].includes(ldTen))l-=0.5;if(['正印','偏印'].includes(ldTen))h+=1;if(['七殺','傷官'].includes(ldTen))h-=0.7;if(ss.find(x=>x.apiKey==='JieSha'))h-=0.8;if(ss.find(x=>x.apiKey==='XueChi'))h-=0.5;if(ss.find(x=>x.apiKey==='WenChang'))s+=1.5;if(['食神','傷官'].includes(ldTen))s+=0.8;if(xiongCnt>=3)s-=1;if(ss.find(x=>x.apiKey==='TianDe'||x.apiKey==='YueDe'))t+=1.2;if(ss.find(x=>x.apiKey==='JieSha'||x.apiKey==='SuiPo'))t-=1.5;if(jiCnt>=3)t+=0.5;return{w:Math.max(1,Math.min(5,w)),c:Math.max(1,Math.min(5,c)),l:Math.max(1,Math.min(5,l)),h:Math.max(1,Math.min(5,h)),s:Math.max(1,Math.min(5,s)),t:Math.max(1,Math.min(5,t))};}
 function renderFortuneGrid(ri,ldGZ,lmGZ,lyGZ,ss,score){const sc=calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score);const DEF=[{cls:'f-wealth',icon:'◈',title:t('f_wealth'),score:sc.w},{cls:'f-career',icon:'◇',title:t('f_career'),score:sc.c},{cls:'f-love',icon:'◉',title:t('f_love'),score:sc.l},{cls:'f-health',icon:'◎',title:t('f_health'),score:sc.h},{cls:'f-study',icon:'◈',title:t('f_study'),score:sc.s},{cls:'f-travel',icon:'◌',title:t('f_travel'),score:sc.t}];document.getElementById('fortune-grid').innerHTML=DEF.map(f=>`<div class="fortune-card ${f.cls}"><span class="fc-icon">${f.icon}</span><div class="fc-title">${f.title}</div><div class="fc-score"><div class="fc-stars">${Array.from({length:5},(_,i)=>`<div class="fc-star${i<Math.floor(f.score)?' on':''}"></div>`).join('')}</div><span class="fc-score-num">${f.score.toFixed(1)}</span></div></div>`).join('');}
+
 function renderHourTable(ri,ldGZ){
   const curDzHour=Math.floor((new Date().getHours()+1)/2)%12;
   let html=`<div class="ht-head"><div class="ht-hcell">${t('th_hour')}</div><div class="ht-hcell">${t('th_time')}</div><div class="ht-hcell">${t('th_gz')}</div><div class="ht-hcell">${t('th_good')}</div><div class="ht-hcell">${t('th_bad')}</div></div>`;
