@@ -76,9 +76,91 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-ten{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
 .sz-nayin{font-family:'Noto Sans TC',sans-serif;font-size:0.44rem;color:rgba(240,234,214,0.18);padding:2px 3px 6px;text-align:center;line-height:1.45;}
 .ten-qisha{color:#D05050;}.ten-zhengguang{color:#7080B8;}.ten-pianyin{color:#9060C0;}.ten-zhengyin{color:#A878D0;}.ten-shishen{color:#60A870;}.ten-shangguan{color:#50B880;}.ten-piancai{color:#9090C0;}.ten-zhengcai{color:#8090C0;}.ten-bijian{color:rgba(200,170,100,0.6);}.ten-jiecai{color:rgba(180,145,80,0.6);}.ten-rizhu{color:rgba(212,168,67,0.75);}
-.sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:176px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;box-shadow:0 12px 40px rgba(0,0,0,0.85),0 0 0 1px rgba(0,0,0,0.9);}
-.sz-detail::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#0D0B18;border-top:1px solid rgba(212,168,67,0.22);border-left:1px solid rgba(212,168,67,0.22);}
-.sz-col.open .sz-detail{display:block;}
+/* ── 柱位詳情：無縫漸顯下拉 ── */
+.sz-detail{
+  position:absolute;top:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(-8px);
+  z-index:100;width:188px;
+  background:linear-gradient(160deg,#111020 0%,#0A0914 100%);
+  border:1px solid rgba(212,168,67,0.28);
+  padding:14px 15px 12px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.92),0 0 0 1px rgba(0,0,0,0.9),inset 0 1px 0 rgba(212,168,67,0.08);
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease, transform .22s cubic-bezier(.22,.8,.36,1);
+  border-radius:2px;
+}
+.sz-detail::before{
+  content:'';position:absolute;top:-5px;left:50%;
+  transform:translateX(-50%) rotate(45deg);
+  width:8px;height:8px;
+  background:#111020;
+  border-top:1px solid rgba(212,168,67,0.28);
+  border-left:1px solid rgba(212,168,67,0.28);
+}
+.sz-col.open .sz-detail{
+  opacity:1;pointer-events:all;
+  transform:translateX(-50%) translateY(0);
+}
+/* 詳情內容分區 */
+.sd-sect{margin-bottom:8px;}
+.sd-sect-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.42rem;letter-spacing:0.4em;color:rgba(212,168,67,0.35);margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid rgba(212,168,67,0.07);}
+.sd-chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;}
+.sd-chip{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;padding:2px 7px;border:1px solid rgba(212,168,67,0.15);background:rgba(212,168,67,0.04);color:var(--text-d);letter-spacing:0.05em;border-radius:1px;}
+
+/* ── 滾輪日期選擇器 ── */
+.datepicker-bar{display:flex;align-items:center;gap:6px;padding:10px 16px 8px;background:rgba(0,0,0,0.18);border-bottom:1px solid rgba(212,168,67,0.07);}
+.dp-label{font-family:'Noto Sans TC',sans-serif;font-size:0.52rem;color:rgba(212,168,67,0.45);letter-spacing:0.3em;flex-shrink:0;}
+.dp-drums{display:flex;gap:2px;flex:1;justify-content:center;}
+.dp-drum-wrap{display:flex;flex-direction:column;align-items:center;}
+.dp-drum-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.42rem;color:var(--text-f);letter-spacing:0.3em;margin-bottom:2px;}
+.dp-drum{
+  height:72px;width:52px;overflow:hidden;position:relative;cursor:ns-resize;
+  background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,67,0.12);
+  user-select:none;-webkit-user-select:none;
+}
+.dp-drum-inner{display:flex;flex-direction:column;transition:transform .15s cubic-bezier(.22,.8,.36,1);}
+.dp-drum-item{height:24px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;font-size:0.78rem;color:var(--text-f);flex-shrink:0;transition:color .12s,opacity .12s;}
+.dp-drum-item.active{color:var(--gold);font-weight:500;}
+.dp-drum-item.near{color:var(--text-d);opacity:0.7;}
+.dp-drum::before,.dp-drum::after{content:'';position:absolute;left:0;right:0;height:24px;z-index:2;pointer-events:none;}
+.dp-drum::before{top:0;background:linear-gradient(to bottom,rgba(6,5,10,0.92),transparent);}
+.dp-drum::after{bottom:0;background:linear-gradient(to top,rgba(6,5,10,0.92),transparent);}
+.dp-drum-hl{position:absolute;top:24px;left:0;right:0;height:24px;border-top:1px solid rgba(212,168,67,0.2);border-bottom:1px solid rgba(212,168,67,0.2);background:rgba(212,168,67,0.04);z-index:1;pointer-events:none;}
+.dp-goto-today{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.2em;color:rgba(212,168,67,0.45);border:1px solid rgba(212,168,67,0.14);background:none;cursor:pointer;padding:4px 10px;transition:all .2s;flex-shrink:0;}
+.dp-goto-today:hover{color:var(--gold);border-color:rgba(212,168,67,0.35);background:rgba(212,168,67,0.06);}
+
+/* ── 運勢解讀卡片升級 ── */
+.fortune-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;margin-bottom:14px;}
+.fortune-card{background:rgba(7,6,12,0.9);border:1px solid rgba(212,168,67,0.09);padding:12px 14px;position:relative;overflow:hidden;}
+.fortune-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.fortune-card.f-wealth::before{background:linear-gradient(90deg,transparent,rgba(212,168,67,0.5),transparent);}
+.fortune-card.f-career::before{background:linear-gradient(90deg,transparent,rgba(80,160,220,0.5),transparent);}
+.fortune-card.f-love::before{background:linear-gradient(90deg,transparent,rgba(240,120,160,0.5),transparent);}
+.fortune-card.f-health::before{background:linear-gradient(90deg,transparent,rgba(80,200,120,0.5),transparent);}
+.fortune-card.f-study::before{background:linear-gradient(90deg,transparent,rgba(180,120,220,0.5),transparent);}
+.fortune-card.f-travel::before{background:linear-gradient(90deg,transparent,rgba(100,180,220,0.4),transparent);}
+.fc-icon{font-size:1rem;margin-bottom:5px;display:block;}
+.fc-title{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;letter-spacing:0.2em;color:var(--text-f);margin-bottom:6px;}
+.fc-score{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.fc-stars{display:flex;gap:2px;}
+.fc-star{width:8px;height:8px;border-radius:50%;background:rgba(212,168,67,0.15);}
+.fc-star.on{background:var(--gold);}
+.fc-score-num{font-family:'Noto Serif TC',serif;font-size:0.72rem;color:var(--gold);}
+.fc-body{font-family:'Noto Sans TC',sans-serif;font-size:0.57rem;color:var(--text-d);line-height:1.8;letter-spacing:0.04em;}
+.fc-tip{margin-top:5px;font-size:0.5rem;color:rgba(212,168,67,0.45);letter-spacing:0.1em;}
+.fortune-card.f-wide{grid-column:span 2;}
+
+/* 時辰宜忌表 */
+.hour-table{margin:0 16px 14px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.09);overflow:hidden;}
+.ht-head{display:grid;grid-template-columns:1.8fr repeat(4,1fr);background:rgba(212,168,67,0.04);border-bottom:1px solid rgba(212,168,67,0.1);}
+.ht-hcell{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.2em;color:rgba(212,168,67,0.5);padding:6px 4px;text-align:center;}
+.ht-row{display:grid;grid-template-columns:1.8fr repeat(4,1fr);border-bottom:1px solid rgba(212,168,67,0.05);}
+.ht-row:last-child{border-bottom:none;}
+.ht-row.ht-cur{background:rgba(212,168,67,0.04);}
+.ht-cell{font-family:'Noto Sans TC',sans-serif;font-size:0.52rem;padding:7px 4px;text-align:center;color:var(--text-d);display:flex;align-items:center;justify-content:center;gap:2px;}
+.ht-gz{font-family:'Ma Shan Zheng',cursive;font-size:0.85rem;}
+.ht-good{color:#7DE09A;font-size:0.48rem;}
+.ht-bad{color:#F07840;font-size:0.48rem;}
 .sd-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
 .sd-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);letter-spacing:0.08em;}
 .sd-val{font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:var(--text-d);}
@@ -203,14 +285,27 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   </div>
 
   <div id="tab-jiari">
-    <div class="date-nav">
-      <button class="nav-arrow" onclick="shiftDay(-1)">&#8249;</button>
-      <div class="date-center">
-        <div class="date-solar" id="disp-solar"></div>
-        <div class="date-lunar" id="disp-lunar"></div>
-        <button class="date-today-btn" onclick="goToday()">回到今天</button>
+    <div class="datepicker-bar">
+      <div class="dp-label">選 日</div>
+      <div class="dp-drums">
+        <div class="dp-drum-wrap">
+          <div class="dp-drum-lbl">年</div>
+          <div class="dp-drum" id="drum-year"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-year-inner"></div></div>
+        </div>
+        <div class="dp-drum-wrap">
+          <div class="dp-drum-lbl">月</div>
+          <div class="dp-drum" id="drum-month"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-month-inner"></div></div>
+        </div>
+        <div class="dp-drum-wrap">
+          <div class="dp-drum-lbl">日</div>
+          <div class="dp-drum" id="drum-day"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-day-inner"></div></div>
+        </div>
       </div>
-      <button class="nav-arrow" onclick="shiftDay(1)">&#8250;</button>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;flex-shrink:0;">
+        <div class="date-solar" id="disp-solar" style="font-size:0.72rem;letter-spacing:0.08em;white-space:nowrap;"></div>
+        <div class="date-lunar" id="disp-lunar" style="font-size:0.52rem;"></div>
+        <button class="dp-goto-today" onclick="goToday()">今天</button>
+      </div>
     </div>
     <div class="sect-hd"><span class="sect-hd-txt">命 盤 × 今 日 四 柱</span></div>
     <div class="sizhu-outer">
@@ -225,6 +320,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <div class="verdict-body" id="verdict-body"></div>
       </div>
     </div>
+    <div class="sect-hd"><span class="sect-hd-txt">六 維 運 勢</span></div>
+    <div class="fortune-grid" id="fortune-grid"></div>
+    <div class="sect-hd"><span class="sect-hd-txt">今 日 十 二 時 辰</span></div>
+    <div class="hour-table" id="hour-table"></div>
+    <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt">今 日 神 煞</span></div>
     <div class="shensha-outer"><div class="ss-grid" id="ss-grid"></div></div>
     <div class="divider"></div>
@@ -326,8 +426,21 @@ function nayin(tg,dz){
   return NAYIN_LIST[Math.max(0,Math.min(59,idx))];
 }
 
-// 地支六合、六冲、三刑、六破、六害
-const HE6 = [[1],[0],[11],[10],[9],[8],[7],[6],[5],[4],[3],[2]]; // 子丑合，寅亥合…
+// 地支藏干（全部）
+const HIDDEN_ALL_QI = [
+  [9],        // 子→壬(8)... 用天干索引: 癸=9
+  [5,9,7],    // 丑→己癸辛
+  [0,2,4],    // 寅→甲丙戊
+  [1],        // 卯→乙
+  [4,1,9],    // 辰→戊乙癸
+  [2,6,4],    // 巳→丙庚戊
+  [3,1],      // 午→丁己
+  [5,3,1],    // 未→己丁乙
+  [6,8,4],    // 申→庚壬戊
+  [7],        // 酉→辛
+  [4,7,1],    // 戌→戊辛丁
+  [8,0]       // 亥→壬甲
+];
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
 const XING3 ={3:[0],0:[9],9:[6],6:[3], 5:[8],8:[2],2:[5], 1:[10],10:[7],7:[1], 4:[], 11:[]};
 const PO6  =[9,6,11,8,1,10,3,0,5,2,7,4];
@@ -580,6 +693,12 @@ function pillarHTML(p){
     const dzTenLocal = p.dzTenRaw||'';
     const dzTenCls = TEN_CSS_MAP[p.dzTenRaw]||'';
     const ny = nayin(p.tg, p.dz);
+    const wx5 = WXT[p.tg];
+    // 地支藏干全部
+    const hiddenAll = HIDDEN_ALL_QI[p.dz];
+    const hiddenStr = hiddenAll.map(hi=>TG_NAMES[hi]).join('·');
+    // 旺相休囚死
+    const wangMap={'春':['木','火','土','金','水'],'夏':['火','土','金','水','木'],'秋':['金','水','木','火','土'],'冬':['水','木','火','土','金']};
     return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
       <div class="sz-head">${p.label}</div>
       <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
@@ -588,13 +707,26 @@ function pillarHTML(p){
       <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
       <div class="sz-nayin">${ny}</div>
       <div class="sz-detail">
-        <div class="sd-row"><span class="sd-lbl">天干</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName} · ${WXT[p.tg]}</span></div>
-        <div class="sd-row"><span class="sd-lbl">地支</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName} · ${WXD[p.dz]}</span></div>
+        <div class="sd-sect">
+          <div class="sd-sect-lbl">天 干</div>
+          <div class="sd-row"><span class="sd-lbl">字</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
+          <div class="sd-row"><span class="sd-lbl">五行</span><span class="sd-val">${wx5}</span></div>
+          <div class="sd-row"><span class="sd-lbl">十神</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
+        </div>
         <div class="sd-div"></div>
-        <div class="sd-row"><span class="sd-lbl">天干十神</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
-        <div class="sd-row"><span class="sd-lbl">地支十神</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
+        <div class="sd-sect">
+          <div class="sd-sect-lbl">地 支</div>
+          <div class="sd-row"><span class="sd-lbl">字</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
+          <div class="sd-row"><span class="sd-lbl">五行</span><span class="sd-val">${WXD[p.dz]}</span></div>
+          <div class="sd-row"><span class="sd-lbl">藏干</span><span class="sd-val">${hiddenStr}</span></div>
+          <div class="sd-row"><span class="sd-lbl">地支十神</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
+        </div>
         <div class="sd-div"></div>
         <div class="sd-row"><span class="sd-lbl">納音</span><span class="sd-val">${ny}</span></div>
+        <div class="sd-chips">
+          ${CHONG6[p.dz]!==undefined?`<span class="sd-chip">冲${DZ_NAMES[CHONG6[p.dz]]}</span>`:''}
+          ${HE6[p.dz]&&HE6[p.dz][0]!==undefined?`<span class="sd-chip">合${DZ_NAMES[HE6[p.dz][0]]}</span>`:''}
+        </div>
       </div>
     </div>`;
   }catch(e){ return `<div class="sz-col"></div>`; }
@@ -849,8 +981,241 @@ function renderDayun(){
   }catch(e){ console.error('大運渲染失敗', e); }
 }
 
-function shiftDay(d){ curDate.setDate(curDate.getDate()+d); renderJiari(); }
-function goToday(){ curDate=new Date(); renderJiari(); }
+/* ═══════════════════════════════════════════
+   六維運勢計算
+═══════════════════════════════════════════ */
+function calcFortuneScores(ri, ldGZ, lmGZ, lyGZ, ss, strengthScore){
+  const jiCnt = ss.filter(s=>s.type==='ji').length;
+  const xiongCnt = ss.filter(s=>s.type==='xiong').length;
+  const ldTen = SS_TABLE[ri][ldGZ.tg];
+  const lmTen = SS_TABLE[ri][lmGZ.tg];
+  const isStrong = strengthScore > 5.83;
+
+  // 財運：正財偏財主財，七殺劫財損財
+  let wealth = 3;
+  if(['正財','偏財'].includes(ldTen)) wealth+=1.5;
+  if(['劫財','七殺'].includes(ldTen)) wealth-=1.5;
+  if(jiCnt>=2) wealth+=0.5; if(xiongCnt>=2) wealth-=0.5;
+  if(ss.find(s=>s.apiKey==='tianyi')) wealth+=1;
+  if(ss.find(s=>s.apiKey==='lu')) wealth+=0.8;
+  wealth = Math.max(1, Math.min(5, Math.round(wealth*10)/10));
+
+  // 事業：正官七殺利事業，食神傷官有創意
+  let career = 3;
+  if(['正官','七殺'].includes(ldTen)) career+=1;
+  if(['食神','傷官'].includes(ldTen)) career+=0.7;
+  if(['比肩','劫財'].includes(ldTen)) career-=0.3;
+  if(ss.find(s=>s.apiKey==='wenchang')) career+=0.8;
+  if(xiongCnt>=2) career-=0.8;
+  career = Math.max(1, Math.min(5, Math.round(career*10)/10));
+
+  // 感情：正財（男）/正官（女）、紅鸞天喜
+  let love = 3;
+  if(ss.find(s=>s.apiKey==='hongyan'||s.apiKey==='tianxi')) love+=1.5;
+  if(ss.find(s=>s.apiKey==='tao')) love+=0.5;
+  if(['傷官'].includes(ldTen)) love-=0.5;
+  love = Math.max(1, Math.min(5, Math.round(love*10)/10));
+
+  // 健康：印星護身，七殺傷官損健康
+  let health = 3;
+  if(['正印','偏印'].includes(ldTen)) health+=1;
+  if(['七殺','傷官'].includes(ldTen)) health-=0.7;
+  if(ss.find(s=>s.apiKey==='jiesha')) health-=0.8;
+  if(ss.find(s=>s.apiKey==='xuechi')) health-=0.5;
+  health = Math.max(1, Math.min(5, Math.round(health*10)/10));
+
+  // 學習：文昌食神利學習
+  let study = 3;
+  if(ss.find(s=>s.apiKey==='wenchang')) study+=1.5;
+  if(['食神','傷官'].includes(ldTen)) study+=0.8;
+  if(xiongCnt>=3) study-=1;
+  study = Math.max(1, Math.min(5, Math.round(study*10)/10));
+
+  // 出行：天德月德利出行，歲破劫煞忌出行
+  let travel = 3;
+  if(ss.find(s=>s.apiKey==='tiande'||s.apiKey==='yuede')) travel+=1.2;
+  if(ss.find(s=>s.apiKey==='jiesha'||s.apiKey==='suipo')) travel-=1.5;
+  if(jiCnt>=3) travel+=0.5;
+  travel = Math.max(1, Math.min(5, Math.round(travel*10)/10));
+
+  return {wealth, career, love, health, study, travel};
+}
+
+function renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, strengthScore){
+  const sc = calcFortuneScores(ri, ldGZ, lmGZ, lyGZ, ss, strengthScore);
+  const FORTUNE_DEF = [
+    {key:'wealth', cls:'f-wealth', icon:'◈', title:'財運', score:sc.wealth,
+     getText:(s)=>s>=4?'財星得令，今日適宜洽商談判、申請貸款、投資佈局，貴人財路並至。':s>=3?'財運平穩，量入為出，守財重於求財，細水長流。':'財星受制，避免大額消費與冒險投資，先守後攻。',
+     tip:(s)=>s>=4?'宜：投資·簽約·求財':s>=3?'宜：守成·規劃':'忌：賭博·借貸'},
+    {key:'career', cls:'f-career', icon:'◇', title:'事業', score:sc.career,
+     getText:(s)=>s>=4?'官星旺盛，決策精準，上司認可，適合推動項目、主動出擊、爭取機會。':s>=3?'工作穩健推進，按部就班即可，勿強求突破。':'受阻之日，低調行事，避免得罪同事、與上司衝突。',
+     tip:(s)=>s>=4?'宜：晉升·展示·決策':s>=3?'宜：執行·協作':'忌：爭執·出頭'},
+    {key:'love', cls:'f-love', icon:'◉', title:'感情', score:sc.love,
+     getText:(s)=>s>=4?'桃花大旺，單身者易邂逅良緣，已婚者感情升溫，適合表白與約會。':s>=3?'感情平穩，多些陪伴與溝通，細水長流最珍貴。':'感情易生摩擦，避免爭吵，多包容、少計較。',
+     tip:(s)=>s>=4?'宜：約會·表白·婚嫁':s>=3?'宜：陪伴·溝通':'忌：爭吵·冷戰'},
+    {key:'health', cls:'f-health', icon:'◎', title:'健康', score:sc.health,
+     getText:(s)=>s>=4?'精氣神充足，適合運動健身，身體狀況極佳，慢性病患者今日感覺舒適。':s>=3?'健康狀況良好，保持規律作息，注意飲食均衡。':'今日易感疲勞，避免劇烈運動，注意防寒保暖，忌動刀手術。',
+     tip:(s)=>s>=4?'宜：運動·體檢':s>=3?'宜：保健·養生':'忌：手術·過勞'},
+    {key:'study', cls:'f-study', icon:'◈', title:'學業', score:sc.study,
+     getText:(s)=>s>=4?'文昌高照，思維敏銳，記憶力極佳，適合考試、面試、創作、簽署文書。':s>=3?'學習效率中等，集中精神可事半功倍，適合複習鞏固。':'思緒渙散，不宜強記，換輕鬆方式學習，避免重要考試安排於此日。',
+     tip:(s)=>s>=4?'宜：考試·簽約·創作':s>=3?'宜：複習·規劃':'忌：重要考試'},
+    {key:'travel', cls:'f-travel', icon:'◌', title:'出行', score:sc.travel,
+     getText:(s)=>s>=4?'天時地利齊備，出行一路平順，適合長途旅行、洽商出差、搬遷移居。':s>=3?'短途出行無礙，長途需提前做好計畫，注意天氣變化。':'諸煞臨日，出行易遇阻滯，能不動則不動，如必須出行做好應急準備。',
+     tip:(s)=>s>=4?'宜：長途·出差·旅行':s>=3?'宜：短途·近郊':'忌：遠行·搬遷'},
+  ];
+  const stars=(n)=>{
+    const full=Math.floor(n); const half=n-full>=0.5?1:0;
+    return Array.from({length:5},(_,i)=>`<div class="fc-star${i<full?' on':''}"></div>`).join('');
+  };
+  document.getElementById('fortune-grid').innerHTML = FORTUNE_DEF.map(f=>`
+    <div class="fortune-card ${f.cls}">
+      <span class="fc-icon">${f.icon}</span>
+      <div class="fc-title">${f.title}</div>
+      <div class="fc-score"><div class="fc-stars">${stars(f.score)}</div><span class="fc-score-num">${f.score.toFixed(1)}</span></div>
+      <div class="fc-body">${f.getText(f.score)}</div>
+      <div class="fc-tip">${f.tip(f.score)}</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   十二時辰宜忌表
+═══════════════════════════════════════════ */
+const HR_NAMES=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const HR_RANGE=['23-01','01-03','03-05','05-07','07-09','09-11','11-13','13-15','15-17','17-19','19-21','21-23'];
+const HOUR_GOOD_MAP=['祈福·靜心','農耕·出行','求職·開業','會友·簽約','婚嫁·動土','求財·祭祀','宴客·慶典','習藝·出行','商談·締約','修造·收財','祭祀·祈禱','入眠·休養'];
+const HOUR_BAD_MAP=['出行·爭訟','訴訟·手術','伐木·動土','喪葬·動刀','出行·嫁娶','動土·爭訟','喪葬','動刀·訴訟','嫁娶·動土','喪葬·遠行','嫁娶·遠行','爭訟·手術'];
+
+function renderHourTable(ri, ldGZ){
+  const nowHr = new Date().getHours();
+  const curDzHour = Math.floor((nowHr+1)/2)%12;
+  let html = `<div class="ht-head">
+    <div class="ht-hcell">時辰</div>
+    <div class="ht-hcell">時段</div>
+    <div class="ht-hcell">干支</div>
+    <div class="ht-hcell">宜</div>
+    <div class="ht-hcell">忌</div>
+  </div>`;
+  for(let i=0;i<12;i++){
+    const hrGZ = getHrGZ(i*2, ldGZ.tg);
+    const isCur = i===curDzHour;
+    html += `<div class="ht-row${isCur?' ht-cur':''}">
+      <div class="ht-cell"><span class="ht-gz ${DZ_CSS[i]}">${HR_NAMES[i]}</span></div>
+      <div class="ht-cell" style="font-size:0.45rem;color:var(--text-f);">${HR_RANGE[i]}</div>
+      <div class="ht-cell"><span class="ht-gz ${TG_CSS[hrGZ.tg]}">${TG_NAMES[hrGZ.tg]}</span><span class="ht-gz ${DZ_CSS[hrGZ.dz]}">${DZ_NAMES[hrGZ.dz]}</span></div>
+      <div class="ht-cell ht-good" style="font-size:0.44rem;">${HOUR_GOOD_MAP[i]}</div>
+      <div class="ht-cell ht-bad" style="font-size:0.44rem;">${HOUR_BAD_MAP[i]}</div>
+    </div>`;
+  }
+  document.getElementById('hour-table').innerHTML=html;
+}
+
+/* ═══════════════════════════════════════════
+   滾輪鼓式日期選擇器
+═══════════════════════════════════════════ */
+const ITEM_H = 24;
+function buildDrum(innerId, items, selected){
+  const inner = document.getElementById(innerId);
+  inner.innerHTML = items.map((v,i)=>`<div class="dp-drum-item${v===selected?' active':Math.abs(items.indexOf(selected)-i)===1?' near':''}" data-val="${v}">${v}</div>`).join('');
+  const idx = items.indexOf(selected);
+  inner.style.transform = `translateY(${(24 - idx*ITEM_H)}px)`;
+}
+
+function getDaysInMonth(y,m){ return new Date(y,m,0).getDate(); }
+
+function initDrums(){
+  const d = curDate;
+  const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
+  const years=[]; for(let i=y-5;i<=y+5;i++) years.push(i);
+  const months=[]; for(let i=1;i<=12;i++) months.push(i);
+  const days=[]; for(let i=1;i<=getDaysInMonth(y,m);i++) days.push(i);
+  buildDrum('drum-year-inner', years, y);
+  buildDrum('drum-month-inner', months, m);
+  buildDrum('drum-day-inner', days, day);
+  setupDrumEvents('drum-year','drum-year-inner', years, ()=>getSelectedVal('drum-year-inner'), v=>{
+    curDate.setFullYear(v); rebuildDayDrum(); renderJiari();
+  });
+  setupDrumEvents('drum-month','drum-month-inner', months, ()=>getSelectedVal('drum-month-inner'), v=>{
+    curDate.setMonth(v-1); rebuildDayDrum(); renderJiari();
+  });
+  setupDrumEvents('drum-day','drum-day-inner', days, ()=>getSelectedVal('drum-day-inner'), v=>{
+    curDate.setDate(v); renderJiari();
+  });
+}
+
+function getSelectedVal(innerId){
+  const el = document.querySelector(`#${innerId} .dp-drum-item.active`);
+  return el ? parseInt(el.dataset.val) : null;
+}
+
+function rebuildDayDrum(){
+  const y=curDate.getFullYear(), m=curDate.getMonth()+1, day=curDate.getDate();
+  const maxDay = getDaysInMonth(y,m);
+  const safeDay = Math.min(day, maxDay);
+  curDate.setDate(safeDay);
+  const days=[]; for(let i=1;i<=maxDay;i++) days.push(i);
+  buildDrum('drum-day-inner', days, safeDay);
+  // rebind events
+  setupDrumEvents('drum-day','drum-day-inner', days, ()=>getSelectedVal('drum-day-inner'), v=>{
+    curDate.setDate(v); renderJiari();
+  });
+}
+
+function updateDrumHighlight(innerId, value){
+  const items = document.querySelectorAll(`#${innerId} .dp-drum-item`);
+  items.forEach(el=>{
+    const v = parseInt(el.dataset.val);
+    el.classList.toggle('active', v===value);
+    el.classList.toggle('near', v===value-1||v===value+1);
+  });
+}
+
+function setupDrumEvents(drumId, innerId, items, getVal, onChange){
+  const drum = document.getElementById(drumId);
+  const inner = document.getElementById(innerId);
+  if(!drum||!inner) return;
+  let startY=0, lastY=0, curIdx=items.indexOf(getVal()), isDragging=false, velocity=0, lastTime=0, animFrame=null;
+
+  function getIdxFromTransform(){
+    const t = new DOMMatrix(getComputedStyle(inner).transform).m42;
+    return Math.round((24-t)/ITEM_H);
+  }
+  function snapTo(idx){
+    const clamped = Math.max(0,Math.min(items.length-1, idx));
+    inner.style.transition='transform .18s cubic-bezier(.22,.8,.36,1)';
+    inner.style.transform=`translateY(${24-clamped*ITEM_H}px)`;
+    curIdx=clamped;
+    updateDrumHighlight(innerId, items[clamped]);
+    onChange(items[clamped]);
+  }
+  function onStart(y){ startY=y; lastY=y; isDragging=true; velocity=0; lastTime=Date.now(); inner.style.transition='none'; if(animFrame) cancelAnimationFrame(animFrame); }
+  function onMove(y){
+    if(!isDragging) return;
+    const dy=y-lastY; const now=Date.now(); const dt=now-lastTime;
+    if(dt>0) velocity=dy/dt; lastTime=now; lastY=y;
+    const cur = getIdxFromTransform();
+    inner.style.transform=`translateY(${24-cur*ITEM_H+dy}px)`;
+  }
+  function onEnd(){
+    if(!isDragging) return; isDragging=false;
+    const cur = getIdxFromTransform();
+    const fling = Math.round(cur - velocity*180);
+    snapTo(fling);
+  }
+  drum.addEventListener('mousedown',e=>{ e.preventDefault(); onStart(e.clientY); });
+  window.addEventListener('mousemove',e=>{ if(isDragging) onMove(e.clientY); });
+  window.addEventListener('mouseup',()=>{ if(isDragging) onEnd(); });
+  drum.addEventListener('touchstart',e=>{ onStart(e.touches[0].clientY); },{passive:true});
+  drum.addEventListener('touchmove',e=>{ onMove(e.touches[0].clientY); },{passive:true});
+  drum.addEventListener('touchend',()=>{ onEnd(); });
+  drum.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const cur = items.indexOf(getVal());
+    snapTo(cur + (e.deltaY>0?1:-1));
+  },{passive:false});
+}
+
+function shiftDay(d){ curDate.setDate(curDate.getDate()+d); initDrums(); renderJiari(); }
+function goToday(){ curDate=new Date(); initDrums(); renderJiari(); }
 
 function switchTab(tab){
   ['jiari','mingpan','dayun'].forEach(t=>{
