@@ -246,7 +246,7 @@ const HL_I18N = {
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建祿格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'兩', bw_qian:'錢',
     dyn_wealth:'流日逢財星，能量聚焦於財務運作與目標達成。', dyn_power:'流日逢官殺，能量聚焦於事業責任、規則與名望。', dyn_res:'流日逢印星，能量聚焦於學習吸收、貴人與深度思考。', dyn_out:'流日逢食傷，能量聚焦於靈感表達、社交與創造力。', dyn_comp:'流日逢比劫，能量聚焦於人際交往、團隊競爭與合作。',
     dyn_adv_ji:'結合吉星護佑，易得助力，宜大膽推進。', dyn_adv_xiong:'受凶星牽制，易生波瀾。建議謹慎保守。', dyn_adv_zhong:'星象中性，發展取決於客觀環境，宜順勢而為。', api_hint_replaced:'✦ 基於原命盤與流日干支推演',
-    ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄學有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
+    ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
     f_wealth: '財運', f_career: '事業', f_love: '感情', f_health: '健康', f_study: '學業', f_travel: '出行',
     th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌'
   },
@@ -322,7 +322,6 @@ function changeLang(lang) {
   localStorage.setItem('zencode_lang', lang);
   updateStaticUI();
   
-  // 【修復】強制重繪所有視圖，解決切換語言時隱藏標籤頁內資料（如命盤格局）未更新的 Bug
   initDrums(); 
   renderJiari();
   renderMingpan();
@@ -461,7 +460,6 @@ function renderJiari(){
     const main=document.getElementById('sizhu-main'); if(!main) return;
     const wkNames = t('wk_names'); 
     
-    // 【修復】動態判斷「週/周」的前綴字
     let wkPrefix = currentLang === 'zh-CN' ? '周' : (currentLang === 'en' ? '' : '週');
     
     if(currentLang === 'en') {
@@ -559,15 +557,24 @@ function renderMingpan(){
 
     if(document.getElementById('mp-name')) document.getElementById('mp-name').textContent=USER.name;
     
+    // 【修復】這裡加入了簡體中文的「时」判定
     if (currentLang === 'en') {
       document.getElementById('mp-birthday').textContent=`${USER.year}-${String(USER.month).padStart(2,'0')}-${String(USER.day).padStart(2,'0')} ${String(USER.hour).padStart(2, '0')}:00`;
+    } else if (currentLang === 'zh-CN') {
+      document.getElementById('mp-birthday').textContent=`${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}时${String(USER.minute).padStart(2,'0')}分`;
     } else {
       document.getElementById('mp-birthday').textContent=`${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}時${String(USER.minute).padStart(2,'0')}分`;
     }
     
     if(document.getElementById('mp-gender')) document.getElementById('mp-gender').textContent = USER.gender === '男' ? (t('val_male') || '男') : (t('val_female') || '女');
     let yyTxt = ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'][dGZ.tg] || ''; 
-    let yyDict = { '陽': currentLang==='en'?'Yang ':'陽', '陰': currentLang==='en'?'Yin ':'陰' };
+    
+    // 【修復】這裡加入了簡體中文的「阳 / 阴」判定
+    let yyDict = { 
+      '陽': currentLang === 'en' ? 'Yang ' : (currentLang === 'zh-CN' ? '阳' : '陽'), 
+      '陰': currentLang === 'en' ? 'Yin ' : (currentLang === 'zh-CN' ? '阴' : '陰') 
+    };
+    
     if(document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyDict[yyTxt]}${t('wx_'+WXT[dGZ.tg])}`;
     if(document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent=gejuStr;
     if(document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent={'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[WXT[ri]].map(x=>t('wx_'+x)).join(currentLang==='en'?', ':'、');
@@ -627,7 +634,6 @@ function switchTab(tab){
 (function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H;function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';requestAnimationFrame(draw);}draw();})();
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 將下拉選單對應至已保存的語言
   const selectEl = document.getElementById('langSelect');
   if(selectEl) selectEl.value = currentLang;
 
@@ -635,7 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStaticUI(); 
     if(document.getElementById('drum-year')) { initDrums(); }
     renderJiari(); 
-    // 初始進入時將所有的隱藏分頁也渲染一次
     renderMingpan();
     renderDayun();
   }, 50);
