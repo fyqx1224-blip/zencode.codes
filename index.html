@@ -256,7 +256,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
 }
 
 /* ══════════════════════════════════════════════════════
-   【更新】右側懸浮按鈕群組 (六爻 + 黃道吉日)
+   右側懸浮按鈕群組 (六爻 + 黃道吉日)
 ══════════════════════════════════════════════════════ */
 .floating-right-group {
   position: fixed;
@@ -327,7 +327,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
   letter-spacing: 0.5em;
 }
 
-/* 黄道吉日 内部样式 (已去掉文字) */
+/* 黄道吉日 内部样式 (已加回文字) */
 .floating-huangli {
   position: relative;
   display: flex;
@@ -365,6 +365,21 @@ select.inp option{background:#0C0B14;color:var(--text);}
 .floating-huangli:hover .huangli-svg {
   animation-duration: 6s;
   filter: drop-shadow(0 0 8px rgba(240, 201, 106, 0.7));
+}
+.huangli-text {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: var(--gold-b);
+  writing-mode: vertical-lr;
+  text-shadow: 0 0 8px rgba(240, 201, 106, 0.2);
+  transition: all 0.3s;
+  margin-right: -4px;
+}
+.floating-huangli:hover .huangli-text {
+  color: #FFF3C4;
+  text-shadow: 0 0 15px rgba(240, 201, 106, 0.6);
+  letter-spacing: 0.5em;
 }
 
 @keyframes spin-slow {
@@ -483,6 +498,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
         <circle cx="50" cy="50" r="32" fill="none" stroke="#F0C96A" stroke-width="0.5" opacity="0.8"/>
       </svg>
     </div>
+    <span class="huangli-text" data-i18n="nav.huangli">黃道吉日</span>
   </a>
 </div>
 
@@ -1356,7 +1372,6 @@ async function genReport(){
       name,
     }));
     
-    // 保存完整数据供“黄道吉日”流日推演使用
     localStorage.setItem('zencode_user_profile', JSON.stringify({
       name: name,
       gender: gender,
@@ -1539,14 +1554,11 @@ document.getElementById('btn-astrolabe').addEventListener('click', function(e) {
 document.getElementById('btn-huangli').addEventListener('click', function(e) {
   e.preventDefault();
   
-  // 檢查是否已有建檔數據
   const savedUserData = localStorage.getItem('zencode_user_profile');
   
   if (savedUserData) {
-      // 老用戶直接跳轉
       window.location.href = '/huangli-jiri.html'; 
   } else {
-      // 純新用戶彈出 Modal 攔截
       const modal = document.getElementById('zencode-liuri-modal');
       modal.style.display = 'flex';
   }
@@ -1558,10 +1570,9 @@ function closeLiuriModal() {
 
 function focusMainForm() {
   closeLiuriModal();
-  const formTarget = document.getElementById('un'); // 姓名輸入框
+  const formTarget = document.getElementById('un'); 
   if (formTarget) {
       formTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // 延遲等待滾動完成後聚焦，給出強引導
       setTimeout(() => formTarget.focus(), 600);
   }
 }
