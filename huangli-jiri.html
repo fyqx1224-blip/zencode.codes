@@ -11,6 +11,7 @@
   --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
   --bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
   --red:#C8402A;
+  /* ── 五行阴阳双色系 ── */
   --jia:#5AB86C; --yi:#8ED49A; --bing:#E05030; --ding:#F09070; --wu:#C8942A;
   --ji:#D4B870; --geng:#B0B8C8; --xin:#D8DEE8; --ren:#4A8EC8; --gui:#80B4E0;
 }
@@ -115,10 +116,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 /* 动态前端引擎推算样式 */
 .ic-api-engine {
-  margin-top:8px;padding:9px 12px;
+  margin-top:10px;padding:10px 14px;
   background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);
   font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;
-  color:rgba(240,234,214,0.65);letter-spacing:0.08em;line-height:1.8;
+  color:rgba(240,234,214,0.7);letter-spacing:0.08em;line-height:1.8;
+  border-radius:0 2px 2px 0;
 }
 .ic-api-engine span.hint {
   display:block;margin-top:6px;font-size:0.5rem;color:rgba(212,168,67,0.4);letter-spacing:0.15em;
@@ -300,7 +302,11 @@ const HL_I18N = {
     v3_lvl: '吉凶參半，宜謹慎守靜', v3_body: '今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭，靜觀其變，守正待時方為上策。',
     v4_lvl: '平穩之日，循序漸進', v4_body: '流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏，厚積薄發，為後續吉日做好準備。',
 
-    // 【新增】前端 AI 運勢推演引擎詞庫
+    // 【新增】八字引擎動態詞庫
+    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
+    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
+    pat_jianlu: '建祿格', pat_yangren: '羊刃格', pat_suffix: '格',
+    bw_liang: '兩', bw_qian: '錢',
     dyn_wealth: '流日逢財星，今日能量聚焦於財務運作與目標達成。',
     dyn_power:  '流日逢官殺，今日能量聚焦於事業責任、規則與名望。',
     dyn_res:    '流日逢印星，今日能量聚焦於學習吸收、貴人與深度思考。',
@@ -323,7 +329,7 @@ const HL_I18N = {
     hd_luck_plan: '大 运 排 盘', lbl_start_age: '起运年龄', lbl_dir: '顺 / 逆运', lbl_cur_luck: '当前大运', lbl_rem_luck: '大运剩余',
     val_male: '男', val_female: '女', val_unstarted: '未起运', age_start: '岁起运', age_unit: '岁起', elapsed: '已行', years: '年', rem: '余',
     dir_fwd: '顺运（阳男 / 阴女）', dir_rev: '逆运（阴男 / 阳女）', cur_badge: '当前',
-    click_tip: '点击其他柱查看关系',
+    click_tip: '点击其他柱查看关系', 
     ten: {'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
     tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
     dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
@@ -333,6 +339,7 @@ const HL_I18N = {
     wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
     wk_names: ['日','一','二','三','四','五','六'],
     lbl_stem: '天干', lbl_branch: '地支', lbl_nayin: '纳音', lbl_tengod: '十神',
+    
     ss_tianyi: {n:'天乙贵人', d:'贵人星入日，今日所遇之人皆可能成为助力。宜拜访上司长辈、洽谈合作、寻求引荐，逢凶能化吉。'},
     ss_wenchang:{n:'文昌', d:'文昌临日，思路清晰，适宜读书考试、写作构思、学术研究，灵感旺盛，一切与文字智慧相关之事皆宜。'},
     ss_jianlu: {n:'建禄', d:'禄神入命，自身能量充盈，今日适合主导事务、展现才干，谈判缔约均宜以自身为主，切勿轻易妥协。'},
@@ -344,11 +351,16 @@ const HL_I18N = {
     ss_huagai: {n:'华盖', d:'华盖主孤寂与艺术灵感。今日宜独处思考、艺术创作、修行静心；不宜社交应酬，人多反添烦恼。'},
     ss_yuepo:  {n:'月破', d:'月破之日，诸事不宜轻举妄动，尤忌动土开工、签订合约、嫁娶出行，以静守为宜，耐心等待吉日。'},
     ss_none:   {n:'平顺', d:'今日无特殊神煞，平稳安顺。适宜处理日常积累事务，保持既定节奏，静心蓄力以待良机。'},
+    
     v1_lvl: '大吉之日，诸事皆宜', v1_body: '流日与日主相生，贵人星照，诸神护佑。今日宜主动出击，感情、事业、财运均有上佳表现，把握每个主动接触的机会。',
     v2_lvl: '吉多于凶，宜积极进取', v2_body: '流日与命盘形成有利格局，吉星照临。虽有小凶，贵人之力足以化解。今日适宜重要洽谈与拜访，凡事主动为吉，守待反误。',
     v3_lvl: '吉凶参半，宜谨慎守静', v3_body: '今日凶煞偏重，流日与部分柱位有冲刑之象。宜低调行事，避免签约、远行及口舌之争，静观其变，守正待时方为上策。',
     v4_lvl: '平稳之日，循序渐进', v4_body: '流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏，厚积薄发，为后续吉日做好准备。',
-    
+
+    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
+    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
+    pat_jianlu: '建禄格', pat_yangren: '羊刃格', pat_suffix: '格',
+    bw_liang: '两', bw_qian: '钱',
     dyn_wealth: '流日逢财星，今日能量聚焦于财务运作与目标达成。',
     dyn_power:  '流日逢官杀，今日能量聚焦于事业责任、规则与名望。',
     dyn_res:    '流日逢印星，今日能量聚焦于学习吸收、贵人与深度思考。',
@@ -381,6 +393,7 @@ const HL_I18N = {
     wx_dz: ['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'],
     wk_names: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
     lbl_stem: 'Stem', lbl_branch: 'Branch', lbl_nayin: 'Tone', lbl_tengod: '10 Gods',
+    
     ss_tianyi: {n:'Heavenly Noble', d:'The Noble Star enters today. People you meet may become great supporters. Favorable for meetings, negotiations, and seeking guidance.'},
     ss_wenchang:{n:'Academic Star', d:'Clear thinking and sharp intuition. Highly favorable for studying, writing, planning, and all intellectual pursuits.'},
     ss_jianlu: {n:'Fortune Star', d:'Your personal energy is brimming. Good day to take the lead in affairs. Trust your own judgment rather than compromising easily.'},
@@ -392,11 +405,16 @@ const HL_I18N = {
     ss_huagai: {n:'Elegant Seal', d:'A day for solitude and artistic inspiration. Highly favorable for creative work and meditation. Not ideal for heavy socializing.'},
     ss_yuepo:  {n:'Month Clash', d:'A volatile day. Avoid major moves like construction, signing contracts, or distant travel. Best to keep a low profile.'},
     ss_none:   {n:'Peaceful', d:'No major star influences today. A smooth, stable day best spent maintaining your current pace and accumulating progress.'},
+    
     v1_lvl: 'Highly Auspicious', v1_body: 'The daily energies align perfectly with your chart. A day to take bold actions in career and relationships. Seize the opportunities.',
     v2_lvl: 'Favorable', v2_body: 'Positive stars guide the day. Any minor obstacles can be easily overcome. Good for important meetings and proactive steps.',
     v3_lvl: 'Mixed / Cautious', v3_body: 'Clashing energies are present. Keep a low profile, avoid arguments, and delay major decisions or long travel.',
     v4_lvl: 'Stable & Peaceful', v4_body: 'A balanced day without extreme highs or lows. Focus on routine tasks and steady, incremental progress.',
 
+    str_strong: 'Strong', str_weak: 'Weak', str_bal: 'Balanced',
+    wx_木: 'Wood', wx_火: 'Fire', wx_土: 'Earth', wx_金: 'Metal', wx_水: 'Water',
+    pat_jianlu: 'Fortune Pattern', pat_yangren: 'Yang Blade Pattern', pat_suffix: ' Pattern',
+    bw_liang: ' Liang ', bw_qian: ' Qian',
     dyn_wealth: 'With the Wealth element today, your energy focuses heavily on finances, desires, and achieving material results.',
     dyn_power:  'With the Power element today, your energy shifts toward career advancement, responsibilities, and authority.',
     dyn_res:    'With the Resource element today, your energy favors deep learning, seeking guidance, and introspection.',
@@ -429,6 +447,7 @@ const HL_I18N = {
     wx_dz: ['수','토','목','목','토','화','화','토','금','금','토','수'],
     wk_names: ['일','월','화','수','목','금','토'],
     lbl_stem: '천간', lbl_branch: '지지', lbl_nayin: '납음', lbl_tengod: '십신',
+    
     ss_tianyi: {n:'천을귀인', d:'귀인이 돕는 날. 만나는 사람마다 힘이 되어줄 수 있습니다. 윗사람 방문, 협상 등에 매우 유리하며 흉이 길로 바뀝니다.'},
     ss_wenchang:{n:'문창귀인', d:'사고가 명석해지는 날. 학업, 시험, 글쓰기, 연구 등에 적합하며 아이디어와 영감이 넘칩니다.'},
     ss_jianlu: {n:'건록', d:'자신의 에너지가 충만한 날. 주도적으로 일을 처리하기 좋으며, 협상 시 쉽게 타협하지 마세요.'},
@@ -440,11 +459,16 @@ const HL_I18N = {
     ss_huagai: {n:'화개', d:'고독과 예술적 영감의 별입니다. 혼자만의 시간, 창작, 수양에 좋으며 번잡한 사교 모임은 피하세요.'},
     ss_yuepo:  {n:'월파', d:'기운이 충돌하는 날. 중대한 결정, 계약, 먼 여행을 피하고 조용히 때를 기다리는 것이 좋습니다.'},
     ss_none:   {n:'평순', d:'특별한 신살이 없는 무난한 날입니다. 일상적인 업무를 차분히 진행하며 안정을 유지하기 좋습니다.'},
+    
     v1_lvl: '대길 (매우 좋음)', v1_body: '일진의 에너지가 당신의 명식과 조화를 이룹니다. 직업과 인간관계에서 적극적으로 행동하여 기회를 잡으세요.',
     v2_lvl: '길함 (긍정적)', v2_body: '긍정적인 기운이 강합니다. 약간의 장애물은 귀인의 도움으로 쉽게 해결됩니다. 중요한 만남에 좋습니다.',
     v3_lvl: '주의 요망', v3_body: '충돌하는 기운이 있습니다. 구설수나 다툼을 피하고, 중대한 결정이나 계약은 다음으로 미루는 것이 좋습니다.',
     v4_lvl: '평온함', v4_body: '큰 기복 없이 평탄한 하루입니다. 무리한 계획보다 일상적인 일들을 꾸준히 진행하는 것이 좋습니다.',
-    
+
+    str_strong: '신강(身强)', str_weak: '신약(身弱)', str_bal: '중화(中和)',
+    wx_木: '목(木)', wx_火: '화(火)', wx_土: '토(土)', wx_金: '금(金)', wx_水: '수(水)',
+    pat_jianlu: '건록격', pat_yangren: '양인격', pat_suffix: '격',
+    bw_liang: '량 ', bw_qian: '전',
     dyn_wealth: '오늘 재성(財星)을 만나, 재물과 목표 달성에 에너지가 집중됩니다.',
     dyn_power:  '오늘 관살(官殺)을 만나, 직업, 책임감, 명예에 에너지가 집중됩니다.',
     dyn_res:    '오늘 인성(印星)을 만나, 학습, 사유, 윗사람의 조언에 에너지가 집중됩니다.',
@@ -480,12 +504,12 @@ document.addEventListener('zc:langchange', () => {
 });
 
 /* ════════════════════════════════════════
-   动态读取用户数据 (从首页 localStorage 获取)
+   动态读取用户数据
 ════════════════════════════════════════ */
 let USER = {
   name: '命主', gender: '男',
   year: 1992, month: 6, day: 15, hour: 13, minute: 0,
-  birthplace: '未知', bone: '待推算', geju: '待推算', xiyong: '待推算', qiangruo: '待推算'
+  birthplace: '未知'
 };
 
 try {
@@ -534,10 +558,12 @@ try {
 })();
 
 /* ════════════════════════════════════════
-   基础数据定义 (仅用于计算索引)
+   基础数据定义
 ════════════════════════════════════════ */
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
+const WXT=['木','木','火','火','土','土','金','金','水','水'];
+const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
 const NY=['海中金','爐中火','大林木','路旁土','劍鋒金','山頭火','澗下水','城頭土','白蠟金','楊柳木','泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金','覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水'];
 function nayin(tg,dz){return NY[Math.floor(((tg*36+dz*25)%60)/2)];}
 const SS_TABLE=[
@@ -656,7 +682,7 @@ function approxLunar(date){
 }
 
 /* ════════════════════════════════════════
-   ★ 核心：純前端 AI 運勢推演引擎
+   ★ 核心：純前端 AI 運勢推演引擎與格局計算
 ════════════════════════════════════════ */
 function getTenGroup(tenRaw) {
   if(['正財','偏財'].includes(tenRaw)) return 'wealth';
@@ -810,7 +836,7 @@ function renderJiari(){
   document.getElementById('verdict-title').textContent=`${t('vd_title')} ${vdt.lvl}`;
   document.getElementById('verdict-body').textContent=vdt.body;
 
-  // 替換 API Placeholder 為純前端動態運勢推演
+  // 動態生成神煞與運勢解讀
   document.getElementById('interp-list').innerHTML=ss.map(s=>{
     const info = t(s.key);
     const dynamicReading = getDynamicReading(s.type, dailyTenGodRaw);
@@ -840,7 +866,7 @@ function scrollToInterp(id){
 }
 
 /* ════════════════════════════════════════
-   命盘页渲染
+   命盘页渲染 (自動推演身強弱與格局)
 ════════════════════════════════════════ */
 function renderMingpan(){
   const yGZ=getYrGZ(USER.year,USER.month,USER.day);
@@ -849,9 +875,54 @@ function renderMingpan(){
   const hGZ=getHrGZ(USER.hour,dGZ.tg);
   const ri=dGZ.tg;
 
+  /* --- 1. 計算身強弱與喜用神 --- */
+  const WX_SUPPORT = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']};
+  const dmWuxing = WXT[dGZ.tg];
+  const supports = WX_SUPPORT[dmWuxing];
+  let score = 0;
+  const weights = [1, 1.2, 1, 3, 1, 1.2, 1, 1.2]; // 月支權重最高(3)
+  [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, idx) => {
+    const wx = (idx % 2 === 0) ? WXT[item] : WXD[item];
+    if(supports.includes(wx)) score += weights[idx];
+  });
+  const totalWeight = 10.6;
+  let strengthKey = 'str_bal';
+  let favWX = [];
+  if(score > totalWeight * 0.55) {
+    strengthKey = 'str_strong';
+    favWX = ['木','火','土','金','水'].filter(x => !supports.includes(x)); // 身強喜剋洩耗
+  } else if (score < totalWeight * 0.45) {
+    strengthKey = 'str_weak';
+    favWX = supports; // 身弱喜生扶
+  } else {
+    strengthKey = 'str_bal';
+    favWX = ['木','火','土','金','水'].filter(x => !supports.includes(x));
+  }
+  const qiangruoStr = t(strengthKey);
+  const lang = (typeof ZCI18n !== 'undefined') ? ZCI18n.lang() : 'zh-TW';
+  const separator = (lang === 'en' || lang === 'ko') ? ', ' : '、';
+  const xiyongStr = favWX.map(x => t('wx_'+x)).join(separator);
+
+  /* --- 2. 計算格局 (以月支主氣為準) --- */
+  const hiddenMainQi = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8]; // 子丑寅卯辰巳午未申酉戌亥的本氣天干
+  const mQiTg = hiddenMainQi[mGZ.dz];
+  const rawTen = SS_TABLE[dGZ.tg][mQiTg];
+  let gejuStr = '';
+  if(rawTen === '比肩') gejuStr = t('pat_jianlu'); // 建祿格
+  else if(rawTen === '劫財') gejuStr = t('pat_yangren'); // 羊刃格
+  else gejuStr = t('ten')[rawTen] + t('pat_suffix');
+
+  /* --- 3. 計算骨重 (簡化版近似算法) --- */
+  const BW_TG = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
+  const BW_DZ = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
+  const bwSum = BW_TG[yGZ.tg] + BW_DZ[yGZ.dz] + BW_TG[mGZ.tg] + BW_DZ[mGZ.dz] + BW_TG[dGZ.tg] + BW_DZ[dGZ.dz] + BW_TG[hGZ.tg] + BW_DZ[hGZ.dz];
+  const bl = Math.floor(bwSum);
+  const bq = Math.round((bwSum - bl) * 10);
+  const boneStr = `${bl}${t('bw_liang')}${bq}${t('bw_qian')}`;
+
+  /* --- 4. 更新 DOM --- */
   document.getElementById('mp-name').textContent=USER.name;
   
-  const lang = (typeof ZCI18n !== 'undefined') ? ZCI18n.lang() : 'zh-TW';
   if (lang === 'en') {
     document.getElementById('mp-birthday').textContent=`${USER.year}-${String(USER.month).padStart(2,'0')}-${String(USER.day).padStart(2,'0')} ${String(USER.hour).padStart(2, '0')}:00`;
   } else if (lang === 'ko') {
@@ -863,12 +934,13 @@ function renderMingpan(){
   }
   
   document.getElementById('mp-gender').textContent = USER.gender === '男' ? t('val_male') : t('val_female');
-  
   document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${t('yy_tg')[dGZ.tg]}${t('wx_tg')[dGZ.tg]}`;
-  document.getElementById('mp-geju').textContent=USER.geju;
-  document.getElementById('mp-xiyong').textContent=USER.xiyong;
-  document.getElementById('mp-qiangruo').textContent=USER.qiangruo;
-  document.getElementById('mp-bone').textContent=USER.bone;
+  
+  // 覆寫為前端即時推算的結果
+  document.getElementById('mp-geju').textContent=gejuStr;
+  document.getElementById('mp-xiyong').textContent=xiyongStr;
+  document.getElementById('mp-qiangruo').textContent=qiangruoStr;
+  document.getElementById('mp-bone').textContent=boneStr;
 
   const g4=document.getElementById('bazi4-grid');
   g4.innerHTML=`<div class="b4-grp">${t('b4_grp')}</div>`;
