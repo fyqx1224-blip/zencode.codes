@@ -15,9 +15,21 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .grid-ov{z-index:1;background-image:linear-gradient(rgba(212,168,67,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.02) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
 .scan{height:2px;z-index:2;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.4),transparent);animation:scan 9s linear infinite;}
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
-.fp{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:fu linear both;}
-@keyframes fu{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.7}90%{opacity:.3}100%{transform:translateY(-100vh) scale(.2);opacity:0}}
-.page{position:relative;z-index:10;min-height:100vh;padding-bottom:80px;width:100%;max-width:900px;margin:0 auto;}
+
+/* 首頁表單樣式 (Landing Page) */
+#landing-view { position:relative; z-index:50; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.lp-box { background:rgba(7,6,12,0.9); border:1px solid rgba(212,168,67,0.2); padding:35px 30px; border-radius:4px; max-width:420px; width:100%; box-shadow:0 15px 40px rgba(0,0,0,0.6); }
+.lp-title { font-family:'Ma Shan Zheng',cursive; font-size:2.2rem; color:var(--gold); text-align:center; margin-bottom:5px; }
+.lp-sub { font-size:0.7rem; color:var(--text-d); text-align:center; letter-spacing:0.2em; margin-bottom:25px; }
+.lp-box label { display:block; font-size:0.7rem; color:var(--gold); margin-bottom:5px; letter-spacing:0.1em; }
+.lp-box input, .lp-box select { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(212,168,67,0.2); color:var(--text); padding:10px; font-size:0.9rem; outline:none; margin-bottom:15px; border-radius:2px; }
+.lp-box input:focus, .lp-box select:focus { border-color:var(--gold); }
+.lp-row { display:flex; gap:10px; }
+.lp-row > div { flex:1; }
+.lp-btn { width:100%; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; padding:12px; font-size:0.9rem; font-weight:bold; cursor:pointer; margin-top:10px; letter-spacing:0.2em; border-radius:2px; }
+
+/* 主程式排盤樣式 */
+.page{position:relative;z-index:10;min-height:100vh;padding-bottom:80px;width:100%;max-width:900px;margin:0 auto; display:none;} /* 預設隱藏，由 JS 控制顯示 */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(212,168,67,0.1);}
 .app-logo{font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;letter-spacing:0.18em;background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .app-sub{font-size:0.55rem;letter-spacing:0.4em;color:var(--text-f);margin-top:2px;}
@@ -26,9 +38,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .tab-btn{background:none;border:1px solid transparent;font-size:0.6rem;letter-spacing:0.2em;color:var(--text-d);cursor:pointer;padding:6px 14px;transition:all .22s;border-radius:1px;}
 .tab-btn.active{border-color:var(--gold-dim);color:var(--gold);background:rgba(212,168,67,0.06);}
 
-/* 語言切換選單樣式 */
 .lang-select{background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.2);color:var(--gold);font-family:'Noto Serif TC',serif;font-size:0.55rem;padding:5px 8px;border-radius:3px;outline:none;cursor:pointer;letter-spacing:0.1em;}
 .lang-select option{background:#0D0B18;color:var(--text);}
+.settings-btn{background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.2);color:var(--gold);padding:4px 8px;border-radius:3px;cursor:pointer;font-size:0.65rem;}
 
 .date-nav{display:flex;align-items:center;gap:10px;padding:16px 24px 12px;}
 .nav-arrow{background:none;border:1px solid rgba(212,168,67,0.16);color:rgba(212,168,67,0.7);font-size:1.15rem;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
@@ -138,13 +150,94 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .dy-item.current{border-color:rgba(212,168,67,0.32);background:rgba(212,168,67,0.04);}
 .dy-gz{font-family:'Ma Shan Zheng',cursive;font-size:1.25rem;display:flex;gap:2px;}
 .dy-info{flex:1;} .dy-age{font-size:0.62rem;color:var(--text-d);} .dy-years{font-size:0.53rem;color:var(--text-f);margin-top:2px;}
+
+/* 修改資料表單的彈出層樣式 */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(6,5,10,0.95); z-index:9999; padding:24px; overflow-y:auto; backdrop-filter:blur(5px); }
+.modal-box { max-width: 400px; margin: 40px auto; background: rgba(13,11,24,0.95); border: 1px solid rgba(212,168,67,0.3); padding: 30px; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.modal-title { color:var(--gold); font-family:'Ma Shan Zheng',cursive; font-size:1.6rem; text-align:center; margin-bottom: 5px; }
+.modal-sub { color:var(--text-d); font-size:0.65rem; text-align:center; letter-spacing:0.1em; margin-bottom: 25px; }
+.modal-box label { color:var(--gold); font-size:0.7rem; display:block; margin-bottom:6px; letter-spacing:0.1em; }
+.modal-box input, .modal-box select { width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(212,168,67,0.2); color:#fff; font-size:0.9rem; outline:none; border-radius:2px; margin-bottom: 15px; }
+.modal-box input:focus, .modal-box select:focus { border-color:var(--gold); }
+.modal-flex { display:flex; gap:10px; }
+.modal-flex > div { flex:1; }
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 <div class="grid-ov"></div><div class="scan"></div>
 
-<div class="page">
+<div id="landing-view">
+  <div class="lp-box">
+    <div class="lp-title" data-hl="lp_title">排盤建檔</div>
+    <div class="lp-sub" data-hl="lp_sub">輸入您的出生資訊以生成命盤</div>
+    <form id="landingForm" onsubmit="submitLandingForm(event)">
+      <div>
+        <label data-hl="modal_name">姓名 / 暱稱</label>
+        <input type="text" id="lp-name" required placeholder="例如：陳先生">
+      </div>
+      <div>
+        <label data-hl="modal_gender">性別</label>
+        <select id="lp-gender">
+          <option value="男">男</option>
+          <option value="女">女</option>
+        </select>
+      </div>
+      <div class="lp-row">
+        <div><label data-hl="modal_year">年</label><input type="number" id="lp-year" required value="1992" min="1900" max="2100"></div>
+        <div><label data-hl="modal_month">月</label><input type="number" id="lp-month" required value="6" min="1" max="12"></div>
+        <div><label data-hl="modal_day">日</label><input type="number" id="lp-day" required value="15" min="1" max="31"></div>
+      </div>
+      <div class="lp-row">
+        <div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="lp-hour" required value="13" min="0" max="23"></div>
+        <div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="lp-minute" required value="0" min="0" max="59"></div>
+      </div>
+      <button type="submit" class="lp-btn" data-hl="lp_submit">查看黃道吉日與命盤</button>
+    </form>
+    <div style="text-align:center; margin-top:15px;">
+        <select id="landingLangSelect" class="lang-select" onchange="changeLang(this.value)">
+          <option value="zh-TW">繁體中文</option>
+          <option value="zh-CN">简体/汉语</option>
+          <option value="en">English</option>
+        </select>
+    </div>
+  </div>
+</div>
+
+<div id="setup-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" data-hl="modal_title">建立個人命盤</div>
+    <div class="modal-sub" data-hl="modal_sub">輸入您的出生資訊以生成專屬排盤</div>
+    <form id="modalForm" onsubmit="saveProfileFromModal(event)">
+      <div>
+        <label data-hl="modal_name">姓名 / 暱稱</label>
+        <input type="text" id="m-name" required placeholder="例如：陳先生">
+      </div>
+      <div>
+        <label data-hl="modal_gender">性別</label>
+        <select id="m-gender">
+          <option value="男">男</option>
+          <option value="女">女</option>
+        </select>
+      </div>
+      <div class="modal-flex">
+        <div><label data-hl="modal_year">年</label><input type="number" id="m-year" required value="1992" min="1900" max="2100"></div>
+        <div><label data-hl="modal_month">月</label><input type="number" id="m-month" required value="6" min="1" max="12"></div>
+        <div><label data-hl="modal_day">日</label><input type="number" id="m-day" required value="15" min="1" max="31"></div>
+      </div>
+      <div class="modal-flex" style="margin-bottom:10px;">
+        <div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="m-hour" required value="13" min="0" max="23"></div>
+        <div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="m-minute" required value="0" min="0" max="59"></div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="submit" style="flex:2; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; padding:12px; font-weight:bold; cursor:pointer; letter-spacing:0.1em; border-radius:2px;" data-hl="modal_submit">確認排盤</button>
+        <button type="button" onclick="hideSetupModal()" style="flex:1; background:none; border:1px solid rgba(212,168,67,0.3); color:var(--text); cursor:pointer; border-radius:2px;" data-hl="modal_cancel">取消</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="page" id="app-view">
   <div class="topbar">
     <div class="logo-wrap"><div class="app-logo" data-hl="logo">黃道吉日</div><div class="app-sub" data-hl="sub">個人命盤 · 每日流日</div></div>
     <div class="top-controls">
@@ -153,8 +246,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <button class="tab-btn" onclick="switchTab('mingpan')" data-hl="tab_chart">命盤</button>
         <button class="tab-btn" onclick="switchTab('dayun')" data-hl="tab_luck">大運</button>
       </div>
-      <div class="lang-switch">
-        <select id="langSelect" class="lang-select" onchange="changeLang(this.value)">
+      <div class="lang-switch" style="display:flex; gap:8px;">
+        <button class="settings-btn" onclick="showSetupModal()" title="修改資料">⚙️</button>
+        <select id="appLangSelect" class="lang-select" onchange="changeLang(this.value)">
           <option value="zh-TW">繁體中文</option>
           <option value="zh-CN">简体/汉语</option>
           <option value="en">English</option>
@@ -219,7 +313,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 </div>
 
 <script>
-// 初始化目前語言
+// 初始化全域變數與目前語言
+let USER = {}; 
 let currentLang = localStorage.getItem('zencode_lang') || 'zh-TW';
 
 // 完整的三語字典庫
@@ -248,7 +343,9 @@ const HL_I18N = {
     dyn_adv_ji:'結合吉星護佑，易得助力，宜大膽推進。', dyn_adv_xiong:'受凶星牽制，易生波瀾。建議謹慎保守。', dyn_adv_zhong:'星象中性，發展取決於客觀環境，宜順勢而為。', api_hint_replaced:'✦ 基於原命盤與流日干支推演',
     ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
     f_wealth: '財運', f_career: '事業', f_love: '感情', f_health: '健康', f_study: '學業', f_travel: '出行',
-    th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌'
+    th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌',
+    lp_title: '排盤建檔', lp_sub: '輸入您的出生資訊以生成命盤', lp_submit: '查看黃道吉日與命盤',
+    modal_title: '修改命盤資料', modal_sub: '輸入新的出生資訊以重新排盤', modal_name: '姓名 / 暱稱', modal_gender: '性別', modal_year: '年', modal_month: '月', modal_day: '日', modal_hour: '出生時 (0-23)', modal_minute: '分 (0-59)', modal_submit: '確認排盤', modal_cancel: '取消'
   },
   'zh-CN': {
     logo:'黄道吉日', sub:'个人命盘 · 每日流日', tab_today:'今日', tab_chart:'命盘', tab_luck:'大运', btn_today:'回到今天',
@@ -274,7 +371,9 @@ const HL_I18N = {
     dyn_adv_ji:'结合吉星护佑，易得助力，宜大胆推进。', dyn_adv_xiong:'受凶星牵制，易生波澜。建议谨慎保守。', dyn_adv_zhong:'星象中性，发展取决于客观环境，宜顺势而为。', api_hint_replaced:'✦ 基于原命盘与流日干支推演',
     ss_tianyi: {n: '天乙贵人', d: '逢凶化吉，贵人相助'}, ss_wenchang: {n: '文昌贵人', d: '才华横溢，利学业与文思'}, ss_jianlu: {n: '建禄', d: '得令身旺，事业根基稳固'}, ss_yima: {n: '驿马', d: '奔波变动，宜向外走动发展'}, ss_taiji: {n: '太极贵人', d: '做事有始有终，与玄学有缘'}, ss_huagai: {n: '华盖', d: '才华出众，思想独特，性情孤高'}, ss_yuepo: {n: '月破', d: '谋事易生波折，诸事不宜急进'}, ss_none: {n: '平顺', d: '无特殊神煞影响，运势平稳过渡'},
     f_wealth: '财运', f_career: '事业', f_love: '感情', f_health: '健康', f_study: '学业', f_travel: '出行',
-    th_hour: '时辰', th_time: '时段', th_gz: '干支', th_good: '宜', th_bad: '忌'
+    th_hour: '时辰', th_time: '时段', th_gz: '干支', th_good: '宜', th_bad: '忌',
+    lp_title: '排盘建档', lp_sub: '输入您的出生信息以生成命盘', lp_submit: '查看黄道吉日与命盘',
+    modal_title: '修改命盘资料', modal_sub: '输入新的出生信息以重新排盘', modal_name: '姓名 / 昵称', modal_gender: '性别', modal_year: '年', modal_month: '月', modal_day: '日', modal_hour: '出生时 (0-23)', modal_minute: '分 (0-59)', modal_submit: '确认排盘', modal_cancel: '取消'
   },
   'en': {
     logo:'Auspicious Days', sub:'Bazi Chart & Daily Transit', tab_today:'Today', tab_chart:'Chart', tab_luck:'Pillars', btn_today:'Today',
@@ -300,7 +399,9 @@ const HL_I18N = {
     dyn_adv_ji:'Backed by auspicious stars, progress boldly.', dyn_adv_xiong:'Restrained by negative stars, expect minor turbulence. Stay conservative.', dyn_adv_zhong:'Neutral energies. Follow the natural flow of your environment.', api_hint_replaced:'✦ Derived from Natal Chart & Daily Pillars',
     ss_tianyi: {n: 'TianYi Noble', d: 'Turns bad luck into good, brings helpful people.'}, ss_wenchang: {n: 'WenChang', d: 'Enhances talent, excellent for studying and exams.'}, ss_jianlu: {n: 'JianLu', d: 'Prosperity and stable foundation for career.'}, ss_yima: {n: 'Sky Horse', d: 'Indicates travel, movement, and outward expansion.'}, ss_taiji: {n: 'TaiJi Noble', d: 'Strong affinity with metaphysics, ability to finish what you start.'}, ss_huagai: {n: 'Elegant Seal', d: 'Outstanding talent, unique thinking, but slight loneliness.'}, ss_yuepo: {n: 'Month Breaker', d: 'Plans easily disrupted. Avoid rushing or major decisions.'}, ss_none: {n: 'Neutral', d: 'No special star influences. A smooth, regular day.'},
     f_wealth: 'Wealth', f_career: 'Career', f_love: 'Love', f_health: 'Health', f_study: 'Study', f_travel: 'Travel',
-    th_hour: 'Hour', th_time: 'Time', th_gz: 'Pillars', th_good: 'Auspicious', th_bad: 'Inauspicious'
+    th_hour: 'Hour', th_time: 'Time', th_gz: 'Pillars', th_good: 'Auspicious', th_bad: 'Inauspicious',
+    lp_title: 'Bazi Setup', lp_sub: 'Enter your birth details', lp_submit: 'Generate Chart & Daily Transit',
+    modal_title: 'Edit Profile', modal_sub: 'Enter new birth info to regenerate chart', modal_name: 'Name', modal_gender: 'Gender', modal_year: 'Year', modal_month: 'Month', modal_day: 'Day', modal_hour: 'Hour (0-23)', modal_minute: 'Min (0-59)', modal_submit: 'Generate Chart', modal_cancel: 'Cancel'
   }
 };
 
@@ -322,14 +423,111 @@ function changeLang(lang) {
   localStorage.setItem('zencode_lang', lang);
   updateStaticUI();
   
-  initDrums(); 
-  renderJiari();
-  renderMingpan();
-  renderDayun();
+  // 同步下拉選單的狀態
+  if(document.getElementById('landingLangSelect')) document.getElementById('landingLangSelect').value = lang;
+  if(document.getElementById('appLangSelect')) document.getElementById('appLangSelect').value = lang;
+  
+  if (USER && USER.year) {
+    initDrums(); 
+    renderJiari();
+    renderMingpan();
+    renderDayun();
+  }
 }
 
-let USER = {name:'命主',gender:'男',year:1992,month:6,day:15,hour:13,minute:0,birthplace:'未知'};
-try{const s=localStorage.getItem('zencode_user_profile');if(s){const p=JSON.parse(s);USER.name=p.name||'命主';USER.gender=p.gender||'男';USER.year=parseInt(p.year)||1992;USER.month=parseInt(p.month)||6;USER.day=parseInt(p.day)||15;USER.hour=parseInt(p.hour)||13;USER.minute=parseInt(p.minute)||0;}}catch(e){}
+// 核心路由控制：檢查並載入使用者資料
+function checkAndLoadUser() {
+  const s = localStorage.getItem('zencode_user_profile');
+  if (s) {
+    try {
+      const p = JSON.parse(s);
+      USER = {
+        name: p.name || '命主',
+        gender: p.gender || '男',
+        year: parseInt(p.year) || 1992,
+        month: parseInt(p.month) || 1,
+        day: parseInt(p.day) || 1,
+        hour: parseInt(p.hour) || 0,
+        minute: parseInt(p.minute) || 0,
+        birthplace: p.birthplace || '未知'
+      };
+      
+      // 成功讀取資料，顯示 APP，隱藏首頁與浮層
+      document.getElementById('landing-view').style.display = 'none';
+      document.getElementById('setup-modal').style.display = 'none';
+      document.getElementById('app-view').style.display = 'block';
+      
+      // 啟動排盤渲染
+      if(document.getElementById('drum-year')) { initDrums(); }
+      renderJiari(); 
+      renderMingpan();
+      renderDayun();
+    } catch (e) {
+      // 解析失敗，顯示首頁
+      document.getElementById('landing-view').style.display = 'flex';
+      document.getElementById('app-view').style.display = 'none';
+    }
+  } else {
+    // 沒資料，顯示首頁
+    document.getElementById('landing-view').style.display = 'flex';
+    document.getElementById('app-view').style.display = 'none';
+  }
+}
+
+// 首頁送出表單
+function submitLandingForm(e) {
+  e.preventDefault();
+  const userData = {
+    name: document.getElementById('lp-name').value,
+    gender: document.getElementById('lp-gender').value,
+    year: parseInt(document.getElementById('lp-year').value),
+    month: parseInt(document.getElementById('lp-month').value),
+    day: parseInt(document.getElementById('lp-day').value),
+    hour: parseInt(document.getElementById('lp-hour').value),
+    minute: parseInt(document.getElementById('lp-minute').value),
+    birthplace: '未知'
+  };
+  localStorage.setItem('zencode_user_profile', JSON.stringify(userData));
+  checkAndLoadUser(); // 重新驗證並進入 APP
+}
+
+// 顯示修改資料浮層
+function showSetupModal() {
+  const modal = document.getElementById('setup-modal');
+  modal.style.display = 'block';
+  
+  // 填入既有資料
+  if (USER && USER.year) {
+    document.getElementById('m-name').value = USER.name;
+    document.getElementById('m-gender').value = USER.gender;
+    document.getElementById('m-year').value = USER.year;
+    document.getElementById('m-month').value = USER.month;
+    document.getElementById('m-day').value = USER.day;
+    document.getElementById('m-hour').value = USER.hour;
+    document.getElementById('m-minute').value = USER.minute;
+  }
+}
+
+function hideSetupModal() {
+  document.getElementById('setup-modal').style.display = 'none';
+}
+
+// 保存修改資料並重新排盤
+function saveProfileFromModal(e) {
+  e.preventDefault();
+  const userData = {
+    name: document.getElementById('m-name').value,
+    gender: document.getElementById('m-gender').value,
+    year: parseInt(document.getElementById('m-year').value),
+    month: parseInt(document.getElementById('m-month').value),
+    day: parseInt(document.getElementById('m-day').value),
+    hour: parseInt(document.getElementById('m-hour').value),
+    minute: parseInt(document.getElementById('m-minute').value),
+    birthplace: '未知'
+  };
+  localStorage.setItem('zencode_user_profile', JSON.stringify(userData));
+  checkAndLoadUser(); 
+}
 
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
@@ -461,7 +659,6 @@ function renderJiari(){
     const wkNames = t('wk_names'); 
     
     let wkPrefix = currentLang === 'zh-CN' ? '周' : (currentLang === 'en' ? '' : '週');
-    
     if(currentLang === 'en') {
         document.getElementById('disp-solar').textContent=`${wkNames[d.getDay()]} · ${y}-${m}-${day}`;
     } else {
@@ -557,7 +754,6 @@ function renderMingpan(){
 
     if(document.getElementById('mp-name')) document.getElementById('mp-name').textContent=USER.name;
     
-    // 【修復】這裡加入了簡體中文的「时」判定
     if (currentLang === 'en') {
       document.getElementById('mp-birthday').textContent=`${USER.year}-${String(USER.month).padStart(2,'0')}-${String(USER.day).padStart(2,'0')} ${String(USER.hour).padStart(2, '0')}:00`;
     } else if (currentLang === 'zh-CN') {
@@ -568,8 +764,6 @@ function renderMingpan(){
     
     if(document.getElementById('mp-gender')) document.getElementById('mp-gender').textContent = USER.gender === '男' ? (t('val_male') || '男') : (t('val_female') || '女');
     let yyTxt = ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'][dGZ.tg] || ''; 
-    
-    // 【修復】這裡加入了簡體中文的「阳 / 阴」判定
     let yyDict = { 
       '陽': currentLang === 'en' ? 'Yang ' : (currentLang === 'zh-CN' ? '阳' : '陽'), 
       '陰': currentLang === 'en' ? 'Yin ' : (currentLang === 'zh-CN' ? '阴' : '陰') 
@@ -634,15 +828,12 @@ function switchTab(tab){
 (function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H;function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';requestAnimationFrame(draw);}draw();})();
 
 document.addEventListener("DOMContentLoaded", () => {
-  const selectEl = document.getElementById('langSelect');
-  if(selectEl) selectEl.value = currentLang;
+  const langSelects = document.querySelectorAll('.lang-select');
+  langSelects.forEach(el => el.value = currentLang);
 
   setTimeout(() => { 
     updateStaticUI(); 
-    if(document.getElementById('drum-year')) { initDrums(); }
-    renderJiari(); 
-    renderMingpan();
-    renderDayun();
+    checkAndLoadUser();
   }, 50);
 });
 </script>
