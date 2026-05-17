@@ -327,7 +327,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
   letter-spacing: 0.5em;
 }
 
-/* 黄道吉日 内部样式 (已加回文字) */
+/* 黄道吉日 内部样式 (已去掉文字) */
 .floating-huangli {
   position: relative;
   display: flex;
@@ -365,21 +365,6 @@ select.inp option{background:#0C0B14;color:var(--text);}
 .floating-huangli:hover .huangli-svg {
   animation-duration: 6s;
   filter: drop-shadow(0 0 8px rgba(240, 201, 106, 0.7));
-}
-.huangli-text {
-  font-family: 'Noto Sans TC', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.4em;
-  color: var(--gold-b);
-  writing-mode: vertical-lr;
-  text-shadow: 0 0 8px rgba(240, 201, 106, 0.2);
-  transition: all 0.3s;
-  margin-right: -4px;
-}
-.floating-huangli:hover .huangli-text {
-  color: #FFF3C4;
-  text-shadow: 0 0 15px rgba(240, 201, 106, 0.6);
-  letter-spacing: 0.5em;
 }
 
 @keyframes spin-slow {
@@ -498,7 +483,6 @@ select.inp option{background:#0C0B14;color:var(--text);}
         <circle cx="50" cy="50" r="32" fill="none" stroke="#F0C96A" stroke-width="0.5" opacity="0.8"/>
       </svg>
     </div>
-    <span class="huangli-text" data-i18n="nav.huangli">黃道吉日</span>
   </a>
 </div>
 
@@ -1372,6 +1356,7 @@ async function genReport(){
       name,
     }));
     
+    // 保存完整数据供“黄道吉日”流日推演使用
     localStorage.setItem('zencode_user_profile', JSON.stringify({
       name: name,
       gender: gender,
@@ -1549,13 +1534,53 @@ document.getElementById('btn-astrolabe').addEventListener('click', function(e) {
 });
 
 /* ══════════════════════════════════════════════════════
-   黃道吉日 攔截與跳轉邏輯
+   黃道吉日 攔截與自動存檔跳轉邏輯
 ══════════════════════════════════════════════════════ */
 document.getElementById('btn-huangli').addEventListener('click', function(e) {
   e.preventDefault();
   
-  const savedUserData = localStorage.getItem('zencode_user_profile');
+  // 1. 先檢查是否有已生成的歷史建檔數據
+  let savedUserData = localStorage.getItem('zencode_user_profile');
   
+  // 2. 如果沒有歷史數據，但用戶當前表单已經填寫了日期，直接幫他存檔並放行
+  if (!savedUserData) {
+    let y = parseInt(document.getElementById('by').value) || 0;
+    let m = parseInt(document.getElementById('bm').value) || 0;
+    let d = parseInt(document.getElementById('bd').value) || 0;
+    
+    // 只要填寫了年月日，就認為是有意圖的用戶
+    if (y && m && d) {
+      let h = parseInt(document.getElementById('bh').value) || 12; // 沒填時辰默認中午
+      let min = parseInt(document.getElementById('bmin').value) || 0;
+      let name = document.getElementById('un').value.trim() || '命主';
+      let gender = document.getElementById('ug').value || '女';
+      
+      // 如果選擇的是農曆，需要轉換為公曆再存儲
+      if (calType === 'lunar') {
+        const s = lunarToSolar(y, m, d, document.getElementById('ilp').checked);
+        if (s) { y = s.year; m = s.month; d = s.day; }
+      }
+
+      // 構建基礎檔案並寫入緩存
+      const profile = {
+        name: name,
+        gender: gender,
+        year: y,
+        month: m,
+        day: d,
+        hour: h,
+        minute: min,
+        bone: '待推算',
+        geju: '待推算', 
+        xiyong: '待推算',
+        qiangruo: '待推算'
+      };
+      localStorage.setItem('zencode_user_profile', JSON.stringify(profile));
+      savedUserData = true; // 標記為已有數據，準備放行
+    }
+  }
+
+  // 3. 最終判定：有數據就跳轉，真沒填表單才彈窗
   if (savedUserData) {
       window.location.href = '/huangli-jiri.html'; 
   } else {
@@ -1570,9 +1595,10 @@ function closeLiuriModal() {
 
 function focusMainForm() {
   closeLiuriModal();
-  const formTarget = document.getElementById('un'); 
+  const formTarget = document.getElementById('un'); // 姓名輸入框
   if (formTarget) {
       formTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // 延遲等待滾動完成後聚焦
       setTimeout(() => formTarget.focus(), 600);
   }
 }
