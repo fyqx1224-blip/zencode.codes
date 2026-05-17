@@ -7,19 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="/i18n.js"></script>
 <style>
-:root{
-  --gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);
-  --bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);
-  --red:#C8402A;
-  --teal:#319795;--teal-dim:rgba(49,151,149,0.12);
-  /* ── 五行陰陽雙色系 ── */
-  --jia:#5AB86C; --yi:#8ED49A; --bing:#E05030; --ding:#F09070; --wu:#C8942A;
-  --ji:#D4B870; --geng:#B0B8C8; --xin:#D8DEE8; --ren:#4A8EC8; --gui:#80B4E0;
-}
+:root{--gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);--bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);--red:#C8402A;--teal:#319795;--teal-dim:rgba(49,151,149,0.12);--jia:#5AB86C;--yi:#8ED49A;--bing:#E05030;--ding:#F09070;--wu:#C8942A;--ji:#D4B870;--geng:#B0B8C8;--xin:#D8DEE8;--ren:#4A8EC8;--gui:#80B4E0;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
-.tg-jia{color:var(--jia);}.tg-yi {color:var(--yi);}.tg-bing{color:var(--bing);}.tg-ding{color:var(--ding);}.tg-wu {color:var(--wu);}.tg-ji {color:var(--ji);}.tg-geng{color:var(--geng);}.tg-xin{color:var(--xin);}.tg-ren{color:var(--ren);}.tg-gui{color:var(--gui);}
-.dz-zi {color:#6AACDC;} .dz-chou{color:#C8A840;} .dz-yin{color:#5AB86C;} .dz-mao{color:#8ED49A;} .dz-chen{color:#B89840;} .dz-si {color:#E07050;} .dz-wu2{color:#E05030;} .dz-wei{color:#C8A060;} .dz-shen{color:#A0AABB;} .dz-you{color:#C8D0DC;} .dz-xu {color:#B08840;} .dz-hai{color:#80B4E0;}
+.tg-jia{color:var(--jia);}.tg-yi{color:var(--yi);}.tg-bing{color:var(--bing);}.tg-ding{color:var(--ding);}.tg-wu{color:var(--wu);}.tg-ji{color:var(--ji);}.tg-geng{color:var(--geng);}.tg-xin{color:var(--xin);}.tg-ren{color:var(--ren);}.tg-gui{color:var(--gui);}
+.dz-zi{color:#6AACDC;}.dz-chou{color:#C8A840;}.dz-yin{color:#5AB86C;}.dz-mao{color:#8ED49A;}.dz-chen{color:#B89840;}.dz-si{color:#E07050;}.dz-wu2{color:#E05030;}.dz-wei{color:#C8A060;}.dz-shen{color:#A0AABB;}.dz-you{color:#C8D0DC;}.dz-xu{color:#B08840;}.dz-hai{color:#80B4E0;}
 #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .grid-ov{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(212,168,67,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.022) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
 .scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.12),rgba(212,168,67,0.4),rgba(212,168,67,0.12),transparent);animation:scan 9s linear infinite;}
@@ -34,35 +26,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .tab-btn{background:none;border:1px solid transparent;font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;letter-spacing:0.2em;color:var(--text-d);cursor:pointer;padding:6px 14px;transition:all .22s;border-radius:1px;}
 .tab-btn.active{border-color:var(--gold-dim);color:var(--gold);background:rgba(212,168,67,0.06);}
 .tab-btn:hover:not(.active){color:var(--text);background:rgba(255,255,255,0.03);}
-.date-nav{display:flex;align-items:center;gap:10px;padding:16px 24px 12px;}
-.nav-arrow{background:none;border:1px solid rgba(212,168,67,0.16);color:rgba(212,168,67,0.7);font-size:1.15rem;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;font-family:sans-serif;}
-.nav-arrow:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,0.07);}
-.nav-arrow:active{transform:scale(0.94);}
-.date-center{text-align:center;flex:1;}
-.date-solar{font-family:'Noto Serif TC',serif;font-size:1.05rem;letter-spacing:0.14em;color:var(--text);}
-.date-lunar{font-family:'Noto Sans TC',sans-serif;font-size:0.62rem;letter-spacing:0.2em;color:var(--text-d);margin-top:3px;}
-.date-today-btn{font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;letter-spacing:0.25em;color:rgba(212,168,67,0.5);border:1px solid rgba(212,168,67,0.18);background:none;cursor:pointer;padding:3px 10px;margin-top:6px;transition:all .2s;display:inline-block;}
-.date-today-btn:hover{color:var(--gold);border-color:rgba(212,168,67,0.4);background:rgba(212,168,67,0.05);}
 .sect-hd{display:flex;align-items:center;gap:10px;padding:0 20px;margin-bottom:10px;}
 .sect-hd::before,.sect-hd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.18));}
 .sect-hd::after{transform:scaleX(-1);}
 .sect-hd-txt{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;letter-spacing:0.5em;color:rgba(212,168,67,0.55);white-space:nowrap;}
 
-/* 隱藏原生滾動條 + 左右邊緣羽化光暈過渡 */
-.sizhu-outer{
-  padding:0 16px;
-  margin-bottom:8px;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width: none; /* Firefox */
-  -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
-  mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
-}
-.sizhu-outer::-webkit-scrollbar {
-  display: none; /* Chrome/Safari/Edge */
-}
+/* 隱藏原生滾動條並添加邊緣光影遮罩 */
+.sizhu-outer{padding:0 16px;margin-bottom:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,transparent,black 20px,black calc(100% - 20px),transparent);mask-image:linear-gradient(to right,transparent,black 20px,black calc(100% - 20px),transparent);}
+.sizhu-outer::-webkit-scrollbar{display:none;}
 
-/* 5v4 響應式非對稱九柱大表格樣式 */
+/* 5v4 網格 */
 .sizhu-main{display:grid;grid-template-columns:repeat(4,1fr) 1px repeat(5,1fr);min-width:680px;border:1px solid rgba(212,168,67,0.14);background:rgba(0,0,0,0.28);position:relative;}
 .grp-row{grid-column:1/-1;display:grid;grid-template-columns:4fr 1px 1fr 1fr 1fr 1fr 1fr;}
 .grp-cell{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;letter-spacing:0.32em;padding:5px 2px 4px;border-bottom:1px solid rgba(212,168,67,0.08);}
@@ -73,7 +46,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .grp-liumonth{color:rgba(80,160,220,0.7);background:rgba(80,160,220,0.03);}
 .grp-liuday{color:rgba(212,168,67,0.9);background:rgba(212,168,67,0.06);border-bottom:1px solid rgba(212,168,67,0.28);}
 .grp-liuhour{color:rgba(49,151,149,0.9);background:var(--teal-dim);border-bottom:1px solid rgba(49,151,149,0.25);}
-
 .sz-vsep{background:rgba(212,168,67,0.12);width:1px;grid-row:span 6;}
 .sz-col{display:flex;flex-direction:column;align-items:center;border-right:1px solid rgba(212,168,67,0.07);cursor:pointer;transition:background .18s;position:relative;overflow:visible;}
 .sz-col:last-child{border-right:none;}
@@ -83,7 +55,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-col.sz-liuhour{background:var(--teal-dim);}
 .sz-col.sz-liuhour:hover,.sz-col.sz-liuhour.open{background:rgba(49,151,149,0.18);}
 .sz-col.sz-rizhu{background:rgba(212,168,67,0.02);}
-
 .sz-head{width:100%;text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.18em;color:var(--text-f);padding:5px 2px 4px;border-bottom:1px solid rgba(212,168,67,0.07);}
 .sz-col.sz-dayun .sz-head{color:rgba(220,120,60,0.65);}
 .sz-col.sz-liuyear .sz-head{color:rgba(150,100,220,0.65);}
@@ -91,90 +62,115 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-col.sz-liuday .sz-head{color:rgba(212,168,67,0.8);border-bottom:1px solid rgba(212,168,67,0.22);}
 .sz-col.sz-liuhour .sz-head{color:rgba(49,151,149,0.8);border-bottom:1px solid rgba(49,151,149,0.22);}
 .sz-col.sz-rizhu .sz-head{color:rgba(212,168,67,0.5);}
-
-.sz-tg{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:2px 4px 1px;}
-.sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:1px 4px 3px;}
+.sz-tg,.sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;}
+.sz-tg{padding:2px 4px 1px;} .sz-dz{padding:1px 4px 3px;}
 .sz-ten{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
 .sz-nayin{font-family:'Noto Sans TC',sans-serif;font-size:0.44rem;color:rgba(240,234,214,0.18);padding:2px 3px 6px;text-align:center;line-height:1.45;}
 
 .ten-qisha{color:#D05050;} .ten-zhengguang{color:#7080B8;} .ten-pianyin{color:#9060C0;} .ten-zhengyin{color:#A878D0;} .ten-shishen{color:#60A870;} .ten-shangguan{color:#50B880;} .ten-piancai{color:#9090C0;} .ten-zhengcai{color:#8090C0;} .ten-bijian{color:rgba(200,170,100,0.6);} .ten-jiecai{color:rgba(180,145,80,0.6);} .ten-rizhu{color:rgba(212,168,67,0.75);}
 .sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:176px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;box-shadow:0 12px 40px rgba(0,0,0,0.85),0 0 0 1px rgba(0,0,0,0.9);}
-.sz-detail::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#0D0B18;border-top:1px solid rgba(212,168,67,0.22);border-left:1px solid rgba(212,168,67,0.22);}
-.sz-col.open .sz-detail,.sz-col:focus .sz-detail{display:block;}
+.sz-col.open .sz-detail{display:block;}
 .sd-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
 .sd-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);letter-spacing:0.08em;}
 .sd-val{font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:var(--text-d);}
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
-.sd-tip{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);text-align:center;line-height:1.7;}
-.sd-tip em{color:rgba(212,168,67,0.55);font-style:normal;}
-.rel-outer{padding:4px 16px 10px;min-width:640px;}
+
+/* 滾輪日期選擇器 */
+.datepicker-bar{display:flex;align-items:center;gap:6px;padding:10px 16px 8px;background:rgba(0,0,0,0.18);border-bottom:1px solid rgba(212,168,67,0.07);}
+.dp-label{font-family:'Noto Sans TC',sans-serif;font-size:0.52rem;color:rgba(212,168,67,0.45);letter-spacing:0.3em;flex-shrink:0;}
+.dp-drums{display:flex;gap:2px;flex:1;justify-content:center;}
+.dp-drum-wrap{display:flex;flex-direction:column;align-items:center;}
+.dp-drum-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.42rem;color:var(--text-f);letter-spacing:0.3em;margin-bottom:2px;}
+.dp-drum{height:72px;width:52px;overflow:hidden;position:relative;cursor:ns-resize;background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,67,0.12);user-select:none;-webkit-user-select:none;}
+.dp-drum-inner{display:flex;flex-direction:column;transition:transform .15s cubic-bezier(.22,.8,.36,1);}
+.dp-drum-item{height:24px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;font-size:0.78rem;color:var(--text-f);flex-shrink:0;transition:color .12s;}
+.dp-drum-item.active{color:var(--gold);font-weight:500;}
+.dp-drum-item.near{color:var(--text-d);opacity:0.7;}
+.dp-drum::before,.dp-drum::after{content:'';position:absolute;left:0;right:0;height:24px;z-index:2;pointer-events:none;}
+.dp-drum::before{top:0;background:linear-gradient(to bottom,rgba(6,5,10,0.92),transparent);}
+.dp-drum::after{bottom:0;background:linear-gradient(to top,rgba(6,5,10,0.92),transparent);}
+.dp-drum-hl{position:absolute;top:24px;left:0;right:0;height:24px;border-top:1px solid rgba(212,168,67,0.2);border-bottom:1px solid rgba(212,168,67,0.2);background:rgba(212,168,67,0.04);z-index:1;pointer-events:none;}
+.dp-goto-today{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.2em;color:rgba(212,168,67,0.45);border:1px solid rgba(212,168,67,0.14);background:none;cursor:pointer;padding:4px 10px;transition:all .2s;}
+
+/* 運勢與時辰表格 */
+.fortune-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;margin-bottom:14px;}
+.fortune-card{background:rgba(7,6,12,0.9);border:1px solid rgba(212,168,67,0.09);padding:12px 14px;position:relative;}
+.fortune-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.fortune-card.f-w::before{background:linear-gradient(90deg,transparent,rgba(212,168,67,0.5),transparent);}
+.fortune-card.f-c::before{background:linear-gradient(90deg,transparent,rgba(80,160,220,0.5),transparent);}
+.fortune-card.f-l::before{background:linear-gradient(90deg,transparent,rgba(240,120,160,0.5),transparent);}
+.fortune-card.f-h::before{background:linear-gradient(90deg,transparent,rgba(80,200,120,0.5),transparent);}
+.fortune-card.f-s::before{background:linear-gradient(90deg,transparent,rgba(180,120,220,0.5),transparent);}
+.fortune-card.f-t::before{background:linear-gradient(90deg,transparent,rgba(100,180,220,0.4),transparent);}
+.fc-icon{font-size:1rem;margin-bottom:5px;display:block;}
+.fc-title{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;letter-spacing:0.2em;color:var(--text-f);margin-bottom:6px;}
+.fc-score{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.fc-stars{display:flex;gap:2px;}
+.fc-star{width:8px;height:8px;border-radius:50%;background:rgba(212,168,67,0.15);}
+.fc-star.on{background:var(--gold);}
+.fc-score-num{font-family:'Noto Serif TC',serif;font-size:0.72rem;color:var(--gold);}
+.fc-body{font-family:'Noto Sans TC',sans-serif;font-size:0.57rem;color:var(--text-d);line-height:1.8;}
+.fc-tip{margin-top:5px;font-size:0.5rem;color:rgba(212,168,67,0.45);}
+
+.hour-table{margin:0 16px 14px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.09);}
+.ht-head,.ht-row{display:grid;grid-template-columns:1.8fr repeat(4,1fr);border-bottom:1px solid rgba(212,168,67,0.05);}
+.ht-head{background:rgba(212,168,67,0.04);border-bottom:1px solid rgba(212,168,67,0.1);}
+.ht-hcell{font-size:0.48rem;color:rgba(212,168,67,0.5);padding:6px 4px;text-align:center;}
+.ht-row.ht-cur{background:rgba(212,168,67,0.04);}
+.ht-cell{font-size:0.52rem;padding:7px 4px;text-align:center;color:var(--text-d);display:flex;align-items:center;justify-content:center;gap:2px;}
+.ht-gz{font-family:'Ma Shan Zheng',cursive;font-size:0.85rem;}
+.ht-good{color:#7DE09A;font-size:0.48rem;}
+.ht-bad{color:#F07840;font-size:0.48rem;}
+
+/* 神煞與其它 */
+.rel-outer{padding:4px 16px 10px;}
 .rel-badges{display:flex;gap:3px;flex-wrap:wrap;}
-.rel-badge{font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;padding:3px 9px;letter-spacing:0.06em;border:1px solid;white-space:nowrap;cursor:default;}
+.rel-badge{font-size:0.5rem;padding:3px 9px;border:1px solid;cursor:default;}
 .rb-he{color:#7DE09A;border-color:rgba(125,224,154,0.28);background:rgba(125,224,154,0.04);}
 .rb-chong{color:#F07840;border-color:rgba(240,120,64,0.28);background:rgba(240,120,64,0.04);}
-.rb-xing{color:#D4A843;border-color:rgba(212,168,67,0.28);background:rgba(212,168,67,0.04);}
-.rb-po{color:#63B3ED;border-color:rgba(99,179,237,0.28);background:rgba(99,179,237,0.04);}
 .rb-hai{color:#B090D0;border-color:rgba(176,144,208,0.28);background:rgba(176,144,208,0.04);}
-.divider{height:1px;margin:14px 20px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.13),transparent);}
-.verdict-box{margin:0 16px 14px;padding:14px 16px;background:rgba(8,7,14,0.85);border:1px solid rgba(212,168,67,0.13);display:flex;gap:12px;align-items:flex-start;}
-.verdict-icon{font-size:1.1rem;color:var(--gold);flex-shrink:0;margin-top:2px;}
-.verdict-title{font-family:'Noto Serif TC',serif;font-size:0.82rem;color:var(--gold);margin-bottom:5px;letter-spacing:0.1em;}
-.verdict-body{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:var(--text-d);line-height:1.95;letter-spacing:0.05em;}
+.verdict-box{margin:0 16px 14px;padding:14px 16px;background:rgba(8,7,14,0.85);border:1px solid rgba(212,168,67,0.13);display:flex;gap:12px;}
+.verdict-icon{font-size:1.1rem;color:var(--gold);}
+.verdict-title{font-size:0.82rem;color:var(--gold);margin-bottom:5px;}
+.verdict-body{font-size:0.65rem;color:var(--text-d);line-height:1.95;}
 .shensha-outer{padding:0 16px;margin-bottom:14px;}
 .ss-grid{display:flex;flex-wrap:wrap;gap:6px;}
-.ss-tag{font-family:'Noto Sans TC',sans-serif;font-size:0.58rem;padding:4px 11px;letter-spacing:0.14em;border:1px solid;cursor:pointer;transition:filter .18s;}
-.ss-tag:hover{filter:brightness(1.35);}
+.ss-tag{font-size:0.58rem;padding:4px 11px;border:1px solid;cursor:pointer;}
 .ss-ji{color:#7DE09A;border-color:rgba(125,224,154,0.28);background:rgba(125,224,154,0.04);}
 .ss-xiong{color:#F07840;border-color:rgba(240,120,64,0.28);background:rgba(240,120,64,0.04);}
 .ss-zhong{color:#D4A843;border-color:rgba(212,168,67,0.22);background:rgba(212,168,67,0.03);}
 .interp-list{padding:0 16px;display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
-.ic{background:rgba(7,6,12,0.9);border:1px solid rgba(212,168,67,0.09);padding:11px 14px;cursor:pointer;transition:border-color .2s;}
-.ic:hover{border-color:rgba(212,168,67,0.25);}
+.ic{background:rgba(7,6,12,0.9);border:1px solid rgba(212,168,67,0.09);padding:11px 14px;cursor:pointer;}
 .ic-head{display:flex;align-items:center;justify-content:space-between;}
-.ic-title{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:var(--text-d);letter-spacing:0.1em;display:flex;align-items:center;gap:8px;}
-.ic-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.ic-arrow{font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:var(--text-f);transition:transform .22s;line-height:1;}
-.ic.open .ic-arrow{transform:rotate(180deg);}
-.ic-body{font-family:'Noto Sans TC',sans-serif;font-size:0.62rem;color:var(--text-f);line-height:1.95;margin-top:8px;letter-spacing:0.05em;display:none;border-top:1px solid rgba(212,168,67,0.07);padding-top:9px;}
+.ic-title{font-size:0.65rem;color:var(--text-d);display:flex;align-items:center;gap:8px;}
+.ic-dot{width:5px;height:5px;border-radius:50%;}
+.ic-arrow{font-size:0.65rem;color:var(--text-f);}
 .ic.open .ic-body{display:block;}
-.ic-api-engine {margin-top:10px;padding:10px 14px;background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:rgba(240,234,214,0.7);letter-spacing:0.08em;line-height:1.8;border-radius:0 2px 2px 0;}
-.ic-api-engine span.hint {display:block;margin-top:6px;font-size:0.5rem;color:rgba(212,168,67,0.4);letter-spacing:0.15em;}
+.ic-body{font-size:0.62rem;color:var(--text-f);line-height:1.95;margin-top:8px;display:none;border-top:1px solid rgba(212,168,67,0.07);padding-top:9px;}
+.ic-api-engine{margin-top:10px;padding:10px 14px;background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);color:rgba(240,234,214,0.7);line-height:1.8;}
+.divider{height:1px;margin:14px 20px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.13),transparent);}
+
+/* 命盤大運 */
 .mingpan-outer{padding:0 16px;}
-.info-card{background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;margin-bottom:12px;position:relative;}
-.c-tl,.c-tr,.c-bl,.c-br{position:absolute;width:10px;height:10px;border-color:rgba(212,168,67,0.28);border-style:solid;}
-.c-tl{top:6px;left:6px;border-width:1px 0 0 1px;} .c-tr{top:6px;right:6px;border-width:1px 1px 0 0;} .c-bl{bottom:6px;left:6px;border-width:0 0 1px 1px;} .c-br{bottom:6px;right:6px;border-width:0 1px 1px 0;}
-.info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-family:'Noto Sans TC',sans-serif;font-size:0.66rem;}
+.info-card{background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;margin-bottom:12px;}
+.info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:0.66rem;}
 .info-row:last-child{margin-bottom:0;}
-.ir-lbl{color:var(--text-f);letter-spacing:0.12em;}
-.ir-val{color:var(--text-d);}
-.ir-val.gold{color:var(--gold);}
-.bazi4-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(212,168,67,0.12);background:rgba(0,0,0,0.22);min-width:0;}
-.b4-grp{grid-column:span 4;text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;letter-spacing:0.4em;color:rgba(212,168,67,0.5);padding:5px;background:rgba(212,168,67,0.03);border-bottom:1px solid rgba(212,168,67,0.08);}
+.ir-lbl{color:var(--text-f);} .ir-val{color:var(--text-d);} .ir-val.gold{color:var(--gold);}
+.bazi4-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(212,168,67,0.12);background:rgba(0,0,0,0.22);}
+.b4-grp{grid-column:span 4;text-align:center;font-size:0.5rem;color:rgba(212,168,67,0.5);padding:5px;background:rgba(212,168,67,0.03);border-bottom:1px solid rgba(212,168,67,0.08);}
 .dayun-list{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
-.dy-item{display:flex;align-items:center;gap:14px;padding:9px 15px;background:rgba(7,6,12,0.7);border:1px solid rgba(212,168,67,0.07);transition:border-color .2s;cursor:pointer;}
+.dy-item{display:flex;align-items:center;gap:14px;padding:9px 15px;background:rgba(7,6,12,0.7);border:1px solid rgba(212,168,67,0.07);cursor:pointer;}
 .dy-item.current{border-color:rgba(212,168,67,0.32);background:rgba(212,168,67,0.04);}
-.dy-item:hover{border-color:rgba(212,168,67,0.18);}
-.dy-gz{font-family:'Ma Shan Zheng',cursive;font-size:1.25rem;display:flex;gap:2px;min-width:50px;flex-shrink:0;}
-.dy-info{flex:1;min-width:0;}
-.dy-age{font-family:'Noto Sans TC',sans-serif;font-size:0.62rem;color:var(--text-d);letter-spacing:0.08em;}
-.dy-years{font-family:'Noto Sans TC',sans-serif;font-size:0.53rem;color:var(--text-f);margin-top:2px;}
-@media(max-width:768px) {
-  .sizhu-main { min-width: 720px; }
-  .grp-row { grid-template-columns: 4fr 1px 1fr 1fr 1fr 1fr 1fr; }
-}
+.dy-gz{font-family:'Ma Shan Zheng',cursive;font-size:1.25rem;display:flex;gap:2px;}
+.dy-info{flex:1;} .dy-age{font-size:0.62rem;color:var(--text-d);} .dy-years{font-size:0.53rem;color:var(--text-f);margin-top:2px;}
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
-<div class="grid-ov"></div>
-<div class="scan"></div>
-
+<div class="grid-ov"></div><div class="scan"></div>
 <div class="page">
   <div class="topbar">
-    <div class="logo-wrap">
-      <div class="app-logo" data-hl="logo">黃道吉日</div>
-      <div class="app-sub" data-hl="sub">個人命盤 · 每日流日</div>
-    </div>
+    <div class="logo-wrap"><div class="app-logo" data-hl="logo">黃道吉日</div><div class="app-sub" data-hl="sub">個人命盤 · 每日流日</div></div>
     <div class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('jiari')" data-hl="tab_today">今日</button>
       <button class="tab-btn" onclick="switchTab('mingpan')" data-hl="tab_chart">命盤</button>
@@ -183,32 +179,29 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   </div>
 
   <div id="tab-jiari">
-    <div class="date-nav">
-      <button class="nav-arrow" onclick="shiftDay(-1)">&#8249;</button>
-      <div class="date-center">
-        <div class="date-solar" id="disp-solar"></div>
-        <div class="date-lunar" id="disp-lunar"></div>
-        <button class="date-today-btn" onclick="goToday()" data-hl="btn_today">回到今天</button>
+    <div class="datepicker-bar">
+      <div class="dp-label">選 日</div>
+      <div class="dp-drums">
+        <div class="dp-drum-wrap"><div class="dp-drum-lbl">年</div><div class="dp-drum" id="drum-year"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-year-inner"></div></div></div>
+        <div class="dp-drum-wrap"><div class="dp-drum-lbl">月</div><div class="dp-drum" id="drum-month"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-month-inner"></div></div></div>
+        <div class="dp-drum-wrap"><div class="dp-drum-lbl">日</div><div class="dp-drum" id="drum-day"><div class="dp-drum-hl"></div><div class="dp-drum-inner" id="drum-day-inner"></div></div></div>
       </div>
-      <button class="nav-arrow" onclick="shiftDay(1)">&#8250;</button>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+        <div class="date-solar" id="disp-solar" style="font-size:0.72rem;"></div><div class="date-lunar" id="disp-lunar" style="font-size:0.52rem;"></div>
+        <button class="dp-goto-today" onclick="goToday()" data-hl="btn_today">今天</button>
+      </div>
     </div>
-
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_pillars">命 盤 × 今 日 四 柱</span></div>
-    <div class="sizhu-outer">
-      <div class="sizhu-main" id="sizhu-main"></div>
-      <div class="rel-outer" id="rel-outer"></div>
-    </div>
+    <div class="sizhu-outer"><div class="sizhu-main" id="sizhu-main"></div><div class="rel-outer" id="rel-outer"></div></div>
     <div class="divider"></div>
-    <div class="verdict-box">
-      <div class="verdict-icon">✦</div>
-      <div>
-        <div class="verdict-title" id="verdict-title"></div>
-        <div class="verdict-body" id="verdict-body"></div>
-      </div>
-    </div>
+    <div class="verdict-box"><div class="verdict-icon">✦</div><div><div class="verdict-title" id="verdict-title"></div><div class="verdict-body" id="verdict-body"></div></div></div>
+    <div class="sect-hd"><span class="sect-hd-txt">六 維 運 勢</span></div>
+    <div class="fortune-grid" id="fortune-grid"></div>
+    <div class="sect-hd"><span class="sect-hd-txt">今 日 十 二 時 辰</span></div>
+    <div class="hour-table" id="hour-table"></div>
+    <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">今 日 神 煞</span></div>
     <div class="shensha-outer"><div class="ss-grid" id="ss-grid"></div></div>
-    <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">神 煞 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
   </div>
@@ -217,7 +210,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_mychart">個 人 命 盤</span></div>
     <div class="mingpan-outer">
       <div class="info-card">
-        <div class="c-tl"></div><div class="c-tr"></div><div class="c-bl"></div><div class="c-br"></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_name">命主</span><span class="ir-val gold" id="mp-name"></span></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_birth">出生</span><span class="ir-val" id="mp-birthday"></span></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_gender">性別</span><span class="ir-val" id="mp-gender"></span></div>
@@ -227,16 +219,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_strength">身強弱</span><span class="ir-val" id="mp-qiangruo"></span></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_bone">骨重</span><span class="ir-val" id="mp-bone"></span></div>
       </div>
-      <div class="sect-hd" style="padding:0;margin-bottom:8px;"><span class="sect-hd-txt" data-hl="hd_base4">原 命 盤 四 柱</span></div>
-      <div class="bazi4-grid" id="bazi4-grid" style="margin-bottom:16px;"></div>
+      <div class="sect-hd" style="margin-bottom:8px;"><span class="sect-hd-txt" data-hl="hd_base4">原 命 盤 四 柱</span></div>
+      <div class="bazi4-grid" id="bazi4-grid"></div>
     </div>
   </div>
 
   <div id="tab-dayun" style="display:none;padding-top:16px;">
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_luck_plan">大 運 排 盤</span></div>
     <div class="mingpan-outer">
-      <div class="info-card">
-        <div class="c-tl"></div><div class="c-tr"></div><div class="c-bl"></div><div class="c-br"></div>
+      <div class="info-card" style="margin-bottom:12px;">
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_start_age">起運年齡</span><span class="ir-val gold" id="dy-startage"></span></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_dir">順 / 逆運</span><span class="ir-val" id="dy-dir"></span></div>
         <div class="info-row"><span class="ir-lbl" data-hl="lbl_cur_luck">當前大運</span><span class="ir-val gold" id="dy-current"></span></div>
@@ -248,429 +239,70 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 </div>
 
 <script>
-/* ═════════════════════════════════════════════════════════
-   多語言支援核心
-═════════════════════════════════════════════════════════ */
-const HL_I18N = {
-  'zh-TW': {
-    logo: '黃道吉日', sub: '個人命盤 · 每日流日',
-    tab_today: '今日', tab_chart: '命盤', tab_luck: '大運', btn_today: '回到今天',
-    hd_pillars: '命 盤 × 今 日 四 柱', grp_base: '原 命 盤', grp_luck: '大 運', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 時',
-    lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '時柱',
-    rel_he: '相合', rel_chong: '相沖', rel_liuhe: '六合', rel_hai: '相害',
-    vd_title: '今日綜評：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 讀',
-    hd_mychart: '個 人 命 盤', hd_base4: '原 命 盤 四 柱', b4_grp: '年 柱 · 月 柱 · 日 柱 · 時 柱',
-    lbl_name: '命主', lbl_birth: '出生', lbl_gender: '性別', lbl_dm: '日主', lbl_pattern: '格局', lbl_useful: '喜用神', lbl_strength: '身強弱', lbl_bone: '骨重',
-    hd_luck_plan: '大 運 排 盤', lbl_start_age: '起運年齡', lbl_dir: '順 / 逆運', lbl_cur_luck: '當前大運', lbl_rem_luck: '大運剩餘',
-    val_male: '男', val_female: '女', val_unstarted: '未起運', age_start: '歲起運', age_unit: '歲起', elapsed: '已行', years: '年', rem: '餘',
-    dir_fwd: '順運（陽男 / 陰女）', dir_rev: '逆運（陰男 / 陽女）', cur_badge: '當前',
-    click_tip: '點擊其他柱查看關係', 
-    ten: {'七殺':'七殺','正官':'正官','偏財':'偏財','正財':'正財','偏印':'偏印','正印':'正印','食神':'食神','傷官':'傷官','比肩':'比肩','劫財':'劫財','日主':'日主','—':'—'},
-    tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
-    dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
-    yy_tg: ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],
-    yy_dz: ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],
-    wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
-    wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
-    wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '納音', lbl_tengod: '十神',
-    ss_tianyi: {n:'天乙貴人', d:'貴人星入日，今日所遇之人皆可能成為助力。宜拜訪上司長輩、洽談合作、尋求引薦，逢凶能化吉。'},
-    ss_wenchang:{n:'文昌', d:'文昌臨日，思路清晰，適宜讀書考試、寫作構思、學術研究，靈感旺盛，一切與文字智慧相關之事皆宜。'},
-    ss_jianlu: {n:'建祿', d:'祿神入命，自身能量充盈，今日適合主導事務、展現才幹，談判締約均宜以自身為主，切勿輕易妥協。'},
-    ss_yima:   {n:'驛馬', d:'驛馬主動與遷移，今日出行、搬遷、消息傳遞之象旺盛。有外出計劃宜順勢而行，忌原地守株待兔。'},
-    ss_taiji:  {n:'太極貴人', d:'太極助啟智慧，宜學習進修、藝術創作、哲學思辨，今日直覺敏銳，靜心感悟事半功倍。'},
-    ss_baihu:  {n:'白虎', d:'白虎主血光意外與口舌是非。今日謹慎出行，避免爭執衝突；手術動刀宜延期；老人及體弱者需多關注健康。'},
-    ss_gouchen:{n:'勾陳', d:'勾陳主阻滯纏繞，今日事務易有延誤、糾紛。避免輕率做決定，合同簽署宜再三確認，防官非與訴訟。'},
-    ss_sanhe:  {n:'三合', d:'三合局旺，衆人協力氣場強盛。今日適宜團隊合作項目，群策群力事半功倍，人際關係和諧順暢。'},
-    ss_huagai: {n:'華蓋', d:'華蓋主孤寂與藝術靈感。今日宜獨處思考、藝術創作、修行靜心；不宜社交應酬，人多反添煩惱。'},
-    ss_yuepo:  {n:'月破', d:'月破之日，諸事不宜輕舉妄動，尤忌動土開工、簽訂合約、嫁娶出行，以靜守為宜，耐心等待吉日。'},
-    ss_none:   {n:'平順', d:'今日無特殊神煞，平穩安順。適宜處理日常積累事務，保持既定節奏，靜心蓄力以待良機。'},
-    v1_lvl: '大吉之日，諸事皆宜', v1_body: '流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，感情、事業、財運均有上佳表現，把握每個主動接觸的機會。',
-    v2_lvl: '吉多於凶，宜積極進取', v2_body: '流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。今日適宜重要洽談與拜訪，凡事主動為吉，守待反誤。',
-    v3_lvl: '吉凶參半，宜謹慎守靜', v3_body: '今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭，靜觀其變，守正待時方為上策。',
-    v4_lvl: '平穩之日，循序漸進', v4_body: '流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏，厚積薄發，為後續吉日做好準備。',
-    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
-    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
-    pat_jianlu: '建祿格', pat_yangren: '羊刃格', pat_suffix: '格',
-    bw_liang: '兩', bw_qian: '錢',
-    dyn_wealth: '流日逢財星，今日能量聚焦於財務運作與目標達成。',
-    dyn_power:  '流日逢官殺，今日能量聚焦於事業責任、規則與名望。',
-    dyn_res:    '流日逢印星，今日能量聚焦於學習吸收、貴人與深度思考。',
-    dyn_out:    '流日逢食傷，今日能量聚焦於靈感表達、社交與創造力。',
-    dyn_comp:   '流日逢比劫，今日能量聚焦於人際交往、團隊競爭與合作。',
-    dyn_adv_ji: '結合此吉星護佑，該領域易得強大助力，宜主動出擊，大膽推進。',
-    dyn_adv_xiong:'受凶星牽制，該領域易生波瀾或壓力。建議謹慎保守，切勿急躁。',
-    dyn_adv_zhong:'星象中性，發展結果取決於您的行動力與客觀環境，宜順勢而為。',
-    api_hint_replaced: '✦ 專屬運勢：基於原命盤日主與流日干支的算法推演'
-  },
-  'zh-CN': {
-    logo: '黄道吉日', sub: '个人命盘 · 每日流日',
-    tab_today: '今日', tab_chart: '命盘', tab_luck: '大运', btn_today: '回到今天',
-    hd_pillars: '命 盘 × 今 日 四 柱', grp_base: '原 命 盘', grp_luck: '大 运', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 时',
-    lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '时柱',
-    rel_he: '相合', rel_chong: '相冲', rel_liuhe: '六合', rel_hai: '相害',
-    vd_title: '今日综评：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 读',
-    hd_mychart: '个 人 命 盘', hd_base4: '原 命 盘 四 柱', b4_grp: '年 柱 · 月 柱 · 日 柱 · 时 柱',
-    lbl_name: '命主', lbl_birth: '出生', lbl_gender: '性别', lbl_dm: '日主', lbl_pattern: '格局', lbl_useful: '喜用神', lbl_strength: '身强弱', lbl_bone: '骨重',
-    hd_luck_plan: '大 运 排 盘', lbl_start_age: '起运年龄', lbl_dir: '顺 / 逆运', lbl_cur_luck: '当前大运', lbl_rem_luck: '大运剩余',
-    val_male: '男', val_female: '女', val_unstarted: '未起运', age_start: '岁起运', age_unit: '岁起', elapsed: '已行', years: '年', rem: '余',
-    dir_fwd: '顺运（阳男 / 阴女）', dir_rev: '逆运（阴男 / 阳女）', cur_badge: '当前',
-    click_tip: '点击其他柱查看关系', 
-    ten: {'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
-    tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
-    dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
-    yy_tg: ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'],
-    yy_dz: ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'],
-    wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
-    wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
-    wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '纳音', lbl_tengod: '十神',
-    ss_tianyi: {n:'天乙贵人', d:'贵人星入日，今日所遇之人皆可能成为助力。宜拜访上司长辈、洽谈合作、寻求引荐，逢凶能化吉。'},
-    ss_wenchang:{n:'文昌', d:'文昌临日，思路清晰，适宜读书考试、写作构思、学术研究，灵感旺盛，一切与文字智慧相关之事皆宜。'},
-    ss_jianlu: {n:'建禄', d:'禄神入命，自身能量充盈，今日适合主导事务、展现才干，谈判缔约均宜以自身为主，切勿轻易妥协。'},
-    ss_yima:   {n:'驿马', d:'驿马主动与迁移，今日出行、搬迁、消息传递之象旺盛。有外出计划宜顺势而行，忌原地守株待兔。'},
-    ss_taiji:  {n:'太极贵人', d:'太极助启智慧，宜学习进修、艺术创作、哲学思辨，今日直觉敏锐，静心感悟事半功倍。'},
-    ss_baihu:  {n:'白虎', d:'白虎主血光意外与口舌是非。今日谨慎出行，避免争执冲突；手术动刀宜延期；老人及体弱者需多关注健康。'},
-    ss_gouchen:{n:'勾陈', d:'勾陈主阻滞缠绕，今日事务易有延误、纠纷。避免轻率做决定，合同签署宜再三确认，防官非与诉讼。'},
-    ss_sanhe:  {n:'三合', d:'三合局旺，众人协力气场强盛。今日适宜团队合作项目，群策群力事半功倍，人际关系和谐顺畅。'},
-    ss_huagai: {n:'华盖', d:'华盖主孤寂与艺术灵感。今日宜独处思考、艺术创作、修行静心；不宜社交应酬，人多反添烦恼。'},
-    ss_yuepo:  {n:'月破', d:'月破之日，诸事不宜轻举妄动，尤忌动土开工、签订合约、嫁娶出行，以静守为宜，耐心等待吉日。'},
-    ss_none:   {n:'平顺', d:'今日无特殊神煞，平稳安顺。适宜处理日常积累事务，保持既定节奏，静心蓄力以待良机。'},
-    v1_lvl: '大吉之日，诸事皆宜', v1_body: '流日与日主相生，贵人星照，诸神护佑。今日宜主动出击，感情、事业、财运均有上佳表现，把握每个主动接触的机会。',
-    v2_lvl: '吉多于凶，宜积极进取', v2_body: '流日与命盘形成有利格局，吉星照临。虽有小凶，贵人之力足以化解。今日适宜重要洽谈与拜访，凡事主动为吉，守待反误。',
-    v3_lvl: '吉凶参半，宜谨慎守静', v3_body: '今日凶煞偏重，流日与部分柱位有冲刑之象。宜低调行事，避免签约、远行及口舌之争，静观其变，守正待时方为上策。',
-    v4_lvl: '平稳之日，循序渐进', v4_body: '流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏，厚积薄发，为后续吉日做好准备。',
-    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
-    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
-    pat_jianlu: '建禄格', pat_yangren: '羊刃格', pat_suffix: '格',
-    bw_liang: '两', bw_qian: '钱',
-    dyn_wealth: '流日逢财星，今日能量聚焦于财务运作与目标达成。',
-    dyn_power:  '流日逢官杀，今日能量聚焦于事业责任、规则与名望。',
-    dyn_res:    '流日逢印星，今日能量聚焦于学习吸收、贵人与深度思考。',
-    dyn_out:    '流日逢食伤，今日能量聚焦于灵感表达、社交与创造力。',
-    dyn_comp:   '流日逢比劫，今日能量聚焦于人际交往、团队竞争与合作。',
-    dyn_adv_ji: '结合此吉星护佑，该领域易得强大助力，宜主动出击，大胆推进。',
-    dyn_adv_xiong:'受凶星牵制，该领域易生波澜或压力。建议谨慎保守，切勿急躁。',
-    dyn_adv_zhong:'星象中性，发展结果取决于您的行动力与客观环境，宜顺势而为。',
-    api_hint_replaced: '✦ 专属运势：基于原命盘日主与流日干支的算法推演'
-  },
-  'en': {
-    logo: 'Daily Horoscope', sub: 'Personal Chart · Transits',
-    tab_today: 'Today', tab_chart: 'Chart', tab_luck: 'Cycles', btn_today: 'Back to Today',
-    hd_pillars: 'CHART × DAILY TRANSITS', grp_base: 'BASE CHART', grp_luck: 'LUCK', grp_year: 'YEAR', grp_month: 'MONTH', grp_day: 'DAY', grp_hour: 'HOUR',
-    lbl_year: 'Year', lbl_month: 'Month', lbl_day: 'Day', lbl_hour: 'Hour',
-    rel_he: 'Combines', rel_chong: 'Clashes', rel_liuhe: 'Combines', rel_hai: 'Harms',
-    vd_title: 'Daily Verdict: ', hd_ss: 'DIVINE STARS', hd_interp: 'STAR INTERPRETATION',
-    hd_mychart: 'PERSONAL CHART', hd_base4: 'FOUR PILLARS', b4_grp: 'YEAR · MONTH · DAY · HOUR',
-    lbl_name: 'Name', lbl_birth: 'DOB', lbl_gender: 'Gender', lbl_dm: 'Day Master', lbl_pattern: 'Pattern', lbl_useful: 'Favorable', lbl_strength: 'Strength', lbl_bone: 'Bone Wt.',
-    hd_luck_plan: 'LUCK CYCLES', lbl_start_age: 'Starts At', lbl_dir: 'Direction', lbl_cur_luck: 'Current', lbl_rem_luck: 'Remaining',
-    val_male: 'Male', val_female: 'Female', val_unstarted: 'Not started', age_start: ' yrs old', age_unit: ' yrs', elapsed: 'Elapsed ', years: ' yr', rem: 'Rem ',
-    dir_fwd: 'Forward (Yang M / Yin F)', dir_rev: 'Reverse (Yin M / Yang F)', cur_badge: 'Current',
-    click_tip: 'Click other pillars to see relations',
-    ten: {'七殺':'7Kill','正官':'DirOff','偏財':'IndWlt','正財':'DirWlt','偏印':'IndRes','正印':'DirRes','食神':'EatGod','傷官':'HrtOff','比肩':'Friend','劫財':'RobWlt','日主':'DayM','—':'—'},
-    tg_name: ['甲 Jia','乙 Yi','丙 Bing','丁 Ding','戊 Wu','己 Ji','庚 Geng','辛 Xin','壬 Ren','癸 Gui'],
-    dz_name: ['子 Zi','丑 Chou','寅 Yin','卯 Mao','辰 Chen','巳 Si','午 Wu','未 Wei','申 Shen','酉 You','戌 Xu','亥 Hai'],
-    yy_tg: ['Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin'],
-    yy_dz: ['Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin'],
-    wx_tg: ['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water'],
-    wx_dz: ['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'],
-    wk_names: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-    lbl_stem: 'Stem', lbl_tg_ten: 'Stem God', lbl_branch: 'Branch', lbl_dz_ten: 'Branch God', lbl_nayin: 'Tone', lbl_tengod: '10 Gods',
-    ss_tianyi: {n:'Heavenly Noble', d:'The Noble Star enters today. People you meet may become great supporters. Favorable for meetings, negotiations, and seeking guidance.'},
-    ss_wenchang:{n:'Academic Star', d:'Clear thinking and sharp intuition. Highly favorable for studying, writing, planning, and all intellectual pursuits.'},
-    ss_jianlu: {n:'Fortune Star', d:'Your personal energy is brimming. Good day to take the lead in affairs. Trust your own judgment rather than compromising easily.'},
-    ss_yima:   {n:'Sky Horse', d:'Strong energy for movement and transitions. Favorable for travel, moving, or initiating changes. Avoid staying idle.'},
-    ss_taiji:  {n:'Taiji Noble', d:'Heightened spiritual and philosophical awareness. Favorable for learning, creative work, and meditation.'},
-    ss_baihu:  {n:'White Tiger', d:'Beware of minor accidents or verbal disputes. Drive carefully, delay unnecessary surgeries, and monitor your health.'},
-    ss_gouchen:{n:'Hook Spirit', d:'Delays or entanglements are possible today. Avoid making hasty decisions or signing contracts without thorough review.'},
-    ss_sanhe:  {n:'Trine Combo', d:'Strong cooperative energy. Excellent day for teamwork, group projects, and socializing. Efforts are multiplied.'},
-    ss_huagai: {n:'Elegant Seal', d:'A day for solitude and artistic inspiration. Highly favorable for creative work and meditation. Not ideal for heavy socializing.'},
-    ss_yuepo:  {n:'Month Clash', d:'A volatile day. Avoid major moves like construction, signing contracts, or distant travel. Best to keep a low profile.'},
-    ss_none:   {n:'Peaceful', d:'No major star influences today. A smooth, stable day best spent maintaining your current pace and accumulating progress.'},
-    v1_lvl: 'Highly Auspicious', v1_body: 'The daily energies align perfectly with your chart. A day to take bold actions in career and relationships. Seize the opportunities.',
-    v2_lvl: 'Favorable', v2_body: 'Positive stars guide the day. Any minor obstacles can be easily overcome. Good for important meetings and proactive steps.',
-    v3_lvl: 'Mixed / Cautious', v3_body: 'Clashing energies are present. Keep a low profile, avoid arguments, and delay major decisions or long travel.',
-    v4_lvl: 'Stable & Peaceful', v4_body: 'A balanced day without extreme highs or lows. Focus on routine tasks and steady, incremental progress.',
-    str_strong: 'Strong', str_weak: 'Weak', str_bal: 'Balanced',
-    wx_木: 'Wood', wx_火: 'Fire', wx_土: 'Earth', wx_金: 'Metal', wx_水: 'Water',
-    pat_jianlu: 'Fortune Pattern', pat_yangren: 'Yang Blade Pattern', pat_suffix: ' Pattern',
-    bw_liang: ' Liang ', bw_qian: ' Qian',
-    dyn_wealth: 'With the Wealth element today, your energy focuses heavily on finances, desires, and achieving material results.',
-    dyn_power:  'With the Power element today, your energy shifts toward career advancement, responsibilities, and authority.',
-    dyn_res:    'With the Resource element today, your energy favors deep learning, seeking guidance, and introspection.',
-    dyn_out:    'With the Output element today, your energy boosts creativity, self-expression, and dynamic socializing.',
-    dyn_comp:   'With the Companion element today, your energy revolves around teamwork, peer interactions, and competition.',
-    dyn_adv_ji: 'Coupled with today’s auspicious star, expect breakthroughs in this area. Take the initiative boldly.',
-    dyn_adv_xiong:'Influenced by challenging stars, expect some friction in this area. Proceed with caution and avoid rushing.',
-    dyn_adv_zhong:'With a neutral star influence, outcomes here depend entirely on your proactive efforts. Go with the flow.',
-    api_hint_replaced: '✦ Algorithmically deduced from your Day Master and daily transits.'
-  },
-  'ko': {
-    logo: '오늘의 운세', sub: '개인 명식 · 일일 운세',
-    tab_today: '오늘', tab_chart: '명식', tab_luck: '대운', btn_today: '오늘로 돌아가기',
-    hd_pillars: '명 식 × 오 늘 의 사 주', grp_base: '원 명 식', grp_luck: '대 운', grp_year: '유 년', grp_month: '유 월', grp_day: '유 일', grp_hour: '유 시',
-    lbl_year: '년주', lbl_month: '월주', lbl_day: '일주', lbl_hour: '시주',
-    rel_he: '합(合)', rel_chong: '충(沖)', rel_liuhe: '육합', rel_hai: '해(害)',
-    vd_title: '오늘의 총평: ', hd_ss: '오 늘 의 신 살', hd_interp: '신 살 해 석',
-    hd_mychart: '개 인 명 식', hd_base4: '원 명 식 사 주', b4_grp: '년 주 · 월 주 · 일 주 · 시 주',
-    lbl_name: '이름', lbl_birth: '출생', lbl_gender: '성별', lbl_dm: '일간', lbl_pattern: '격국', lbl_useful: '희용신', lbl_strength: '신강약', lbl_bone: '골품',
-    hd_luck_plan: '대 운 배 열', lbl_start_age: '기운 나이', lbl_dir: '순/역행', lbl_cur_luck: '현재 대운', lbl_rem_luck: '대운 남은 기간',
-    val_male: '남성', val_female: '여성', val_unstarted: '운 시작 전', age_start: '세 시작', age_unit: '세', elapsed: '진행 ', years: '년', rem: '남음 ',
-    dir_fwd: '순행 (양남 / 음녀)', dir_rev: '역행 (음남 / 양녀)', cur_badge: '현재',
-    click_tip: '관계 확인하려면 다른 기둥 클릭',
-    ten: {'七殺':'칠살','正官':'정관','偏財':'편재','正財':'정재','偏印':'편인','正印':'정인','食神':'식신','傷官':'상관','比肩':'비견','劫財':'겁재','日主':'일간','—':'—'},
-    tg_name: ['갑','을','병','정','무','기','경','신','임','계'],
-    dz_name: ['자','축','인','묘','진','사','오','미','신','유','술','해'],
-    yy_tg: ['양','음','양','음','양','음','양','음','양','음'],
-    yy_dz: ['양','음','양','음','양','음','양','음','양','음','양','음'],
-    wx_tg: ['목','목','화','화','토','토','금','금','수','수'],
-    wx_dz: ['수','토','목','목','토','화','화','토','금','금','토','수'],
-    wk_names: ['일','월','화','수','목','금','토'],
-    lbl_stem: '천간', lbl_tg_ten: '천간 십신', lbl_branch: '지지', lbl_dz_ten: '지지 십신', lbl_nayin: '납음', lbl_tengod: '십신',
-    ss_tianyi: {n:'천을귀인', d:'귀인이 돕는 날. 만나는 사람마다 힘이 되어줄 수 있습니다. 윗사람 방문, 협상 등에 매우 유리하며 흉이 길로 바뀝니다.'},
-    ss_wenchang:{n:'문창귀인', d:'사고가 명석해지는 날. 학업, 시험, 글쓰기, 연구 등에 적합하며 아이디어와 영감이 넘칩니다.'},
-    ss_jianlu: {n:'건록', d:'자신의 에너지가 충만한 날. 주도적으로 일을 처리하기 좋으며, 협상 시 쉽게 타협하지 마세요.'},
-    ss_yima:   {n:'역마', d:'이동과 변화의 기운이 강합니다. 외출, 여행, 이사 등에 유리하며 제자리에 머물기보다 움직이는 것이 좋습니다.'},
-    ss_taiji:  {n:'태극귀인', d:'통찰력과 직관이 발달합니다. 철학적 사유, 예술 창작, 명상 등에 매우 유리한 하루입니다.'},
-    ss_baihu:  {n:'백호', d:'사고나 구설수를 주의해야 합니다. 이동 시 조심하고, 갈등을 피하며 건강 관리에 유의하세요.'},
-    ss_gouchen:{n:'구진', d:'일이 지연되거나 얽힐 수 있습니다. 성급한 결정을 피하고 계약서 서명 시 꼼꼼히 확인하세요.'},
-    ss_sanhe:  {n:'삼합', d:'협력의 기운이 강합니다. 팀워크, 단체 프로젝트, 대인관계에 매우 유리하며 노력이 배가됩니다.'},
-    ss_huagai: {n:'화개', d:'고독과 예술적 영감의 별입니다. 혼자만의 시간, 창작, 수양에 좋으며 번잡한 사교 모임은 피하세요.'},
-    ss_yuepo:  {n:'월파', d:'기운이 충돌하는 날. 중대한 결정, 계약, 먼 여행을 피하고 조용히 때를 기다리는 것이 좋습니다.'},
-    ss_none:   {n:'평순', d:'특별한 신살이 없는 무난한 날입니다. 일상적인 업무를 차분히 진행하며 안정을 유지하기 좋습니다.'},
-    v1_lvl: '대길 (매우 좋음)', v1_body: '일진의 에너지가 당신의 명식과 조화를 이룹니다. 직업과 인간관계에서 적극적으로 행동하여 기회를 잡으세요.',
-    v2_lvl: '길함 (긍정적)', v2_body: '긍정적인 기운이 강합니다. 약간의 장애물은 귀인의 도움으로 쉽게 해결됩니다. 중요한 만남에 좋습니다.',
-    v3_lvl: '주의 요망', v3_body: '충돌하는 기운이 있습니다. 구설수나 다툼을 피하고, 중대한 결정이나 계약은 다음으로 미루는 것이 좋습니다.',
-    v4_lvl: '평온함', v4_body: '큰 기복 없이 평탄한 하루입니다. 무리한 계획보다 일상적인 일들을 꾸준히 진행하는 것이 좋습니다.',
-    str_strong: '신강(身强)', str_weak: '신약(身弱)', str_bal: '중화(中和)',
-    wx_木: '목(木)', wx_火: '화(火)', wx_土: '토(土)', wx_金: '금(金)', wx_水: '수(水)',
-    pat_jianlu: '건록격', pat_yangren: '양인격', pat_suffix: '격',
-    bw_liang: '량 ', bw_qian: '전',
-    dyn_wealth: '오늘 재성(財星)을 만나, 재물과 목표 달성에 에너지가 집중됩니다.',
-    dyn_power:  '오늘 관살(官殺)을 만나, 직업, 책임감, 명예에 에너지가 집중됩니다.',
-    dyn_res:    '오늘 인성(印星)을 만나, 학습, 사유, 윗사람의 조언에 에너지가 집중됩니다.',
-    dyn_out:    '오늘 식상(食傷)을 만나, 창의력, 표현력, 영감에 에너지가 집중됩니다.',
-    dyn_comp:   '오늘 비겁(比劫)을 만나, 대인관계, 경쟁 및 협력에 에너지가 집중됩니다.',
-    dyn_adv_ji: '이 길성(吉星)과 결합하여 해당 분야에서 큰 진전이 기대됩니다. 적극적으로 주도하세요.',
-    dyn_adv_xiong:'흉성(凶星)의 영향으로 마찰이 생길 수 있습니다. 보수적으로 접근하고 성급한 결정을 피하세요.',
-    dyn_adv_zhong:'중립적인 별의 영향으로, 결과는 당신의 주도적인 행동에 달려 있습니다.',
-    api_hint_replaced: '✦ 일간(일주)과 일일 간지를 기반으로 한 알고리즘 추연'
-  }
-};
+const HL_I18N={'zh-TW':{logo:'黃道吉日',sub:'個人命盤 · 每日流日',tab_today:'今日',tab_chart:'命盤',tab_luck:'大運',btn_today:'回到今天',hd_pillars:'命 盤 × 今 日 四 柱',grp_base:'原 命 盤',grp_luck:'大 運',grp_year:'流 年',grp_month:'流 月',grp_day:'流 日',grp_hour:'流 時',lbl_year:'年柱',lbl_month:'月柱',lbl_day:'日柱',lbl_hour:'時柱',rel_he:'相合',rel_chong:'相沖',rel_liuhe:'六合',rel_hai:'相害',vd_title:'今日綜評：',hd_ss:'今 日 神 煞',hd_interp:'神 煞 解 讀',hd_mychart:'個 人 命 盤',hd_base4:'原 命 盤 四 柱',b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',lbl_name:'命主',lbl_birth:'出生',lbl_gender:'性別',lbl_dm:'日主',lbl_pattern:'格局',lbl_useful:'喜用神',lbl_strength:'身強弱',lbl_bone:'骨重',hd_luck_plan:'大 運 排 盤',lbl_start_age:'起運年齡',lbl_dir:'順 / 逆運',lbl_cur_luck:'當前大運',lbl_rem_luck:'大運剩餘',val_male:'男',val_female:'女',val_unstarted:'未起運',age_start:'歲起運',age_unit:'歲起',elapsed:'已行',years:'年',rem:'餘',dir_fwd:'順運（陽男 / 陰女）',dir_rev:'逆運（陰男 / 陽女）',cur_badge:'當前',click_tip:'點擊其他柱查看關係',ten:{'七殺':'七殺','正官':'正官','偏財':'偏財','正財':'正財','偏印':'偏印','正印':'正印','食神':'食神','傷官':'傷官','比肩':'比肩','劫財':'劫財','日主':'日主','—':'—'},tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],yy_tg:['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],yy_dz:['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],wx_tg:['木','木','火','火','土','土','金','金','水','水'],wx_dz:['水','土','木','木','土','火','火','土','金','金','土','水'],wk_names:['日','一','二','三','四','五','六'],lbl_stem:'天干',lbl_tg_ten:'天干十神',lbl_branch:'地支',lbl_dz_ten:'地支十神',lbl_nayin:'納音',lbl_tengod:'十神',ss_tianyi:{n:'天乙貴人',d:'貴人星入日，今日所遇之人皆可能成為助力。宜拜訪上司長輩。'},ss_wenchang:{n:'文昌',d:'文昌臨日，思路清晰，適宜讀書考試、寫作構思、學術研究。'},ss_jianlu:{n:'建祿',d:'祿神入命，自身能量充盈，今日適合主導事務、展現才幹。'},ss_yima:{n:'驛馬',d:'驛馬主動與遷移，今日出行、搬遷、消息傳遞之象旺盛。'},ss_taiji:{n:'太極貴人',d:'太極助啟智慧，宜學習進修、藝術創作、哲學思辨。'},ss_baihu:{n:'白虎',d:'白虎主血光意外與口舌是非。今日謹慎出行，避免爭執衝突。'},ss_gouchen:{n:'勾陳',d:'勾陳主阻滯纏繞，今日事務易有延誤、糾紛。避免輕率做決定。'},ss_sanhe:{n:'三合',d:'三合局旺，衆人協力氣場強盛。今日適宜團隊合作項目。'},ss_huagai:{n:'華蓋',d:'華蓋主孤寂與藝術靈感。今日宜獨處思考、藝術創作。'},ss_yuepo:{n:'月破',d:'月破之日，諸事不宜輕舉妄動，尤忌動土開工、簽訂合約。'},ss_none:{n:'平順',d:'今日無特殊神煞，平穩安順。適宜處理日常積累事務。'},v1_lvl:'大吉之日，諸事皆宜',v1_body:'流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，把握每個主動接觸的機會。',v2_lvl:'吉多於凶，宜積極進取',v2_body:'流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。',v3_lvl:'吉凶參半，宜謹慎守靜',v3_body:'今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭。',v4_lvl:'平穩之日，循序漸進',v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',str_strong:'身旺',str_weak:'身弱',str_bal:'中和',wx_木:'木',wx_火:'火',wx_土:'土',wx_金:'金',wx_水:'水',pat_jianlu:'建祿格',pat_yangren:'羊刃格',pat_suffix:'格',bw_liang:'兩',bw_qian:'錢',dyn_wealth:'流日逢財星，今日能量聚焦於財務運作與目標達成。',dyn_power:'流日逢官殺，今日能量聚焦於事業責任、規則與名望。',dyn_res:'流日逢印星，今日能量聚焦於學習吸收、貴人與深度思考。',dyn_out:'流日逢食傷，今日能量聚焦於靈感表達、社交與創造力。',dyn_comp:'流日逢比劫，今日能量聚焦於人際交往、團隊競爭與合作。',dyn_adv_ji:'結合此吉星護佑，該領域易得強大助力，宜主動出擊，大膽推進。',dyn_adv_xiong:'受凶星牽制，該領域易生波瀾或壓力。建議謹慎保守，切勿急躁。',dyn_adv_zhong:'星象中性，發展結果取決於您的行動力與客觀環境，宜順勢而為。',api_hint_replaced:'✦ 基於原命盤日主與流日干支推演'}};
+function t(k){const l=(typeof ZCI18n!=='undefined'&&ZCI18n.lang)?ZCI18n.lang():'zh-TW';if(HL_I18N[l]&&HL_I18N[l][k])return HL_I18N[l][k];return HL_I18N['zh-TW'][k]||k;}
+function updateStaticUI(){document.querySelectorAll('[data-hl]').forEach(el=>{const v=t(el.dataset.hl);if(v)el.textContent=v;});}
 
-function t(key) {
-  const lang = (typeof ZCI18n !== 'undefined' && ZCI18n.lang) ? ZCI18n.lang() : 'zh-TW';
-  if(HL_I18N[lang] && HL_I18N[lang][key]) return HL_I18N[lang][key];
-  return HL_I18N['zh-TW'][key] || key;
-}
+let USER = {name:'命主',gender:'男',year:1992,month:6,day:15,hour:13,minute:0,birthplace:'未知'};
+try{const s=localStorage.getItem('zencode_user_profile');if(s){const p=JSON.parse(s);USER.name=p.name||'命主';USER.gender=p.gender||'男';USER.year=parseInt(p.year)||1992;USER.month=parseInt(p.month)||6;USER.day=parseInt(p.day)||15;USER.hour=parseInt(p.hour)||13;USER.minute=parseInt(p.minute)||0;USER.birthplace=p.birthplace||'未知';}else{window.location.href='/';}}catch(e){}
 
-function updateStaticUI() {
-  document.querySelectorAll('[data-hl]').forEach(el => {
-    const val = t(el.dataset.hl);
-    if (val) el.textContent = val;
-  });
-}
-
-document.addEventListener('zc:langchange', () => {
-  updateStaticUI();
-  renderJiari();
-  if(document.getElementById('tab-mingpan').style.display === 'block') renderMingpan();
-  if(document.getElementById('tab-dayun').style.display === 'block') renderDayun();
-});
-
-/* ════════════════════════════════════════
-   高精度分鐘交節氣處理引擎 (100% 崩潰防禦)
-════════════════════════════════════════ */
-const JQTBL_PRECISE={
-  1992:[[6,11,5],[3,23,48],[5,18,11],[4,12,58],[5,7,39],[5,3,11],[6,23,46],[7,21,27],[7,12,40],[8,16,31],[7,19,49],[6,13,52]],
-  2002:[[5,19,24],[4,23,23],[6,17,16],[5,12,26],[5,6,31],[6,3,9],[7,22,15],[7,21,55],[8,11,17],[8,15,23],[7,18,36],[7,13,14]],
-  2026:[[5,11,23],[4,16,16],[6,12,47],[5,7,4],[5,0,39],[6,20,31],[7,16,43],[7,14,4],[8,5,42],[8,8,11],[7,12,12],[7,6,39]]
-};
-
-function getJQPrecise(year, mIdx){
-  if(JQTBL_PRECISE[year] && JQTBL_PRECISE[year][mIdx]) {
-    return {day:JQTBL_PRECISE[year][mIdx][0], hour:JQTBL_PRECISE[year][mIdx][1], minute:JQTBL_PRECISE[year][mIdx][2]};
-  }
-  return {day: [6,4,5,4,5,5,6,7,7,8,7,6][mIdx], hour: 12, minute: 0};
-}
-
-function correctSolarTime(hour, minute, birthplace, tzOffset=8){
-  const lng = birthplace && birthplace.includes('杭州') ? 120.2 : 120.0;
-  const diffMin = Math.round((lng - tzOffset * 15) * 4);
-  let totalMin = hour * 60 + minute + diffMin;
-  let dayOffset = 0;
-  if(totalMin >= 1440) { dayOffset = 1; totalMin -= 1440; }
-  else if(totalMin < 0) { dayOffset = -1; totalMin += 1440; }
-  return { hour: Math.floor(totalMin / 60), minute: totalMin % 60, dayOffset };
-}
-
-function getYrGZPrecise(year, month, day, hour, minute){
-  const lc = getJQPrecise(year, 1); const tgt=month*10000+day*100+(hour*60+minute);
-  let y = (month<2||(month===2 && tgt<(20000+lc.day*100+lc.hour*60+lc.minute))) ? year-1 : year;
-  return {tg:((y-4)%10+10)%10, dz:((y-4)%12+12)%12};
-}
-
-function getMoGZPrecise(year, month, day, hour, minute){
-  const r = getJQPrecise(year, month-1); const targetMins = day*1440+hour*60+minute;
-  let sm = month, sy = year; if(targetMins<(r.day*1440+r.hour*60+r.minute)){sm--; if(sm===0){sm=12; sy--;}}
-  return {tg:([2,4,6,8,0][(((sm===1?sy-1:sy)-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10, dz:sm%12};
-}
-
-/* ════════════════════════════════════════
-   數據清洗與常量修復
-════════════════════════════════════════ */
-let USER = { name: '命主', gender: '男', year: 1992, month: 6, day: 15, hour: 13, minute: 0, birthplace: '未知' };
-try {
-  const saved = localStorage.getItem('zencode_user_profile');
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    USER.name = parsed.name || '命主'; USER.gender = parsed.gender || '男';
-    USER.year = parseInt(parsed.year) || 1992; USER.month = parseInt(parsed.month) || 6;
-    USER.day = parseInt(parsed.day) || 15; USER.hour = parseInt(parsed.hour) || 13;
-    USER.minute = parseInt(parsed.minute) || 0; USER.birthplace = parsed.birthplace || '未知';
-  } else { window.location.href = '/'; }
-} catch (e) { console.error("加載緩存出錯，啟用預設生辰", e); }
-
-const TG_NAMES = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const DZ_NAMES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const TG_CSS = ['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
-const DZ_CSS = ['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
-const TEN_CSS_MAP = {'七殺':'ten-qisha','正官':'ten-zhengguang','偏財':'ten-piancai','正財':'ten-zhengcai','偏印':'ten-pianyin','正印':'ten-zhengyin','食神':'ten-shishen','傷官':'ten-shangguan','比肩':'ten-bijian','劫財':'ten-jiecai','日主':'ten-rizhu', '—':'ten-none'};
-const WXT = ['木','木','火','火','土','土','金','金','水','水'];
-const WXD = ['水','土','木','木','土','火','火','土','金','金','土','水'];
-const HIDDEN_MAIN_QI = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8];
-const NAYIN_LIST = ['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
+const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
+const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
+const TEN_CSS_MAP={'七殺':'ten-qisha','正官':'ten-zhengguang','偏財':'ten-piancai','正財':'ten-zhengcai','偏印':'ten-pianyin','正印':'ten-zhengyin','食神':'ten-shishen','傷官':'ten-shangguan','比肩':'ten-bijian','劫財':'ten-jiecai','日主':'ten-rizhu','—':'ten-none'};
+const WXT=['木','木','火','火','土','土','金','金','水','水'];const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
+const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
+const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
 function nayin(tg,dz){return NAYIN_LIST[Math.floor(((tg*36+dz*25)%60)/2)];}
+const SS_TABLE=(()=>{const rel=['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'];const map=[];for(let ri=0;ri<10;ri++){const row=[];for(let tg=0;tg<10;tg++){row.push(rel[((tg-ri)%10+10)%10]);}row[ri]='日主';map.push(row);}return map;})();
 
-const SS_TABLE = (()=>{
-  const rel=['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'];
-  const map=[];
-  for(let ri=0;ri<10;ri++){
-    const row=[];
-    for(let tg=0;tg<10;tg++){ row.push(rel[((tg-ri)%10+10)%10]); }
-    row[ri]='日主'; map.push(row);
-  }
-  return map;
-})();
+const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
+const PO6=[9,6,11,8,1,10,3,0,5,2,7,4];
+const HAI6=[11,10,9,8,7,6,5,4,3,2,1,0];
+const HE6={0:[1],1:[0],2:[11],11:[2],3:[10],10:[3],4:[9],9:[4],5:[8],8:[5],6:[7],7:[6]};
 
-const CHONG6 = [6,7,8,9,10,11,0,1,2,3,4,5];
-const PO6    = [9,6,11,8,1,10,3,0,5,2,7,4];
-const HAI6   = [11,10,9,8,7,6,5,4,3,2,1,0];
-const HE6    = {0:[1], 1:[0], 2:[11], 11:[2], 3:[10], 10:[3], 4:[9], 9:[4], 5:[8], 8:[5], 6:[7], 7:[6]};
-
-function getHrGZ(hour, dayTg){ const dz=Math.floor((hour+1)/2)%12; return {tg:([0,2,4,6,8][dayTg%5]+dz)%10, dz}; }
-function getDayun(gender,year,month,day,yrTg){
-  const mGZ=getMoGZPrecise(year,month,day,12,0); const list=[];
-  const fwd=(gender==='男' && yrTg%2===0)||(gender==='女' && yrTg%2!==0);
-  for(let i=0; i<8; i++){const s=fwd?i+1:-(i+1); list.push({tgIdx:((mGZ.tg+s)%10+10)%10, dzIdx:((mGZ.dz+s)%12+12)%12, age:Math.max(1,Math.floor(4+i*10))});}
-  return {startAge:4, fwd, list};
-}
+const JQTBL_PRECISE={1992:[[6,11,5],[3,23,48],[5,18,11],[4,12,58],[5,7,39],[5,3,11],[6,23,46],[7,21,27],[7,12,40],[8,16,31],[7,19,49],[6,13,52]],2002:[[5,19,24],[4,23,23],[6,17,16],[5,12,26],[5,6,31],[6,3,9],[7,22,15],[7,21,55],[8,11,17],[8,15,23],[7,18,36],[7,13,14]],2026:[[5,11,23],[4,16,16],[6,12,47],[5,7,4],[5,0,39],[6,20,31],[7,16,43],[7,14,4],[8,5,42],[8,8,11],[7,12,12],[7,6,39]]};
+function getJQPrecise(year,mIdx){if(JQTBL_PRECISE[year]&&JQTBL_PRECISE[year][mIdx]){return{day:JQTBL_PRECISE[year][mIdx][0],hour:JQTBL_PRECISE[year][mIdx][1],minute:JQTBL_PRECISE[year][mIdx][2]};}return{day:[6,4,5,4,5,5,6,7,7,8,7,6][mIdx],hour:12,minute:0};}
+function correctSolarTime(hour,minute,birthplace,tzOffset=8){const lng=birthplace&&birthplace.includes('杭州')?120.2:120.0;const diffMin=Math.round((lng-tzOffset*15)*4);let totalMin=hour*60+minute+diffMin;let dayOffset=0;if(totalMin>=1440){dayOffset=1;totalMin-=1440;}else if(totalMin<0){dayOffset=-1;totalMin+=1440;}return{hour:Math.floor(totalMin/60),minute:totalMin%60,dayOffset};}
+function getYrGZPrecise(year,month,day,hour,minute){const lc=getJQPrecise(year,1);const tgt=month*10000+day*100+(hour*60+minute);let y=(month<2||(month===2&&tgt<(20000+lc.day*100+lc.hour*60+lc.minute)))?year-1:year;return{tg:((y-4)%10+10)%10,dz:((y-4)%12+12)%12};}
+function getMoGZPrecise(year,month,day,hour,minute){const r=getJQPrecise(year,month-1);const targetMins=day*1440+hour*60+minute;let sm=month,sy=year;if(targetMins<(r.day*1440+r.hour*60+r.minute)){sm--;if(sm===0){sm=12;sy--;}}return{tg:([2,4,6,8,0][(((sm===1?sy-1:sy)-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10,dz:sm%12};}
+function getHrGZ(hour,dayTg){const dz=Math.floor((hour+1)/2)%12;return{tg:([0,2,4,6,8][dayTg%5]+dz)%10,dz};}
+function getDayun(gender,year,month,day,yrTg){const mGZ=getMoGZPrecise(year,month,day,12,0);const list=[];const fwd=(gender==='男'&&yrTg%2===0)||(gender==='女'&&yrTg%2!==0);for(let i=0;i<8;i++){const s=fwd?i+1:-(i+1);list.push({tgIdx:((mGZ.tg+s)%10+10)%10,dzIdx:((mGZ.dz+s)%12+12)%12,age:Math.max(1,Math.floor(4+i*10))});}return{startAge:4,fwd,list};}
 function getCurrentDayunIdx(dy,birthYear,nowYear){const age=nowYear-birthYear;let cur=null;for(let i=dy.list.length-1;i>=0;i--){if(age>=dy.list[i].age){cur=i;break;}}return cur;}
 
-function checkRels(pillars){
-  const rels=[];
-  for(let i=0;i<pillars.length;i++){
-    for(let j=i+1;j<pillars.length;j++){
-      const a=pillars[i],b=pillars[j];
-      if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong',txt:`${DZ_NAMES[a.dz]}${DZ_NAMES[b.dz]} ${t('rel_chong')}`});
-      if(HE6[a.dz] && HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he',txt:`${DZ_NAMES[a.dz]}${DZ_NAMES[b.dz]} ${t('rel_liuhe')}`});
-      if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai',txt:`${DZ_NAMES[a.dz]}${DZ_NAMES[b.dz]} ${t('rel_hai')}`});
-    }
-  }
-  return rels.slice(0,8);
-}
+function checkRels(pillars){const rels=[];for(let i=0;i<pillars.length;i++){for(let j=i+1;j<pillars.length;j++){const a=pillars[i],b=pillars[j];if(CHONG6[a.dz]===b.dz)rels.push({cls:'rb-chong',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`});if(HE6[a.dz]&&HE6[a.dz].includes(b.dz))rels.push({cls:'rb-he',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`});if(HAI6[a.dz]===b.dz)rels.push({cls:'rb-hai',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`});}}return rels.slice(0,8);}
 
-function calcShensha(ri, liuDz, liuTg, yearDz, monthDz){
-  const ss=[];
-  const TIANY_GUI={0:[1,7],1:[0,8],2:[11,9],3:[10,8],4:[9,7],5:[8,6],6:[7,1],7:[6,0],8:[5,11],9:[4,2]};
-  const WENCHANG=[4,1,0,9,6,5,4,3,2,11]; 
-  const YUEMA=[2,11,8,5,2,11,8,5,2,11,8,5]; 
-  const JIANLU=[2,3,4,5,6,7,8,9,10,11,0,1]; 
-  const TAIJ_GUI={0:[1,11],2:[1,11],4:[1,11],6:[1,11],8:[1,11],1:[0,10],3:[0,10],5:[0,10],7:[0,10],9:[0,10]};
-  const HUA_GAI=[6,3,0,9,6,3,0,9,6,3,0,9]; 
+function calcShensha(ri,liuDz,liuTg,yearDz,monthDz){const ss=[];const TIANY_GUI={0:[1,7],1:[0,8],2:[11,9],3:[10,8],4:[9,7],5:[8,6],6:[7,1],7:[6,0],8:[5,11],9:[4,2]};const WENCHANG=[4,1,0,9,6,5,4,3,2,11];const YUEMA=[2,11,8,5,2,11,8,5,2,11,8,5];const JIANLU=[2,3,4,5,6,7,8,9,10,11,0,1];const TAIJ_GUI={0:[1,11],2:[1,11],4:[1,11],6:[1,11],8:[1,11],1:[0,10],3:[0,10],5:[0,10],7:[0,10],9:[0,10]};const HUA_GAI=[6,3,0,9,6,3,0,9,6,3,0,9];if(TIANY_GUI[ri]&&TIANY_GUI[ri].includes(liuDz))ss.push({key:'ss_tianyi',type:'ji',apiKey:'TianYiGuiRen'});if(WENCHANG[ri]===liuDz)ss.push({key:'ss_wenchang',type:'ji',apiKey:'WenChang'});if(JIANLU[ri]===liuDz)ss.push({key:'ss_jianlu',type:'ji',apiKey:'JianLu'});if(YUEMA[liuDz]===ri||YUEMA[ri]===liuDz)ss.push({key:'ss_yima',type:'zhong',apiKey:'YiMa'});if(TAIJ_GUI[ri]&&TAIJ_GUI[ri].includes(liuDz))ss.push({key:'ss_taiji',type:'ji',apiKey:'TaiJiGuiRen'});if(liuDz===(ri*2+6)%12||(liuDz===6&&[2,3].includes(ri))||(liuDz===0&&[8,9].includes(ri))||(liuDz===1&&[4,5].includes(ri)))ss.push({key:'ss_baihu',type:'xiong',apiKey:'BaiHu'});if((ri+liuDz)%6===0)ss.push({key:'ss_gouchen',type:'xiong',apiKey:'GouChen'});if((liuDz+4)%12===ri||(liuDz+8)%12===ri)ss.push({key:'ss_sanhe',type:'ji',apiKey:'SanHe'});if(HUA_GAI[yearDz%12]===liuDz)ss.push({key:'ss_huagai',type:'zhong',apiKey:'HuaGai'});if((monthDz+6)%12===liuDz)ss.push({key:'ss_yuepo',type:'xiong',apiKey:'YuePo'});if(ss.length===0)ss.push({key:'ss_none',type:'zhong',apiKey:'PingShun'});return ss;}
 
-  if(TIANY_GUI[ri]&&TIANY_GUI[ri].includes(liuDz)) ss.push({key:'ss_tianyi', type:'ji', apiKey:'TianYiGuiRen'});
-  if(WENCHANG[ri]===liuDz) ss.push({key:'ss_wenchang', type:'ji', apiKey:'WenChang'});
-  if(JIANLU[ri]===liuDz) ss.push({key:'ss_jianlu', type:'ji', apiKey:'JianLu'});
-  if(YUEMA[liuDz]===ri||YUEMA[ri]===liuDz) ss.push({key:'ss_yima', type:'zhong', apiKey:'YiMa'});
-  if(TAIJ_GUI[ri]&&TAIJ_GUI[ri].includes(liuDz)) ss.push({key:'ss_taiji', type:'ji', apiKey:'TaiJiGuiRen'});
-  if(liuDz===(ri*2+6)%12||(liuDz===6&&[2,3].includes(ri))||(liuDz===0&&[8,9].includes(ri))||(liuDz===1&&[4,5].includes(ri))) ss.push({key:'ss_baihu', type:'xiong', apiKey:'BaiHu'});
-  if((ri+liuDz)%6===0) ss.push({key:'ss_gouchen', type:'xiong', apiKey:'GouChen'});
-  if((liuDz+4)%12===ri||(liuDz+8)%12===ri) ss.push({key:'ss_sanhe', type:'ji', apiKey:'SanHe'});
-  if(HUA_GAI[yearDz%12]===liuDz) ss.push({key:'ss_huagai', type:'zhong', apiKey:'HuaGai'});
-  if((monthDz+6)%12===liuDz) ss.push({key:'ss_yuepo', type:'xiong', apiKey:'YuePo'});
-  if(ss.length===0) ss.push({key:'ss_none', type:'zhong', apiKey:'PingShun'});
-  return ss;
-}
-
-function genVerdict(ri, liuTg, liuDz, ss){
-  const jiN=ss.filter(s=>s.type==='ji').length;
-  const xiongN=ss.filter(s=>s.type==='xiong').length;
-  if(jiN>=3&&xiongN===0) return { lvl: t('v1_lvl'), body: t('v1_body') };
-  if(jiN>=2&&xiongN<=1) return { lvl: t('v2_lvl'), body: t('v2_body') };
-  if(xiongN>=2) return { lvl: t('v3_lvl'), body: t('v3_body') };
-  return { lvl: t('v4_lvl'), body: t('v4_body') };
-}
-
-function getTenGroup(tenRaw) {
-  if(['正財','偏財'].includes(tenRaw)) return 'wealth';
-  if(['正官','七殺'].includes(tenRaw)) return 'power';
-  if(['正印','偏印'].includes(tenRaw)) return 'res';
-  if(['食神','傷官'].includes(tenRaw)) return 'out';
-  return 'comp';
-}
-function getDynamicReading(ssType, tenRaw) {
-  const group = getTenGroup(tenRaw);
-  return `${t(`dyn_${group}`)}<br>${t(`dyn_adv_${ssType}`)}`;
-}
+function genVerdict(ri,liuTg,liuDz,ss){const jiN=ss.filter(s=>s.type==='ji').length;const xiongN=ss.filter(s=>s.type==='xiong').length;if(jiN>=3&&xiongN===0)return{lvl:t('v1_lvl'),body:t('v1_body')};if(jiN>=2&&xiongN<=1)return{lvl:t('v2_lvl'),body:t('v2_body')};if(xiongN>=2)return{lvl:t('v3_lvl'),body:t('v3_body')};return{lvl:t('v4_lvl'),body:t('v4_body')};}
+function getTenGroup(tenRaw){if(['正財','偏財'].includes(tenRaw))return'wealth';if(['正官','七殺'].includes(tenRaw))return'power';if(['正印','偏印'].includes(tenRaw))return'res';if(['食神','傷官'].includes(tenRaw))return'out';return'comp';}
+function getDynamicReading(ssType,tenRaw){return`${t(`dyn_${getTenGroup(tenRaw)}`)}<br>${t(`dyn_adv_${ssType}`)}`;}
 
 let curDate=new Date();
-function pillarHTML(p){
-  try {
-    const tgName = t('tg_name')[p.tg]; const dzName = t('dz_name')[p.dz];
-    const tgTenLocal = t('ten')[p.tgTenRaw] || p.tgTenRaw; const tgTenCls = TEN_CSS_MAP[p.tgTenRaw] || '';
-    const dzTenLocal = t('ten')[p.dzTenRaw] || p.dzTenRaw; const dzTenCls = TEN_CSS_MAP[p.dzTenRaw] || '';
-    return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
-      <div class="sz-head">${p.label}</div>
-      <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
-      <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
-      <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
-      <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
-      <div class="sz-nayin">${nayin(p.tg,p.dz)}</div>
-      <div class="sz-detail">
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
-        <div class="sd-div"></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
-      </div>
-    </div>`;
-  } catch (e) { return `<div class="sz-col"></div>`; }
-}
+function pillarHTML(p){try{const tgName=t('tg_name')[p.tg];const dzName=t('dz_name')[p.dz];const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';const dzTenLocal=t('ten')[p.dzTenRaw]||p.dzTenRaw;const dzTenCls=TEN_CSS_MAP[p.dzTenRaw]||'';return`<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)"><div class="sz-head">${p.label}</div><div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div><div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div><div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div><div class="sz-ten ${dzTenCls}">${dzTenLocal}</div><div class="sz-nayin">${nayin(p.tg,p.dz)}</div><div class="sz-detail"><div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div><div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div><div class="sd-div"></div><div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div><div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div></div></div>`;}catch(e){return`<div class="sz-col"></div>`;}}
+function toggleDetail(el){const was=el.classList.contains('open');document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));if(!was)el.classList.add('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));});
+function approxLunar(date){const base=new Date(2000,0,6);const diff=Math.floor((date-base)/86400000);const cycleYr=Math.floor(diff/365.25);return`${t('tg_name')[((cycleYr%10)+10)%10]}${t('dz_name')[((cycleYr%12)+12)%12]}`;}
 
-function toggleDetail(el){
-  const was=el.classList.contains('open');
-  document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));
-  if(!was)el.classList.add('open');
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));
-});
+/* 滾輪邏輯 */
+const ITEM_H=24;
+function buildDrum(innerId,items,selected){const inner=document.getElementById(innerId);if(!inner)return;inner.innerHTML=items.map((v,i)=>`<div class="dp-drum-item${v===selected?' active':Math.abs(items.indexOf(selected)-i)===1?' near':''}" data-val="${v}">${v}</div>`).join('');inner.style.transform=`translateY(${(24-items.indexOf(selected)*ITEM_H)}px)`;}
+function getDaysInMonth(y,m){return new Date(y,m,0).getDate();}
+function initDrums(){const d=curDate;const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();const years=[],months=[],days=[];for(let i=y-5;i<=y+5;i++)years.push(i);for(let i=1;i<=12;i++)months.push(i);for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);buildDrum('drum-year-inner',years,y);buildDrum('drum-month-inner',months,m);buildDrum('drum-day-inner',days,day);setupDrumEvents('drum-year','drum-year-inner',years,()=>getSelectedVal('drum-year-inner'),v=>{curDate.setFullYear(v);rebuildDayDrum();renderJiari();});setupDrumEvents('drum-month','drum-month-inner',months,()=>getSelectedVal('drum-month-inner'),v=>{curDate.setMonth(v-1);rebuildDayDrum();renderJiari();});setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});}
+function getSelectedVal(innerId){const el=document.querySelector(`#${innerId} .dp-drum-item.active`);return el?parseInt(el.dataset.val):null;}
+function rebuildDayDrum(){const y=curDate.getFullYear(),m=curDate.getMonth()+1;const safeDay=Math.min(curDate.getDate(),getDaysInMonth(y,m));curDate.setDate(safeDay);const days=[];for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);buildDrum('drum-day-inner',days,safeDay);setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});}
+function updateDrumHighlight(innerId,val){document.querySelectorAll(`#${innerId} .dp-drum-item`).forEach(el=>{const v=parseInt(el.dataset.val);el.classList.toggle('active',v===val);el.classList.toggle('near',v===val-1||v===val+1);});}
+function setupDrumEvents(drumId,innerId,items,getVal,onChange){const drum=document.getElementById(drumId),inner=document.getElementById(innerId);if(!drum||!inner)return;let startY=0,lastY=0,curIdx=items.indexOf(getVal()),isDragging=false,vel=0,lastTime=0;function getIdx(){return Math.round((24-new DOMMatrix(getComputedStyle(inner).transform).m42)/ITEM_H);}function snapTo(idx){const cl=Math.max(0,Math.min(items.length-1,idx));inner.style.transition='transform .18s cubic-bezier(.22,.8,.36,1)';inner.style.transform=`translateY(${24-cl*ITEM_H}px)`;curIdx=cl;updateDrumHighlight(innerId,items[cl]);onChange(items[cl]);}function onStart(y){startY=lastY=y;isDragging=true;vel=0;lastTime=Date.now();inner.style.transition='none';}function onMove(y){if(!isDragging)return;const dy=y-lastY,now=Date.now(),dt=now-lastTime;if(dt>0)vel=dy/dt;lastTime=now;lastY=y;inner.style.transform=`translateY(${24-getIdx()*ITEM_H+dy}px)`;}function onEnd(){if(!isDragging)return;isDragging=false;snapTo(Math.round(getIdx()-vel*180));}drum.addEventListener('mousedown',e=>{e.preventDefault();onStart(e.clientY);});window.addEventListener('mousemove',e=>{if(isDragging)onMove(e.clientY);});window.addEventListener('mouseup',()=>{if(isDragging)onEnd();});drum.addEventListener('touchstart',e=>{onStart(e.touches[0].clientY);},{passive:true});drum.addEventListener('touchmove',e=>{onMove(e.touches[0].clientY);},{passive:true});drum.addEventListener('touchend',()=>{onEnd();});drum.addEventListener('wheel',e=>{e.preventDefault();snapTo(items.indexOf(getVal())+(e.deltaY>0?1:-1));},{passive:false});}
 
-function approxLunar(date){
-  const base=new Date(2000,0,6);
-  const diff=Math.floor((date-base)/86400000);
-  const cycleYr=Math.floor(diff/365.25);
-  const tg=((cycleYr%10)+10)%10,dz=((cycleYr%12)+12)%12;
-  return `${t('tg_name')[tg]}${t('dz_name')[dz]}`;
-}
+/* 六維運勢與時辰 */
+function calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score){const jiCnt=ss.filter(s=>s.type==='ji').length,xiongCnt=ss.filter(s=>s.type==='xiong').length,ldTen=SS_TABLE[ri][ldGZ.tg];let w=3,c=3,l=3,h=3,s=3,t=3;if(['正財','偏財'].includes(ldTen))w+=1.5;if(['劫財','七殺'].includes(ldTen))w-=1.5;if(jiCnt>=2)w+=0.5;if(xiongCnt>=2)w-=0.5;if(ss.find(x=>x.apiKey==='TianYiGuiRen'))w+=1;if(ss.find(x=>x.apiKey==='JianLu'))w+=0.8;if(['正官','七殺'].includes(ldTen))c+=1;if(['食神','傷官'].includes(ldTen))c+=0.7;if(['比肩','劫財'].includes(ldTen))c-=0.3;if(ss.find(x=>x.apiKey==='WenChang'))c+=0.8;if(xiongCnt>=2)c-=0.8;if(ss.find(x=>x.apiKey==='HongYan'||x.apiKey==='TianXi'))l+=1.5;if(ss.find(x=>x.apiKey==='Tao'))l+=0.5;if(['傷官'].includes(ldTen))l-=0.5;if(['正印','偏印'].includes(ldTen))h+=1;if(['七殺','傷官'].includes(ldTen))h-=0.7;if(ss.find(x=>x.apiKey==='JieSha'))h-=0.8;if(ss.find(x=>x.apiKey==='XueChi'))h-=0.5;if(ss.find(x=>x.apiKey==='WenChang'))s+=1.5;if(['食神','傷官'].includes(ldTen))s+=0.8;if(xiongCnt>=3)s-=1;if(ss.find(x=>x.apiKey==='TianDe'||x.apiKey==='YueDe'))t+=1.2;if(ss.find(x=>x.apiKey==='JieSha'||x.apiKey==='SuiPo'))t-=1.5;if(jiCnt>=3)t+=0.5;return{w:Math.max(1,Math.min(5,w)),c:Math.max(1,Math.min(5,c)),l:Math.max(1,Math.min(5,l)),h:Math.max(1,Math.min(5,h)),s:Math.max(1,Math.min(5,s)),t:Math.max(1,Math.min(5,t))};}
+function renderFortuneGrid(ri,ldGZ,lmGZ,lyGZ,ss,score){const sc=calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score);const DEF=[{cls:'f-wealth',icon:'◈',title:'財運',score:sc.w},{cls:'f-career',icon:'◇',title:'事業',score:sc.c},{cls:'f-love',icon:'◉',title:'感情',score:sc.l},{cls:'f-health',icon:'◎',title:'健康',score:sc.h},{cls:'f-study',icon:'◈',title:'學業',score:sc.s},{cls:'f-travel',icon:'◌',title:'出行',score:sc.t}];document.getElementById('fortune-grid').innerHTML=DEF.map(f=>`<div class="fortune-card ${f.cls}"><span class="fc-icon">${f.icon}</span><div class="fc-title">${f.title}</div><div class="fc-score"><div class="fc-stars">${Array.from({length:5},(_,i)=>`<div class="fc-star${i<Math.floor(f.score)?' on':''}"></div>`).join('')}</div><span class="fc-score-num">${f.score.toFixed(1)}</span></div></div>`).join('');}
+function renderHourTable(ri,ldGZ){const curDzHour=Math.floor((new Date().getHours()+1)/2)%12;let html=`<div class="ht-head"><div class="ht-hcell">時辰</div><div class="ht-hcell">時段</div><div class="ht-hcell">干支</div><div class="ht-hcell">宜</div><div class="ht-hcell">忌</div></div>`;const names=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];const ranges=['23-01','01-03','03-05','05-07','07-09','09-11','11-13','13-15','15-17','17-19','19-21','21-23'];const goods=['祈福·靜心','農耕·出行','求職·開業','會友·簽約','婚嫁·動土','求財·祭祀','宴客·慶典','習藝·出行','商談·締約','修造·收財','祭祀·祈禱','入眠·休養'];const bads=['出行·爭訟','訴訟·手術','伐木·動土','喪葬·動刀','出行·嫁娶','動土·爭訟','喪葬','動刀·訴訟','嫁娶·動土','喪葬·遠行','嫁娶·遠行','爭訟·手術'];for(let i=0;i<12;i++){const hrGZ=getHrGZ(i*2,ldGZ.tg);html+=`<div class="ht-row${i===curDzHour?' ht-cur':''}"><div class="ht-cell"><span class="ht-gz ${DZ_CSS[i]}">${names[i]}</span></div><div class="ht-cell" style="font-size:0.45rem;color:var(--text-f);">${ranges[i]}</div><div class="ht-cell"><span class="ht-gz ${TG_CSS[hrGZ.tg]}">${t('tg_name')[hrGZ.tg]}</span><span class="ht-gz ${DZ_CSS[hrGZ.dz]}">${t('dz_name')[hrGZ.dz]}</span></div><div class="ht-cell ht-good" style="font-size:0.44rem;">${goods[i]}</div><div class="ht-cell ht-bad" style="font-size:0.44rem;">${bads[i]}</div></div>`;}document.getElementById('hour-table').innerHTML=html;}
 
 function renderJiari(){
   try {
     const d=curDate; const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours(),mn=d.getMinutes();
     const main=document.getElementById('sizhu-main'); if(!main) return;
     const wkNames = t('wk_names'); const lang = (typeof ZCI18n !== 'undefined' && ZCI18n.lang) ? ZCI18n.lang() : 'zh-TW';
-    
     if(lang === 'en') document.getElementById('disp-solar').textContent=`${y}-${m}-${day}`;
     else document.getElementById('disp-solar').textContent=`${y}年${m}月${day}日 · 週${wkNames[d.getDay()]}`;
     document.getElementById('disp-lunar').textContent=`${approxLunar(d)}年`;
@@ -700,13 +332,7 @@ function renderJiari(){
       {label: t('grp_hour'), tg:lhGZ.tg, dz:lhGZ.dz, tgTenRaw:SS_TABLE[ri][lhGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lhGZ.dz]], colCls:'sz-liuhour'},
     ];
 
-    main.innerHTML=`
-      <div class="grp-row" id="grp-row">
-        <div class="grp-cell grp-bazi">${t('grp_base')}</div><div class="grp-cell grp-sep"></div>
-        <div class="grp-cell grp-dayun">${t('grp_luck')}</div><div class="grp-cell grp-liuyear">${t('grp_year')}</div>
-        <div class="grp-cell grp-liumonth">${t('grp_month')}</div><div class="grp-cell grp-liuday">${t('grp_day')}</div>
-        <div class="grp-cell grp-liuhour">${t('grp_hour')}</div>
-      </div>`;
+    main.innerHTML=`<div class="grp-row" id="grp-row"><div class="grp-cell grp-bazi">${t('grp_base')}</div><div class="grp-cell grp-sep"></div><div class="grp-cell grp-dayun">${t('grp_luck')}</div><div class="grp-cell grp-liuyear">${t('grp_year')}</div><div class="grp-cell grp-liumonth">${t('grp_month')}</div><div class="grp-cell grp-liuday">${t('grp_day')}</div><div class="grp-cell grp-liuhour">${t('grp_hour')}</div></div>`;
     pillars.slice(0,4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
     main.insertAdjacentHTML('beforeend','<div class="sz-vsep"></div>');
     pillars.slice(4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
@@ -725,12 +351,17 @@ function renderJiari(){
     if (interpList) {
       interpList.innerHTML=ss.map(s=>{
         const info = t(s.key);
-        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')">
-          <div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n}</div><span class="ic-arrow">∨</span></div>
-          <div class="ic-body"><div>${info.d}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="hint">${t('api_hint_replaced')}</span></div></div>
-        </div>`;
+        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="hint">${t('api_hint_replaced')}</span></div></div></div>`;
       }).join('');
     }
+
+    // 身強弱及調用後續渲染
+    const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
+    let score = 0;
+    [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += [1, 1.2, 1, 3, 1, 1.2, 1, 1.2][i]; });
+    if(typeof renderFortuneGrid==='function') renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, score);
+    if(typeof renderHourTable==='function') renderHourTable(ri, ldGZ);
+
   } catch (e) { console.error("今日排盤拼接失敗", e); }
 }
 
@@ -752,6 +383,7 @@ function renderMingpan(){
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
+    // 完美骨重算法
     const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
     const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
     const totalBone = tgWeightArr[yGZ.tg] + dzWeightArr[yGZ.dz] + tgWeightArr[mGZ.tg] + dzWeightArr[mGZ.dz] + tgWeightArr[dGZ.tg] + dzWeightArr[dGZ.dz] + tgWeightArr[hGZ.tg] + dzWeightArr[hGZ.dz];
@@ -808,15 +440,15 @@ function renderDayun(){
       dyList.innerHTML=dy.list.map((item,i)=>{
         return `<div class="dy-item${i===curIdx?' current':''}">
           <div class="dy-gz"><span>${t('tg_name')[item.tgIdx]}</span><span>${t('dz_name')[item.dzIdx]}</span></div>
-          <div class="dy-info"><div>${item.age}${t('age_unit')} · ${t('ten')[SS_TABLE[ri][item.tgIdx]]}</div></div>
+          <div class="dy-info"><div class="dy-age">${item.age}${t('age_unit')} · ${t('ten')[SS_TABLE[ri][item.tgIdx]]}</div><div class="dy-years">${USER.year+item.age} — ${USER.year+item.age+10}</div></div>
         </div>`;
       }).join('');
     }
   } catch (e) { console.error("大運隊列重構崩潰", e); }
 }
 
-function shiftDay(d){ curDate.setDate(curDate.getDate()+d); renderJiari(); }
-function goToday(){ curDate=new Date(); renderJiari(); }
+function shiftDay(d){ curDate.setDate(curDate.getDate()+d); initDrums(); renderJiari(); }
+function goToday(){ curDate=new Date(); initDrums(); renderJiari(); }
 function scrollToInterp(id){ const el=document.getElementById(id); if(el){el.classList.add('open');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),50);} }
 
 function switchTab(tab){
@@ -825,11 +457,14 @@ function switchTab(tab){
   if(tab==='mingpan') renderMingpan(); if(tab==='dayun') renderDayun();
 }
 
-(function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H;function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);ctx.fillStyle='#fff';})();
+(function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H;function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';requestAnimationFrame(draw);}draw();})();
 
-// 強制初始化掛載鎖
 document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => { updateStaticUI(); renderJiari(); }, 50);
+  setTimeout(() => { 
+    updateStaticUI(); 
+    initDrums(); 
+    renderJiari(); 
+  }, 50);
 });
 </script>
 </body>
