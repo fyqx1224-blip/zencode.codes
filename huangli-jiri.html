@@ -148,7 +148,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .info-card{margin:0 16px 12px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;}
 .info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:0.66rem;}
 .info-row:last-child{margin-bottom:0;}
-/* 強制固定左側標籤的明亮度 */
 .ir-lbl{color:rgba(240,234,214,0.75); font-weight:500;} 
 .ir-val{color:var(--text-d);} 
 .ir-val.gold{color:var(--gold);}
@@ -171,9 +170,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .modal-flex { display:flex; gap:10px; }
 .modal-flex > div { flex:1; }
 
-/* =========================================
-   手機端字體與觸控適應 (Mobile Responsive)
-   ========================================= */
+/* 手機端自適應 */
 @media (max-width: 768px) {
   .topbar { padding: 15px; }
   .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
@@ -418,7 +415,7 @@ const HL_I18N = {
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
     val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）',
     click_tip:'点击查看关系',
-    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫财':'劫财','日主':'日主','—':'—'},
+    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'纳音', lbl_tengod:'十神',
     v1_lvl:'大吉之日，诸事皆宜', v1_body:'流日与日主相生，贵人星照，诸神护佑。今日宜主动出击，把握每个主动接触的机会。',
@@ -588,7 +585,6 @@ function saveProfileFromModal(e) {
   checkAndLoadUser(); 
 }
 
-// ---------------- 真太陽時核心算法 ---------------- //
 function getDayOfYear(y, m, d) {
   const now = new Date(y, m - 1, d);
   const start = new Date(y, 0, 0);
@@ -623,7 +619,6 @@ function getAdjustedSolarDate(y, m, d, h, min, lon, tz, dst) {
   adjDate.setDate(adjDate.getDate() + tst.dayOffset);
   return { year: adjDate.getFullYear(), month: adjDate.getMonth() + 1, day: adjDate.getDate(), hour: tst.hour, minute: tst.minute };
 }
-// ---------------------------------------------------- //
 
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
@@ -806,7 +801,8 @@ function renderJiari(){
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = 0;
-    [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += [1, 1.2, 1, 3, 1, 1.2, 1, 1.2][i]; });
+    const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
+    [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(i!==4 && supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i]; });
     
     renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, score);
     renderHourTable(ri, ldGZ);
@@ -824,15 +820,21 @@ function renderMingpan(){
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = 0;
+    
+    // 宮位距離權重演算法：月支(4.0) > 日支(2.5) > 月干(1.5) > 時干(1.0)=時支(1.0) > 年柱(0.5)
+    const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
     [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => {
-      if(supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += [1, 1.2, 1, 3, 1, 1.2, 1, 1.2][i];
+      if(i === 4) return; // 略過日主本身
+      if(supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i];
     });
-    const strengthKey = score > 5.83 ? 'str_strong' : (score < 4.77 ? 'str_weak' : 'str_bal');
+    
+    // 身強弱閾值判定
+    const strengthKey = score > 4.2 ? 'str_strong' : (score < 3.8 ? 'str_weak' : 'str_bal');
     
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
-    // === 動態喜用神判斷 (嚴格遵循調候與窮通寶鑑邏輯) ===
+    // === 動態喜用神判斷 (考慮身強弱與極致調候) ===
     let dmWx = WXT[ri];
     let monthDz = mGZ.dz;
     let xiyongArr = [];
@@ -843,26 +845,19 @@ function renderMingpan(){
       xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[dmWx];
     }
     
-    // 調候與季節特例補正
-    // 冬季 (亥11, 子0, 丑1)
+    // 冬夏極致調候 (溫度校正)
     if ([11, 0, 1].includes(monthDz)) { 
-        if(!xiyongArr.includes('火')) xiyongArr.push('火'); 
-        if(!xiyongArr.includes('木')) xiyongArr.push('木'); 
+        if(!xiyongArr.includes('火')) xiyongArr.unshift('火'); 
     }
-    // 夏季 (巳5, 午6, 未7)
     if ([5, 6, 7].includes(monthDz)) { 
-        if(!xiyongArr.includes('水')) xiyongArr.push('水'); 
-        if(!xiyongArr.includes('金')) xiyongArr.push('金'); 
+        if(!xiyongArr.includes('水')) xiyongArr.unshift('水'); 
     }
-    // 秋木凋零特例 (申8, 酉9, 戌10)
-    if ([8, 9, 10].includes(monthDz)) {
-        if (dmWx === '木') {
-            // 秋木凋零，金旺克身，喜火制金暖局，喜木比肩扶持
-            xiyongArr = ['火', '木'];
-        }
+    
+    // 秋木凋零與特殊格局補正 (窮通寶鑑)
+    if ([8, 9, 10].includes(monthDz) && dmWx === '木') {
+        xiyongArr = ['火', '木']; 
     }
-    // 去重
-    xiyongArr = [...new Set(xiyongArr)];
+    xiyongArr = [...new Set(xiyongArr)]; // 去重保持陣列乾淨
 
     const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
     const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
