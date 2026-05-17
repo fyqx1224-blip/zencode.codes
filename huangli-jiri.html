@@ -55,6 +55,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .grp-liumonth{color:rgba(80,160,220,0.7);background:rgba(80,160,220,0.03);}
 .grp-liuday{color:rgba(212,168,67,0.9);background:rgba(212,168,67,0.06);border-bottom:1px solid rgba(212,168,67,0.28);}
 .grp-liuhour{color:rgba(49,151,149,0.9);background:var(--teal-dim);border-bottom:1px solid rgba(49,151,149,0.25);}
+
 .sz-vsep{background:rgba(212,168,67,0.12);width:1px;grid-row:span 6;}
 .sz-col{display:flex;flex-direction:column;align-items:center;border-right:1px solid rgba(212,168,67,0.07);cursor:pointer;transition:background .18s;position:relative;overflow:visible;}
 .sz-col:last-child{border-right:none;}
@@ -165,8 +166,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sd-lbl{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);letter-spacing:0.08em;}
 .sd-val{font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:var(--text-d);}
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
+.sd-tip{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;color:var(--text-f);text-align:center;line-height:1.7;}
+.sd-tip em{color:rgba(212,168,67,0.55);font-style:normal;}
 .rel-outer{padding:4px 16px 10px;}
-.rel-badges{display:flex;gap:3px;flex-wrap:wrap;}
+.rel-badges{display:flex;gap:5px;flex-wrap:wrap;}
 .rel-badge{font-family:'Noto Sans TC',sans-serif;font-size:0.5rem;padding:3px 9px;letter-spacing:0.06em;border:1px solid;white-space:nowrap;cursor:default;}
 .rb-he{color:#7DE09A;border-color:rgba(125,224,154,0.28);background:rgba(125,224,154,0.04);}
 .rb-chong{color:#F07840;border-color:rgba(240,120,64,0.28);background:rgba(240,120,64,0.04);}
@@ -195,7 +198,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .ic.open .ic-arrow{transform:rotate(180deg);}
 .ic-body{font-family:'Noto Sans TC',sans-serif;font-size:0.62rem;color:var(--text-f);line-height:1.95;margin-top:8px;letter-spacing:0.05em;display:none;border-top:1px solid rgba(212,168,67,0.07);padding-top:9px;}
 .ic.open .ic-body{display:block;}
-.ic-api-engine{margin-top:10px;padding:10px 14px;background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:rgba(240,234,214,0.7);letter-spacing:0.08em;line-height:1.8;border-radius:0 2px 2px 0;}
+.ic-api-engine {margin-top:10px;padding:10px 14px;background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);font-family:'Noto Sans TC',sans-serif;font-size:0.6rem;color:rgba(240,234,214,0.7);letter-spacing:0.08em;line-height:1.8;border-radius:0 2px 2px 0;}
 .mingpan-outer{padding:0 16px;}
 .info-card{background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;margin-bottom:12px;position:relative;}
 .c-tl,.c-tr,.c-bl,.c-br{position:absolute;width:10px;height:10px;border-color:rgba(212,168,67,0.28);border-style:solid;}
@@ -236,7 +239,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 <div class="grid-ov"></div>
 <div class="scan"></div>
 
-<!-- 出生資料輸入 -->
 <div class="setup-overlay" id="setup-overlay">
   <div class="setup-box">
     <div class="setup-title">黃 道 吉 日</div>
@@ -368,7 +370,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 <script>
 /* ═══════════════════════════════════════════
-   核心數據表（原 i18n.js 及缺失資料完整補全）
+   核心數據表（修復所有引發 ReferenceError 的缺失常量）
 ═══════════════════════════════════════════ */
 
 // 天干地支名稱
@@ -441,10 +443,12 @@ const HIDDEN_ALL_QI = [
   [4,7,1],    // 戌→戊辛丁
   [8,0]       // 亥→壬甲
 ];
-const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
-const XING3 ={3:[0],0:[9],9:[6],6:[3], 5:[8],8:[2],2:[5], 1:[10],10:[7],7:[1], 4:[], 11:[]};
-const PO6  =[9,6,11,8,1,10,3,0,5,2,7,4];
-const HAI6 =[11,10,9,8,7,6,5,4,3,2,1,0];
+
+// 【修復 1】：加入缺失的關係常數數組，避免 checkRels 拋出 ReferenceError
+const CHONG6 = [6,7,8,9,10,11,0,1,2,3,4,5];
+const PO6    = [9,6,11,8,1,10,3,0,5,2,7,4];
+const HAI6   = [11,10,9,8,7,6,5,4,3,2,1,0];
+const HE6    = {0:[1], 1:[0], 2:[11], 11:[2], 3:[10], 10:[3], 4:[9], 9:[4], 5:[8], 8:[5], 6:[7], 7:[6]};
 
 /* ═══════════════════════════════════════════
    神煞資料庫（精簡核心版）
@@ -697,8 +701,7 @@ function pillarHTML(p){
     // 地支藏干全部
     const hiddenAll = HIDDEN_ALL_QI[p.dz];
     const hiddenStr = hiddenAll.map(hi=>TG_NAMES[hi]).join('·');
-    // 旺相休囚死
-    const wangMap={'春':['木','火','土','金','水'],'夏':['火','土','金','水','木'],'秋':['金','水','木','火','土'],'冬':['水','木','火','土','金']};
+    
     return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
       <div class="sz-head">${p.label}</div>
       <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
@@ -788,6 +791,9 @@ function submitSetup(){
   try{ localStorage.setItem('zencode_user_profile', JSON.stringify(USER)); }catch(e){}
   document.getElementById('setup-overlay').style.display='none';
   document.getElementById('main-page').style.display='block';
+  
+  // 【修復】：提交表單後需重新初始化滾輪與頁面
+  initDrums();
   renderJiari();
 }
 
@@ -892,6 +898,25 @@ function renderJiari(){
         </div>
       </div>`;
     }).join('');
+
+    // 【修復 2】：調用被遺忘的六維運勢和時辰宜忌渲染函數
+    const riWX=WXT[ri];
+    const supports={'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[riWX];
+    let score=0;
+    const items=[yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
+    const weights=[1,1.2,1,3,1,1.2,1,1.2];
+    items.forEach((item,i)=>{
+      const wx = i%2===0 ? WXT[item] : WXD[item];
+      if(supports.includes(wx)) score+=weights[i];
+    });
+
+    if(typeof renderFortuneGrid === 'function') {
+      renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, score);
+    }
+    if(typeof renderHourTable === 'function') {
+      renderHourTable(ri, ldGZ);
+    }
+    
   }catch(e){ console.error('今日排盤失敗', e); }
 }
 
@@ -917,9 +942,17 @@ function renderMingpan(){
     const strengthStr = score>5.83?'身強':score<4.77?'身弱':'中和';
     const xiyong = score>5.83?'食傷、財星為喜用':'印星、比劫為喜用';
 
-    const tgW=[1.2,0.9,1.0,0.7,0.8,0.9,0.8,0.6,1.1,0.9];
-    const dzW=[1.6,0.6,0.7,1.0,0.9,1.6,1.0,0.8,0.8,0.9,0.6,1.5];
-    const totalBone=tgW[yGZ.tg]+dzW[yGZ.dz]+tgW[mGZ.tg]+dzW[mGZ.dz]+tgW[dGZ.tg]+dzW[dGZ.dz];
+    // 【修正骨重溢出漏洞】
+    const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
+    const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
+    const totalBone = tgWeightArr[yGZ.tg] + dzWeightArr[yGZ.dz] + 
+                      tgWeightArr[mGZ.tg] + dzWeightArr[mGZ.dz] + 
+                      tgWeightArr[dGZ.tg] + dzWeightArr[dGZ.dz] + 
+                      tgWeightArr[hGZ.tg] + dzWeightArr[hGZ.dz];
+
+    let boneLiang = Math.floor(totalBone);
+    let boneQian = Math.round((totalBone - boneLiang) * 10);
+    if (boneQian >= 10) { boneLiang += 1; boneQian -= 10; }
 
     const tenArr=['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'];
     const mTg=SS_TABLE[ri][mGZ.tg];
@@ -935,7 +968,7 @@ function renderMingpan(){
     document.getElementById('mp-geju').textContent=geju;
     document.getElementById('mp-xiyong').textContent=xiyong;
     document.getElementById('mp-qiangruo').textContent=strengthStr;
-    document.getElementById('mp-bone').textContent=`${Math.floor(totalBone*10)/10}兩`;
+    document.getElementById('mp-bone').textContent=`${boneLiang}兩${boneQian}錢`;
 
     const g4=document.getElementById('bazi4-grid');
     g4.innerHTML=`<div class="b4-grp">年 · 月 · 日 · 時</div>`;
@@ -1276,9 +1309,12 @@ function switchTab(tab){
   for(let i=0;i<3;i++) setTimeout(spawn, i*600);
 })();
 
-/* 啟動 */
+/* 啟動：【修復 3】確保在 DOM 完全加載後初始化滾輪 */
 document.addEventListener('DOMContentLoaded',()=>{
-  if(document.getElementById('main-page').style.display==='block') renderJiari();
+  if(document.getElementById('main-page').style.display==='block'){
+    initDrums();
+    renderJiari();
+  }
 });
 </script>
 </body>
