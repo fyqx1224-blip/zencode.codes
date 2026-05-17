@@ -32,10 +32,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 /* 主程式排盤樣式 */
 .page{position:relative;z-index:10;min-height:100vh;padding-bottom:80px;width:100%;max-width:900px;margin:0 auto; display:none;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(212,168,67,0.1);}
-.app-logo{font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;letter-spacing:0.18em;background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.app-sub{font-size:0.55rem;letter-spacing:0.4em;color:var(--text-f);margin-top:2px;}
-.top-controls{display:flex;align-items:center;gap:12px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(212,168,67,0.1); flex-wrap:wrap; gap:12px;}
+.logo-wrap { flex-shrink: 0; }
+.app-logo{font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;letter-spacing:0.18em;background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; white-space:nowrap;}
+.app-sub{font-size:0.55rem;letter-spacing:0.4em;color:var(--text-f);margin-top:2px; white-space:nowrap;}
+.top-controls{display:flex;align-items:center;gap:12px; flex-wrap:wrap;}
 .tab-nav{display:flex;gap:2px;}
 .tab-btn{background:none;border:1px solid transparent;font-size:0.6rem;letter-spacing:0.2em;color:var(--text-d);cursor:pointer;padding:6px 14px;transition:all .22s;border-radius:1px;}
 .tab-btn.active{border-color:var(--gold-dim);color:var(--gold);background:rgba(212,168,67,0.06);}
@@ -147,8 +148,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .info-card{margin:0 16px 12px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;}
 .info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:0.66rem;}
 .info-row:last-child{margin-bottom:0;}
-/* 強制固定左側標籤的明亮度，避免因為 CSS 變數覆蓋而消失 */
-.ir-lbl{color:rgba(240,234,214,0.7); font-weight:500;} 
+/* 強制固定左側標籤的明亮度 */
+.ir-lbl{color:rgba(240,234,214,0.75); font-weight:500;} 
 .ir-val{color:var(--text-d);} 
 .ir-val.gold{color:var(--gold);}
 .bazi4-grid{margin:0 16px 16px;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(212,168,67,0.12);background:rgba(0,0,0,0.22);}
@@ -174,6 +175,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
    手機端字體與觸控適應 (Mobile Responsive)
    ========================================= */
 @media (max-width: 768px) {
+  .topbar { padding: 15px; }
   .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
   .settings-btn { font-size: 0.8rem; padding: 6px 12px; }
   .lang-select { font-size: 0.75rem; padding: 6px 10px; }
@@ -416,7 +418,7 @@ const HL_I18N = {
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
     val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）',
     click_tip:'点击查看关系',
-    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
+    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫财':'劫财','日主':'日主','—':'—'},
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'纳音', lbl_tengod:'十神',
     v1_lvl:'大吉之日，诸事皆宜', v1_body:'流日与日主相生，贵人星照，诸神护佑。今日宜主动出击，把握每个主动接触的机会。',
@@ -830,23 +832,37 @@ function renderMingpan(){
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
+    // === 動態喜用神判斷 (嚴格遵循調候與窮通寶鑑邏輯) ===
+    let dmWx = WXT[ri];
+    let monthDz = mGZ.dz;
     let xiyongArr = [];
+
     if (strengthKey === 'str_strong') {
-      xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[WXT[ri]];
+      xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[dmWx];
     } else {
-      xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[WXT[ri]];
+      xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[dmWx];
     }
     
-    const monthDz = mGZ.dz; 
+    // 調候與季節特例補正
+    // 冬季 (亥11, 子0, 丑1)
     if ([11, 0, 1].includes(monthDz)) { 
         if(!xiyongArr.includes('火')) xiyongArr.push('火'); 
         if(!xiyongArr.includes('木')) xiyongArr.push('木'); 
     }
+    // 夏季 (巳5, 午6, 未7)
     if ([5, 6, 7].includes(monthDz)) { 
         if(!xiyongArr.includes('水')) xiyongArr.push('水'); 
         if(!xiyongArr.includes('金')) xiyongArr.push('金'); 
     }
-    xiyongArr = [...new Set(xiyongArr)]; 
+    // 秋木凋零特例 (申8, 酉9, 戌10)
+    if ([8, 9, 10].includes(monthDz)) {
+        if (dmWx === '木') {
+            // 秋木凋零，金旺克身，喜火制金暖局，喜木比肩扶持
+            xiyongArr = ['火', '木'];
+        }
+    }
+    // 去重
+    xiyongArr = [...new Set(xiyongArr)];
 
     const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
     const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
@@ -876,6 +892,7 @@ function renderMingpan(){
     if(document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyDict[yyTxt]}${t('wx_'+WXT[dGZ.tg])}`;
     if(document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent=gejuStr;
     
+    // 正確寫入動態計算出來的喜用神
     if(document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x=>t('wx_'+x)).join(currentLang==='en'?', ':'、');
     
     if(document.getElementById('mp-qiangruo')) document.getElementById('mp-qiangruo').textContent=t(strengthKey);
