@@ -69,12 +69,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-col.sz-liumonth .sz-head{color:rgba(80,160,220,0.65);}
 .sz-col.sz-liuday .sz-head{color:rgba(212,168,67,0.8);border-bottom:1px solid rgba(212,168,67,0.22);}
 .sz-col.sz-rizhu .sz-head{color:rgba(212,168,67,0.5);}
-.sz-tg{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:9px 4px 3px;}
-.sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:3px 4px 5px;}
-.sz-ten{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.06em;padding:2px 2px 3px;text-align:center;min-height:18px;}
-.sz-nayin{font-family:'Noto Sans TC',sans-serif;font-size:0.44rem;color:rgba(240,234,214,0.18);padding:0 3px 6px;text-align:center;line-height:1.45;}
+
+/* 修改了天干地支的內邊距，讓它能容納上下兩個十神 */
+.sz-tg{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:2px 4px 1px;}
+.sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;padding:1px 4px 3px;}
+.sz-ten{font-family:'Noto Sans TC',sans-serif;font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
+.sz-nayin{font-family:'Noto Sans TC',sans-serif;font-size:0.44rem;color:rgba(240,234,214,0.18);padding:2px 3px 6px;text-align:center;line-height:1.45;}
+
 .ten-qisha{color:#D05050;} .ten-zhengguang{color:#7080B8;} .ten-pianyin{color:#9060C0;} .ten-zhengyin{color:#A878D0;} .ten-shishen{color:#60A870;} .ten-shangguan{color:#50B880;} .ten-piancai{color:#9090C0;} .ten-zhengcai{color:#8090C0;} .ten-bijian{color:rgba(200,170,100,0.6);} .ten-jiecai{color:rgba(180,145,80,0.6);} .ten-rizhu{color:rgba(212,168,67,0.75);}
-.sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:168px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;box-shadow:0 12px 40px rgba(0,0,0,0.85),0 0 0 1px rgba(0,0,0,0.9);}
+.sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:176px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;box-shadow:0 12px 40px rgba(0,0,0,0.85),0 0 0 1px rgba(0,0,0,0.9);}
 .sz-detail::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#0D0B18;border-top:1px solid rgba(212,168,67,0.22);border-left:1px solid rgba(212,168,67,0.22);}
 .sz-col.open .sz-detail,.sz-col:focus .sz-detail{display:block;}
 .sd-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
@@ -257,7 +260,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 </div><script>
 /* ═════════════════════════════════════════════════════════
-   多語言支援庫
+   多語言支援庫 (包含全新的純前端運勢推演引擎文本)
 ═════════════════════════════════════════════════════════ */
 const HL_I18N = {
   'zh-TW': {
@@ -281,8 +284,9 @@ const HL_I18N = {
     wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
     wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
     wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_branch: '地支', lbl_nayin: '納音', lbl_tengod: '十神',
+    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '納音', lbl_tengod: '十神',
     
+    // 神煞原文本
     ss_tianyi: {n:'天乙貴人', d:'貴人星入日，今日所遇之人皆可能成為助力。宜拜訪上司長輩、洽談合作、尋求引薦，逢凶能化吉。'},
     ss_wenchang:{n:'文昌', d:'文昌臨日，思路清晰，適宜讀書考試、寫作構思、學術研究，靈感旺盛，一切與文字智慧相關之事皆宜。'},
     ss_jianlu: {n:'建祿', d:'祿神入命，自身能量充盈，今日適合主導事務、展現才幹，談判締約均宜以自身為主，切勿輕易妥協。'},
@@ -295,11 +299,13 @@ const HL_I18N = {
     ss_yuepo:  {n:'月破', d:'月破之日，諸事不宜輕舉妄動，尤忌動土開工、簽訂合約、嫁娶出行，以靜守為宜，耐心等待吉日。'},
     ss_none:   {n:'平順', d:'今日無特殊神煞，平穩安順。適宜處理日常積累事務，保持既定節奏，靜心蓄力以待良機。'},
     
+    // 今日綜評
     v1_lvl: '大吉之日，諸事皆宜', v1_body: '流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，感情、事業、財運均有上佳表現，把握每個主動接觸的機會。',
     v2_lvl: '吉多於凶，宜積極進取', v2_body: '流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。今日適宜重要洽談與拜訪，凡事主動為吉，守待反誤。',
     v3_lvl: '吉凶參半，宜謹慎守靜', v3_body: '今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭，靜觀其變，守正待時方為上策。',
     v4_lvl: '平穩之日，循序漸進', v4_body: '流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏，厚積薄發，為後續吉日做好準備。',
 
+    // 前端 AI 運勢推演引擎詞庫
     str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
     wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
     pat_jianlu: '建祿格', pat_yangren: '羊刃格', pat_suffix: '格',
@@ -335,7 +341,7 @@ const HL_I18N = {
     wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
     wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
     wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_branch: '地支', lbl_nayin: '纳音', lbl_tengod: '十神',
+    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '纳音', lbl_tengod: '十神',
     
     ss_tianyi: {n:'天乙贵人', d:'贵人星入日，今日所遇之人皆可能成为助力。宜拜访上司长辈、洽谈合作、寻求引荐，逢凶能化吉。'},
     ss_wenchang:{n:'文昌', d:'文昌临日，思路清晰，适宜读书考试、写作构思、学术研究，灵感旺盛，一切与文字智慧相关之事皆宜。'},
@@ -389,7 +395,7 @@ const HL_I18N = {
     wx_tg: ['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water'],
     wx_dz: ['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'],
     wk_names: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-    lbl_stem: 'Stem', lbl_branch: 'Branch', lbl_nayin: 'Tone', lbl_tengod: '10 Gods',
+    lbl_stem: 'Stem', lbl_tg_ten: 'Stem God', lbl_branch: 'Branch', lbl_dz_ten: 'Branch God', lbl_nayin: 'Tone', lbl_tengod: '10 Gods',
     
     ss_tianyi: {n:'Heavenly Noble', d:'The Noble Star enters today. People you meet may become great supporters. Favorable for meetings, negotiations, and seeking guidance.'},
     ss_wenchang:{n:'Academic Star', d:'Clear thinking and sharp intuition. Highly favorable for studying, writing, planning, and all intellectual pursuits.'},
@@ -443,7 +449,7 @@ const HL_I18N = {
     wx_tg: ['목','목','화','화','토','토','금','금','수','수'],
     wx_dz: ['수','토','목','목','토','화','화','토','금','금','토','수'],
     wk_names: ['일','월','화','수','목','금','토'],
-    lbl_stem: '천간', lbl_branch: '지지', lbl_nayin: '납음', lbl_tengod: '십신',
+    lbl_stem: '천간', lbl_tg_ten: '천간 십신', lbl_branch: '지지', lbl_dz_ten: '지지 십신', lbl_nayin: '납음', lbl_tengod: '십신',
     
     ss_tianyi: {n:'천을귀인', d:'귀인이 돕는 날. 만나는 사람마다 힘이 되어줄 수 있습니다. 윗사람 방문, 협상 등에 매우 유리하며 흉이 길로 바뀝니다.'},
     ss_wenchang:{n:'문창귀인', d:'사고가 명석해지는 날. 학업, 시험, 글쓰기, 연구 등에 적합하며 아이디어와 영감이 넘칩니다.'},
@@ -555,7 +561,7 @@ try {
 })();
 
 /* ════════════════════════════════════════
-   基础数据定义
+   基础数据定义 (新增地支藏干本氣陣列)
 ════════════════════════════════════════ */
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
@@ -582,6 +588,9 @@ const TEN_CSS_MAP={
   '食神':'ten-shishen','傷官':'ten-shangguan',
   '比肩':'ten-bijian','劫財':'ten-jiecai','日主':'ten-rizhu', '—':'ten-none'
 };
+
+// 子丑寅卯辰巳午未申酉戌亥 的本氣天干索引
+const HIDDEN_MAIN_QI = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8];
 
 /* ════════════════════════════════════════
    节气表 & 八字引擎
@@ -711,7 +720,7 @@ function switchTab(tab){
 }
 
 /* ════════════════════════════════════════
-   构建一个柱的HTML (多語言適配)
+   构建一个柱的HTML (新增地支十神雙行顯示)
 ════════════════════════════════════════ */
 function pillarHTML(p){
   const tgName = t('tg_name')[p.tg];
@@ -721,19 +730,29 @@ function pillarHTML(p){
   const yy_tg = t('yy_tg')[p.tg];
   const yy_dz = t('yy_dz')[p.dz];
   const ny=nayin(p.tg,p.dz);
-  const tenLocal = t('ten')[p.tenRaw] || p.tenRaw;
-  const tenCls = TEN_CSS_MAP[p.tenRaw] || '';
+  
+  // 天干十神
+  const tgTenLocal = t('ten')[p.tgTenRaw] || p.tgTenRaw;
+  const tgTenCls = TEN_CSS_MAP[p.tgTenRaw] || '';
+  
+  // 地支十神
+  const dzTenLocal = t('ten')[p.dzTenRaw] || p.dzTenRaw;
+  const dzTenCls = TEN_CSS_MAP[p.dzTenRaw] || '';
   
   return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
     <div class="sz-head">${p.label}</div>
+    <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
     <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
     <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
-    <div class="sz-ten ${tenCls}">${tenLocal}</div>
+    <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
     <div class="sz-nayin">${ny}</div>
     <div class="sz-detail">
       <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName} · ${yy_tg}${wx_tg}</span></div>
+      <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
+      <div class="sd-div"></div>
       <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName} · ${yy_dz}${wx_dz}</span></div>
-      <div class="sd-row"><span class="sd-lbl">${t('lbl_tengod')}</span><span class="sd-val ${tenCls}">${tenLocal}</span></div>
+      <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
+      <div class="sd-div"></div>
       <div class="sd-row"><span class="sd-lbl">${t('lbl_nayin')}</span><span class="sd-val">${ny}</span></div>
       <div class="sd-div"></div>
       <div class="sd-tip">${p.relDesc||`<em>${t('click_tip')}</em>`}</div>
@@ -790,14 +809,14 @@ function renderJiari(){
   const ldGZ=getDayGZ(y,m,day);
 
   const pillars=[
-    {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tenRaw:SS_TABLE[ri][yGZ.tg], colCls:''},
-    {label: t('lbl_month'), tg:mGZ.tg, dz:mGZ.dz, tenRaw:SS_TABLE[ri][mGZ.tg], colCls:''},
-    {label: t('lbl_day'), tg:dGZ.tg, dz:dGZ.dz, tenRaw:'日主', colCls:'sz-rizhu'},
-    {label: t('lbl_hour'), tg:hGZ.tg, dz:hGZ.dz, tenRaw:SS_TABLE[ri][hGZ.tg], colCls:''},
-    {label: t('grp_luck'), tg:dyTg, dz:dyDz, tenRaw:curDy?SS_TABLE[ri][dyTg]:'—', colCls:'sz-dayun'},
-    {label: t('grp_year'), tg:lyGZ.tg, dz:lyGZ.dz, tenRaw:SS_TABLE[ri][lyGZ.tg], colCls:'sz-liuyear'},
-    {label: t('grp_month'), tg:lmGZ.tg, dz:lmGZ.dz, tenRaw:SS_TABLE[ri][lmGZ.tg], colCls:'sz-liumonth'},
-    {label: t('grp_day'), tg:ldGZ.tg, dz:ldGZ.dz, tenRaw:SS_TABLE[ri][ldGZ.tg], colCls:'sz-liuday'},
+    {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]], colCls:''},
+    {label: t('lbl_month'), tg:mGZ.tg, dz:mGZ.dz, tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]], colCls:''},
+    {label: t('lbl_day'), tg:dGZ.tg, dz:dGZ.dz, tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]], colCls:'sz-rizhu'},
+    {label: t('lbl_hour'), tg:hGZ.tg, dz:hGZ.dz, tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]], colCls:''},
+    {label: t('grp_luck'), tg:dyTg, dz:dyDz, tgTenRaw:curDy?SS_TABLE[ri][dyTg]:'—', dzTenRaw:curDy?SS_TABLE[ri][HIDDEN_MAIN_QI[dyDz]]:'—', colCls:'sz-dayun'},
+    {label: t('grp_year'), tg:lyGZ.tg, dz:lyGZ.dz, tgTenRaw:SS_TABLE[ri][lyGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lyGZ.dz]], colCls:'sz-liuyear'},
+    {label: t('grp_month'), tg:lmGZ.tg, dz:lmGZ.dz, tgTenRaw:SS_TABLE[ri][lmGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lmGZ.dz]], colCls:'sz-liumonth'},
+    {label: t('grp_day'), tg:ldGZ.tg, dz:ldGZ.dz, tgTenRaw:SS_TABLE[ri][ldGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[ldGZ.dz]], colCls:'sz-liuday'},
   ];
 
   const main=document.getElementById('sizhu-main');
@@ -901,24 +920,23 @@ function renderMingpan(){
   const xiyongStr = favWX.map(x => t('wx_'+x)).join(separator);
 
   /* --- 2. 計算格局 (升級版：透干優先取格法) --- */
-  const dzWuxing = WXD[mGZ.dz]; // 獲取月令五行
-  const mTgWuxing = WXT[mGZ.tg]; // 月干五行
-  const yTgWuxing = WXT[yGZ.tg]; // 年干五行
+  const dzWuxing = WXD[mGZ.dz]; 
+  const mTgWuxing = WXT[mGZ.tg]; 
+  const yTgWuxing = WXT[yGZ.tg]; 
 
   let gejuTenGod = '';
 
-  // 1. 首選：如果月干透出了與月令同屬性的五行（力量最強），以此定格
+  // 1. 首選：月干透出月令同氣
   if (mTgWuxing === dzWuxing) {
     gejuTenGod = SS_TABLE[dGZ.tg][mGZ.tg];
   }
-  // 2. 次選：如果月干沒透，但年干透出了與月令同屬性的五行，以此定格
+  // 2. 次選：年干透出月令同氣
   else if (yTgWuxing === dzWuxing) {
     gejuTenGod = SS_TABLE[dGZ.tg][yGZ.tg];
   }
-  // 3. 兜底：如果天干都沒透出月令五行，退回使用「月令本氣取格」
+  // 3. 兜底：取月令本氣
   else {
-    const hiddenMainQi = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8]; // 子丑寅卯辰巳午未申酉戌亥的本氣天干
-    const mQiTg = hiddenMainQi[mGZ.dz];
+    const mQiTg = HIDDEN_MAIN_QI[mGZ.dz];
     gejuTenGod = SS_TABLE[dGZ.tg][mQiTg];
   }
 
@@ -951,7 +969,6 @@ function renderMingpan(){
   document.getElementById('mp-gender').textContent = USER.gender === '男' ? (t('val_male') || '男') : (t('val_female') || '女');
   document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${t('yy_tg')[dGZ.tg]}${t('wx_tg')[dGZ.tg]}`;
   
-  // 覆寫為前端即時推算的結果
   document.getElementById('mp-geju').textContent=gejuStr;
   document.getElementById('mp-xiyong').textContent=xiyongStr;
   document.getElementById('mp-qiangruo').textContent=qiangruoStr;
@@ -960,10 +977,10 @@ function renderMingpan(){
   const g4=document.getElementById('bazi4-grid');
   g4.innerHTML=`<div class="b4-grp">${t('b4_grp')}</div>`;
   [
-    {label:t('lbl_year'),tg:yGZ.tg,dz:yGZ.dz,tenRaw:SS_TABLE[ri][yGZ.tg],colCls:''},
-    {label:t('lbl_month'),tg:mGZ.tg,dz:mGZ.dz,tenRaw:SS_TABLE[ri][mGZ.tg],colCls:''},
-    {label:t('lbl_day'),tg:dGZ.tg,dz:dGZ.dz,tenRaw:'日主',colCls:'sz-rizhu'},
-    {label:t('lbl_hour'),tg:hGZ.tg,dz:hGZ.dz,tenRaw:SS_TABLE[ri][hGZ.tg],colCls:''},
+    {label:t('lbl_year'),tg:yGZ.tg,dz:yGZ.dz,tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]],colCls:''},
+    {label:t('lbl_month'),tg:mGZ.tg,dz:mGZ.dz,tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]],colCls:''},
+    {label:t('lbl_day'),tg:dGZ.tg,dz:dGZ.dz,tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]],colCls:'sz-rizhu'},
+    {label:t('lbl_hour'),tg:hGZ.tg,dz:hGZ.dz,tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]],colCls:''},
   ].forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p)));
 }
 
