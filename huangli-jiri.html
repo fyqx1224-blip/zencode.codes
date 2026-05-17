@@ -295,7 +295,7 @@ const HL_I18N = {
     v2_lvl:'Favorable. Proactive action recommended.', v2_body:'Favorable patterns form between the transit and your chart. Minor obstacles can be overcome by Noble stars.',
     v3_lvl:'Mixed luck. Proceed with caution.', v3_body:'Clashing energies are present today. Maintain a low profile, avoid signing contracts, long travel, or arguments.',
     v4_lvl:'Neutral day. Steady progress.', v4_body:'The energy is balanced. Neither highly auspicious nor dangerous. Good for routine tasks and steady work.',
-    str_strong:'Strong', str_weak:'Weak', str_bal:'Balanced', wx_木:'Wood', wx_火:'Fire', wx_土:'Earth', wx_金:'Metal', wx_水:'Water', pat_jianlu:'Jianlu', pat_yangren:'Yangren', pat_suffix:' Pattern', bw_liang:'.', bw_qian:' Wt',
+    str_strong:'Strong', str_weak:'Weak', str_bal:'Balanced', wx_木:'Wood', wx_火:'Fire', wx_土:'Earth', wx_金:'Metal', wx_水:'Water', pat_jianlu:'Jianlu Pattern', pat_yangren:'Yangren Pattern', pat_suffix:' Pattern', bw_liang:'.', bw_qian:' Wt',
     dyn_wealth:'Daily wealth star focuses energy on financial operations and goal achievement.', dyn_power:'Daily power star focuses energy on career responsibilities, rules, and fame.', dyn_res:'Daily resource star focuses energy on learning, gaining help, and deep thinking.', dyn_out:'Daily output star focuses energy on expression, socializing, and creativity.', dyn_comp:'Daily companion star focuses energy on interactions, competition, and teamwork.',
     dyn_adv_ji:'Backed by auspicious stars, progress boldly.', dyn_adv_xiong:'Restrained by negative stars, expect minor turbulence. Stay conservative.', dyn_adv_zhong:'Neutral energies. Follow the natural flow of your environment.', api_hint_replaced:'✦ Derived from Natal Chart & Daily Pillars',
     ss_tianyi: {n: 'TianYi Noble', d: 'Turns bad luck into good, brings helpful people.'}, ss_wenchang: {n: 'WenChang', d: 'Enhances talent, excellent for studying and exams.'}, ss_jianlu: {n: 'JianLu', d: 'Prosperity and stable foundation for career.'}, ss_yima: {n: 'Sky Horse', d: 'Indicates travel, movement, and outward expansion.'}, ss_taiji: {n: 'TaiJi Noble', d: 'Strong affinity with metaphysics, ability to finish what you start.'}, ss_huagai: {n: 'Elegant Seal', d: 'Outstanding talent, unique thinking, but slight loneliness.'}, ss_yuepo: {n: 'Month Breaker', d: 'Plans easily disrupted. Avoid rushing or major decisions.'}, ss_none: {n: 'Neutral', d: 'No special star influences. A smooth, regular day.'},
@@ -306,7 +306,7 @@ const HL_I18N = {
 
 function t(k){
   const l = currentLang;
-  if(HL_I18N[l] && HL_I18N[l][k]) return HL_I18N[l][k];
+  if(HL_I18N[l] && HL_I18N[l][k] !== undefined) return HL_I18N[l][k];
   return HL_I18N['zh-TW'][k] || k;
 }
 
@@ -322,11 +322,11 @@ function changeLang(lang) {
   localStorage.setItem('zencode_lang', lang);
   updateStaticUI();
   
-  // 重新渲染視圖
+  // 【修復】強制重繪所有視圖，解決切換語言時隱藏標籤頁內資料（如命盤格局）未更新的 Bug
   initDrums(); 
-  if(document.getElementById('tab-jiari').style.display !== 'none') renderJiari();
-  if(document.getElementById('tab-mingpan').style.display !== 'none') renderMingpan();
-  if(document.getElementById('tab-dayun').style.display !== 'none') renderDayun();
+  renderJiari();
+  renderMingpan();
+  renderDayun();
 }
 
 let USER = {name:'命主',gender:'男',year:1992,month:6,day:15,hour:13,minute:0,birthplace:'未知'};
@@ -338,9 +338,7 @@ const TEN_CSS_MAP={'七殺':'ten-qisha','正官':'ten-zhengguang','偏財':'ten-
 const WXT=['木','木','火','火','土','土','金','金','水','水'];const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
 const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
 const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
-function nayin(tg, dz) {
-  return NAYIN_LIST[(tg * 36 + dz * 25) % 60];
-}
+function nayin(tg, dz) { return NAYIN_LIST[(tg * 36 + dz * 25) % 60]; }
 const SS_TABLE=(()=>{const rel=['比肩','劫財','食神','傷官','偏財','正財','七殺','正官','偏印','正印'];const map=[];for(let ri=0;ri<10;ri++){const row=[];for(let tg=0;tg<10;tg++){row.push(rel[((tg-ri)%10+10)%10]);}row[ri]='日主';map.push(row);}return map;})();
 
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
@@ -462,8 +460,16 @@ function renderJiari(){
     const d=curDate; const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours(),mn=d.getMinutes();
     const main=document.getElementById('sizhu-main'); if(!main) return;
     const wkNames = t('wk_names'); 
-    if(currentLang === 'en') document.getElementById('disp-solar').textContent=`${wkNames[d.getDay()]} · ${y}-${m}-${day}`;
-    else document.getElementById('disp-solar').textContent=`${y}年${m}月${day}日 · 週${wkNames[d.getDay()]}`;
+    
+    // 【修復】動態判斷「週/周」的前綴字
+    let wkPrefix = currentLang === 'zh-CN' ? '周' : (currentLang === 'en' ? '' : '週');
+    
+    if(currentLang === 'en') {
+        document.getElementById('disp-solar').textContent=`${wkNames[d.getDay()]} · ${y}-${m}-${day}`;
+    } else {
+        document.getElementById('disp-solar').textContent=`${y}年${m}月${day}日 · ${wkPrefix}${wkNames[d.getDay()]}`;
+    }
+    
     document.getElementById('disp-lunar').textContent=`${approxLunar(d)}`;
 
     const bst = correctSolarTime(USER.hour, USER.minute, USER.birthplace);
@@ -629,6 +635,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStaticUI(); 
     if(document.getElementById('drum-year')) { initDrums(); }
     renderJiari(); 
+    // 初始進入時將所有的隱藏分頁也渲染一次
+    renderMingpan();
+    renderDayun();
   }, 50);
 });
 </script>
