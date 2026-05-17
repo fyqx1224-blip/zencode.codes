@@ -741,7 +741,6 @@ function toggleDetail(el){const was=el.classList.contains('open');document.query
 document.addEventListener('click',e=>{if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));});
 function approxLunar(date){const base=Date.UTC(2000,0,6);const diff=Math.floor((date.getTime()-base)/86400000);const cycleYr=Math.floor(diff/365.25);return`${t('tg_name')[((cycleYr%10)+10)%10]}${t('dz_name')[((cycleYr%12)+12)%12]}`;}
 
-/* 解決 iOS 滾動衝突的全新綁定機制 */
 function buildDrum(innerId, items, selected) {
   const inner = document.getElementById(innerId);
   if (!inner) return;
@@ -774,6 +773,15 @@ function setupDrumEvents(drumId, innerId, items, getVal, onChange) {
   let scrollTimeout;
   let lastNotifiedVal = getVal(); 
 
+  // PC 滾輪衝突修復
+  drum.addEventListener('wheel', (e) => {
+    e.preventDefault(); 
+    const currentIdx = Math.round(drum.scrollTop / 24);
+    const targetIdx = Math.max(0, Math.min(items.length - 1, currentIdx + (e.deltaY > 0 ? 1 : -1)));
+    drum.scrollTo({ top: targetIdx * 24, behavior: 'smooth' });
+  }, { passive: false });
+
+  // 原生滾動與 iOS 相容性處理
   drum.onscroll = () => {
     const idx = Math.round(drum.scrollTop / 24);
     const safeIdx = Math.max(0, Math.min(items.length - 1, idx));
