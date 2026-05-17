@@ -128,6 +128,7 @@ const ZCI18n = (function () {
       'nav.feedback':        '命盤校準',
       'nav.liuyao':          '六爻排盤',
       'nav.astrolabe':       '立體天球儀',
+      'nav.huangli':         '黃道吉日',
       'nav.vip':             '✦ VIP 沉浸報告',
       'lov.vip.text':        '等待期間 · 預覽 VIP 沉浸式報告',
       'form.lang.hint':      '報告語言由右上角語言切換器決定，請在測算前確認語言設定，生成後無法切換',
@@ -149,7 +150,6 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '回覆通常在 24 小時內 · 全程保密 · 僅接受少量預約',
       'vip.close':           '暫不需要，繼續瀏覽',
-      // ✅ 3D 天球儀專屬
       'astro.title':         '星象座標系',
       'astro.sub':           '未檢測到緩存資料<br>請輸入公曆出生時間以生成立體天球儀',
     },
@@ -271,6 +271,7 @@ const ZCI18n = (function () {
       'nav.feedback':        '命盘校准',
       'nav.liuyao':          '六爻排盘',
       'nav.astrolabe':       '立体天球仪',
+      'nav.huangli':         '黄道吉日',
       'nav.vip':             '✦ VIP 沉浸报告',
       'lov.vip.text':        '等待期间 · 预览 VIP 沉浸式报告',
       'form.lang.hint':      '报告语言由右上角语言切换器决定，请在测算前确认语言设置，生成后无法切换',
@@ -292,7 +293,6 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '回复通常在 24 小时内 · 全程保密 · 仅接受少量预约',
       'vip.close':           '暂不需要，继续浏览',
-      // ✅ 3D 天球仪专属
       'astro.title':         '星象坐标系',
       'astro.sub':           '未检测到缓存资料<br>请输入公历出生时间以生成立体天球仪',
     },
@@ -414,6 +414,7 @@ const ZCI18n = (function () {
       'nav.feedback':        'Calibrate',
       'nav.liuyao':          'Liuyao Divination',
       'nav.astrolabe':       '3D Astrolabe',
+      'nav.huangli':         'Daily Horoscope',
       'nav.vip':             '✦ VIP Immersive',
       'lov.vip.text':        'Preview VIP Immersive Report while waiting',
       'form.lang.hint':      'Report language is set by the language switcher (top right). Please select your language before generating — it cannot be changed afterwards.',
@@ -435,7 +436,6 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            'Reply within 24 hours · Strictly confidential · Limited appointments only',
       'vip.close':           'Not now, continue reading',
-      // ✅ 3D Astrolabe 專屬
       'astro.title':         'Astrolabe Coordinates',
       'astro.sub':           'No cached data detected.<br>Please enter your solar birth time to generate the 3D Astrolabe.',
     },
@@ -557,6 +557,7 @@ const ZCI18n = (function () {
       'nav.feedback':        '차트 교정',
       'nav.liuyao':          '육효(六爻) 점술',
       'nav.astrolabe':       '입체 천구의',
+      'nav.huangli':         '오늘의 운세',
       'nav.vip':             '✦ VIP 몰입 리포트',
       'lov.vip.text':        '대기 중 VIP 몰입형 리포트 미리보기',
       'form.lang.hint':      '보고서 언어는 오른쪽 상단의 언어 선택기로 결정됩니다. 생성 전에 언어를 먼저 설정해 주세요 — 생성 후에는 변경할 수 없습니다.',
@@ -578,7 +579,6 @@ const ZCI18n = (function () {
       'vip.cta.email':       'vip@zencode.codes',
       'vip.note':            '24시간 이내 답변 · 엄격한 비밀 보장 · 소수 예약만 수락',
       'vip.close':           '괜찮습니다, 계속 볼게요',
-      // ✅ 3D Astrolabe 전용
       'astro.title':         '천구의 좌표계',
       'astro.sub':           '캐시된 데이터가 없습니다.<br>입체 천구의를 생성하려면 양력 생년월일을 입력해 주세요.',
     },
