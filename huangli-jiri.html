@@ -257,7 +257,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 </div><script>
 /* ═════════════════════════════════════════════════════════
-   多語言支援庫 (包含全新的純前端運勢推演引擎文本)
+   多語言支援庫
 ═════════════════════════════════════════════════════════ */
 const HL_I18N = {
   'zh-TW': {
@@ -283,7 +283,6 @@ const HL_I18N = {
     wk_names: ['日','一','二','三','四','五','六'],
     lbl_stem: '天干', lbl_branch: '地支', lbl_nayin: '納音', lbl_tengod: '十神',
     
-    // 神煞原文本
     ss_tianyi: {n:'天乙貴人', d:'貴人星入日，今日所遇之人皆可能成為助力。宜拜訪上司長輩、洽談合作、尋求引薦，逢凶能化吉。'},
     ss_wenchang:{n:'文昌', d:'文昌臨日，思路清晰，適宜讀書考試、寫作構思、學術研究，靈感旺盛，一切與文字智慧相關之事皆宜。'},
     ss_jianlu: {n:'建祿', d:'祿神入命，自身能量充盈，今日適合主導事務、展現才幹，談判締約均宜以自身為主，切勿輕易妥協。'},
@@ -296,13 +295,11 @@ const HL_I18N = {
     ss_yuepo:  {n:'月破', d:'月破之日，諸事不宜輕舉妄動，尤忌動土開工、簽訂合約、嫁娶出行，以靜守為宜，耐心等待吉日。'},
     ss_none:   {n:'平順', d:'今日無特殊神煞，平穩安順。適宜處理日常積累事務，保持既定節奏，靜心蓄力以待良機。'},
     
-    // 今日綜評
     v1_lvl: '大吉之日，諸事皆宜', v1_body: '流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，感情、事業、財運均有上佳表現，把握每個主動接觸的機會。',
     v2_lvl: '吉多於凶，宜積極進取', v2_body: '流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。今日適宜重要洽談與拜訪，凡事主動為吉，守待反誤。',
     v3_lvl: '吉凶參半，宜謹慎守靜', v3_body: '今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭，靜觀其變，守正待時方為上策。',
     v4_lvl: '平穩之日，循序漸進', v4_body: '流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏，厚積薄發，為後續吉日做好準備。',
 
-    // 【新增】八字引擎動態詞庫
     str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
     wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
     pat_jianlu: '建祿格', pat_yangren: '羊刃格', pat_suffix: '格',
@@ -682,7 +679,7 @@ function approxLunar(date){
 }
 
 /* ════════════════════════════════════════
-   ★ 核心：純前端 AI 運勢推演引擎與格局計算
+   前端 AI 運勢推演引擎
 ════════════════════════════════════════ */
 function getTenGroup(tenRaw) {
   if(['正財','偏財'].includes(tenRaw)) return 'wealth';
@@ -903,14 +900,32 @@ function renderMingpan(){
   const separator = (lang === 'en' || lang === 'ko') ? ', ' : '、';
   const xiyongStr = favWX.map(x => t('wx_'+x)).join(separator);
 
-  /* --- 2. 計算格局 (以月支主氣為準) --- */
-  const hiddenMainQi = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8]; // 子丑寅卯辰巳午未申酉戌亥的本氣天干
-  const mQiTg = hiddenMainQi[mGZ.dz];
-  const rawTen = SS_TABLE[dGZ.tg][mQiTg];
+  /* --- 2. 計算格局 (升級版：透干優先取格法) --- */
+  const dzWuxing = WXD[mGZ.dz]; // 獲取月令五行
+  const mTgWuxing = WXT[mGZ.tg]; // 月干五行
+  const yTgWuxing = WXT[yGZ.tg]; // 年干五行
+
+  let gejuTenGod = '';
+
+  // 1. 首選：如果月干透出了與月令同屬性的五行（力量最強），以此定格
+  if (mTgWuxing === dzWuxing) {
+    gejuTenGod = SS_TABLE[dGZ.tg][mGZ.tg];
+  }
+  // 2. 次選：如果月干沒透，但年干透出了與月令同屬性的五行，以此定格
+  else if (yTgWuxing === dzWuxing) {
+    gejuTenGod = SS_TABLE[dGZ.tg][yGZ.tg];
+  }
+  // 3. 兜底：如果天干都沒透出月令五行，退回使用「月令本氣取格」
+  else {
+    const hiddenMainQi = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8]; // 子丑寅卯辰巳午未申酉戌亥的本氣天干
+    const mQiTg = hiddenMainQi[mGZ.dz];
+    gejuTenGod = SS_TABLE[dGZ.tg][mQiTg];
+  }
+
   let gejuStr = '';
-  if(rawTen === '比肩') gejuStr = t('pat_jianlu'); // 建祿格
-  else if(rawTen === '劫財') gejuStr = t('pat_yangren'); // 羊刃格
-  else gejuStr = t('ten')[rawTen] + t('pat_suffix');
+  if(gejuTenGod === '比肩') gejuStr = t('pat_jianlu'); // 建祿格
+  else if(gejuTenGod === '劫財') gejuStr = t('pat_yangren'); // 羊刃格
+  else gejuStr = t('ten')[gejuTenGod] + t('pat_suffix');
 
   /* --- 3. 計算骨重 (簡化版近似算法) --- */
   const BW_TG = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
@@ -933,7 +948,7 @@ function renderMingpan(){
     document.getElementById('mp-birthday').textContent=`${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}時`;
   }
   
-  document.getElementById('mp-gender').textContent = USER.gender === '男' ? t('val_male') : t('val_female');
+  document.getElementById('mp-gender').textContent = USER.gender === '男' ? (t('val_male') || '男') : (t('val_female') || '女');
   document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${t('yy_tg')[dGZ.tg]}${t('wx_tg')[dGZ.tg]}`;
   
   // 覆寫為前端即時推算的結果
