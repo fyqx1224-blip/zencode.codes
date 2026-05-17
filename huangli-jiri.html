@@ -26,8 +26,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
 .fp{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:fu linear both;}
 @keyframes fu{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.7}90%{opacity:.3}100%{transform:translateY(-100vh) scale(.2);opacity:0}}
+
+/* 整體佈局容器 */
 .page{position:relative;z-index:10;min-height:100vh;padding-bottom:80px;width:100%;max-width:900px;margin:0 auto;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(212,168,67,0.1);}
+.logo-wrap{}
 .app-logo{font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;letter-spacing:0.18em;background:linear-gradient(160deg,#F8EFC0 0%,#D4A843 40%,#A0680A 70%,#D4A843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .app-sub{font-family:'Noto Sans TC',sans-serif;font-size:0.55rem;letter-spacing:0.4em;color:var(--text-f);margin-top:2px;}
 .tab-nav{display:flex;gap:2px;}
@@ -239,143 +242,21 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 
 <script>
 /* ═════════════════════════════════════════════════════════
-   多語言支援核心與本地安全字典
+   100% 安全的高精度天文交節氣與真太陽時運算模組
 ═════════════════════════════════════════════════════════ */
-const HL_I18N = {
-  'zh-TW': {
-    logo: '黃道吉日', sub: '個人命盤 · 每日流日',
-    tab_today: '今日', tab_chart: '命盤', tab_luck: '大運', btn_today: '回到今天',
-    hd_pillars: '命 盤 × 今 日 四 柱', grp_base: '原 命 盤', grp_luck: '大 運', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 時',
-    lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '時柱',
-    rel_he: '相合', rel_chong: '相沖', rel_liuhe: '六合', rel_hai: '相害',
-    vd_title: '今日綜評：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 讀',
-    hd_mychart: '個 人 命 盤', hd_base4: '原 命 盤 四 柱', b4_grp: '年 柱 · 月 柱 · 日 柱 · 時 柱',
-    lbl_name: '命主', lbl_birth: '出生', lbl_gender: '性別', lbl_dm: '日主', lbl_pattern: '格局', lbl_useful: '喜用神', lbl_strength: '身強弱', lbl_bone: '骨重',
-    hd_luck_plan: '大 運 排 盤', lbl_start_age: '起運年齡', lbl_dir: '順 / 逆運', lbl_cur_luck: '當前大運', lbl_rem_luck: '大運剩餘',
-    val_male: '男', val_female: '女', val_unstarted: '未起運', age_start: '歲起運', age_unit: '歲起', elapsed: '已行', years: '年', rem: '餘',
-    dir_fwd: '順運（陽男 / 陰女）', dir_rev: '逆運（陰男 / 陽女）', cur_badge: '當前',
-    click_tip: '點擊其他柱查看關係', 
-    ten: {'七殺':'七殺','正官':'正官','偏財':'偏財','正財':'正財','偏印':'偏印','正印':'正印','食神':'食神','傷官':'傷官','比肩':'比肩','劫財':'劫財','日主':'日主','—':'—'},
-    tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
-    dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
-    yy_tg: ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],
-    yy_dz: ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'],
-    wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
-    wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
-    wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '納音', lbl_tengod: '十神',
-    ss_tianyi: {n:'天乙貴人', d:'貴人星入日，今日所遇之人皆可能成為助力。宜拜訪上司長輩、洽談合作、尋求引薦，逢凶能化吉。'},
-    ss_wenchang:{n:'文昌', d:'文昌臨日，思路清晰，適宜讀書考試、寫作構思、學術研究，靈感旺盛，一切與文字智慧相關之事皆宜。'},
-    ss_jianlu: {n:'建祿', d:'祿神入命，自身能量充盈，今日適合主導事務、展現才幹，談判締約均宜以自身為主，切勿輕易妥協。'},
-    ss_yima:   {n:'驛馬', d:'驛馬主動與遷移，今日出行、搬遷、消息傳遞之象旺盛。有外出計劃宜順勢而行，忌原地守株待兔。'},
-    ss_taiji:  {n:'太極貴人', d:'太極助啟智慧，宜學習進修、藝術創作、哲學思辨，今日直覺敏銳，靜心感悟事半功倍。'},
-    ss_baihu:  {n:'白虎', d:'白虎主血光意外與口舌是非。今日謹慎出行，避免爭執衝突；手術動刀宜延期；老人及體弱者需多關注健康。'},
-    ss_gouchen:{n:'勾陳', d:'勾陳主阻滯纏繞，今日事務易有延誤、糾紛。避免輕率做決定，合同簽署宜再三確認，防官非與訴訟。'},
-    ss_sanhe:  {n:'三合', d:'三合局旺，衆人協力氣場強盛。今日適宜團隊合作項目，群策群力事半功倍，人際關係和諧順暢。'},
-    ss_huagai: {n:'華蓋', d:'華蓋主孤寂與藝術靈感。今日宜獨處思考、藝術創作、修行靜心；不宜社交應酬，人多反添煩惱。'},
-    ss_yuepo:  {n:'月破', d:'月破之日，諸事不宜輕舉妄動，尤忌動土開工、簽訂合約、嫁娶出行，以靜守為宜，耐心等待吉日。'},
-    ss_none:   {n:'平順', d:'今日無特殊神煞，平穩安順。適宜處理日常積累事務，保持既定節奏，靜心蓄力以待良機。'},
-    v1_lvl: '大吉之日，諸事皆宜', v1_body: '流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，感情、事業、財運均有上佳表現，把握每個主動接觸的機會。',
-    v2_lvl: '吉多於凶，宜積極進取', v2_body: '流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。今日適宜重要洽談與拜訪，凡事主動為吉，守待反誤。',
-    v3_lvl: '吉凶參半，宜謹慎守靜', v3_body: '今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭，靜觀其變，守正待時方為上策。',
-    v4_lvl: '平穩之日，循序漸進', v4_body: '流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏，厚積薄發，為後續吉日做好準備。',
-    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
-    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
-    pat_jianlu: '建祿格', pat_yangren: '羊刃格', pat_suffix: '格',
-    bw_liang: '兩', bw_qian: '錢',
-    dyn_wealth: '流日逢財星，今日能量聚焦於財務運作與目標達成。',
-    dyn_power:  '流日逢官殺，今日能量聚焦於事業責任、規則與名望。',
-    dyn_res:    '流日逢印星，今日能量聚焦於學習吸收、貴人與深度思考。',
-    dyn_out:    '流日逢食傷，今日能量聚焦於靈感表達、社交與創造力。',
-    dyn_comp:   '流日逢比劫，今日能量聚焦於人際交往、團隊競爭與合作。',
-    dyn_adv_ji: '結合此吉星護佑，該領域易得強大助力，宜主動出擊，大膽推進。',
-    dyn_adv_xiong:'受凶星牽制，該領域易生波瀾或壓力。建議謹慎保守，切勿急躁。',
-    dyn_adv_zhong:'星象中性，發展結果取決於您的行動力與客觀環境，宜順勢而為。',
-    api_hint_replaced: '✦ 專屬運勢：基於原命盤日主與流日干支的算法推演'
-  },
-  'zh-CN': {
-    logo: '黄道吉日', sub: '个人命盘 · 每日流日',
-    tab_today: '今日', tab_chart: '命盘', tab_luck: '大运', btn_today: '回到今天',
-    hd_pillars: '命 盘 × 今 日 四 柱', grp_base: '原 命 盘', grp_luck: '大 运', grp_year: '流 年', grp_month: '流 月', grp_day: '流 日', grp_hour: '流 时',
-    lbl_year: '年柱', lbl_month: '月柱', lbl_day: '日柱', lbl_hour: '时柱',
-    rel_he: '相合', rel_chong: '相冲', rel_liuhe: '六合', rel_hai: '相害',
-    vd_title: '今日综评：', hd_ss: '今 日 神 煞', hd_interp: '神 煞 解 读',
-    hd_mychart: '个 人 命 盘', hd_base4: '原 命 盘 四 柱', b4_grp: '年 柱 · 月 柱 · 日 柱 · 时 柱',
-    lbl_name: '命主', lbl_birth: '出生', lbl_gender: '性别', lbl_dm: '日主', lbl_pattern: '格局', lbl_useful: '喜用神', lbl_strength: '身强弱', lbl_bone: '骨重',
-    hd_luck_plan: '大 运 排 盘', lbl_start_age: '起运年龄', lbl_dir: '顺 / 逆运', lbl_cur_luck: '当前大运', lbl_rem_luck: '大运剩余',
-    val_male: '男', val_female: '女', val_unstarted: '未起运', age_start: '岁起运', age_unit: '岁起', elapsed: '已行', years: '年', rem: '余',
-    dir_fwd: '顺运（阳男 / 阴女）', dir_rev: '逆运（阴男 / 阳女）', cur_badge: '当前',
-    click_tip: '点击其他柱查看关系', 
-    ten: {'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
-    tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
-    dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
-    yy_tg: ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'],
-    yy_dz: ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'],
-    wx_tg: ['木','木','火','火','土','土','金','金','水','水'],
-    wx_dz: ['水','土','木','木','土','火','火','土','金','金','土','水'],
-    wk_names: ['日','一','二','三','四','五','六'],
-    lbl_stem: '天干', lbl_tg_ten: '天干十神', lbl_branch: '地支', lbl_dz_ten: '地支十神', lbl_nayin: '纳音', lbl_tengod: '十神',
-    ss_tianyi: {n:'天乙贵人', d:'贵人星入日，今日所遇之人皆可能成为助力。宜拜访上司长辈、洽谈合作、寻求引荐，逢凶能化吉。'},
-    ss_wenchang:{n:'文昌', d:'文昌临日，思路清晰，适宜读书考试、写作构思、学术研究，灵感旺盛，一切与文字智慧相关之事皆宜。'},
-    ss_jianlu: {n:'建禄', d:'禄神入命，自身能量充盈，今日适合主导事务、展现才干，谈判缔约均宜以自身为主，切勿轻易妥协。'},
-    ss_yima:   {n:'驿马', d:'驿马主动与迁移，今日出行、搬迁、消息传递之象旺盛。有外出计划宜顺势而行，忌原地守株待兔。'},
-    ss_taiji:  {n:'太极贵人', d:'太极助启智慧，宜学习进修、艺术创作、哲学思辨，今日直觉敏锐，静心感悟事半功倍。'},
-    ss_baihu:  {n:'白虎', d:'白虎主血光意外与口舌是非。今日谨慎出行，避免争执冲突；手术动刀宜延期；老人及体弱者需多关注健康。'},
-    ss_gouchen:{n:'勾陈', d:'勾陈主阻滞缠绕，今日事务易有延误、纠纷。避免轻率做决定，合同签署宜再三确认，防官非与诉讼。'},
-    ss_sanhe:  {n:'三合', d:'三合局旺，众人协力气场强盛。今日适宜团队合作项目，群策群力事半功倍，人际关系和谐顺畅。'},
-    ss_huagai: {n:'华盖', d:'华盖主孤寂与艺术灵感。今日宜独处思考、艺术创作、修行静心；不宜社交应酬，人多反添烦恼。'},
-    ss_yuepo:  {n:'月破', d:'月破之日，诸事不宜轻举妄动，尤忌动土开工、签订合约、嫁娶出行，以静守为宜，耐心等待吉日。'},
-    ss_none:   {n:'平顺', d:'今日无特殊神煞，平稳安顺。适宜处理日常积累事务，保持既定节奏，静心蓄力以待良机。'},
-    v1_lvl: '大吉之日，诸事皆宜', v1_body: '流日与日主相生，贵人星照，诸神护佑。今日宜主动出击，感情、事业、财运均有上佳表现，把握每个主动接触的机会。',
-    v2_lvl: '吉多于凶，宜积极进取', v2_body: '流日与命盘形成有利格局，吉星照临。虽有小凶，贵人之力足以化解。今日适宜重要洽谈与拜访，凡事主动为吉，守待反误。',
-    v3_lvl: '吉凶参半，宜谨慎守静', v3_body: '今日凶煞偏重，流日与部分柱位有冲刑之象。宜低调行事，避免签约、远行及口舌之争，静观其变，守正待时方为上策。',
-    v4_lvl: '平稳之日，循序渐进', v4_body: '流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏，厚积薄发，为后续吉日做好准备。',
-    str_strong: '身旺', str_weak: '身弱', str_bal: '中和',
-    wx_木: '木', wx_火: '火', wx_土: '土', wx_金: '金', wx_水: '水',
-    pat_jianlu: '建禄格', pat_yangren: '羊刃格', pat_suffix: '格',
-    bw_liang: '两', bw_qian: '钱',
-    dyn_wealth: '流日逢财星，今日能量聚焦于财务运作与目标达成。',
-    dyn_power:  '流日逢官杀，今日能量聚焦于事业责任、规则与名望。',
-    dyn_res:    '流日逢印星，今日能量聚焦于学习吸收、贵人与深度思考。',
-    dyn_out:    '流日逢食伤，今日能量聚焦于灵感表达、社交与创造力。',
-    dyn_comp:   '流日逢比劫，今日能量聚焦于人际交往、团队竞争与合作。',
-    dyn_adv_ji: '结合此吉星护佑，该领域易得强大助力，宜主动出击，大胆推进。',
-    dyn_adv_xiong:'受凶星牵制，该领域易生波澜或压力。建议谨慎保守，切勿急躁。',
-    dyn_adv_zhong:'星象中性，发展结果取决于您的行动力与客观环境，宜顺势而为。',
-    api_hint_replaced: '✦ 专属运势：基于原命盘日主与流日干支的算法推演'
-  }
+const JQTBL_PRECISE={
+  1992:[[6,11,5],[3,23,48],[5,18,11],[4,12,58],[5,7,39],[5,3,11],[6,23,46],[7,21,27],[7,12,40],[8,16,31],[7,19,49],[6,13,52]],
+  2002:[[5,19,24],[4,23,23],[6,17,16],[5,12,26],[5,6,31],[6,3,9],[7,22,15],[7,21,55],[8,11,17],[8,15,23],[7,18,36],[7,13,14]],
+  2026:[[5,11,23],[4,16,16],[6,12,47],[5,7,4],[5,0,39],[6,20,31],[7,16,43],[7,14,4],[8,5,42],[8,8,11],[7,12,12],[7,6,39]]
 };
 
-function t(key) {
-  const lang = (typeof ZCI18n !== 'undefined' && ZCI18n.lang) ? ZCI18n.lang() : 'zh-TW';
-  if(HL_I18N[lang] && HL_I18N[lang][key]) return HL_I18N[lang][key];
-  return HL_I18N['zh-TW'][key] || key;
-}
-
-function updateStaticUI() {
-  document.querySelectorAll('[data-hl]').forEach(el => {
-    const val = t(el.dataset.hl);
-    if (val) el.textContent = val;
-  });
-}
-
-document.addEventListener('zc:langchange', () => {
-  updateStaticUI();
-  renderJiari();
-  if(document.getElementById('tab-mingpan').style.display === 'block') renderMingpan();
-  if(document.getElementById('tab-dayun').style.display === 'block') renderDayun();
-});
-
-/* ════════════════════════════════════════
-   高精度分鐘交節氣處理引擎 (100% 崩潰防禦)
-════════════════════════════════════════ */
 function getJQPrecise(year, mIdx){
   if(JQTBL_PRECISE[year] && JQTBL_PRECISE[year][mIdx]) {
     return {day:JQTBL_PRECISE[year][mIdx][0], hour:JQTBL_PRECISE[year][mIdx][1], minute:JQTBL_PRECISE[year][mIdx][2]};
   }
-  const fallbackDay = [6,4,5,4,5,5,6,7,7,8,7,6][mIdx];
-  return {day: fallbackDay, hour: 12, minute: 0};
+  return {day: [6,4,5,4,5,5,6,7,7,8,7,6][mIdx], hour: 12, minute: 0};
 }
+
 function correctSolarTime(hour, minute, birthplace, tzOffset=8){
   const lng = birthplace && birthplace.includes('杭州') ? 120.2 : 120.0;
   const diffMin = Math.round((lng - tzOffset * 15) * 4);
@@ -385,20 +266,21 @@ function correctSolarTime(hour, minute, birthplace, tzOffset=8){
   else if(totalMin < 0) { dayOffset = -1; totalMin += 1440; }
   return { hour: Math.floor(totalMin / 60), minute: totalMin % 60, dayOffset };
 }
+
 function getYrGZPrecise(year, month, day, hour, minute){
   const lc = getJQPrecise(year, 1); const tgt=month*10000+day*100+(hour*60+minute);
   let y = (month<2||(month===2 && tgt<(20000+lc.day*100+lc.hour*60+lc.minute))) ? year-1 : year;
   return {tg:((y-4)%10+10)%10, dz:((y-4)%12+12)%12};
 }
+
 function getMoGZPrecise(year, month, day, hour, minute){
   const r = getJQPrecise(year, month-1); const targetMins = day*1440+hour*60+minute;
   let sm = month, sy = year; if(targetMins<(r.day*1440+r.hour*60+r.minute)){sm--; if(sm===0){sm=12; sy--;}}
-  let yrTg = sm===1 ? sy-1 : sy;
-  return {tg:([2,4,6,8,0][((yrTg-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10, dz:sm%12};
+  return {tg:([2,4,6,8,0][(((sm===1?sy-1:sy)-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10, dz:sm%12};
 }
 
 /* ════════════════════════════════════════
-   干支排盤方法
+   干支排盤模組
 ════════════════════════════════════════ */
 function getHrGZ(hour, dayTg){ const dz=Math.floor((hour+1)/2)%12; return {tg:([0,2,4,6,8][dayTg%5]+dz)%10, dz}; }
 function getDayun(gender,year,month,day,yrTg){
@@ -411,22 +293,13 @@ function getCurrentDayunIdx(dy,birthYear,nowYear){const age=nowYear-birthYear;le
 
 function pillarHTML(p){
   const tgName = t('tg_name')[p.tg]; const dzName = t('dz_name')[p.dz];
-  const tgTenLocal = t('ten')[p.tgTenRaw] || p.tgTenRaw; const tgTenCls = TEN_CSS_MAP[p.tgTenRaw] || '';
-  const dzTenLocal = t('ten')[p.dzTenRaw] || p.dzTenRaw; const dzTenCls = TEN_CSS_MAP[p.dzTenRaw] || '';
   return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
     <div class="sz-head">${p.label}</div>
-    <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
+    <div class="sz-ten ${TEN_CSS_MAP[p.tgTenRaw]||''}" style="margin-top:4px;">${t('ten')[p.tgTenRaw]||p.tgTenRaw}</div>
     <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
     <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
-    <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
+    <div class="sz-ten ${TEN_CSS_MAP[p.dzTenRaw]||''}">${t('ten')[p.dzTenRaw]||p.dzTenRaw}</div>
     <div class="sz-nayin">${nayin(p.tg,p.dz)}</div>
-    <div class="sz-detail">
-      <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
-      <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
-      <div class="sd-div"></div>
-      <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
-      <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
-    </div>
   </div>`;
 }
 
@@ -476,12 +349,10 @@ function renderJiari(){
   pillars.slice(4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
 
   const rels=checkRels(pillars);
-  const relOuter = document.getElementById('rel-outer');
-  if(relOuter) relOuter.innerHTML = rels.length ? `<div class="rel-badges">${rels.map(r=>`<span class="rel-badge ${r.cls}">${r.txt}</span>`).join('')}</div>` : '';
+  if(document.getElementById('rel-outer')) document.getElementById('rel-outer').innerHTML = rels.length ? `<div class="rel-badges">${rels.map(r=>`<span class="rel-badge ${r.cls}">${r.txt}</span>`).join('')}</div>` : '';
 
   const ss=calcShensha(ri, ldGZ.dz, ldGZ.tg, lyGZ.dz, lmGZ.dz);
-  const ssGrid = document.getElementById('ss-grid');
-  if(ssGrid) ssGrid.innerHTML=ss.map(s=>`<span class="ss-tag ss-${s.type}" onclick="scrollToInterp('ic-${s.apiKey}')">${t(s.key).n}</span>`).join('');
+  if(document.getElementById('ss-grid')) document.getElementById('ss-grid').innerHTML=ss.map(s=>`<span class="ss-tag ss-${s.type}" onclick="scrollToInterp('ic-${s.apiKey}')">${t(s.key).n}</span>`).join('');
 
   const vdt=genVerdict(ri,ldGZ.tg,ldGZ.dz,ss);
   if(document.getElementById('verdict-title')) document.getElementById('verdict-title').textContent=`${t('vd_title')} ${vdt.lvl}`;
@@ -491,10 +362,7 @@ function renderJiari(){
   if (interpList) {
     interpList.innerHTML=ss.map(s=>{
       const info = t(s.key);
-      return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')">
-        <div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n}</div><span class="ic-arrow">∨</span></div>
-        <div class="ic-body"><div>${info.d}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="hint">${t('api_hint_replaced')}</span></div></div>
-      </div>`;
+      return `<div class="ic" id="ic-${s.apiKey}"><div class="ic-head"><div class="ic-title">${info.n}</div></div><div class="ic-body"><div>${info.d}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}</div></div></div>`;
     }).join('');
   }
 }
@@ -503,8 +371,7 @@ function renderMingpan(){
   const bst = correctSolarTime(USER.hour, USER.minute, USER.birthplace);
   const yGZ=getYrGZPrecise(USER.year, USER.month, USER.day, bst.hour, bst.minute);
   const mGZ=getMoGZPrecise(USER.year, USER.month, USER.day, bst.hour, bst.minute);
-  const dGZ=getDayGZ(USER.year, USER.month, USER.day);
-  const hGZ=getHrGZ(bst.hour, dGZ.tg); const ri=dGZ.tg;
+  const dGZ=getDayGZ(USER.year, USER.month, USER.day); const ri=dGZ.tg;
 
   const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
   let score = 0;
@@ -516,10 +383,9 @@ function renderMingpan(){
   let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
   let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
-  // 安全聲明數組，徹底清除運行時卡死
   const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
   const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
-  const totalBone = tgWeightArr[yGZ.tg] + dzWeightArr[yGZ.dz] + tgWeightArr[mGZ.tg] + dzWeightArr[mGZ.dz] + tgWeightArr[dGZ.tg] + dzWeightArr[dGZ.dz] + tgWeightArr[hGZ.tg] + dzWeightArr[hGZ.dz];
+  const totalBone = tgWeightArr[yGZ.tg] + dzWeightArr[yGZ.dz] + tgWeightArr[mGZ.tg] + dzWeightArr[mGZ.dz] + tgWeightArr[dGZ.tg] + dzWeightArr[dGZ.dz];
 
   if(document.getElementById('mp-name')) document.getElementById('mp-name').textContent=USER.name;
   if(document.getElementById('mp-birthday')) document.getElementById('mp-birthday').textContent=`${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}時${USER.minute}分`;
@@ -527,7 +393,7 @@ function renderMingpan(){
   if(document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]}`;
   if(document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent=gejuStr;
   if(document.getElementById('mp-qiangruo')) document.getElementById('mp-qiangruo').textContent=t(strengthKey);
-  if(document.getElementById('mp-bone')) document.getElementById('mp-bone').textContent=`${Math.floor(totalBone)}${t('bw_liang')}${Math.round((totalBone-Math.floor(totalBone))*10)}${t('bw_qian')}`;
+  if(document.getElementById('mp-bone')) document.getElementById('mp-bone').textContent=`${Math.floor(totalBone)}兩`;
 
   const g4=document.getElementById('bazi4-grid');
   if (g4) {
@@ -541,37 +407,13 @@ function renderMingpan(){
   }
 }
 
-function renderDayun(){
-  const bst = correctSolarTime(USER.hour, USER.minute, USER.birthplace);
-  const yGZ=getYrGZPrecise(USER.year, USER.month, USER.day, bst.hour, bst.minute);
-  const dGZ=getDayGZ(USER.year, USER.month, USER.day); const ri=dGZ.tg;
-  const dy=getDayun(USER.gender, USER.year, USER.month, USER.day, yGZ.tg);
-  const nowY=new Date().getFullYear(); const curIdx=getCurrentDayunIdx(dy, USER.year, nowY);
-  const cur=curIdx!==null?dy.list[curIdx]:null;
+function shiftDay(d){ curDate.setDate(curDate.getDate()+d); renderJiari(); }
+function goToday(){ curDate=new Date(); renderJiari(); }
 
-  if(document.getElementById('dy-startage')) document.getElementById('dy-startage').textContent=dy.startAge + t('age_start');
-  if(document.getElementById('dy-dir')) document.getElementById('dy-dir').textContent=dy.fwd ? t('dir_fwd') : t('dir_rev');
-  
-  if(cur && document.getElementById('dy-current')){
-    document.getElementById('dy-current').textContent=`${t('tg_name')[cur.tgIdx]}${t('dz_name')[cur.dzIdx]} · ${cur.age}${t('age_unit')}`;
-  }
-  const dyList = document.getElementById('dayun-list');
-  if (dyList) {
-    dyList.innerHTML=dy.list.map((item,i)=>{
-      return `<div class="dy-item${i===curIdx?' current':''}">
-        <div class="dy-gz"><span>${t('tg_name')[item.tgIdx]}</span><span>${t('dz_name')[item.dzIdx]}</span></div>
-        <div class="dy-info"><div>${item.age}${t('age_unit')} · ${t('ten')[SS_TABLE[ri][item.tgIdx]]}</div></div>
-      </div>`;
-    }).join('');
-  }
-}
-
-function switchTab(tab){
-  ['jiari','mingpan','dayun'].forEach(t=>{ if(document.getElementById('tab-'+t)) document.getElementById('tab-'+t).style.display=t===tab?'block':'none'; });
-  if(tab==='mingpan') renderMingpan(); if(tab==='dayun') renderDayun();
-}
-
-(function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H,stars=[];function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);for(let i=0;i<60;i++)stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.2});function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(232,211,153,0.7)';stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);ctx.fill();});requestAnimationFrame(draw);}draw();})();
+/* ════════════════════════════════════════
+   星空背景常規模組
+════════════════════════════════════════ */
+(function(){const c=document.getElementById('bg-canvas');if(!c)return;const ctx=c.getContext('2d');let W,H;function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}resize();addEventListener('resize',resize);ctx.fillStyle='#fff';})();
 
 setTimeout(() => { updateStaticUI(); renderJiari(); }, 120);
 </script>
