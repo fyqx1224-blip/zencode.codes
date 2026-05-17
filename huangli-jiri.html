@@ -105,6 +105,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .ic.open .ic-body{display:block;}
 .ic-body{font-size:0.62rem;color:var(--text-f);line-height:1.95;margin-top:8px;display:none;border-top:1px solid rgba(212,168,67,0.07);padding-top:9px;}
 .ic-api-engine{margin-top:10px;padding:10px 14px;background:rgba(212,168,67,0.04);border-left:2px solid rgba(212,168,67,0.35);color:rgba(240,234,214,0.7);line-height:1.8;}
+.ic-hint{display:block;margin-top:6px;font-size:0.5rem;color:rgba(212,168,67,0.4);letter-spacing:0.15em;}
 .divider{height:1px;margin:14px 20px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.13),transparent);}
 
 /* 日期滾輪 */
@@ -137,6 +138,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .ht-hcell{font-size:0.48rem;color:rgba(212,168,67,0.5);padding:6px 4px;text-align:center;}
 .ht-row.ht-cur{background:rgba(212,168,67,0.04);}
 .ht-cell{font-size:0.52rem;padding:7px 4px;text-align:center;color:var(--text-d);display:flex;align-items:center;justify-content:center;gap:2px;}
+.ht-time{font-size:0.45rem;color:var(--text-f);}
+.ht-good,.ht-bad{font-size:0.44rem;}
 .ht-gz{font-family:'Ma Shan Zheng',cursive;font-size:0.85rem;}
 
 .info-card{margin:0 16px 12px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.12);padding:15px 17px;}
@@ -161,6 +164,57 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .modal-box input:focus, .modal-box select:focus { border-color:var(--gold); }
 .modal-flex { display:flex; gap:10px; }
 .modal-flex > div { flex:1; }
+
+/* =========================================
+   手機端字體與觸控適應 (Mobile Responsive)
+   ========================================= */
+@media (max-width: 768px) {
+  /* 頂部導航按鈕放大 */
+  .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
+  .settings-btn { font-size: 0.8rem; padding: 6px 12px; }
+  .lang-select { font-size: 0.75rem; padding: 6px 10px; }
+  
+  /* 滾輪日期提示放大 */
+  .date-solar { font-size: 1.15rem; }
+  .date-lunar { font-size: 0.75rem; }
+  .dp-goto-today { font-size: 0.6rem; padding: 6px 12px; }
+
+  /* 綜合點評文字放大 */
+  .verdict-title { font-size: 0.95rem; }
+  .verdict-body { font-size: 0.85rem; }
+  
+  /* 神煞標籤與解讀文字放大 */
+  .ss-tag { font-size: 0.75rem; padding: 6px 14px; }
+  .ic-title { font-size: 0.85rem; }
+  .ic-body { font-size: 0.8rem; }
+  .ic-api-engine { font-size: 0.75rem; }
+  .ic-hint { font-size: 0.6rem; margin-top: 8px; }
+  
+  /* 六維運勢面板放大 */
+  .fc-title { font-size: 0.75rem; }
+  .fc-score-num { font-size: 0.9rem; }
+  
+  /* 時辰表格文字放大 */
+  .ht-hcell { font-size: 0.6rem; }
+  .ht-cell { font-size: 0.7rem; }
+  .ht-time { font-size: 0.6rem; }
+  .ht-good, .ht-bad { font-size: 0.6rem; }
+  .ht-gz { font-size: 0.95rem; }
+  
+  /* 個人命盤列表文字放大 */
+  .info-row { font-size: 0.85rem; padding: 4px 0; }
+  
+  /* 大運列表文字放大 */
+  .dy-item { padding: 12px 15px; }
+  .dy-gz { font-size: 1.4rem; }
+  .dy-age { font-size: 0.85rem; }
+  .dy-years { font-size: 0.75rem; margin-top: 4px; }
+  
+  /* 表單字體放大，避免手機輸入時觸發自動縮放 */
+  .lp-box label, .modal-box label { font-size: 0.85rem; }
+  .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
+  .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
+}
 </style>
 </head>
 <body>
@@ -196,7 +250,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="lp-lon" required value="120.00" step="0.01"></div>
         <div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="lp-tz" required value="8"></div>
         <div style="flex:1; display:flex; align-items:center; padding-top:12px;">
-          <input type="checkbox" id="lp-dst" style="width:auto; margin:0 8px 0 0;">
+          <input type="checkbox" id="lp-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);">
           <label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label>
         </div>
       </div>
@@ -241,13 +295,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="m-lon" required value="120.00" step="0.01"></div>
         <div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="m-tz" required value="8"></div>
         <div style="flex:1; display:flex; align-items:center; padding-top:12px;">
-          <input type="checkbox" id="m-dst" style="width:auto; margin:0 8px 0 0;">
+          <input type="checkbox" id="m-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);">
           <label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label>
         </div>
       </div>
       <div style="display:flex; gap:10px; margin-top:10px;">
-        <button type="submit" style="flex:2; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; padding:12px; font-weight:bold; cursor:pointer; letter-spacing:0.1em; border-radius:2px;" data-hl="modal_submit">確認排盤</button>
-        <button type="button" onclick="hideSetupModal()" style="flex:1; background:none; border:1px solid rgba(212,168,67,0.3); color:var(--text); cursor:pointer; border-radius:2px;" data-hl="modal_cancel">取消</button>
+        <button type="submit" style="flex:2; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; font-weight:bold; cursor:pointer; letter-spacing:0.1em; border-radius:2px;" data-hl="modal_submit">確認排盤</button>
+        <button type="button" onclick="hideSetupModal()" id="m-cancel" style="flex:1; background:none; border:1px solid rgba(212,168,67,0.3); color:var(--text); cursor:pointer; border-radius:2px;" data-hl="modal_cancel">取消</button>
       </div>
     </form>
   </div>
@@ -558,14 +612,12 @@ function getDayOfYear(y, m, d) {
 
 function getTrueSolarTime(year, month, day, hour, minute, longitude, tzOffset, isDST) {
   let minTotal = hour * 60 + minute;
-  if (isDST) minTotal -= 60; // 減去夏令時
+  if (isDST) minTotal -= 60;
   
-  // 經度差計算平太陽時 (1度 = 4分鐘)
   const standardMeridian = tzOffset * 15;
   const lonDiff = longitude - standardMeridian;
   minTotal += lonDiff * 4;
 
-  // 均時差 (Equation of Time) 計算真太陽時
   const n = getDayOfYear(year, month, day);
   const B = (2 * Math.PI * (n - 81)) / 365.24;
   const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
@@ -578,7 +630,6 @@ function getTrueSolarTime(year, month, day, hour, minute, longitude, tzOffset, i
   return { hour: Math.floor(minTotal / 60), minute: Math.round(minTotal % 60), dayOffset: dayOffset };
 }
 
-// 返回經過真太陽時偏移後的「實體日曆基準點」
 function getAdjustedSolarDate(y, m, d, h, min, lon, tz, dst) {
   const tst = getTrueSolarTime(y, m, d, h, min, lon, tz, dst);
   let adjDate = new Date(y, m - 1, d);
@@ -704,7 +755,7 @@ if(currentLang === 'en') {
   goods=['祈福·靜心','農耕·出行','求職·開業','會友·簽約','婚嫁·動土','求財·祭祀','宴客·慶典','習藝·出行','商談·締約','修造·收財','祭祀·祈禱','入眠·休養'];
   bads=['出行·爭訟','訴訟·手術','伐木·動土','喪葬·動刀','出行·嫁娶','動土·爭訟','喪葬','動刀·訴訟','嫁娶·動土','喪葬·遠行','嫁娶·遠行','爭訟·手術'];
 }
-for(let i=0;i<12;i++){const hrGZ=getHrGZ(i*2,ldGZ.tg);html+=`<div class="ht-row${i===curDzHour?' ht-cur':''}"><div class="ht-cell"><span class="ht-gz ${DZ_CSS[i]}">${names[i]}</span></div><div class="ht-cell" style="font-size:0.45rem;color:var(--text-f);">${ranges[i]}</div><div class="ht-cell"><span class="ht-gz ${TG_CSS[hrGZ.tg]}">${t('tg_name')[hrGZ.tg]}</span><span class="ht-gz ${DZ_CSS[hrGZ.dz]}">${t('dz_name')[hrGZ.dz]}</span></div><div class="ht-cell ht-good" style="font-size:0.44rem;">${goods[i]}</div><div class="ht-cell ht-bad" style="font-size:0.44rem;">${bads[i]}</div></div>`;}document.getElementById('hour-table').innerHTML=html;}
+for(let i=0;i<12;i++){const hrGZ=getHrGZ(i*2,ldGZ.tg);html+=`<div class="ht-row${i===curDzHour?' ht-cur':''}"><div class="ht-cell"><span class="ht-gz ${DZ_CSS[i]}">${names[i]}</span></div><div class="ht-cell ht-time">${ranges[i]}</div><div class="ht-cell"><span class="ht-gz ${TG_CSS[hrGZ.tg]}">${t('tg_name')[hrGZ.tg]}</span><span class="ht-gz ${DZ_CSS[hrGZ.dz]}">${t('dz_name')[hrGZ.dz]}</span></div><div class="ht-cell ht-good">${goods[i]}</div><div class="ht-cell ht-bad">${bads[i]}</div></div>`;}document.getElementById('hour-table').innerHTML=html;}
 
 function renderJiari(){
   try {
@@ -765,7 +816,7 @@ function renderJiari(){
     if (interpList) {
       interpList.innerHTML=ss.map(s=>{
         const info = t(s.key);
-        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n||info}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span style="display:block;margin-top:6px;font-size:0.5rem;color:rgba(212,168,67,0.4);letter-spacing:0.15em;">${t('api_hint_replaced')}</span></div></div></div>`;
+        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n||info}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div></div></div>`;
       }).join('');
     }
 
