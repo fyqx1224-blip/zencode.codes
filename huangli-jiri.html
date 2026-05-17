@@ -15,6 +15,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .grid-ov{z-index:1;background-image:linear-gradient(rgba(212,168,67,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.02) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
 .scan{height:2px;z-index:2;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.4),transparent);animation:scan 9s linear infinite;}
 @keyframes scan{0%{top:-2px}100%{top:100vh}}
+.fp{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:fu linear both;}
+@keyframes fu{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.7}90%{opacity:.3}100%{transform:translateY(-100vh) scale(.2);opacity:0}}
 
 /* 首頁表單樣式 (Landing Page) */
 #landing-view { position:relative; z-index:50; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
@@ -169,48 +171,31 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
    手機端字體與觸控適應 (Mobile Responsive)
    ========================================= */
 @media (max-width: 768px) {
-  /* 頂部導航按鈕放大 */
   .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
   .settings-btn { font-size: 0.8rem; padding: 6px 12px; }
   .lang-select { font-size: 0.75rem; padding: 6px 10px; }
-  
-  /* 滾輪日期提示放大 */
   .date-solar { font-size: 1.15rem; }
   .date-lunar { font-size: 0.75rem; }
   .dp-goto-today { font-size: 0.6rem; padding: 6px 12px; }
-
-  /* 綜合點評文字放大 */
   .verdict-title { font-size: 0.95rem; }
   .verdict-body { font-size: 0.85rem; }
-  
-  /* 神煞標籤與解讀文字放大 */
   .ss-tag { font-size: 0.75rem; padding: 6px 14px; }
   .ic-title { font-size: 0.85rem; }
   .ic-body { font-size: 0.8rem; }
   .ic-api-engine { font-size: 0.75rem; }
   .ic-hint { font-size: 0.6rem; margin-top: 8px; }
-  
-  /* 六維運勢面板放大 */
   .fc-title { font-size: 0.75rem; }
   .fc-score-num { font-size: 0.9rem; }
-  
-  /* 時辰表格文字放大 */
   .ht-hcell { font-size: 0.6rem; }
   .ht-cell { font-size: 0.7rem; }
   .ht-time { font-size: 0.6rem; }
   .ht-good, .ht-bad { font-size: 0.6rem; }
   .ht-gz { font-size: 0.95rem; }
-  
-  /* 個人命盤列表文字放大 */
   .info-row { font-size: 0.85rem; padding: 4px 0; }
-  
-  /* 大運列表文字放大 */
   .dy-item { padding: 12px 15px; }
   .dy-gz { font-size: 1.4rem; }
   .dy-age { font-size: 0.85rem; }
   .dy-years { font-size: 0.75rem; margin-top: 4px; }
-  
-  /* 表單字體放大，避免手機輸入時觸發自動縮放 */
   .lp-box label, .modal-box label { font-size: 0.85rem; }
   .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
   .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
@@ -771,7 +756,6 @@ function renderJiari(){
     }
     document.getElementById('disp-lunar').textContent=`${approxLunar(d)}`;
 
-    // === 真太陽時校正：取得偏移後的基準日期與時間 ===
     const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER.timezone, USER.isDST);
     const yGZ = getYrGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
     const mGZ = getMoGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
@@ -832,7 +816,6 @@ function renderJiari(){
 
 function renderMingpan(){
   try {
-    // === 真太陽時校正 ===
     const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER.timezone, USER.isDST);
     const yGZ = getYrGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
     const mGZ = getMoGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
@@ -848,6 +831,26 @@ function renderMingpan(){
     
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
+
+    // === 動態喜用神判斷 (考慮身強弱與調候) ===
+    let xiyongArr = [];
+    if (strengthKey === 'str_strong') {
+      xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[WXT[ri]];
+    } else {
+      xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[WXT[ri]];
+    }
+    
+    // 冬夏調候補正
+    const monthDz = mGZ.dz; 
+    if ([11, 0, 1].includes(monthDz)) { 
+        if(!xiyongArr.includes('火')) xiyongArr.push('火'); 
+        if(!xiyongArr.includes('木')) xiyongArr.push('木'); 
+    }
+    if ([5, 6, 7].includes(monthDz)) { 
+        if(!xiyongArr.includes('水')) xiyongArr.push('水'); 
+        if(!xiyongArr.includes('金')) xiyongArr.push('金'); 
+    }
+    xiyongArr = [...new Set(xiyongArr)]; // 去重
 
     const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
     const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
@@ -876,7 +879,10 @@ function renderMingpan(){
     
     if(document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyDict[yyTxt]}${t('wx_'+WXT[dGZ.tg])}`;
     if(document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent=gejuStr;
-    if(document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent={'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[WXT[ri]].map(x=>t('wx_'+x)).join(currentLang==='en'?', ':'、');
+    
+    // 套用修正後的喜用神
+    if(document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x=>t('wx_'+x)).join(currentLang==='en'?', ':'、');
+    
     if(document.getElementById('mp-qiangruo')) document.getElementById('mp-qiangruo').textContent=t(strengthKey);
     if(document.getElementById('mp-bone')) document.getElementById('mp-bone').textContent=`${boneLiang}${t('bw_liang')}${boneQian}${t('bw_qian')}`;
 
