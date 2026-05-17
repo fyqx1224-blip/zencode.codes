@@ -6,7 +6,7 @@
 <title>黃道吉日 · 真太陽時精準排盤</title>
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);--bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.55);--text-f:rgba(240,234,214,0.22);--teal:#319795;--teal-dim:rgba(49,151,149,0.12);--jia:#5AB86C;--yi:#8ED49A;--bing:#E05030;--ding:#F09070;--wu:#C8942A;--ji:#D4B870;--geng:#B0B8C8;--xin:#D8DEE8;--ren:#4A8EC8;--gui:#80B4E0;}
+:root{--gold:#D4A843;--gold-b:#F0C96A;--gold-dim:rgba(212,168,67,0.18);--bg:#06050A;--text:#F0EAD6;--text-d:rgba(240,234,214,0.85);--text-f:rgba(240,234,214,0.65);--teal:#319795;--teal-dim:rgba(49,151,149,0.12);--jia:#5AB86C;--yi:#8ED49A;--bing:#E05030;--ding:#F09070;--wu:#C8942A;--ji:#D4B870;--geng:#B0B8C8;--xin:#D8DEE8;--ren:#4A8EC8;--gui:#80B4E0;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow-x:hidden;min-height:100vh;}
 .tg-jia{color:var(--jia);}.tg-yi{color:var(--yi);}.tg-bing{color:var(--bing);}.tg-ding{color:var(--ding);}.tg-wu{color:var(--wu);}.tg-ji{color:var(--ji);}.tg-geng{color:var(--geng);}.tg-xin{color:var(--xin);}.tg-ren{color:var(--ren);}.tg-gui{color:var(--gui);}
@@ -76,7 +76,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-tg,.sz-dz{font-family:'Ma Shan Zheng',cursive;font-size:1.7rem;line-height:1;}
 .sz-tg{padding:2px 4px 1px;} .sz-dz{padding:1px 4px 3px;}
 .sz-ten{font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
-.sz-nayin{font-size:0.44rem;color:rgba(240,234,214,0.18);padding:2px 3px 6px;text-align:center;}
+.sz-nayin{font-size:0.44rem;color:rgba(240,234,214,0.6);padding:2px 3px 6px;text-align:center;}
 .ten-qisha{color:#D05050;} .ten-zhengguang{color:#7080B8;} .ten-pianyin{color:#9060C0;} .ten-zhengyin{color:#A878D0;} .ten-shishen{color:#60A870;} .ten-shangguan{color:#50B880;} .ten-piancai{color:#9090C0;} .ten-zhengcai{color:#8090C0;} .ten-bijian{color:rgba(200,170,100,0.6);} .ten-jiecai{color:rgba(180,145,80,0.6);} .ten-rizhu{color:rgba(212,168,67,0.75);}
 .sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:176px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;}
 .sz-col.open .sz-detail{display:block;}
@@ -137,7 +137,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .hour-table{margin:0 16px 14px;background:rgba(7,6,12,0.85);border:1px solid rgba(212,168,67,0.09);}
 .ht-head,.ht-row{display:grid;grid-template-columns:1.8fr repeat(4,1fr);border-bottom:1px solid rgba(212,168,67,0.05);}
 .ht-head{background:rgba(212,168,67,0.04);}
-.ht-hcell{font-size:0.48rem;color:rgba(212,168,67,0.5);padding:6px 4px;text-align:center;}
+.ht-hcell{font-size:0.48rem;color:rgba(212,168,67,0.85);padding:6px 4px;text-align:center;}
 .ht-row.ht-cur{background:rgba(212,168,67,0.04);}
 .ht-cell{font-size:0.52rem;padding:7px 4px;text-align:center;color:var(--text-d);display:flex;align-items:center;justify-content:center;gap:2px;}
 .ht-time{font-size:0.45rem;color:var(--text-f);}
@@ -186,11 +186,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   .ic-hint { font-size: 0.6rem; margin-top: 8px; }
   .fc-title { font-size: 0.75rem; }
   .fc-score-num { font-size: 0.9rem; }
-  .ht-hcell { font-size: 0.6rem; }
-  .ht-cell { font-size: 0.7rem; }
-  .ht-time { font-size: 0.6rem; }
-  .ht-good, .ht-bad { font-size: 0.6rem; }
-  .ht-gz { font-size: 0.95rem; }
+  .ht-hcell { font-size: 0.7rem; }
+  .ht-cell { font-size: 0.75rem; }
+  .ht-time { font-size: 0.7rem; }
+  .ht-good, .ht-bad { font-size: 0.7rem; }
+  .ht-gz { font-size: 1rem; }
   .info-row { font-size: 0.85rem; padding: 4px 0; }
   .dy-item { padding: 12px 15px; }
   .dy-gz { font-size: 1.4rem; }
@@ -797,7 +797,7 @@ function renderJiari(){
     if(document.getElementById('verdict-body')) document.getElementById('verdict-body').textContent=vdt.body;
 
     const interpList = document.getElementById('interp-list');
-    if (interpList) {
+    if (interList) {
       interpList.innerHTML=ss.map(s=>{
         const info = t(s.key);
         return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n||info}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div></div></div>`;
@@ -832,7 +832,6 @@ function renderMingpan(){
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
-    // === 動態喜用神判斷 (考慮身強弱與調候) ===
     let xiyongArr = [];
     if (strengthKey === 'str_strong') {
       xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[WXT[ri]];
@@ -840,7 +839,6 @@ function renderMingpan(){
       xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[WXT[ri]];
     }
     
-    // 冬夏調候補正
     const monthDz = mGZ.dz; 
     if ([11, 0, 1].includes(monthDz)) { 
         if(!xiyongArr.includes('火')) xiyongArr.push('火'); 
@@ -850,7 +848,7 @@ function renderMingpan(){
         if(!xiyongArr.includes('水')) xiyongArr.push('水'); 
         if(!xiyongArr.includes('金')) xiyongArr.push('金'); 
     }
-    xiyongArr = [...new Set(xiyongArr)]; // 去重
+    xiyongArr = [...new Set(xiyongArr)]; 
 
     const tgWeightArr = [1.2, 0.9, 1.0, 0.7, 0.8, 0.9, 0.8, 0.6, 1.1, 0.9];
     const dzWeightArr = [1.6, 0.6, 0.7, 1.0, 0.9, 1.6, 1.0, 0.8, 0.8, 0.9, 0.6, 1.5];
@@ -880,7 +878,6 @@ function renderMingpan(){
     if(document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent=`${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyDict[yyTxt]}${t('wx_'+WXT[dGZ.tg])}`;
     if(document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent=gejuStr;
     
-    // 套用修正後的喜用神
     if(document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x=>t('wx_'+x)).join(currentLang==='en'?', ':'、');
     
     if(document.getElementById('mp-qiangruo')) document.getElementById('mp-qiangruo').textContent=t(strengthKey);
