@@ -401,6 +401,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 let USER = {}; 
 let currentLang = localStorage.getItem('zencode_lang') || 'zh-TW';
 
+const BW_Y = [1.2,0.9,0.6,0.7,1.2,0.5,0.9,0.8,0.7,0.8, 1.5,0.9,1.6,0.8,0.8,1.9,1.2,0.6,0.8,0.7, 0.5,1.5,0.6,1.6,1.5,0.7,0.8,1.2,1.0,0.7, 1.5,0.6,0.5,1.4,1.4,0.9,0.7,0.7,0.9,1.2, 0.8,0.7,1.3,0.5,1.4,0.5,0.9,1.6,0.5,0.7, 1.2,0.8,0.8,0.6,1.9,0.6,0.8,1.6,1.0,0.7];
+const BW_M = [0, 0.6,0.7,1.8,0.9,0.5,1.6,0.9,1.5,1.8,0.8,0.9,0.5];
+const BW_D = [0, 0.5,1.0,0.8,1.5,1.6,1.5,0.8,1.6,0.8,1.6, 0.9,1.7,0.8,1.7,1.0,0.8,0.9,1.8,0.5,1.5, 1.0,0.9,0.8,0.9,1.5,1.8,0.7,0.8,1.6,0.6];
+const BW_H = [1.6,0.6,0.7,1.0,0.9,1.6,1.0,0.8,0.8,0.9,0.6,0.6];
+
 const HL_I18N = {
   'zh-TW': {
     logo:'黃道吉日', sub:'個人命盤 · 每日流日', tab_today:'今日', tab_chart:'命盤', tab_luck:'大運', btn_today:'回到今天',
@@ -656,11 +661,12 @@ function getAdjustedSolarDate(y, m, d, h, min, lon, tz, dst) {
 
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
-const TEN_CSS_MAP={'七殺':'ten-qisha','正官':'ten-zhengguang','偏財':'ten-piancai','正財':'ten-zhengcai','偏印':'ten-pianyin','正印':'ten-zhengyin','食神':'ten-shishen','傷官':'ten-shangguan','比肩':'ten-bijian','劫財':'ten-jiecai','日主':'ten-rizhu','—':'ten-none'};
 const WXT=['木','木','火','火','土','土','金','金','水','水'];const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
 const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
 const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
 function nayin(tg, dz) { return NAYIN_LIST[(tg * 36 + dz * 25) % 60]; }
+
+// 完美修復十神算法：精確區分五行生剋與陰陽異同
 const SS_TABLE=(()=>{const map=[];const rels=[['比肩','劫財'],['食神','傷官'],['偏財','正財'],['七殺','正官'],['偏印','正印']];for(let ri=0;ri<10;ri++){const row=[];const dm_el=Math.floor(ri/2);const dm_yy=ri%2;for(let tg=0;tg<10;tg++){if(ri===tg){row.push('日主');continue;}const tg_el=Math.floor(tg/2);const tg_yy=tg%2;const diff=(tg_el-dm_el+5)%5;const isDiffYy=dm_yy!==tg_yy?1:0;row.push(rels[diff][isDiffYy]);}map.push(row);}return map;})();
 
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
@@ -806,7 +812,6 @@ function setupDrumEvents(drumId, innerId, items, getVal, onChange) {
   let scrollTimeout;
   let lastNotifiedVal = getVal(); 
 
-  // PC 端滾輪衝突攔截：強制一格 24px
   drum.addEventListener('wheel', (e) => {
     e.preventDefault(); 
     const currentIdx = Math.round(drum.scrollTop / 24);
@@ -838,8 +843,6 @@ function renderHourTable(ri,ldGZ){
   const curDzHour=Math.floor((curDate.getHours()+1)/2)%12;
   let html=`<div class="ht-head"><div class="ht-hcell">${t('th_hour')}</div><div class="ht-hcell">${t('th_time')}</div><div class="ht-hcell">${t('th_gz')}</div><div class="ht-hcell">${t('th_good')}</div><div class="ht-hcell">${t('th_bad')}</div></div>`;
   const names=t('dz_name');const ranges=['23-01','01-03','03-05','05-07','07-09','09-11','11-13','13-15','15-17','17-19','19-21','21-23'];
-  
-  // 完全納入多語系字典處理宜忌事項
   let goods, bads;
   if(currentLang === 'en') {
     goods=['Meditation','Farming','Seeking Job','Meeting','Marriage','Wealth','Banquet','Learning','Negotiation','Renovation','Rituals','Rest'];
@@ -966,10 +969,25 @@ function renderMingpan(){
     if ([5, 6, 7].includes(monthDz)) { 
         if(!xiyongArr.includes('水')) xiyongArr.unshift('水'); 
     }
-    if ([8, 9, 10].includes(monthDz) && dmWx === '木') {
-        xiyongArr = ['火', '木']; 
+    if ([8, 9, 10].includes(monthDz)) {
+        if (ri === 0) {
+            xiyongArr = ['火', '木']; 
+        } else if (ri === 1) {
+            if (strengthKey === 'str_weak') { xiyongArr = ['水', '木']; }
+        }
     }
     xiyongArr = [...new Set(xiyongArr)];
+
+    // 胎元計算
+    const tyTg = (mGZ.tg + 1) % 10;
+    const tyDz = (mGZ.dz + 3) % 12;
+    if(document.getElementById('mp-taiyuan')) document.getElementById('mp-taiyuan').textContent = t('tg_name')[tyTg] + t('dz_name')[tyDz];
+
+    // 日柱空亡計算
+    let offset = 10 - dGZ.tg;
+    let kw1 = (dGZ.dz + offset) % 12;
+    let kw2 = (kw1 + 1) % 12;
+    if(document.getElementById('mp-kongwang')) document.getElementById('mp-kongwang').textContent = t('dz_name')[kw1] + t('dz_name')[kw2];
 
     if(document.getElementById('mp-name')) document.getElementById('mp-name').textContent=USER.name;
     
