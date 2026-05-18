@@ -640,6 +640,21 @@ const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
 const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
 function nayin(tg, dz) { return NAYIN_LIST[(tg * 36 + dz * 25) % 60]; }
 
+const TEN_CSS_MAP = {
+  '七殺': 'ten-qisha',
+  '正官': 'ten-zhengguang',
+  '偏印': 'ten-pianyin',
+  '正印': 'ten-zhengyin',
+  '食神': 'ten-shishen',
+  '傷官': 'ten-shangguan',
+  '偏財': 'ten-piancai',
+  '正財': 'ten-zhengcai',
+  '比肩': 'ten-bijian',
+  '劫財': 'ten-jiecai',
+  '日主': 'ten-rizhu',
+  '—': ''
+};
+
 const SS_TABLE=(()=>{const map=[];const rels=[['比肩','劫財'],['食神','傷官'],['偏財','正財'],['七殺','正官'],['偏印','正印']];for(let ri=0;ri<10;ri++){const row=[];const dm_el=Math.floor(ri/2);const dm_yy=ri%2;for(let tg=0;tg<10;tg++){if(ri===tg){row.push('日主');continue;}const tg_el=Math.floor(tg/2);const tg_yy=tg%2;const diff=(tg_el-dm_el+5)%5;const isDiffYy=dm_yy!==tg_yy?1:0;row.push(rels[diff][isDiffYy]);}map.push(row);}return map;})();
 
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
