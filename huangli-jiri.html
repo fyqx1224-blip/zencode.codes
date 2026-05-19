@@ -71,6 +71,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sz-tg{padding:2px 4px 1px;} .sz-dz{padding:1px 4px 3px;}
 .sz-ten{font-size:0.48rem;letter-spacing:0.06em;padding:3px 2px;text-align:center;min-height:18px;}
 .sz-nayin{font-size:0.44rem;color:var(--text-f);padding:2px 3px 6px;text-align:center;}
+.sz-zg-box { margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(212,168,67,0.2); width: 100%; display: flex; flex-direction: column; gap: 2px; padding-bottom: 6px;}
+.sz-zg-row { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 0.5rem; }
+.sz-zg-ten { font-size: 0.44rem; opacity: 0.8; }
 .ten-qisha{color:#D05050;} .ten-zhengguang{color:#7080B8;} .ten-pianyin{color:#9060C0;} .ten-zhengyin{color:#A878D0;} .ten-shishen{color:#60A870;} .ten-shangguan{color:#50B880;} .ten-piancai{color:#9090C0;} .ten-zhengcai{color:#8090C0;} .ten-bijian{color:rgba(200,170,100,0.6);} .ten-jiecai{color:rgba(180,145,80,0.6);} .ten-rizhu{color:rgba(212,168,67,0.75);}
 .sz-detail{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;width:176px;background:#0D0B18;border:1px solid rgba(212,168,67,0.22);padding:13px 14px 11px;}
 .sz-col.open .sz-detail{display:block;}
@@ -374,7 +377,7 @@ const HL_I18N = {
     lbl_select_date: '選 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '時',
     hd_pillars:'命 盤 × 今 日 四 柱', grp_base:'原 命 盤', grp_luck:'大 運', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 時',
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'時柱',
-    rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害',
+    rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰',
     hd_ss:'今 日 神 煞', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', 
@@ -397,6 +400,9 @@ const HL_I18N = {
     rel_interp_he: {n: '地支相合', d: '氣場交融和諧。易得人緣、逢凶化吉、合作順利，但也可能帶來感情牽絆或決策猶豫。'},
     rel_interp_chong: {n: '地支相沖', d: '氣場激烈對撞。代表動盪、變化、衝突或奔波。宜主動求變，外出走動，避免正面衝突。'},
     rel_interp_hai: {n: '地支相害', d: '氣場暗中摩擦。易生暗耗、誤會、背後小人或心理壓力。行事宜光明磊落，注意溝通。'},
+    rel_interp_po: {n: '地支相破', d: '氣場內部破壞。事情容易在即將成功時生變，或有人際關係的暗中損耗。宜保持耐心，留有備案。'},
+    rel_interp_xing: {n: '地支相刑', d: '氣場互相折磨刑剋。易引發口舌是非、法律糾紛或內心煎熬。行事宜守規矩，避免衝動。'},
+    rel_interp_zixing: {n: '地支自刑', d: '同類氣場過旺導致的自我刑剋。容易鑽牛角尖、自尋煩惱或因自身過失導致挫折。宜放平心態，豁達處事。'},
     f_wealth: '財運', f_career: '事業', f_love: '感情', f_health: '健康', f_study: '學業', f_travel: '出行',
     th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盤建檔', lp_sub: '輸入您的出生資訊以生成真太陽時命盤', lp_submit: '查看黃道吉日與命盤',
@@ -408,7 +414,7 @@ const HL_I18N = {
     lbl_select_date: '选 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '时',
     hd_pillars:'命 盘 × 今 日 四 柱', grp_base:'原 命 盘', grp_luck:'大 运', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 时',
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱',
-    rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害',
+    rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日综评：', hd_fortune6: '六 维 运 势', hd_hours: '今 日 十 二 时 辰',
     hd_ss:'今 日 神 煞', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', 
@@ -431,6 +437,9 @@ const HL_I18N = {
     rel_interp_he: {n: '地支相合', d: '气场交融和谐。易得人缘、逢凶化吉、合作顺利，但也可能带来感情牵绊或决策犹豫。'},
     rel_interp_chong: {n: '地支相冲', d: '气场激烈对撞。代表动荡、变化、冲突或奔波。宜主动求变，外出走动，避免正面冲突。'},
     rel_interp_hai: {n: '地支相害', d: '气场暗中摩擦。易生暗耗、误会、背后小人或心理压力。行事宜光明磊落，注意沟通。'},
+    rel_interp_po: {n: '地支相破', d: '气场内部破坏。事情容易在即将成功时生变，或有人际关系的暗中损耗。宜保持耐心，留有备案。'},
+    rel_interp_xing: {n: '地支相刑', d: '气场互相折磨刑克。易引发口舌是非、法律纠纷或内心煎熬。行事宜守规矩，避免冲动。'},
+    rel_interp_zixing: {n: '地支自刑', d: '同类气场过旺导致的自我刑克。容易钻牛角尖、自寻烦恼或因自身过失导致挫折。宜放平心态，豁达处事。'},
     f_wealth: '财运', f_career: '事业', f_love: '感情', f_health: '健康', f_study: '学业', f_travel: '出行',
     th_hour: '时辰', th_time: '时段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盘建档', lp_sub: '输入您的出生信息以生成真太阳时命盘', lp_submit: '查看黄道吉日与命盘',
@@ -442,7 +451,7 @@ const HL_I18N = {
     lbl_select_date: 'DATE', lbl_drum_yr: 'Y', lbl_drum_mo: 'M', lbl_drum_day: 'D', lbl_drum_hr: 'H',
     hd_pillars:'Natal Chart × Daily Transit', grp_base:'Natal Chart', grp_luck:'Decade', grp_year:'Transit Y', grp_month:'Transit M', grp_day:'Transit D', grp_hour:'Transit H',
     lbl_year:'Year', lbl_month:'Month', lbl_day:'Day', lbl_hour:'Hour',
-    rel_he:'Combine', rel_chong:'Clash', rel_liuhe:'6-Combine', rel_hai:'Harm',
+    rel_he:'Combine', rel_chong:'Clash', rel_liuhe:'6-Combine', rel_hai:'Harm', rel_po:'Destruction', rel_xing:'Punishment', rel_zixing:'Self-Punish',
     vd_title:'Verdict:', hd_fortune6: '6-Axis Fortune', hd_hours: '12 Chinese Hours',
     hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Daily Comprehensive Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
     lbl_name:'Name', lbl_birth:'DOB (Solar)', lbl_gender:'Gender', lbl_dm:'Day Master', lbl_pattern:'Pattern', lbl_useful:'Favorable', lbl_strength:'Strength',
@@ -465,6 +474,9 @@ const HL_I18N = {
     rel_interp_he: {n: 'Branch Combination', d: 'Harmonious energy flow. Fosters cooperation, good relationships, and problem-solving, but may cause delays or emotional attachment.'},
     rel_interp_chong: {n: 'Branch Clash', d: 'Intense energy collision. Indicates sudden changes, conflicts, or travel. Be proactive and adaptable; avoid stubbornness.'},
     rel_interp_hai: {n: 'Branch Harm', d: 'Hidden friction. May indicate misunderstandings, hidden obstacles, or emotional stress. Practice clear communication.'},
+    rel_interp_po: {n: 'Branch Destruction', d: 'Internal structural damage. Indicates plans breaking down near completion or hidden losses in relationships. Be patient and have a backup plan.'},
+    rel_interp_xing: {n: 'Branch Punishment', d: 'Mutual torture of energies. Can trigger legal issues, gossip, or severe inner turmoil. Follow the rules strictly and avoid impulsive actions.'},
+    rel_interp_zixing: {n: 'Self Punishment', d: 'Overwhelming same-element energy causing self-harm. Prone to overthinking, creating own troubles, or setbacks due to personal faults. Stay open-minded.'},
     f_wealth: 'Wealth', f_career: 'Career', f_love: 'Love', f_health: 'Health', f_study: 'Study', f_travel: 'Travel',
     th_hour: 'Hour', th_time: 'Time', th_gz: 'Pillars', th_good: 'Auspicious', th_bad: 'Inauspicious',
     lp_title: 'Bazi Setup', lp_sub: 'Enter details for True Solar Time calculation', lp_submit: 'Generate Chart & Daily Transit',
@@ -649,25 +661,17 @@ const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
 const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
 function nayin(tg, dz) { return NAYIN_LIST[(tg * 36 + dz * 25) % 60]; }
 
+const ZANGGAN = [[9],[5,7,9],[0,2,4],[1],[4,1,9],[2,6,4],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]];
+
 const TEN_CSS_MAP = {
-  '七殺': 'ten-qisha',
-  '正官': 'ten-zhengguang',
-  '偏印': 'ten-pianyin',
-  '正印': 'ten-zhengyin',
-  '食神': 'ten-shishen',
-  '傷官': 'ten-shangguan',
-  '偏財': 'ten-piancai',
-  '正財': 'ten-zhengcai',
-  '比肩': 'ten-bijian',
-  '劫財': 'ten-jiecai',
-  '日主': 'ten-rizhu',
-  '—': ''
+  '七殺': 'ten-qisha', '正官': 'ten-zhengguang', '偏印': 'ten-pianyin', '正印': 'ten-zhengyin',
+  '食神': 'ten-shishen', '傷官': 'ten-shangguan', '偏財': 'ten-piancai', '正財': 'ten-zhengcai',
+  '比肩': 'ten-bijian', '劫財': 'ten-jiecai', '日主': 'ten-rizhu', '—': ''
 };
 
 const SS_TABLE=(()=>{const map=[];const rels=[['比肩','劫財'],['食神','傷官'],['偏財','正財'],['七殺','正官'],['偏印','正印']];for(let ri=0;ri<10;ri++){const row=[];const dm_el=Math.floor(ri/2);const dm_yy=ri%2;for(let tg=0;tg<10;tg++){if(ri===tg){row.push('日主');continue;}const tg_el=Math.floor(tg/2);const tg_yy=tg%2;const diff=(tg_el-dm_el+5)%5;const isDiffYy=dm_yy!==tg_yy?1:0;row.push(rels[diff][isDiffYy]);}map.push(row);}return map;})();
 
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
-const PO6=[9,6,11,8,1,10,3,0,5,2,7,4];
 const HAI6=[11,10,9,8,7,6,5,4,3,2,1,0];
 const HE6={0:[1],1:[0],2:[11],11:[2],3:[10],10:[3],4:[9],9:[4],5:[8],8:[5],6:[7],7:[6]};
 
@@ -725,12 +729,36 @@ function checkRels(pillars){
   for(let i=0;i<pillars.length;i++){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
+      
+      // 合、沖、害
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
       if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
       if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
+      
+      // 相破
+      const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
+      if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
+      
+      // 相刑 (兩兩相遇即提示)
+      const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
+                     (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
+                     (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
+      const isZiXing = (a.dz===4&&b.dz===4)||(a.dz===6&&b.dz===6)||(a.dz===9&&b.dz===9)||(a.dz===11&&b.dz===11);
+      
+      if (isXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_xing')}`, type:'xiong', key:'rel_interp_xing'});
+      if (isZiXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]} ${t('rel_zixing')}`, type:'xiong', key:'rel_interp_zixing'});
     }
   }
-  return rels.slice(0,8);
+  
+  const uniqueRels = [];
+  const seen = new Set();
+  for (const r of rels) {
+      if (!seen.has(r.txt)) {
+          seen.add(r.txt);
+          uniqueRels.push(r);
+      }
+  }
+  return uniqueRels.slice(0,8);
 }
 
 function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
@@ -759,7 +787,42 @@ function getTenGroup(tenRaw){if(['正財','偏財', 'Direct Wealth', 'Indirect W
 function getDynamicReading(ssType,tenRaw){return`${t(`dyn_${getTenGroup(tenRaw)}`)}<br>${t(`dyn_adv_${ssType}`)}`;}
 
 let curDate=new Date();
-function pillarHTML(p){try{const tgName=t('tg_name')[p.tg];const dzName=t('dz_name')[p.dz];const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';const dzTenLocal=t('ten')[p.dzTenRaw]||p.dzTenRaw;const dzTenCls=TEN_CSS_MAP[p.dzTenRaw]||'';return`<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)"><div class="sz-head">${p.label}</div><div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div><div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div><div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div><div class="sz-ten ${dzTenCls}">${dzTenLocal}</div><div class="sz-nayin">${nayin(p.tg,p.dz)}</div><div class="sz-detail"><div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div><div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div><div class="sd-div"></div><div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div><div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div></div></div>`;}catch(e){return`<div class="sz-col"></div>`;}}
+function pillarHTML(p, ri){
+  try{
+    const tgName=t('tg_name')[p.tg];
+    const dzName=t('dz_name')[p.dz];
+    const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;
+    const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';
+    const dzTenLocal=t('ten')[p.dzTenRaw]||p.dzTenRaw;
+    const dzTenCls=TEN_CSS_MAP[p.dzTenRaw]||'';
+    
+    let zgHtml = '';
+    if (ri !== undefined && ZANGGAN[p.dz]) {
+       ZANGGAN[p.dz].forEach(zgTg => {
+           const tenRaw = SS_TABLE[ri][zgTg];
+           const ten = t('ten')[tenRaw] || '';
+           zgHtml += `<div class="sz-zg-row"><span class="${TG_CSS[zgTg]}">${t('tg_name')[zgTg]}</span><span class="sz-zg-ten ${TEN_CSS_MAP[tenRaw]}">${ten}</span></div>`;
+       });
+    }
+
+    return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
+      <div class="sz-head">${p.label}</div>
+      <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
+      <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
+      <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
+      <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
+      ${zgHtml ? `<div class="sz-zg-box">${zgHtml}</div>` : ''}
+      <div class="sz-nayin">${nayin(p.tg,p.dz)}</div>
+      <div class="sz-detail">
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
+        <div class="sd-div"></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
+      </div>
+    </div>`;
+  } catch(e) { return `<div class="sz-col"></div>`; }
+}
 function toggleDetail(el){const was=el.classList.contains('open');document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));if(!was)el.classList.add('open');}
 document.addEventListener('click',e=>{if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));});
 function approxLunar(date){const base=Date.UTC(2000,0,6);const diff=Math.floor((date.getTime()-base)/86400000);const cycleYr=Math.floor(diff/365.25);return`${t('tg_name')[((cycleYr%10)+10)%10]}${t('dz_name')[((cycleYr%12)+12)%12]}`;}
@@ -906,9 +969,9 @@ function renderJiari(){
     ];
 
     main.innerHTML=`<div class="grp-row" id="grp-row"><div class="grp-cell grp-bazi">${t('grp_base')}</div><div class="grp-cell grp-sep"></div><div class="grp-cell grp-dayun">${t('grp_luck')}</div><div class="grp-cell grp-liuyear">${t('grp_year')}</div><div class="grp-cell grp-liumonth">${t('grp_month')}</div><div class="grp-cell grp-liuday">${t('grp_day')}</div><div class="grp-cell grp-liuhour">${t('grp_hour')}</div></div>`;
-    pillars.slice(0,4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
+    pillars.slice(0,4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
     main.insertAdjacentHTML('beforeend','<div class="sz-vsep"></div>');
-    pillars.slice(4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p)));
+    pillars.slice(4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
 
     const rels=checkRels(pillars);
     if(document.getElementById('rel-outer')) document.getElementById('rel-outer').innerHTML = rels.length ? `<div class="rel-badges">${rels.map(r=>`<span class="rel-badge ${r.cls}">${r.txt}</span>`).join('')}</div>` : '';
@@ -930,7 +993,6 @@ function renderJiari(){
       interpList.innerHTML = combinedInterps.map(s => {
         const info = t(s.key);
         const title = s.customTitle ? `${s.customTitle} · ${info.n || info}` : (info.n || info);
-        // 若為關係解讀，隱藏「十神引擎」的提示以保持版面整潔
         const apiHtml = s.customTitle ? '' : `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
         return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${title}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div>${apiHtml}</div></div>`;
       }).join('');
@@ -992,6 +1054,10 @@ function renderMingpan(){
             if (strengthKey === 'str_weak') { xiyongArr = ['水', '木']; }
         }
     }
+    
+    if (!xiyongArr.includes('水')) xiyongArr.unshift('水');
+    if (!xiyongArr.includes('金')) xiyongArr.push('金');
+    xiyongArr = xiyongArr.filter(e => e !== '火');
     xiyongArr = [...new Set(xiyongArr)];
 
     let baseDate = new Date(adj.year, adj.month - 1, adj.day);
@@ -1041,7 +1107,7 @@ function renderMingpan(){
         {label:t('lbl_month'),tg:mGZ.tg,dz:mGZ.dz,tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]},
         {label:t('lbl_day'),tg:dGZ.tg,dz:dGZ.dz,tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]],colCls:'sz-rizhu'},
         {label:t('lbl_hour'),tg:hGZ.tg,dz:hGZ.dz,tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]]},
-      ].forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p)));
+      ].forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
     }
   } catch (e) { console.error("命盤檔案解讀崩潰", e); }
 }
