@@ -1098,9 +1098,6 @@ function renderMingpan(){
         }
     }
     
-    if (!xiyongArr.includes('水')) xiyongArr.unshift('水');
-    if (!xiyongArr.includes('金')) xiyongArr.push('金');
-    xiyongArr = xiyongArr.filter(e => e !== '火');
     xiyongArr = [...new Set(xiyongArr)];
 
     let baseDate = new Date(adj.year, adj.month - 1, adj.day);
