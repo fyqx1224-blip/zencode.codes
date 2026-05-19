@@ -326,7 +326,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">今 日 神 煞</span></div>
     <div class="ss-grid" id="ss-grid"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">神 煞 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
   </div>
 
@@ -376,7 +376,7 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'時柱',
     rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害',
     vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'神 煞 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
+    hd_ss:'今 日 神 煞', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 運 排 盤', lbl_start_age:'起運年齡', lbl_dir:'順 / 逆運', lbl_cur_luck:'當前大運',
@@ -394,6 +394,9 @@ const HL_I18N = {
     dyn_wealth:'流日逢財星，能量聚焦於財務運作與目標達成。', dyn_power:'流日逢官殺，能量聚焦於事業責任、規則與名望。', dyn_res:'流日逢印星，能量聚焦於學習吸收、貴人與深度思考。', dyn_out:'流日逢食傷，能量聚焦於靈感表達、社交與創造力。', dyn_comp:'流日逢比劫，能量聚焦於人際交往、團隊競爭與合作。',
     dyn_adv_ji:'結合吉星護佑，易得助力，宜大膽推進。', dyn_adv_xiong:'受凶星牽制，易生波瀾。建議謹慎保守。', dyn_adv_zhong:'星象中性，發展取決於客觀環境，宜順勢而為。', api_hint_replaced:'✦ 基於真太陽時排盤推演',
     ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
+    rel_interp_he: {n: '地支相合', d: '氣場交融和諧。易得人緣、逢凶化吉、合作順利，但也可能帶來感情牽絆或決策猶豫。'},
+    rel_interp_chong: {n: '地支相沖', d: '氣場激烈對撞。代表動盪、變化、衝突或奔波。宜主動求變，外出走動，避免正面衝突。'},
+    rel_interp_hai: {n: '地支相害', d: '氣場暗中摩擦。易生暗耗、誤會、背後小人或心理壓力。行事宜光明磊落，注意溝通。'},
     f_wealth: '財運', f_career: '事業', f_love: '感情', f_health: '健康', f_study: '學業', f_travel: '出行',
     th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盤建檔', lp_sub: '輸入您的出生資訊以生成真太陽時命盤', lp_submit: '查看黃道吉日與命盤',
@@ -407,13 +410,13 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱',
     rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害',
     vd_title:'今日综评：', hd_fortune6: '六 维 运 势', hd_hours: '今 日 十 二 时 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'神 煞 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
+    hd_ss:'今 日 神 煞', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
     val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）',
     click_tip:'点击查看关系',
-    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
+    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫财':'劫财','日主':'日主','—':'—'},
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'纳音', lbl_tengod:'十神',
     yang: '阳', yin: '阴',
@@ -425,6 +428,9 @@ const HL_I18N = {
     dyn_wealth:'流日逢财星，能量聚焦于财务运作与目标达成。', dyn_power:'流日逢官杀，能量聚焦于事业责任、规则与名望。', dyn_res:'流日逢印星，能量聚焦于学习吸收、贵人与深度思考。', dyn_out:'流日逢食伤，能量聚焦于灵感表达、社交与创造力。', dyn_comp:'流日逢比劫，能量聚焦于人际交往、团队竞争与合作。',
     dyn_adv_ji:'结合吉星护佑，易得助力，宜大胆推进。', dyn_adv_xiong:'受凶星牵制，易生波澜。建议谨慎保守。', dyn_adv_zhong:'星象中性，发展取决于客观环境，宜顺势而为。', api_hint_replaced:'✦ 基于真太阳时排盘推演',
     ss_tianyi: {n: '天乙贵人', d: '逢凶化吉，贵人相助'}, ss_wenchang: {n: '文昌贵人', d: '才华横溢，利学业与文思'}, ss_jianlu: {n: '建禄', d: '得令身旺，事业根基稳固'}, ss_yima: {n: '驿马', d: '奔波变动，宜向外走动发展'}, ss_taiji: {n: '太极贵人', d: '做事有始有终，与玄学有缘'}, ss_huagai: {n: '华盖', d: '才华出众，思想独特，性情孤高'}, ss_yuepo: {n: '月破', d: '谋事易生波折，诸事不宜急进'}, ss_none: {n: '平顺', d: '无特殊神煞影响，运势平稳过渡'},
+    rel_interp_he: {n: '地支相合', d: '气场交融和谐。易得人缘、逢凶化吉、合作顺利，但也可能带来感情牵绊或决策犹豫。'},
+    rel_interp_chong: {n: '地支相冲', d: '气场激烈对撞。代表动荡、变化、冲突或奔波。宜主动求变，外出走动，避免正面冲突。'},
+    rel_interp_hai: {n: '地支相害', d: '气场暗中摩擦。易生暗耗、误会、背后小人或心理压力。行事宜光明磊落，注意沟通。'},
     f_wealth: '财运', f_career: '事业', f_love: '感情', f_health: '健康', f_study: '学业', f_travel: '出行',
     th_hour: '时辰', th_time: '时段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盘建档', lp_sub: '输入您的出生信息以生成真太阳时命盘', lp_submit: '查看黄道吉日与命盘',
@@ -438,7 +444,7 @@ const HL_I18N = {
     lbl_year:'Year', lbl_month:'Month', lbl_day:'Day', lbl_hour:'Hour',
     rel_he:'Combine', rel_chong:'Clash', rel_liuhe:'6-Combine', rel_hai:'Harm',
     vd_title:'Verdict:', hd_fortune6: '6-Axis Fortune', hd_hours: '12 Chinese Hours',
-    hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Star Interpretations', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
+    hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Daily Comprehensive Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
     lbl_name:'Name', lbl_birth:'DOB (Solar)', lbl_gender:'Gender', lbl_dm:'Day Master', lbl_pattern:'Pattern', lbl_useful:'Favorable', lbl_strength:'Strength',
     lbl_taiyuan:'Conception', lbl_kongwang:'Day Void', lbl_bone:'Bone Wt',
     hd_luck_plan:'Decade Pillars (Da Yun)', lbl_start_age:'Start Age', lbl_dir:'Direction', lbl_cur_luck:'Current',
@@ -456,6 +462,9 @@ const HL_I18N = {
     dyn_wealth:'Daily wealth star focuses energy on financial operations and goal achievement.', dyn_power:'Daily power star focuses energy on career responsibilities, rules, and fame.', dyn_res:'Daily resource star focuses energy on learning, gaining help, and deep thinking.', dyn_out:'Daily output star focuses energy on expression, socializing, and creativity.', dyn_comp:'Daily companion star focuses energy on interactions, competition, and teamwork.',
     dyn_adv_ji:'Backed by auspicious stars, progress boldly.', dyn_adv_xiong:'Restrained by negative stars, expect minor turbulence. Stay conservative.', dyn_adv_zhong:'Neutral energies. Follow the natural flow of your environment.', api_hint_replaced:'✦ Derived via True Solar Time calculation',
     ss_tianyi: {n: 'TianYi Noble', d: 'Turns bad luck into good, brings helpful people.'}, ss_wenchang: {n: 'WenChang', d: 'Enhances talent, excellent for studying and exams.'}, ss_jianlu: {n: 'JianLu', d: 'Prosperity and stable foundation for career.'}, ss_yima: {n: 'Sky Horse', d: 'Indicates travel, movement, and outward expansion.'}, ss_taiji: {n: 'TaiJi Noble', d: 'Strong affinity with metaphysics, ability to finish what you start.'}, ss_huagai: {n: 'Elegant Seal', d: 'Outstanding talent, unique thinking, but slight loneliness.'}, ss_yuepo: {n: 'Month Breaker', d: 'Plans easily disrupted. Avoid rushing or major decisions.'}, ss_none: {n: 'Neutral', d: 'No special star influences. A smooth, regular day.'},
+    rel_interp_he: {n: 'Branch Combination', d: 'Harmonious energy flow. Fosters cooperation, good relationships, and problem-solving, but may cause delays or emotional attachment.'},
+    rel_interp_chong: {n: 'Branch Clash', d: 'Intense energy collision. Indicates sudden changes, conflicts, or travel. Be proactive and adaptable; avoid stubbornness.'},
+    rel_interp_hai: {n: 'Branch Harm', d: 'Hidden friction. May indicate misunderstandings, hidden obstacles, or emotional stress. Practice clear communication.'},
     f_wealth: 'Wealth', f_career: 'Career', f_love: 'Love', f_health: 'Health', f_study: 'Study', f_travel: 'Travel',
     th_hour: 'Hour', th_time: 'Time', th_gz: 'Pillars', th_good: 'Auspicious', th_bad: 'Inauspicious',
     lp_title: 'Bazi Setup', lp_sub: 'Enter details for True Solar Time calculation', lp_submit: 'Generate Chart & Daily Transit',
@@ -711,7 +720,18 @@ function getCurrentDayunIdx(dy, birthYear, nowYear) {
   return cur;
 }
 
-function checkRels(pillars){const rels=[];for(let i=0;i<pillars.length;i++){for(let j=i+1;j<pillars.length;j++){const a=pillars[i],b=pillars[j];if(CHONG6[a.dz]===b.dz)rels.push({cls:'rb-chong',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`});if(HE6[a.dz]&&HE6[a.dz].includes(b.dz))rels.push({cls:'rb-he',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`});if(HAI6[a.dz]===b.dz)rels.push({cls:'rb-hai',txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`});}}return rels.slice(0,8);}
+function checkRels(pillars){
+  const rels=[];
+  for(let i=0;i<pillars.length;i++){
+    for(let j=i+1;j<pillars.length;j++){
+      const a=pillars[i],b=pillars[j];
+      if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
+      if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
+      if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
+    }
+  }
+  return rels.slice(0,8);
+}
 
 function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
   const ss = [];
@@ -902,9 +922,17 @@ function renderJiari(){
 
     const interpList = document.getElementById('interp-list');
     if (interpList) {
-      interpList.innerHTML=ss.map(s=>{
+      const relInterps = rels.map((r, i) => ({
+        apiKey: `rel-${i}`, type: r.type, key: r.key, customTitle: r.txt
+      }));
+      const combinedInterps = [...ss, ...relInterps];
+      
+      interpList.innerHTML = combinedInterps.map(s => {
         const info = t(s.key);
-        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${info.n||info}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div><div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div></div></div>`;
+        const title = s.customTitle ? `${s.customTitle} · ${info.n || info}` : (info.n || info);
+        // 若為關係解讀，隱藏「十神引擎」的提示以保持版面整潔
+        const apiHtml = s.customTitle ? '' : `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
+        return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${title}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div>${apiHtml}</div></div>`;
       }).join('');
     }
 
