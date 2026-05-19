@@ -81,12 +81,19 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sd-lbl{font-size:0.55rem;color:var(--text-f);letter-spacing:0.08em;}
 .sd-val{font-size:0.6rem;color:var(--text-d);}
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
+
+/* 地支關係徽章與動態展開框樣式 */
 .rel-outer{padding:4px 16px 10px;min-width:640px;}
 .rel-badges{display:flex;gap:3px;flex-wrap:wrap;}
-.rel-badge{font-size:0.5rem;padding:3px 9px;border:1px solid;}
+.rel-badge{font-size:0.5rem;padding:4px 10px;border:1px solid;cursor:pointer;transition:all 0.2s;}
+.rel-badge.active{background:rgba(212,168,67,0.15) !important; border-color:var(--gold) !important; box-shadow:0 0 6px rgba(212,168,67,0.3);}
 .rb-he{color:#7DE09A;border-color:rgba(125,224,154,0.28);background:rgba(125,224,154,0.04);}
 .rb-chong{color:#F07840;border-color:rgba(240,120,64,0.28);background:rgba(240,120,64,0.04);}
 .rb-hai{color:#B090D0;border-color:rgba(176,144,208,0.28);background:rgba(176,144,208,0.04);}
+.rel-inline-desc {display:none; margin-top:10px; padding:12px 14px; background:rgba(13,11,24,0.9); border:1px dashed rgba(212,168,67,0.3); border-radius:4px; font-size:0.6rem; color:var(--text-d); line-height:1.7; text-align:left; animation:fadeIn 0.2s ease;}
+.rid-title {color:var(--gold); margin-bottom:6px; font-weight:500; font-size:0.65rem;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
 .verdict-box{margin:0 16px 14px;padding:14px 16px;background:rgba(8,7,14,0.85);border:1px solid rgba(212,168,67,0.13);display:flex;gap:12px;}
 .verdict-icon{font-size:1.1rem;color:var(--gold);}
 .verdict-title{font-size:0.82rem;color:var(--gold);margin-bottom:5px;}
@@ -144,7 +151,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .ir-lbl{color:rgba(240,234,214,0.75); font-weight:500;} 
 .ir-val{color:var(--text-d);} 
 .ir-val.gold{color:var(--gold);}
-.bazi4-grid{margin:0 16px 16px;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(212,168,67,0.12);background:rgba(0,0,0,0.22);}
+.bazi4-grid{margin:0;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(212,168,67,0.12);background:rgba(0,0,0,0.22);}
 .b4-grp{grid-column:span 4;text-align:center;font-size:0.5rem;color:rgba(212,168,67,0.6);padding:5px;background:rgba(212,168,67,0.03);border-bottom:1px solid rgba(212,168,67,0.08);}
 .dayun-list{margin:0 16px;display:flex;flex-direction:column;gap:5px;}
 .dy-item{display:flex;align-items:center;gap:14px;padding:9px 15px;background:rgba(7,6,12,0.7);border:1px solid rgba(212,168,67,0.07);}
@@ -335,7 +342,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">今 日 神 煞</span></div>
     <div class="ss-grid" id="ss-grid"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">今 日 神 煞 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -361,7 +368,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
       <div class="info-row"><span class="ir-lbl" data-hl="lbl_bone">骨重</span><span class="ir-val" id="mp-bone"></span></div>
     </div>
     <div class="sect-hd" style="margin-bottom:8px;"><span class="sect-hd-txt" data-hl="hd_base4">原 命 盤 四 柱</span></div>
-    <div class="bazi4-grid" id="bazi4-grid"></div>
+    <div class="sizhu-outer" style="margin-bottom:16px;">
+        <div class="bazi4-grid" id="bazi4-grid"></div>
+        <div class="rel-outer" id="mp-rel-outer" style="padding: 10px 0 0;"></div>
+    </div>
 
     <div class="consult-btn-wrap">
       <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn">
@@ -399,7 +409,7 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'時柱',
     rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
+    hd_ss:'今 日 神 煞', hd_interp:'今 日 神 煞 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 運 排 盤', lbl_start_age:'起運年齡', lbl_dir:'順 / 逆運', lbl_cur_luck:'當前大運',
@@ -437,7 +447,7 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱',
     rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日综评：', hd_fortune6: '六 维 运 势', hd_hours: '今 日 十 二 时 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
+    hd_ss:'今 日 神 煞', hd_interp:'今 日 神 煞 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
@@ -475,7 +485,7 @@ const HL_I18N = {
     lbl_year:'Year', lbl_month:'Month', lbl_day:'Day', lbl_hour:'Hour',
     rel_he:'Combine', rel_chong:'Clash', rel_liuhe:'6-Combine', rel_hai:'Harm', rel_po:'Destruction', rel_xing:'Punishment', rel_zixing:'Self-Punish',
     vd_title:'Verdict:', hd_fortune6: '6-Axis Fortune', hd_hours: '12 Chinese Hours',
-    hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Daily Comprehensive Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
+    hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Daily Shen Sha Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
     lbl_name:'Name', lbl_birth:'DOB (Solar)', lbl_gender:'Gender', lbl_dm:'Day Master', lbl_pattern:'Pattern', lbl_useful:'Favorable', lbl_strength:'Strength',
     lbl_taiyuan:'Conception', lbl_kongwang:'Day Void', lbl_bone:'Bone Wt',
     hd_luck_plan:'Decade Pillars (Da Yun)', lbl_start_age:'Start Age', lbl_dir:'Direction', lbl_cur_luck:'Current',
@@ -776,13 +786,16 @@ function checkRels(pillars){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
       
+      // 合、沖、害
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
       if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
       if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
       
+      // 相破
       const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
       if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
       
+      // 相刑 (兩兩相遇即提示)
       const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
                      (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
                      (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
@@ -793,6 +806,7 @@ function checkRels(pillars){
     }
   }
   
+  // 過濾重複關係
   const uniqueRels = [];
   const seen = new Set();
   for (const r of rels) {
@@ -972,6 +986,23 @@ function renderHourTable(ri,ldGZ){
   document.getElementById('hour-table').innerHTML=html;
 }
 
+// 動態展開關係解讀
+window.showRelDesc = function(btn) {
+  const container = btn.closest('.rel-outer') || btn.parentElement.parentElement;
+  const wasActive = btn.classList.contains('active');
+  
+  container.querySelectorAll('.rel-badge').forEach(b => b.classList.remove('active'));
+  const descBox = container.querySelector('.rel-inline-desc');
+  
+  if (wasActive) {
+      descBox.style.display = 'none';
+  } else {
+      btn.classList.add('active');
+      descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div><div>${btn.dataset.rdesc}</div>`;
+      descBox.style.display = 'block';
+  }
+};
+
 function renderJiari(){
   try {
     const d=curDate; const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours(),mn=d.getMinutes();
@@ -1016,8 +1047,20 @@ function renderJiari(){
     main.insertAdjacentHTML('beforeend','<div class="sz-vsep"></div>');
     pillars.slice(4).forEach(p=>main.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
 
-    const rels=checkRels(pillars);
-    if(document.getElementById('rel-outer')) document.getElementById('rel-outer').innerHTML = rels.length ? `<div class="rel-badges">${rels.map(r=>`<span class="rel-badge ${r.cls}">${r.txt}</span>`).join('')}</div>` : '';
+    const rels = checkRels(pillars);
+    const relOuter = document.getElementById('rel-outer');
+    if(relOuter) {
+        if (rels.length) {
+            const badgesHtml = rels.map((r) => {
+                const info = t(r.key);
+                const title = `${r.txt} · ${info.n}`;
+                return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}">${r.txt}</span>`;
+            }).join('');
+            relOuter.innerHTML = `<div class="rel-badges">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
+        } else {
+            relOuter.innerHTML = '';
+        }
+    }
 
     const ss=calcShensha(ri, ldGZ.dz, ldGZ.tg, lyGZ.dz, lmGZ.dz);
     if(document.getElementById('ss-grid')) document.getElementById('ss-grid').innerHTML=ss.map(s=>`<span class="ss-tag ss-${s.type}" onclick="scrollToInterp('ic-${s.apiKey}')">${t(s.key).n||t(s.key)}</span>`).join('');
@@ -1028,15 +1071,11 @@ function renderJiari(){
 
     const interpList = document.getElementById('interp-list');
     if (interpList) {
-      const relInterps = rels.map((r, i) => ({
-        apiKey: `rel-${i}`, type: r.type, key: r.key, customTitle: r.txt
-      }));
-      const combinedInterps = [...ss, ...relInterps];
-      
-      interpList.innerHTML = combinedInterps.map(s => {
+      // 底部列表僅保留神煞解讀，關係解讀移至上方徽章點擊下拉
+      interpList.innerHTML = ss.map(s => {
         const info = t(s.key);
-        const title = s.customTitle ? `${s.customTitle} · ${info.n || info}` : (info.n || info);
-        const apiHtml = s.customTitle ? '' : `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
+        const title = info.n || info;
+        const apiHtml = `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
         return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${title}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div>${apiHtml}</div></div>`;
       }).join('');
     }
@@ -1142,12 +1181,31 @@ function renderMingpan(){
     const g4=document.getElementById('bazi4-grid');
     if (g4) {
       g4.innerHTML=`<div class="b4-grp">${t('b4_grp')}</div>`;
-      [
+      
+      const mpPillars = [
         {label:t('lbl_year'),tg:yGZ.tg,dz:yGZ.dz,tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]]},
         {label:t('lbl_month'),tg:mGZ.tg,dz:mGZ.dz,tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]},
         {label:t('lbl_day'),tg:dGZ.tg,dz:dGZ.dz,tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]],colCls:'sz-rizhu'},
-        {label:t('lbl_hour'),tg:hGZ.tg,dz:hGZ.dz,tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]]},
-      ].forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
+        {label:t('lbl_hour'),tg:hGZ.tg,dz:hGZ.dz,tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]]}
+      ];
+      
+      mpPillars.forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
+
+      // 新增：原命盤自帶的衝突解讀
+      const mpRels = checkRels(mpPillars);
+      const mpRelOuter = document.getElementById('mp-rel-outer');
+      if (mpRelOuter) {
+          if (mpRels.length) {
+              const badgesHtml = mpRels.map((r) => {
+                  const info = t(r.key);
+                  const title = `${r.txt} · ${info.n}`;
+                  return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}">${r.txt}</span>`;
+              }).join('');
+              mpRelOuter.innerHTML = `<div class="rel-badges" style="justify-content:center;">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
+          } else {
+              mpRelOuter.innerHTML = '';
+          }
+      }
     }
   } catch (e) { console.error("命盤檔案解讀崩潰", e); }
 }
