@@ -161,6 +161,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .modal-flex { display:flex; gap:10px; }
 .modal-flex > div { flex:1; }
 
+.consult-btn-wrap { text-align: center; padding: 10px 16px 30px; }
+.consult-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(212,168,67,0.08); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); padding: 14px 28px; font-size: 0.75rem; font-weight: 500; cursor: pointer; letter-spacing: 0.15em; border-radius: 4px; transition: all 0.3s; text-decoration: none; }
+.consult-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--gold); }
+.consult-icon { font-size: 1.1rem; }
+
 @media (max-width: 768px) {
   .topbar { padding: 15px; }
   .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
@@ -191,6 +196,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   .lp-box label, .modal-box label { font-size: 0.85rem; }
   .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
   .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
+  .consult-btn { padding: 12px 20px; font-size: 0.7rem; }
 }
 </style>
 </head>
@@ -331,6 +337,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="ss-grid" id="ss-grid"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
+    
+    <div class="consult-btn-wrap">
+      <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn">
+        <span class="consult-icon">✉</span>
+        <span data-hl="btn_consult">預約命理師精準測算</span>
+      </a>
+    </div>
   </div>
 
   <div id="tab-mingpan" style="display:none;padding-top:16px;">
@@ -349,6 +362,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     </div>
     <div class="sect-hd" style="margin-bottom:8px;"><span class="sect-hd-txt" data-hl="hd_base4">原 命 盤 四 柱</span></div>
     <div class="bazi4-grid" id="bazi4-grid"></div>
+
+    <div class="consult-btn-wrap">
+      <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn">
+        <span class="consult-icon">✉</span>
+        <span data-hl="btn_consult">預約命理師精準測算</span>
+      </a>
+    </div>
   </div>
 
   <div id="tab-dayun" style="display:none;padding-top:16px;">
@@ -407,7 +427,8 @@ const HL_I18N = {
     th_hour: '時辰', th_time: '時段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盤建檔', lp_sub: '輸入您的出生資訊以生成真太陽時命盤', lp_submit: '查看黃道吉日與命盤',
     modal_title: '修改命盤資料', modal_sub: '輸入新的出生資訊以重新排盤', modal_name: '姓名 / 暱稱', modal_gender: '性別', modal_year: '年', modal_month: '月', modal_day: '日', modal_hour: '出生時 (0-23)', modal_minute: '分 (0-59)', modal_submit: '確認排盤', modal_cancel: '取消',
-    modal_lon: '經度 (東經+ / 西經-)', modal_tz: '時區 (UTC)', modal_dst: '夏令時'
+    modal_lon: '經度 (東經+ / 西經-)', modal_tz: '時區 (UTC)', modal_dst: '夏令時',
+    btn_consult: '預約命理師精準解析'
   },
   'zh-CN': {
     logo:'黄道吉日', sub:'个人命盘 · 每日流日', tab_today:'今日', tab_chart:'命盘', tab_luck:'大运', btn_today:'回到今天',
@@ -444,7 +465,8 @@ const HL_I18N = {
     th_hour: '时辰', th_time: '时段', th_gz: '干支', th_good: '宜', th_bad: '忌',
     lp_title: '排盘建档', lp_sub: '输入您的出生信息以生成真太阳时命盘', lp_submit: '查看黄道吉日与命盘',
     modal_title: '修改命盘资料', modal_sub: '输入新的出生信息以重新排盘', modal_name: '姓名 / 昵称', modal_gender: '性别', modal_year: '年', modal_month: '月', modal_day: '日', modal_hour: '出生时 (0-23)', modal_minute: '分 (0-59)', modal_submit: '确认排盘', modal_cancel: '取消',
-    modal_lon: '经度 (东经+ / 西经-)', modal_tz: '时区 (UTC)', modal_dst: '夏令时'
+    modal_lon: '经度 (东经+ / 西经-)', modal_tz: '时区 (UTC)', modal_dst: '夏令时',
+    btn_consult: '预约命理师精准解析'
   },
   'en': {
     logo:'Auspicious Days', sub:'Bazi Chart & Transit', tab_today:'Today', tab_chart:'Chart', tab_luck:'Pillars', btn_today:'Today',
@@ -481,7 +503,8 @@ const HL_I18N = {
     th_hour: 'Hour', th_time: 'Time', th_gz: 'Pillars', th_good: 'Auspicious', th_bad: 'Inauspicious',
     lp_title: 'Bazi Setup', lp_sub: 'Enter details for True Solar Time calculation', lp_submit: 'Generate Chart & Daily Transit',
     modal_title: 'Edit Profile', modal_sub: 'Enter new birth info to regenerate chart', modal_name: 'Name', modal_gender: 'Gender', modal_year: 'Year', modal_month: 'Month', modal_day: 'Day', modal_hour: 'Hour (0-23)', modal_minute: 'Min (0-59)', modal_submit: 'Generate Chart', modal_cancel: 'Cancel',
-    modal_lon: 'Longitude (+E / -W)', modal_tz: 'Timezone (UTC)', modal_dst: 'DST'
+    modal_lon: 'Longitude (+E / -W)', modal_tz: 'Timezone (UTC)', modal_dst: 'DST',
+    btn_consult: 'Book Expert Consultation'
   }
 };
 
@@ -498,6 +521,27 @@ function updateStaticUI(){
   });
 }
 
+function updateMailtoLink() {
+  if (!USER.name) return;
+  const isEn = currentLang === 'en';
+  const isCn = currentLang === 'zh-CN';
+  
+  let subject = `【ZenCode】命理測算預約 - ${USER.name}`;
+  let body = `您好，我希望進行專屬的運勢分析與精準測算。\n\n【我的排盤資料】\n姓名：${USER.name}\n性別：${USER.gender}\n出生時間(陽曆)：${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}時${USER.minute}分\n出生地經度：${USER.longitude}\n時區：UTC+${USER.timezone}\n夏令時：${USER.isDST ? '是' : '否'}\n\n請告訴我接下來的諮詢流程，謝謝！`;
+  
+  if (isCn) {
+    subject = `【ZenCode】命理测算预约 - ${USER.name}`;
+    body = `您好，我希望进行专属的运势分析与精准测算。\n\n【我的排盘资料】\n姓名：${USER.name}\n性别：${USER.gender}\n出生时间(阳历)：${USER.year}年${USER.month}月${USER.day}日 ${USER.hour}时${USER.minute}分\n出生地经度：${USER.longitude}\n时区：UTC+${USER.timezone}\n夏令时：${USER.isDST ? '是' : '否'}\n\n请告诉我接下来的咨询流程，谢谢！`;
+  } else if (isEn) {
+    subject = `[ZenCode] Expert Consultation Request - ${USER.name}`;
+    body = `Hello, I would like to book a professional Bazi reading.\n\n[My Details]\nName: ${USER.name}\nGender: ${USER.gender}\nDOB (Solar): ${USER.year}-${USER.month}-${USER.day} ${USER.hour}:${USER.minute}\nLongitude: ${USER.longitude}\nTimezone: UTC+${USER.timezone}\nDST: ${USER.isDST ? 'Yes' : 'No'}\n\nPlease let me know the next steps. Thank you!`;
+  }
+
+  document.querySelectorAll('.mailto-btn').forEach(btn => {
+    btn.href = `mailto:vip@zencode.codes?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+}
+
 function changeLang(lang) {
   currentLang = lang;
   localStorage.setItem('zencode_lang', lang);
@@ -511,6 +555,7 @@ function changeLang(lang) {
     renderJiari();
     renderMingpan();
     renderDayun();
+    updateMailtoLink();
   }
 }
 
@@ -540,6 +585,7 @@ function checkAndLoadUser() {
       renderJiari(); 
       renderMingpan();
       renderDayun();
+      updateMailtoLink();
     } catch (e) {
       document.getElementById('landing-view').style.display = 'flex';
       document.getElementById('app-view').style.display = 'none';
@@ -730,16 +776,13 @@ function checkRels(pillars){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
       
-      // 合、沖、害
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
       if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
       if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
       
-      // 相破
       const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
       if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
       
-      // 相刑 (兩兩相遇即提示)
       const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
                      (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
                      (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
