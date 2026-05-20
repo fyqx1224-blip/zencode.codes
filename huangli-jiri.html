@@ -168,8 +168,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .modal-flex { display:flex; gap:10px; }
 .modal-flex > div { flex:1; }
 
-.consult-btn-wrap { text-align: center; padding: 10px 16px 30px; }
-.consult-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(212,168,67,0.08); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); padding: 14px 28px; font-size: 0.75rem; font-weight: 500; cursor: pointer; letter-spacing: 0.15em; border-radius: 4px; transition: all 0.3s; text-decoration: none; }
+.consult-btn-wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 10px 16px 30px; }
+.consult-btn { flex: 1; min-width: 220px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(212,168,67,0.08); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); padding: 14px 20px; font-size: 0.75rem; font-weight: 500; cursor: pointer; letter-spacing: 0.15em; border-radius: 4px; transition: all 0.3s; text-decoration: none; }
 .consult-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--gold); }
 .consult-icon { font-size: 1.1rem; }
 
@@ -207,7 +207,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
   .lp-box label, .modal-box label { font-size: 0.85rem; }
   .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
   .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
-  .consult-btn { padding: 12px 20px; font-size: 0.7rem; }
+  .consult-btn { padding: 12px 16px; font-size: 0.7rem; min-width: 100%; }
 }
 </style>
 </head>
@@ -348,6 +348,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
+      <a href="liuyao.html" class="consult-btn tool-btn">
+        <span class="consult-icon">☯</span>
+        <span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span>
+      </a>
       <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn">
         <span class="consult-icon">✉</span>
         <span data-hl="btn_consult">預約命理師精準測算</span>
@@ -376,6 +380,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     </div>
 
     <div class="consult-btn-wrap">
+      <a href="liuyao.html" class="consult-btn tool-btn">
+        <span class="consult-icon">☯</span>
+        <span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span>
+      </a>
       <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn">
         <span class="consult-icon">✉</span>
         <span data-hl="btn_consult">預約命理師精準測算</span>
@@ -427,11 +435,10 @@ const HL_I18N = {
     v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建祿格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'兩', bw_qian:'錢',
     
-    // UI 文字
     lbl_energy_impact: '能量影響：', lbl_action_advice: '實戰建議：', lbl_5x_mind: '✦ 五行心性與能量：', lbl_guide: '✦ 趨吉避凶指南：', lbl_comp_reading: '【大局聯動解析】多柱綜合推演',
     lbl_macro_trend: '宏觀大勢 (大運 × 流年)：', lbl_micro_focus: '短線聚焦 (流月 × 流日)：', lbl_syn: '綜合吉凶判定：',
+    btn_liuyao: '六爻起卦 · 具體事件決斷',
     
-    // 聯動推演模板
     macro_text: '您當前處於大運 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此階段大環境的能量聚焦於此，決定了您近期的發展上限與核心課題。',
     micro_text: '本月步入 <strong>{lm}</strong> 月，今日為 <strong>{ld}</strong> 日。短線能量匯聚，是觸發事件或情緒起伏的關鍵引爆點。',
     syn_text_good: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行極為強勢。這正是您的<strong>喜用神</strong>！氣勢如虹，順風順水，宜把握時機大膽推進目標。',
@@ -487,9 +494,9 @@ const HL_I18N = {
     v4_lvl:'平稳之日，循序渐进', v4_body:'流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建禄格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'两', bw_qian:'钱',
     
-    // UI 文字
     lbl_energy_impact: '能量影响：', lbl_action_advice: '实战建议：', lbl_5x_mind: '✦ 五行心性与能量：', lbl_guide: '✦ 趋吉避凶指南：', lbl_comp_reading: '【大局联动解析】多柱综合推演',
     lbl_macro_trend: '宏观大势 (大运 × 流年)：', lbl_micro_focus: '短线聚焦 (流月 × 流日)：', lbl_syn: '综合吉凶判定：',
+    btn_liuyao: '六爻起卦 · 具体事件决断',
     
     macro_text: '您当前处于大运 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此阶段大环境的能量聚焦于此，决定了您近期的发展上限与核心课题。',
     micro_text: '本月步入 <strong>{lm}</strong> 月，今日为 <strong>{ld}</strong> 日。短线能量汇聚，是触发事件或情绪起伏的关键引爆点。',
@@ -546,9 +553,9 @@ const HL_I18N = {
     v4_lvl:'Neutral day. Steady progress.', v4_body:'The energy is balanced. Neither highly auspicious nor dangerous. Good for routine tasks and steady work.',
     str_strong:'Strong', str_weak:'Weak', str_bal:'Balanced', wx_木:'Wood', wx_火:'Fire', wx_土:'Earth', wx_金:'Metal', wx_水:'Water', pat_jianlu:'Jianlu Pattern', pat_yangren:'Yangren Pattern', pat_suffix:' Pattern', bw_liang:'.', bw_qian:' Wt',
     
-    // UI 文字
     lbl_energy_impact: 'Energy Impact: ', lbl_action_advice: 'Actionable Advice: ', lbl_5x_mind: '✦ Element & Mindset: ', lbl_guide: '✦ Daily Guide: ', lbl_comp_reading: '[Macro-Micro] Comprehensive Analysis',
     lbl_macro_trend: 'Macro Trend (Decade x Year): ', lbl_micro_focus: 'Micro Focus (Month x Day): ', lbl_syn: 'Comprehensive Verdict: ',
+    btn_liuyao: 'Liuyao Divination (Specific Events)',
 
     macro_text: 'You are in the <strong>{dy}</strong> decade and <strong>{ly}</strong> year. This macro environment sets the ceiling and core themes for your current development.',
     micro_text: 'Entering the <strong>{lm}</strong> month, today is the <strong>{ld}</strong> day. Short-term energies converge here, acting as the trigger for events or emotional shifts.',
@@ -860,13 +867,16 @@ function checkRels(pillars){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
       
+      // 合、沖、害
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
       if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
       if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
       
+      // 相破
       const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
       if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
       
+      // 相刑 (兩兩相遇即提示)
       const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
                      (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
                      (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
@@ -877,6 +887,7 @@ function checkRels(pillars){
     }
   }
   
+  // 過濾重複關係
   const uniqueRels = [];
   const seen = new Set();
   for (const r of rels) {
