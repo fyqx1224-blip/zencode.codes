@@ -173,6 +173,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .consult-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--gold); }
 .consult-icon { font-size: 1.1rem; }
 
+/* 綜合推演卡片專屬樣式 */
+.ic-macro { border: 1px solid rgba(212,168,67,0.4); background: rgba(212,168,67,0.05); }
+.ic-macro .ic-title { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
+
 @media (max-width: 768px) {
   .topbar { padding: 15px; }
   .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
@@ -340,7 +344,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -423,7 +427,17 @@ const HL_I18N = {
     v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建祿格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'兩', bw_qian:'錢',
     
-    // 動態十神解析 (身強/弱交叉比對)
+    // UI 文字
+    lbl_energy_impact: '能量影響：', lbl_action_advice: '實戰建議：', lbl_5x_mind: '✦ 五行心性與能量：', lbl_guide: '✦ 趨吉避凶指南：', lbl_comp_reading: '【大局聯動解析】多柱綜合推演',
+    lbl_macro_trend: '宏觀大勢 (大運 × 流年)：', lbl_micro_focus: '短線聚焦 (流月 × 流日)：', lbl_syn: '綜合吉凶判定：',
+    
+    // 聯動推演模板
+    macro_text: '您當前處於大運 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此階段大環境的能量聚焦於此，決定了您近期的發展上限與核心課題。',
+    micro_text: '本月步入 <strong>{lm}</strong> 月，今日為 <strong>{ld}</strong> 日。短線能量匯聚，是觸發事件或情緒起伏的關鍵引爆點。',
+    syn_text_good: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行極為強勢。這正是您的<strong>喜用神</strong>！氣勢如虹，順風順水，宜把握時機大膽推進目標。',
+    syn_text_bad: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行最為強勢。但這屬於您的<strong>忌神</strong>。大勢逆風，容易遭遇阻礙或過度消耗，今日宜低調保守，以靜制動。',
+    unstarted_macro: '您目前尚未起運，命局受流年 <strong>{ly}</strong> 的直接影響。',
+
     dyn_wealth_strong: "身旺逢財，財星破印。今日求財慾望強烈，對商業機會與利益分配極度敏感。適合推進專案、主動營銷、拓展人脈與客戶。",
     dyn_wealth_weak: "身弱逢財，財多壓身。今日容易因錢財、利益或人際消耗過多精力。不宜進行大額投資或衝動消費，宜穩守現有資源。",
     dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高。適合處理棘手問題、與上級溝通或推進管理決策。",
@@ -473,6 +487,16 @@ const HL_I18N = {
     v4_lvl:'平稳之日，循序渐进', v4_body:'流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建禄格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'两', bw_qian:'钱',
     
+    // UI 文字
+    lbl_energy_impact: '能量影响：', lbl_action_advice: '实战建议：', lbl_5x_mind: '✦ 五行心性与能量：', lbl_guide: '✦ 趋吉避凶指南：', lbl_comp_reading: '【大局联动解析】多柱综合推演',
+    lbl_macro_trend: '宏观大势 (大运 × 流年)：', lbl_micro_focus: '短线聚焦 (流月 × 流日)：', lbl_syn: '综合吉凶判定：',
+    
+    macro_text: '您当前处于大运 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此阶段大环境的能量聚焦于此，决定了您近期的发展上限与核心课题。',
+    micro_text: '本月步入 <strong>{lm}</strong> 月，今日为 <strong>{ld}</strong> 日。短线能量汇聚，是触发事件或情绪起伏的关键引爆点。',
+    syn_text_good: '当前（大运+流年+流月+流日）的气场中，<strong>{dom}</strong> 五行极为强势。这正是您的<strong>喜用神</strong>！气势如虹，顺风顺水，宜把握时机大胆推进目标。',
+    syn_text_bad: '当前（大运+流年+流月+流日）的气场中，<strong>{dom}</strong> 五行最为强势。但这属于您的<strong>忌神</strong>。大势逆风，容易遭遇阻碍或过度消耗，今日宜低调保守，以静制动。',
+    unstarted_macro: '您目前尚未起运，命局受流年 <strong>{ly}</strong> 的直接影响。',
+
     dyn_wealth_strong: "身旺逢财，财星破印。今日求财欲望强烈，对商业机会与利益分配极度敏感。适合推进专案、主动营销、拓展人脉与客户。",
     dyn_wealth_weak: "身弱逢财，财多压身。今日容易因钱财、利益或人际消耗过多精力。不宜进行大额投资或冲动消费，宜稳守现有资源。",
     dyn_power_strong: "身旺逢官杀，官杀制身为用。今日事业企图心强，执行力高。适合处理棘手问题、与上级沟通或推进管理决策。",
@@ -522,6 +546,16 @@ const HL_I18N = {
     v4_lvl:'Neutral day. Steady progress.', v4_body:'The energy is balanced. Neither highly auspicious nor dangerous. Good for routine tasks and steady work.',
     str_strong:'Strong', str_weak:'Weak', str_bal:'Balanced', wx_木:'Wood', wx_火:'Fire', wx_土:'Earth', wx_金:'Metal', wx_水:'Water', pat_jianlu:'Jianlu Pattern', pat_yangren:'Yangren Pattern', pat_suffix:' Pattern', bw_liang:'.', bw_qian:' Wt',
     
+    // UI 文字
+    lbl_energy_impact: 'Energy Impact: ', lbl_action_advice: 'Actionable Advice: ', lbl_5x_mind: '✦ Element & Mindset: ', lbl_guide: '✦ Daily Guide: ', lbl_comp_reading: '[Macro-Micro] Comprehensive Analysis',
+    lbl_macro_trend: 'Macro Trend (Decade x Year): ', lbl_micro_focus: 'Micro Focus (Month x Day): ', lbl_syn: 'Comprehensive Verdict: ',
+
+    macro_text: 'You are in the <strong>{dy}</strong> decade and <strong>{ly}</strong> year. This macro environment sets the ceiling and core themes for your current development.',
+    micro_text: 'Entering the <strong>{lm}</strong> month, today is the <strong>{ld}</strong> day. Short-term energies converge here, acting as the trigger for events or emotional shifts.',
+    syn_text_good: 'In the combined transit energy (Decade+Year+Month+Day), the <strong>{dom}</strong> element is overwhelmingly strong. This is your <strong>Favorable Element</strong>! The momentum is completely on your side. Seize the opportunity to boldly advance your goals.',
+    syn_text_bad: 'In the combined transit energy (Decade+Year+Month+Day), the <strong>{dom}</strong> element is the strongest. However, this is your <strong>Unfavorable Element</strong>. You are facing headwinds that may cause obstacles or exhaustion. Maintain a low profile and act conservatively today.',
+    unstarted_macro: 'You have not yet entered your first Decade Pillar. Your chart is directly influenced by the current <strong>{ly}</strong> year.',
+
     dyn_wealth_strong: "Strong DM + Wealth: High desire for financial gain. Great day for investments, closing deals, and networking.",
     dyn_wealth_weak: "Weak DM + Wealth: Prone to exhaustion from financial or social obligations. Avoid impulsive spending or overcommitting.",
     dyn_power_strong: "Strong DM + Power: High ambition and strong execution. Favorable for tackling challenges and stepping up in your career.",
@@ -742,13 +776,21 @@ function getLunarMD(date) {
   } catch(e) { return { m:1, d:1 }; }
 }
 
+const NAYIN_TW = ['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
+const NAYIN_CN = ['海中金','海中金','炉中火','炉中火','大林木','大林木','路旁土','路旁土','剑锋金','剑锋金','山头火','山头火','涧下水','涧下水','城头土','城头土','白蜡金','白蜡金','杨柳木','杨柳木','泉中水','泉中水','屋上土','屋上土','霹雳火','霹雳火','松柏木','松柏木','长流水','长流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆灯火','覆灯火','天河水','天河水','大驿土','大驿土','钗钏金','钗钏金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
+const NAYIN_EN = ['Sea Metal','Sea Metal','Furnace Fire','Furnace Fire','Forest Wood','Forest Wood','Road Earth','Road Earth','Sword Metal','Sword Metal','Mountain Fire','Mountain Fire','Stream Water','Stream Water','Wall Earth','Wall Earth','White Wax Metal','White Wax Metal','Willow Wood','Willow Wood','Spring Water','Spring Water','Roof Earth','Roof Earth','Lightning Fire','Lightning Fire','Pine Wood','Pine Wood','River Water','River Water','Sand Metal','Sand Metal','Foot Fire','Foot Fire','Plain Wood','Plain Wood','Wall Earth','Wall Earth','Foil Metal','Foil Metal','Lamp Fire','Lamp Fire','Sky Water','Sky Water','Post Earth','Post Earth','Hairpin Metal','Hairpin Metal','Mulberry Wood','Mulberry Wood','Creek Water','Creek Water','Sand Earth','Sand Earth','Sky Fire','Sky Fire','Pomegranate Wood','Pomegranate Wood','Ocean Water','Ocean Water'];
+
+function nayin(tg, dz) { 
+  const idx = (tg * 36 + dz * 25) % 60;
+  if(currentLang === 'zh-CN') return NAYIN_CN[idx];
+  if(currentLang === 'en') return NAYIN_EN[idx];
+  return NAYIN_TW[idx];
+}
+
 const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
 const WXT=['木','木','火','火','土','土','金','金','水','水'];const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
 const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
-const NAYIN_LIST=['海中金','海中金','爐中火','爐中火','大林木','大林木','路旁土','路旁土','劍鋒金','劍鋒金','山頭火','山頭火','澗下水','澗下水','城頭土','城頭土','白蠟金','白蠟金','楊柳木','楊柳木','泉中水','泉中水','屋上土','屋上土','霹靂火','霹靂火','松柏木','松柏木','長流水','長流水','沙中金','沙中金','山下火','山下火','平地木','平地木','壁上土','壁上土','金箔金','金箔金','覆燈火','覆燈火','天河水','天河水','大驛土','大驛土','釵釧金','釵釧金','桑柘木','桑柘木','大溪水','大溪水','沙中土','沙中土','天上火','天上火','石榴木','石榴木','大海水','大海水'];
-function nayin(tg, dz) { return NAYIN_LIST[(tg * 36 + dz * 25) % 60]; }
-
 const ZANGGAN = [[9],[5,7,9],[0,2,4],[1],[4,1,9],[2,6,4],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]];
 
 const TEN_CSS_MAP = {
@@ -818,16 +860,13 @@ function checkRels(pillars){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
       
-      // 合、沖、害
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
       if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
       if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
       
-      // 相破
       const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
       if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
       
-      // 相刑 (兩兩相遇即提示)
       const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
                      (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
                      (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
@@ -838,7 +877,6 @@ function checkRels(pillars){
     }
   }
   
-  // 過濾重複關係
   const uniqueRels = [];
   const seen = new Set();
   for (const r of rels) {
@@ -879,7 +917,58 @@ function getDynamicReading(ssType, tenRaw, strengthKey){
   const strPrefix = (strengthKey === 'str_weak') ? 'weak' : 'strong';
   const baseText = t(`dyn_${group}_${strPrefix}`);
   const advText = t(`dyn_adv_${ssType}`);
-  return `<strong>✦ 五行心性與能量：</strong><br>${baseText}<br><br><strong>✦ 趨吉避凶指南：</strong><br>${advText}`;
+  return `<strong>${t('lbl_5x_mind')}</strong><br>${baseText}<br><br><strong>${t('lbl_guide')}</strong><br>${advText}`;
+}
+
+// 綜合大局聯動推演引擎
+function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, ldGZ) {
+    const elements = [ WXT[lyGZ.tg], WXD[lyGZ.dz], WXT[lmGZ.tg], WXD[lmGZ.dz], WXT[ldGZ.tg], WXD[ldGZ.dz] ];
+    let dyStr = t('val_unstarted');
+    let dyTen = '—';
+    if (dy) {
+        elements.push(WXT[dy.tgIdx], WXD[dy.dzIdx]);
+        dyStr = `${t('tg_name')[dy.tgIdx]}${t('dz_name')[dy.dzIdx]}`;
+        dyTen = t('ten')[SS_TABLE[ri][dy.tgIdx]];
+    }
+    
+    // 計算流年流月流日大運的五行力量（尋找這 8 個字的眾數）
+    const counts = {};
+    let dominant = elements[0];
+    let maxCount = 0;
+    elements.forEach(e => {
+        counts[e] = (counts[e] || 0) + 1;
+        if (counts[e] > maxCount) { maxCount = counts[e]; dominant = e; }
+    });
+
+    const isFav = xiyongArr.includes(dominant);
+    const lyStr = `${t('tg_name')[lyGZ.tg]}${t('dz_name')[lyGZ.dz]}`;
+    const lmStr = `${t('tg_name')[lmGZ.tg]}${t('dz_name')[lmGZ.dz]}`;
+    const ldStr = `${t('tg_name')[ldGZ.tg]}${t('dz_name')[ldGZ.dz]}`;
+    const lyTen = t('ten')[SS_TABLE[ri][lyGZ.tg]];
+    const lmTen = t('ten')[SS_TABLE[ri][lmGZ.tg]];
+    const ldTen = t('ten')[SS_TABLE[ri][ldGZ.tg]];
+    const domStr = t('wx_' + dominant);
+
+    let html = `<div class="ic ic-macro open" style="margin-bottom:12px; border-color:var(--gold);">
+        <div class="ic-head"><div class="ic-title" style="font-size:0.75rem;">${t('lbl_comp_reading')}</div></div>
+        <div class="ic-body" style="display:block; border-top:1px solid rgba(212,168,67,0.2); padding-top:10px;">`;
+        
+    if (dy) {
+        let macroT = t('macro_text').replace('{dy}', `${dyStr} (${dyTen})`).replace('{ly}', `${lyStr} (${lyTen})`);
+        html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
+    } else {
+        let macroT = t('unstarted_macro').replace('{ly}', `${lyStr} (${lyTen})`);
+        html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
+    }
+    
+    let microT = t('micro_text').replace('{lm}', `${lmStr} (${lmTen})`).replace('{ld}', `${ldStr} (${ldTen})`);
+    html += `<div style="margin-bottom:8px;"><strong>${t('lbl_micro_focus')}</strong><br>${microT}</div>`;
+    
+    let synT = isFav ? t('syn_text_good').replace('{dom}', domStr) : t('syn_text_bad').replace('{dom}', domStr);
+    html += `<div><strong>${t('lbl_syn')}</strong><br>${synT}</div>`;
+    
+    html += `</div></div>`;
+    return html;
 }
 
 let curDate=new Date();
@@ -1037,7 +1126,9 @@ window.showRelDesc = function(btn) {
       descBox.style.display = 'none';
   } else {
       btn.classList.add('active');
-      descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div><div>${btn.dataset.rdesc}</div>`;
+      descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div>
+                           <div style="margin-bottom:8px;"><strong>${t('lbl_energy_impact')}</strong>${btn.dataset.rdesc}</div>
+                           <div style="color:rgba(212,168,67,0.8);"><strong>${t('lbl_action_advice')}</strong>${btn.dataset.rtype === 'xiong' ? t('dyn_adv_xiong') : t('dyn_adv_ji')}</div>`;
       descBox.style.display = 'block';
   }
 };
@@ -1069,12 +1160,29 @@ function renderJiari(){
     const lyGZ=getYrGZPrecise(y,m,day,h,mn); const lmGZ=getMoGZPrecise(y,m,day,h,mn);
     const ldGZ=getDayGZ(y,m,day, h); const lhGZ=getHrGZ(h, ldGZ.tg);
 
-    // 重新計算身強弱以傳遞給解讀引擎
+    // 計算身強弱
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = 0;
     const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
     [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(i!==4 && supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i]; });
     const strengthKey = score > 4.2 ? 'str_strong' : (score < 3.8 ? 'str_weak' : 'str_bal');
+
+    // 計算喜用神 (用於大局推演)
+    let dmWx = WXT[ri];
+    let monthDz = mGZ.dz;
+    let xiyongArr = [];
+    if (strengthKey === 'str_strong') {
+      xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[dmWx];
+    } else {
+      xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[dmWx];
+    }
+    if ([11, 0, 1].includes(monthDz)) { if(!xiyongArr.includes('火')) xiyongArr.unshift('火'); }
+    if ([5, 6, 7].includes(monthDz)) { if(!xiyongArr.includes('水')) xiyongArr.unshift('水'); }
+    if ([8, 9, 10].includes(monthDz)) {
+        if (ri === 0) { xiyongArr = ['火', '木']; } 
+        else if (ri === 1) { if (strengthKey === 'str_weak') { xiyongArr = ['水', '木']; } }
+    }
+    xiyongArr = [...new Set(xiyongArr)];
 
     const pillars=[
       {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]], colCls:''},
@@ -1100,7 +1208,7 @@ function renderJiari(){
             const badgesHtml = rels.map((r) => {
                 const info = t(r.key);
                 const title = `${r.txt} · ${info.n}`;
-                return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}">${r.txt}</span>`;
+                return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
             }).join('');
             relOuter.innerHTML = `<div class="rel-badges">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
         } else {
@@ -1117,12 +1225,14 @@ function renderJiari(){
 
     const interpList = document.getElementById('interp-list');
     if (interpList) {
-      interpList.innerHTML = ss.map(s => {
+      let htmlOutput = generateMacroMicroReading(ri, strengthKey, xiyongArr, curDy, lyGZ, lmGZ, ldGZ);
+      htmlOutput += ss.map(s => {
         const info = t(s.key);
         const title = info.n || info;
         const apiHtml = `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg], strengthKey)}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
         return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${title}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div>${apiHtml}</div></div>`;
       }).join('');
+      interpList.innerHTML = htmlOutput;
     }
 
     renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, score);
@@ -1231,7 +1341,6 @@ function renderMingpan(){
       
       mpPillars.forEach(p=>g4.insertAdjacentHTML('beforeend',pillarHTML(p, ri)));
 
-      // 新增：原命盤自帶的衝突解讀
       const mpRels = checkRels(mpPillars);
       const mpRelOuter = document.getElementById('mp-rel-outer');
       if (mpRelOuter) {
@@ -1239,7 +1348,7 @@ function renderMingpan(){
               const badgesHtml = mpRels.map((r) => {
                   const info = t(r.key);
                   const title = `${r.txt} · ${info.n}`;
-                  return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}">${r.txt}</span>`;
+                  return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
               }).join('');
               mpRelOuter.innerHTML = `<div class="rel-badges" style="justify-content:center;">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
           } else {
