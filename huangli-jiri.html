@@ -222,13 +222,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <form id="landingForm" onsubmit="submitLandingForm(event)">
       <div>
         <label data-hl="modal_name">姓名 / 暱稱</label>
-        <input type="text" id="lp-name" required placeholder="例如：陳先生">
+        <input type="text" id="lp-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg">
       </div>
       <div>
         <label data-hl="modal_gender">性別</label>
         <select id="lp-gender">
-          <option value="男">男</option>
-          <option value="女">女</option>
+          <option value="男" data-hl="val_male">男</option>
+          <option value="女" data-hl="val_female">女</option>
         </select>
       </div>
       <div class="lp-row">
@@ -252,9 +252,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     </form>
     <div style="text-align:center; margin-top:15px;">
         <select id="landingLangSelect" class="lang-select" onchange="changeLang(this.value)">
-          <option value="zh-TW">繁體中文</option>
-          <option value="zh-CN">简体/汉语</option>
-          <option value="en">English</option>
+          <option value="zh-TW" data-hl="lang_tw">繁體中文</option>
+          <option value="zh-CN" data-hl="lang_cn">简体/汉语</option>
+          <option value="en" data-hl="lang_en">English</option>
         </select>
     </div>
   </div>
@@ -267,13 +267,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <form id="modalForm" onsubmit="saveProfileFromModal(event)">
       <div>
         <label data-hl="modal_name">姓名 / 暱稱</label>
-        <input type="text" id="m-name" required placeholder="例如：陳先生">
+        <input type="text" id="m-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg">
       </div>
       <div>
         <label data-hl="modal_gender">性別</label>
         <select id="m-gender">
-          <option value="男">男</option>
-          <option value="女">女</option>
+          <option value="男" data-hl="val_male">男</option>
+          <option value="女" data-hl="val_female">女</option>
         </select>
       </div>
       <div class="modal-flex">
@@ -313,9 +313,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
       <div class="lang-switch" style="display:flex; gap:8px;">
         <button class="settings-btn" onclick="showSetupModal()" title="修改資料">⚙️</button>
         <select id="appLangSelect" class="lang-select" onchange="changeLang(this.value)">
-          <option value="zh-TW">繁體中文</option>
-          <option value="zh-CN">简体/汉语</option>
-          <option value="en">English</option>
+          <option value="zh-TW" data-hl="lang_tw">繁體中文</option>
+          <option value="zh-CN" data-hl="lang_cn">简体/汉语</option>
+          <option value="en" data-hl="lang_en">English</option>
         </select>
       </div>
     </div>
@@ -344,7 +344,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -413,6 +413,8 @@ const BW_H = [1.6,0.6,0.7,1.0,0.9,1.6,1.0,0.8,0.8,0.9,0.6,0.6];
 
 const HL_I18N = {
   'zh-TW': {
+    page_title: '黃道吉日 · 真太陽時精準排盤',
+    ph_name_eg: '例如：陳先生', lang_tw: '繁體中文', lang_cn: '簡體/漢語', lang_en: 'English',
     logo:'黃道吉日', sub:'個人命盤 · 每日流日', tab_today:'今日', tab_chart:'命盤', tab_luck:'大運', btn_today:'回到今天',
     lbl_select_date: '選 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '時',
     hd_pillars:'命 盤 × 今 日 四 柱', grp_base:'原 命 盤', grp_luck:'大 運', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 時',
@@ -458,6 +460,12 @@ const HL_I18N = {
     
     dyn_adv_ji:'今日神煞助陣，能量增幅，如虎添翼，宜果斷推進。', dyn_adv_xiong:'今日暗藏凶煞，易生變數。建議保持理性，預留備選方案。', dyn_adv_zhong:'今日星象平和，無過多外力干擾，發展全憑自身把控。', api_hint_replaced:'✦ 基於真太陽時與八字生剋演算法生成',
     ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
+    
+    natal_adv_ji: '原局相合，先天人緣與潛在貴人運佳，此特質伴隨一生，宜多加發揮。',
+    natal_adv_xiong: '原局帶有刑沖破害，代表性格易有內耗或六親緣分考驗。建議修心養性，後天多加覺察與包容。',
+    transit_adv_ji: '引動吉相，氣場順遂。順勢而為，近期宜主動把握相關層面的機會。',
+    transit_adv_xiong: '引動交戰，易生變數或奔波。建議保持理性，凡事預留備選方案，三思後行。',
+    
     rel_interp_he: {n: '地支相合', d: '氣場交融和諧。易得人緣、逢凶化吉、合作順利，但也可能帶來感情牽絆或決策猶豫。'},
     rel_interp_chong: {n: '地支相沖', d: '氣場激烈對撞。代表動盪、變化、衝突或奔波。宜主動求變，外出走動，避免正面衝突。'},
     rel_interp_hai: {n: '地支相害', d: '氣場暗中摩擦。易生暗耗、誤會、背後小人或心理壓力。行事宜光明磊落，注意溝通。'},
@@ -472,6 +480,8 @@ const HL_I18N = {
     btn_consult: '預約命理師精準解析'
   },
   'zh-CN': {
+    page_title: '黄道吉日 · 真太阳时精准排盘',
+    ph_name_eg: '例如：陈先生', lang_tw: '繁体中文', lang_cn: '简体/汉语', lang_en: 'English',
     logo:'黄道吉日', sub:'个人命盘 · 每日流日', tab_today:'今日', tab_chart:'命盘', tab_luck:'大运', btn_today:'回到今天',
     lbl_select_date: '选 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '时',
     hd_pillars:'命 盘 × 今 日 四 柱', grp_base:'原 命 盘', grp_luck:'大 运', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 时',
@@ -517,6 +527,12 @@ const HL_I18N = {
     
     dyn_adv_ji:'今日神煞助阵，能量增幅，如虎添翼，宜果断推进。', dyn_adv_xiong:'今日暗藏凶煞，易生变数。建议保持理性，预留备选方案。', dyn_adv_zhong:'今日星象平和，无过多外力干扰，发展全凭自身把控。', api_hint_replaced:'✦ 基于真太阳时与八字生克演算法生成',
     ss_tianyi: {n: '天乙贵人', d: '逢凶化吉，贵人相助'}, ss_wenchang: {n: '文昌贵人', d: '才华横溢，利学业与文思'}, ss_jianlu: {n: '建禄', d: '得令身旺，事业根基稳固'}, ss_yima: {n: '驿马', d: '奔波变动，宜向外走动发展'}, ss_taiji: {n: '太极贵人', d: '做事有始有终，与玄学有缘'}, ss_huagai: {n: '华盖', d: '才华出众，思想独特，性情孤高'}, ss_yuepo: {n: '月破', d: '谋事易生波折，诸事不宜急进'}, ss_none: {n: '平顺', d: '无特殊神煞影响，运势平稳过渡'},
+    
+    natal_adv_ji: '原局相合，先天人缘与潜在贵人运佳，此特质伴随一生，宜多加发挥。',
+    natal_adv_xiong: '原局带有刑冲破害，代表性格易有内耗或六亲缘分考验。建议修心养性，后天多加觉察与包容。',
+    transit_adv_ji: '引动吉相，气场顺遂。顺势而为，近期宜主动把握相关层面的机会。',
+    transit_adv_xiong: '引动交战，易生变数或奔波。建议保持理性，凡事预留备选方案，三思后行。',
+    
     rel_interp_he: {n: '地支相合', d: '气场交融和谐。易得人缘、逢凶化吉、合作顺利，但也可能带来感情牵绊或决策犹豫。'},
     rel_interp_chong: {n: '地支相冲', d: '气场激烈对撞。代表动荡、变化、冲突或奔波。宜主动求变，外出走动，避免正面冲突。'},
     rel_interp_hai: {n: '地支相害', d: '气场暗中摩擦。易生暗耗、误会、背后小人或心理压力。行事宜光明磊落，注意沟通。'},
@@ -531,6 +547,8 @@ const HL_I18N = {
     btn_consult: '预约命理师精准解析'
   },
   'en': {
+    page_title: 'Auspicious Days · Solar Time Bazi',
+    ph_name_eg: 'e.g. Mr. Chen', lang_tw: 'Traditional Chinese', lang_cn: 'Simplified Chinese', lang_en: 'English',
     logo:'Auspicious Days', sub:'Bazi Chart & Transit', tab_today:'Today', tab_chart:'Chart', tab_luck:'Pillars', btn_today:'Today',
     lbl_select_date: 'DATE', lbl_drum_yr: 'Y', lbl_drum_mo: 'M', lbl_drum_day: 'D', lbl_drum_hr: 'H',
     hd_pillars:'Natal Chart × Daily Transit', grp_base:'Natal Chart', grp_luck:'Decade', grp_year:'Transit Y', grp_month:'Transit M', grp_day:'Transit D', grp_hour:'Transit H',
@@ -576,6 +594,12 @@ const HL_I18N = {
 
     dyn_adv_ji:'Supported by auspicious stars, proceed boldly.', dyn_adv_xiong:'Hindered by negative stars, stay conservative and prepare backup plans.', dyn_adv_zhong:'Neutral cosmic energy. Success depends on your own efforts.', api_hint_replaced:'✦ Derived via Bazi Algorithmic Engine',
     ss_tianyi: {n: 'TianYi Noble', d: 'Turns bad luck into good, brings helpful people.'}, ss_wenchang: {n: 'WenChang', d: 'Enhances talent, excellent for studying and exams.'}, ss_jianlu: {n: 'JianLu', d: 'Prosperity and stable foundation for career.'}, ss_yima: {n: 'Sky Horse', d: 'Indicates travel, movement, and outward expansion.'}, ss_taiji: {n: 'TaiJi Noble', d: 'Strong affinity with metaphysics, ability to finish what you start.'}, ss_huagai: {n: 'Elegant Seal', d: 'Outstanding talent, unique thinking, but slight loneliness.'}, ss_yuepo: {n: 'Month Breaker', d: 'Plans easily disrupted. Avoid rushing or major decisions.'}, ss_none: {n: 'Neutral', d: 'No special star influences. A smooth, regular day.'},
+    
+    natal_adv_ji: 'Harmonious natal chart aspect. Indicates inherent good networking and mentor luck. Capitalize on this lifelong trait.',
+    natal_adv_xiong: 'Natal clashes/punishments indicate internal friction or relationship tests. Practice mindfulness and tolerance.',
+    transit_adv_ji: 'Favorable transit energy triggered. Momentum is on your side. Actively seize upcoming opportunities.',
+    transit_adv_xiong: 'Challenging transit triggered. Expect volatility or friction. Stay rational and prepare backup plans.',
+    
     rel_interp_he: {n: 'Branch Combination', d: 'Harmonious energy flow. Fosters cooperation, good relationships, and problem-solving, but may cause delays or emotional attachment.'},
     rel_interp_chong: {n: 'Branch Clash', d: 'Intense energy collision. Indicates sudden changes, conflicts, or travel. Be proactive and adaptable; avoid stubbornness.'},
     rel_interp_hai: {n: 'Branch Harm', d: 'Hidden friction. May indicate misunderstandings, hidden obstacles, or emotional stress. Practice clear communication.'},
@@ -598,9 +622,14 @@ function t(k){
 }
 
 function updateStaticUI(){
+  document.title = t('page_title') || '黃道吉日 · 真太陽時精準排盤';
   document.querySelectorAll('[data-hl]').forEach(el => {
     const v = t(el.dataset.hl);
     if(v) el.textContent = v;
+  });
+  document.querySelectorAll('[data-hl-ph]').forEach(el => {
+    const v = t(el.dataset.hlPh);
+    if(v) el.placeholder = v;
   });
 }
 
@@ -866,37 +895,34 @@ function checkRels(pillars){
   for(let i=0;i<pillars.length;i++){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
+      const pLabel = `${a.label}×${b.label}`;
       
-      // 合、沖、害
-      if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong'});
-      if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he'});
-      if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai'});
+      if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong', scope: pLabel});
+      if(HE6[a.dz]&&HE6[a.dz].includes(b.dz)) rels.push({cls:'rb-he', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_liuhe')}`, type:'ji', key:'rel_interp_he', scope: pLabel});
+      if(HAI6[a.dz]===b.dz) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_hai')}`, type:'xiong', key:'rel_interp_hai', scope: pLabel});
       
-      // 相破
       const isPo = (a.dz===0&&b.dz===9)||(a.dz===9&&b.dz===0) || (a.dz===3&&b.dz===6)||(a.dz===6&&b.dz===3) || (a.dz===2&&b.dz===11)||(a.dz===11&&b.dz===2) || (a.dz===4&&b.dz===1)||(a.dz===1&&b.dz===4) || (a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5) || (a.dz===7&&b.dz===10)||(a.dz===10&&b.dz===7);
-      if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po'});
+      if (isPo) rels.push({cls:'rb-hai', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_po')}`, type:'xiong', key:'rel_interp_po', scope: pLabel});
       
-      // 相刑 (兩兩相遇即提示)
       const isXing = (a.dz===2&&b.dz===5)||(a.dz===5&&b.dz===2)||(a.dz===5&&b.dz===8)||(a.dz===8&&b.dz===5)||(a.dz===2&&b.dz===8)||(a.dz===8&&b.dz===2)||
                      (a.dz===1&&b.dz===10)||(a.dz===10&&b.dz===1)||(a.dz===10&&b.dz===7)||(a.dz===7&&b.dz===10)||(a.dz===1&&b.dz===7)||(a.dz===7&&b.dz===1)||
                      (a.dz===0&&b.dz===3)||(a.dz===3&&b.dz===0);
       const isZiXing = (a.dz===4&&b.dz===4)||(a.dz===6&&b.dz===6)||(a.dz===9&&b.dz===9)||(a.dz===11&&b.dz===11);
       
-      if (isXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_xing')}`, type:'xiong', key:'rel_interp_xing'});
-      if (isZiXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]} ${t('rel_zixing')}`, type:'xiong', key:'rel_interp_zixing'});
+      if (isXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_xing')}`, type:'xiong', key:'rel_interp_xing', scope: pLabel});
+      if (isZiXing) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]} ${t('rel_zixing')}`, type:'xiong', key:'rel_interp_zixing', scope: pLabel});
     }
   }
   
-  // 過濾重複關係
-  const uniqueRels = [];
-  const seen = new Set();
+  const uniqueRels = new Map();
   for (const r of rels) {
-      if (!seen.has(r.txt)) {
-          seen.add(r.txt);
-          uniqueRels.push(r);
+      if (uniqueRels.has(r.txt)) {
+          uniqueRels.get(r.txt).scope += ` / ${r.scope}`;
+      } else {
+          uniqueRels.set(r.txt, {...r});
       }
   }
-  return uniqueRels.slice(0,8);
+  return Array.from(uniqueRels.values()).slice(0,12);
 }
 
 function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
@@ -1126,7 +1152,7 @@ function renderHourTable(ri,ldGZ){
 }
 
 // 動態展開關係解讀
-window.showRelDesc = function(btn) {
+window.showRelDesc = function(btn, ctx = 'transit') {
   const container = btn.closest('.rel-outer') || btn.parentElement.parentElement;
   const wasActive = btn.classList.contains('active');
   
@@ -1137,9 +1163,16 @@ window.showRelDesc = function(btn) {
       descBox.style.display = 'none';
   } else {
       btn.classList.add('active');
+      let advText = '';
+      if (ctx === 'natal') {
+          advText = btn.dataset.rtype === 'xiong' ? t('natal_adv_xiong') : t('natal_adv_ji');
+      } else {
+          advText = btn.dataset.rtype === 'xiong' ? t('transit_adv_xiong') : t('transit_adv_ji');
+      }
+      
       descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div>
                            <div style="margin-bottom:8px;"><strong>${t('lbl_energy_impact')}</strong>${btn.dataset.rdesc}</div>
-                           <div style="color:rgba(212,168,67,0.8);"><strong>${t('lbl_action_advice')}</strong>${btn.dataset.rtype === 'xiong' ? t('dyn_adv_xiong') : t('dyn_adv_ji')}</div>`;
+                           <div style="color:rgba(212,168,67,0.8);"><strong>${t('lbl_action_advice')}</strong>${advText}</div>`;
       descBox.style.display = 'block';
   }
 };
@@ -1218,8 +1251,8 @@ function renderJiari(){
         if (rels.length) {
             const badgesHtml = rels.map((r) => {
                 const info = t(r.key);
-                const title = `${r.txt} · ${info.n}`;
-                return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
+                const title = `[${r.scope}] ${r.txt} · ${info.n}`;
+                return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this, 'transit')" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
             }).join('');
             relOuter.innerHTML = `<div class="rel-badges">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
         } else {
@@ -1358,8 +1391,8 @@ function renderMingpan(){
           if (mpRels.length) {
               const badgesHtml = mpRels.map((r) => {
                   const info = t(r.key);
-                  const title = `${r.txt} · ${info.n}`;
-                  return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this)" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
+                  const title = `[${r.scope}] ${r.txt} · ${info.n}`;
+                  return `<span class="rel-badge ${r.cls}" onclick="showRelDesc(this, 'natal')" data-rtitle="${title}" data-rdesc="${info.d}" data-rtype="${r.type}">${r.txt}</span>`;
               }).join('');
               mpRelOuter.innerHTML = `<div class="rel-badges" style="justify-content:center;">${badgesHtml}</div><div class="rel-inline-desc"></div>`;
           } else {
