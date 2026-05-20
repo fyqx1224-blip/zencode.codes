@@ -344,7 +344,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -1209,7 +1209,7 @@ function renderJiari(){
     let score = 0;
     const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
     [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(i!==4 && supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i]; });
-    const strengthKey = score > 4.2 ? 'str_strong' : (score < 3.8 ? 'str_weak' : 'str_bal');
+    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
 
     // 計算喜用神 (用於大局推演)
     let dmWx = WXT[ri];
@@ -1302,7 +1302,7 @@ function renderMingpan(){
       if(supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i];
     });
     
-    const strengthKey = score > 4.2 ? 'str_strong' : (score < 3.8 ? 'str_weak' : 'str_bal');
+    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
     
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
