@@ -283,7 +283,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
       </div>
       <div class="modal-flex" style="margin-bottom: 5px;">
         <div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="m-lon" required value="120.00" step="0.01"></div>
-        <div style="flex:1;"><label data-hl="modal_tz">时区 (UTC)</label><input type="number" id="m-tz" required value="8"></div>
+        <div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="m-tz" required value="8"></div>
         <div style="flex:1; display:flex; align-items:center; padding-top:12px;">
           <input type="checkbox" id="m-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);">
           <label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label>
@@ -340,9 +340,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">今 日 神 煞</span></div>
-    <div class="ss-grid" id="ss-grid"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">今 日 神 煞 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -409,7 +407,7 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'時柱',
     rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'今 日 神 煞 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
+    hd_ss:'流 日 綜 合 解 讀', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 運 排 盤', lbl_start_age:'起運年齡', lbl_dir:'順 / 逆運', lbl_cur_luck:'當前大運',
@@ -424,8 +422,20 @@ const HL_I18N = {
     v3_lvl:'吉凶參半，宜謹慎守靜', v3_body:'今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭。',
     v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建祿格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'兩', bw_qian:'錢',
-    dyn_wealth:'流日逢財星，能量聚焦於財務運作與目標達成。', dyn_power:'流日逢官殺，能量聚焦於事業責任、規則與名望。', dyn_res:'流日逢印星，能量聚焦於學習吸收、貴人與深度思考。', dyn_out:'流日逢食傷，能量聚焦於靈感表達、社交與創造力。', dyn_comp:'流日逢比劫，能量聚焦於人際交往、團隊競爭與合作。',
-    dyn_adv_ji:'結合吉星護佑，易得助力，宜大膽推進。', dyn_adv_xiong:'受凶星牽制，易生波瀾。建議謹慎保守。', dyn_adv_zhong:'星象中性，發展取決於客觀環境，宜順勢而為。', api_hint_replaced:'✦ 基於真太陽時排盤推演',
+    
+    // 動態十神解析 (身強/弱交叉比對)
+    dyn_wealth_strong: "身旺逢財，財星破印。今日求財慾望強烈，對商業機會與利益分配極度敏感。適合推進專案、主動營銷、拓展人脈與客戶。",
+    dyn_wealth_weak: "身弱逢財，財多壓身。今日容易因錢財、利益或人際消耗過多精力。不宜進行大額投資或衝動消費，宜穩守現有資源。",
+    dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高。適合處理棘手問題、與上級溝通或推進管理決策。",
+    dyn_power_weak: "身弱逢官殺，克身過度。今日易感壓力倍增，或遇到規則、上級的限制與苛責。宜低調行事，凡事按部就班，避免出頭。",
+    dyn_res_strong: "身旺逢印，印星生身太過。今日容易思慮過多、行動力減弱，甚至產生依賴心理。宜化繁為簡，多做少想，切忌優柔寡斷。",
+    dyn_res_weak: "身弱逢印，印星生扶為用。今日思維清晰，易得貴人長輩相助。適合學習充電、簽署合約、尋求資源與庇護。",
+    dyn_out_strong: "身旺逢食傷，食傷泄秀。今日靈感爆發，表達欲與展現力極佳。適合創意工作、演講策劃、社交應酬與推廣營銷。",
+    dyn_out_weak: "身弱逢食傷，泄氣過多。今日容易因輸出過度而感到疲憊，或因言多必失惹來是非。宜謹言慎行，保留體力。",
+    dyn_comp_strong: "身旺逢比劫，比劫奪財。今日競爭意識強，但也容易引發資源爭奪或衝動花費。合作需謹慎，注意利益分配的公平性。",
+    dyn_comp_weak: "身弱逢比劫，比劫幫身為用。今日人際互動頻繁，能從團隊合作或朋友中獲得力量與支持。宜廣結善緣，借力打力。",
+    
+    dyn_adv_ji:'今日神煞助陣，能量增幅，如虎添翼，宜果斷推進。', dyn_adv_xiong:'今日暗藏凶煞，易生變數。建議保持理性，預留備選方案。', dyn_adv_zhong:'今日星象平和，無過多外力干擾，發展全憑自身把控。', api_hint_replaced:'✦ 基於真太陽時與八字生剋演算法生成',
     ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
     rel_interp_he: {n: '地支相合', d: '氣場交融和諧。易得人緣、逢凶化吉、合作順利，但也可能帶來感情牽絆或決策猶豫。'},
     rel_interp_chong: {n: '地支相沖', d: '氣場激烈對撞。代表動盪、變化、衝突或奔波。宜主動求變，外出走動，避免正面衝突。'},
@@ -447,7 +457,7 @@ const HL_I18N = {
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱',
     rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
     vd_title:'今日综评：', hd_fortune6: '六 维 运 势', hd_hours: '今 日 十 二 时 辰',
-    hd_ss:'今 日 神 煞', hd_interp:'今 日 神 煞 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
+    hd_ss:'流 日 综 合 解 读', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱',
     lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', 
     lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
@@ -462,8 +472,19 @@ const HL_I18N = {
     v3_lvl:'吉凶参半，宜谨慎守静', v3_body:'今日凶煞偏重，流日与部分柱位有冲刑之象。宜低调行事，避免签约、远行及口舌之争。',
     v4_lvl:'平稳之日，循序渐进', v4_body:'流日格局平和，无大吉亦无大凶。适合推进日常积累事务，保持既有节奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建禄格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'两', bw_qian:'钱',
-    dyn_wealth:'流日逢财星，能量聚焦于财务运作与目标达成。', dyn_power:'流日逢官杀，能量聚焦于事业责任、规则与名望。', dyn_res:'流日逢印星，能量聚焦于学习吸收、贵人与深度思考。', dyn_out:'流日逢食伤，能量聚焦于灵感表达、社交与创造力。', dyn_comp:'流日逢比劫，能量聚焦于人际交往、团队竞争与合作。',
-    dyn_adv_ji:'结合吉星护佑，易得助力，宜大胆推进。', dyn_adv_xiong:'受凶星牵制，易生波澜。建议谨慎保守。', dyn_adv_zhong:'星象中性，发展取决于客观环境，宜顺势而为。', api_hint_replaced:'✦ 基于真太阳时排盘推演',
+    
+    dyn_wealth_strong: "身旺逢财，财星破印。今日求财欲望强烈，对商业机会与利益分配极度敏感。适合推进专案、主动营销、拓展人脉与客户。",
+    dyn_wealth_weak: "身弱逢财，财多压身。今日容易因钱财、利益或人际消耗过多精力。不宜进行大额投资或冲动消费，宜稳守现有资源。",
+    dyn_power_strong: "身旺逢官杀，官杀制身为用。今日事业企图心强，执行力高。适合处理棘手问题、与上级沟通或推进管理决策。",
+    dyn_power_weak: "身弱逢官杀，克身过度。今日易感压力倍增，或遇到规则、上级的限制与苛责。宜低调行事，凡事按部就班，避免出头。",
+    dyn_res_strong: "身旺逢印，印星生身太过。今日容易思虑过多、行动力减弱，甚至产生依赖心理。宜化繁为简，多做少想，切忌优柔寡断。",
+    dyn_res_weak: "身弱逢印，印星生扶为用。今日思维清晰，易得贵人长辈相助。适合学习充电、签署合约、寻求资源与庇护。",
+    dyn_out_strong: "身旺逢食伤，食伤泄秀。今日灵感爆发，表达欲与展现力极佳。适合创意工作、演讲策划、社交应酬与推广营销。",
+    dyn_out_weak: "身弱逢食伤，泄气过多。今日容易因输出过度而感到疲惫，或因言多必失惹来是非。宜谨言慎行，保留体力。",
+    dyn_comp_strong: "身旺逢比劫，比劫夺财。今日竞争意识强，但也容易引发资源争夺或冲动花费。合作需谨慎，注意利益分配的公平性。",
+    dyn_comp_weak: "身弱逢比劫，比劫帮身为用。今日人际互动频繁，能从团队合作或朋友中获得力量与支持。宜广结善缘，借力打力。",
+    
+    dyn_adv_ji:'今日神煞助阵，能量增幅，如虎添翼，宜果断推进。', dyn_adv_xiong:'今日暗藏凶煞，易生变数。建议保持理性，预留备选方案。', dyn_adv_zhong:'今日星象平和，无过多外力干扰，发展全凭自身把控。', api_hint_replaced:'✦ 基于真太阳时与八字生克演算法生成',
     ss_tianyi: {n: '天乙贵人', d: '逢凶化吉，贵人相助'}, ss_wenchang: {n: '文昌贵人', d: '才华横溢，利学业与文思'}, ss_jianlu: {n: '建禄', d: '得令身旺，事业根基稳固'}, ss_yima: {n: '驿马', d: '奔波变动，宜向外走动发展'}, ss_taiji: {n: '太极贵人', d: '做事有始有终，与玄学有缘'}, ss_huagai: {n: '华盖', d: '才华出众，思想独特，性情孤高'}, ss_yuepo: {n: '月破', d: '谋事易生波折，诸事不宜急进'}, ss_none: {n: '平顺', d: '无特殊神煞影响，运势平稳过渡'},
     rel_interp_he: {n: '地支相合', d: '气场交融和谐。易得人缘、逢凶化吉、合作顺利，但也可能带来感情牵绊或决策犹豫。'},
     rel_interp_chong: {n: '地支相冲', d: '气场激烈对撞。代表动荡、变化、冲突或奔波。宜主动求变，外出走动，避免正面冲突。'},
@@ -485,7 +506,7 @@ const HL_I18N = {
     lbl_year:'Year', lbl_month:'Month', lbl_day:'Day', lbl_hour:'Hour',
     rel_he:'Combine', rel_chong:'Clash', rel_liuhe:'6-Combine', rel_hai:'Harm', rel_po:'Destruction', rel_xing:'Punishment', rel_zixing:'Self-Punish',
     vd_title:'Verdict:', hd_fortune6: '6-Axis Fortune', hd_hours: '12 Chinese Hours',
-    hd_ss:'Daily Stars (Shen Sha)', hd_interp:'Daily Shen Sha Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
+    hd_ss:'Daily Comprehensive Reading', hd_interp:'Daily Comprehensive Reading', hd_mychart:'My Bazi Chart', hd_base4:'Natal Four Pillars', b4_grp:'Year · Month · Day · Hour',
     lbl_name:'Name', lbl_birth:'DOB (Solar)', lbl_gender:'Gender', lbl_dm:'Day Master', lbl_pattern:'Pattern', lbl_useful:'Favorable', lbl_strength:'Strength',
     lbl_taiyuan:'Conception', lbl_kongwang:'Day Void', lbl_bone:'Bone Wt',
     hd_luck_plan:'Decade Pillars (Da Yun)', lbl_start_age:'Start Age', lbl_dir:'Direction', lbl_cur_luck:'Current',
@@ -500,8 +521,19 @@ const HL_I18N = {
     v3_lvl:'Mixed luck. Proceed with caution.', v3_body:'Clashing energies are present today. Maintain a low profile, avoid signing contracts, long travel, or arguments.',
     v4_lvl:'Neutral day. Steady progress.', v4_body:'The energy is balanced. Neither highly auspicious nor dangerous. Good for routine tasks and steady work.',
     str_strong:'Strong', str_weak:'Weak', str_bal:'Balanced', wx_木:'Wood', wx_火:'Fire', wx_土:'Earth', wx_金:'Metal', wx_水:'Water', pat_jianlu:'Jianlu Pattern', pat_yangren:'Yangren Pattern', pat_suffix:' Pattern', bw_liang:'.', bw_qian:' Wt',
-    dyn_wealth:'Daily wealth star focuses energy on financial operations and goal achievement.', dyn_power:'Daily power star focuses energy on career responsibilities, rules, and fame.', dyn_res:'Daily resource star focuses energy on learning, gaining help, and deep thinking.', dyn_out:'Daily output star focuses energy on expression, socializing, and creativity.', dyn_comp:'Daily companion star focuses energy on interactions, competition, and teamwork.',
-    dyn_adv_ji:'Backed by auspicious stars, progress boldly.', dyn_adv_xiong:'Restrained by negative stars, expect minor turbulence. Stay conservative.', dyn_adv_zhong:'Neutral energies. Follow the natural flow of your environment.', api_hint_replaced:'✦ Derived via True Solar Time calculation',
+    
+    dyn_wealth_strong: "Strong DM + Wealth: High desire for financial gain. Great day for investments, closing deals, and networking.",
+    dyn_wealth_weak: "Weak DM + Wealth: Prone to exhaustion from financial or social obligations. Avoid impulsive spending or overcommitting.",
+    dyn_power_strong: "Strong DM + Power: High ambition and strong execution. Favorable for tackling challenges and stepping up in your career.",
+    dyn_power_weak: "Weak DM + Power: Increased pressure from authorities or rules. Maintain a low profile and stick to the routine.",
+    dyn_res_strong: "Strong DM + Resource: Tendency to overthink or procrastinate. Simplify your tasks and take action rather than dwelling on plans.",
+    dyn_res_weak: "Weak DM + Resource: Excellent mental clarity. Good day for learning, signing contracts, and seeking help from mentors.",
+    dyn_out_strong: "Strong DM + Output: Bursts of inspiration. Highly favorable for creative work, public speaking, and marketing.",
+    dyn_out_weak: "Weak DM + Output: Prone to energy drain or saying the wrong things. Reserve your energy and be mindful of your words.",
+    dyn_comp_strong: "Strong DM + Companion: Strong competitive drive. Beware of unnecessary conflicts or impulsive spending. Handle partnerships carefully.",
+    dyn_comp_weak: "Weak DM + Companion: Great day for teamwork and socializing. Leverage the support of peers to achieve your goals.",
+
+    dyn_adv_ji:'Supported by auspicious stars, proceed boldly.', dyn_adv_xiong:'Hindered by negative stars, stay conservative and prepare backup plans.', dyn_adv_zhong:'Neutral cosmic energy. Success depends on your own efforts.', api_hint_replaced:'✦ Derived via Bazi Algorithmic Engine',
     ss_tianyi: {n: 'TianYi Noble', d: 'Turns bad luck into good, brings helpful people.'}, ss_wenchang: {n: 'WenChang', d: 'Enhances talent, excellent for studying and exams.'}, ss_jianlu: {n: 'JianLu', d: 'Prosperity and stable foundation for career.'}, ss_yima: {n: 'Sky Horse', d: 'Indicates travel, movement, and outward expansion.'}, ss_taiji: {n: 'TaiJi Noble', d: 'Strong affinity with metaphysics, ability to finish what you start.'}, ss_huagai: {n: 'Elegant Seal', d: 'Outstanding talent, unique thinking, but slight loneliness.'}, ss_yuepo: {n: 'Month Breaker', d: 'Plans easily disrupted. Avoid rushing or major decisions.'}, ss_none: {n: 'Neutral', d: 'No special star influences. A smooth, regular day.'},
     rel_interp_he: {n: 'Branch Combination', d: 'Harmonious energy flow. Fosters cooperation, good relationships, and problem-solving, but may cause delays or emotional attachment.'},
     rel_interp_chong: {n: 'Branch Clash', d: 'Intense energy collision. Indicates sudden changes, conflicts, or travel. Be proactive and adaptable; avoid stubbornness.'},
@@ -841,7 +873,14 @@ function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
 
 function genVerdict(ri,liuTg,liuDz,ss){const jiN=ss.filter(s=>s.type==='ji').length;const xiongN=ss.filter(s=>s.type==='xiong').length;if(jiN>=3&&xiongN===0)return{lvl:t('v1_lvl'),body:t('v1_body')};if(jiN>=2&&xiongN<=1)return{lvl:t('v2_lvl'),body:t('v2_body')};if(xiongN>=2)return{lvl:t('v3_lvl'),body:t('v3_body')};return{lvl:t('v4_lvl'),body:t('v4_body')};}
 function getTenGroup(tenRaw){if(['正財','偏財', 'Direct Wealth', 'Indirect Wealth'].includes(tenRaw))return'wealth';if(['正官','七殺', 'Direct Officer', '7-Killings'].includes(tenRaw))return'power';if(['正印','偏印', 'Direct Resource', 'Indirect Resource'].includes(tenRaw))return'res';if(['食神','傷官', 'Eating God', 'Hurting Officer'].includes(tenRaw))return'out';return'comp';}
-function getDynamicReading(ssType,tenRaw){return`${t(`dyn_${getTenGroup(tenRaw)}`)}<br>${t(`dyn_adv_${ssType}`)}`;}
+
+function getDynamicReading(ssType, tenRaw, strengthKey){
+  const group = getTenGroup(tenRaw);
+  const strPrefix = (strengthKey === 'str_weak') ? 'weak' : 'strong';
+  const baseText = t(`dyn_${group}_${strPrefix}`);
+  const advText = t(`dyn_adv_${ssType}`);
+  return `<strong>✦ 五行心性與能量：</strong><br>${baseText}<br><br><strong>✦ 趨吉避凶指南：</strong><br>${advText}`;
+}
 
 let curDate=new Date();
 function pillarHTML(p, ri){
@@ -1030,6 +1069,13 @@ function renderJiari(){
     const lyGZ=getYrGZPrecise(y,m,day,h,mn); const lmGZ=getMoGZPrecise(y,m,day,h,mn);
     const ldGZ=getDayGZ(y,m,day, h); const lhGZ=getHrGZ(h, ldGZ.tg);
 
+    // 重新計算身強弱以傳遞給解讀引擎
+    const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
+    let score = 0;
+    const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
+    [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(i!==4 && supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i]; });
+    const strengthKey = score > 4.2 ? 'str_strong' : (score < 3.8 ? 'str_weak' : 'str_bal');
+
     const pillars=[
       {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]], colCls:''},
       {label: t('lbl_month'), tg:mGZ.tg, dz:mGZ.dz, tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]], colCls:''},
@@ -1071,20 +1117,14 @@ function renderJiari(){
 
     const interpList = document.getElementById('interp-list');
     if (interpList) {
-      // 底部列表僅保留神煞解讀，關係解讀移至上方徽章點擊下拉
       interpList.innerHTML = ss.map(s => {
         const info = t(s.key);
         const title = info.n || info;
-        const apiHtml = `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg])}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
+        const apiHtml = `<div class="ic-api-engine">${getDynamicReading(s.type, SS_TABLE[ri][ldGZ.tg], strengthKey)}<span class="ic-hint">${t('api_hint_replaced')}</span></div>`;
         return `<div class="ic" id="ic-${s.apiKey}" onclick="this.classList.toggle('open')"><div class="ic-head"><div class="ic-title"><span class="ic-dot" style="background:${s.type==='ji'?'#7DE09A':s.type==='xiong'?'#F07840':'#D4A843'}"></span>${title}</div><span class="ic-arrow">∨</span></div><div class="ic-body"><div>${info.d||''}</div>${apiHtml}</div></div>`;
       }).join('');
     }
 
-    const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
-    let score = 0;
-    const weights = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
-    [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz].forEach((item, i) => { if(i!==4 && supports.includes(i % 2 === 0 ? WXT[item] : WXD[item])) score += weights[i]; });
-    
     renderFortuneGrid(ri, ldGZ, lmGZ, lyGZ, ss, score);
     renderHourTable(ri, ldGZ);
 
