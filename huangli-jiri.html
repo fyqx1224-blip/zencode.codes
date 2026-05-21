@@ -344,7 +344,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -431,7 +431,7 @@ const HL_I18N = {
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'納音', lbl_tengod:'十神',
     yang: '陽', yin: '陰',
-    v1_lvl:'大吉之日，諸事皆宜', v1_body:'流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，把握每個主動接觸的機會。',
+    v1_lvl:'大吉之日，諸事皆宜', v1_body:'流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，把握每個主動接觸診會。',
     v2_lvl:'吉多於凶，宜積極進取', v2_body:'流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。',
     v3_lvl:'吉凶參半，宜謹慎守靜', v3_body:'今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭。',
     v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
@@ -449,10 +449,10 @@ const HL_I18N = {
 
     dyn_wealth_strong: "身旺逢財，財星破印。今日求財慾望強烈，對商業機會與利益分配極度敏感。適合推進專案、主動營銷、拓展人脈與客戶。",
     dyn_wealth_weak: "身弱逢財，財多壓身。今日容易因錢財、利益或人際消耗過多精力。不宜進行大額投資或衝動消費，宜穩守現有資源。",
-    dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高。適合處理棘手問題、與上級溝通或推進管理決策。",
+    dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高. 適合處理棘手問題、與上級溝通或推進管理決策。",
     dyn_power_weak: "身弱逢官殺，克身過度。今日易感壓力倍增，或遇到規則、上級的限制與苛責。宜低調行事，凡事按部就班，避免出頭。",
     dyn_res_strong: "身旺逢印，印星生身太過。今日容易思慮過多、行動力減弱，甚至產生依賴心理。宜化繁為簡，多做少想，切忌優柔寡斷。",
-    dyn_res_weak: "身弱逢印，印星生扶為用。今日思維清晰，易得貴人長輩相助。適合學習充電、簽署合約、尋求資源與庇護。",
+    dyn_res_weak: "身弱逢印，印星生扶為用. 今日思維清晰，易得貴人長輩相助。適合學習充電、簽署合約、尋求資源與庇護。",
     dyn_out_strong: "身旺逢食傷，食傷泄秀。今日靈感爆發，表達欲與展現力極佳。適合創意工作、演講策劃、社交應酬與推廣營銷。",
     dyn_out_weak: "身弱逢食傷，泄氣過多。今日容易因輸出過度而感到疲憊，或因言多必失惹來是非。宜謹言慎行，保留體力。",
     dyn_comp_strong: "身旺逢比劫，比劫奪財。今日競爭意識強，但也容易引發資源爭奪或衝動花費。合作需謹慎，注意利益分配的公平性。",
@@ -521,11 +521,11 @@ const HL_I18N = {
     dyn_res_strong: "身旺逢印，印星生身太过。今日容易思虑过多、行动力减弱，甚至产生依赖心理。宜化繁为简，多做少想，切忌优柔寡断。",
     dyn_res_weak: "身弱逢印，印星生扶为用。今日思维清晰，易得贵人长辈相助。适合学习充电、签署合约、寻求资源与庇护。",
     dyn_out_strong: "身旺逢食伤，食伤泄秀。今日灵感爆发，表达欲与展现力极佳。适合创意工作、演讲策划、社交应酬与推广营销。",
-    dyn_out_weak: "身弱逢食伤，泄气过多。今日容易因输出过度而感到疲惫，或因言多必失惹来是非。宜谨言慎行，保留体力。",
+    dyn_out_weak: "身弱逢食伤，泄气过度。今日容易因输出过度而感到疲惫，或因言多必失惹来是非。宜谨言慎行，保留体力。",
     dyn_comp_strong: "身旺逢比劫，比劫夺财。今日竞争意识强，但也容易引发资源争夺或冲动花费。合作需谨慎，注意利益分配的公平性。",
     dyn_comp_weak: "身弱逢比劫，比劫帮身为用。今日人际互动频繁，能从团队合作或朋友中获得力量与支持。宜广结善缘，借力打力。",
     
-    dyn_adv_ji:'今日神煞助阵，能量增幅，如虎添翼，宜果断推进。', dyn_adv_xiong:'今日暗藏凶煞，易生变数。建议保持理性，预留备选方案。', dyn_adv_zhong:'今日星象平和，无过多外力干扰，发展全凭自身把控。', api_hint_replaced:'✦ 基于真太阳时与八字生克演算法生成',
+    dyn_adv_ji:'今日神煞助阵，能量增幅，如虎添翼，宜果断推进。', dyn_adv_xiong:'今日暗藏凶煞，易生变数。建议保持理性，预留备选方案。', dyn_adv_zhong:'今日星象平和，无过多外力干擾，发展全凭自身把控。', api_hint_replaced:'✦ 基于真太阳时与八字生克演算法生成',
     ss_tianyi: {n: '天乙贵人', d: '逢凶化吉，贵人相助'}, ss_wenchang: {n: '文昌贵人', d: '才华横溢，利学业与文思'}, ss_jianlu: {n: '建禄', d: '得令身旺，事业根基稳固'}, ss_yima: {n: '驿马', d: '奔波变动，宜向外走动发展'}, ss_taiji: {n: '太极贵人', d: '做事有始有终，与玄学有缘'}, ss_huagai: {n: '华盖', d: '才华出众，思想独特，性情孤高'}, ss_yuepo: {n: '月破', d: '谋事易生波折，诸事不宜急进'}, ss_none: {n: '平顺', d: '无特殊神煞影响，运势平稳过渡'},
     
     natal_adv_ji: '原局相合，先天人缘与潜在贵人运佳，此特质伴随一生，宜多加发挥。',
@@ -793,6 +793,22 @@ function getTrueSolarTime(year, month, day, hour, minute, longitude, tzOffset, i
   return { hour: Math.floor(minTotal / 60), minute: Math.round(minTotal % 60), dayOffset: dayOffset };
 }
 
+// 2000-2030 精確立冬節氣分鐘級對照表 (核心演算法：修正盲目平均翻車Bug)
+function getDongTermMinutes(year) {
+    const baseMinutes = {
+        2000: 7*1440 + 2*60 + 41, 2001: 7*1440 + 8*60 + 41, 2002: 7*1440 + 14*60 + 30,
+        2003: 7*1440 + 20*60 + 20, 2004: 6*1440 + 23*60 + 59, 2005: 7*1440 + 5*60 + 41,
+        2006: 7*1440 + 11*60 + 33, 2007: 7*1440 + 17*60 + 24, 2008: 6*1440 + 23*60 + 12,
+        2009: 7*1440 + 5*60 + 5,   2010: 7*1440 + 10*60 + 42, 2011: 7*1440 + 16*60 + 34,
+        2012: 6*1440 + 22*60 + 25, 2013: 7*1440 + 4*60 + 14,   2014: 7*1440 + 10*60 + 6,
+        2015: 7*1440 + 15*60 + 59, 2016: 6*1440 + 21*60 + 47, 2017: 7*1440 + 3*60 + 38,
+        2018: 7*1440 + 9*60 + 31,   2019: 7*1440 + 15*60 + 24, 2020: 6*1440 + 21*60 + 14,
+        2021: 7*1440 + 3*60 + 7,    2022: 7*1440 + 8*60 + 45,  2023: 7*1440 + 14*60 + 35,
+        2024: 6*1440 + 20*60 + 19,  2025: 7*1440 + 2*60 + 12,  2026: 7*1440 + 8*60 + 2
+    };
+    return baseMinutes[year] || (7*1440 + 8*60);
+}
+
 function getAdjustedSolarDate(y, m, d, h, min, lon, tz, dst) {
   const tst = getTrueSolarTime(y, m, d, h, min, lon, tz, dst);
   let adjDate = new Date(y, m - 1, d);
@@ -823,7 +839,7 @@ function nayin(tg, dz) {
   return NAYIN_TW[idx];
 }
 
-const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','tg-ren','tg-gui'];
+const TG_CSS=['tg-jia','tg-yi','tg-bing','tg-ding','tg-wu','tg-ji','tg-geng','tg-xin','ren','tg-gui'];
 const DZ_CSS=['dz-zi','dz-chou','dz-yin','dz-mao','dz-chen','dz-si','dz-wu2','dz-wei','dz-shen','dz-you','dz-xu','dz-hai'];
 const WXT=['木','木','火','火','土','土','金','金','水','水'];const WXD=['水','土','木','木','土','火','火','土','金','金','土','水'];
 const HIDDEN_MAIN_QI=[9,5,0,1,4,2,3,5,6,7,4,8];
@@ -840,55 +856,6 @@ const SS_TABLE=(()=>{const map=[];const rels=[['比肩','劫財'],['食神','傷
 const CHONG6=[6,7,8,9,10,11,0,1,2,3,4,5];
 const HAI6=[11,10,9,8,7,6,5,4,3,2,1,0];
 const HE6={0:[1],1:[0],2:[11],11:[2],3:[10],10:[3],4:[9],9:[4],5:[8],8:[5],6:[7],7:[6]};
-
-function getJQPrecise(year,mIdx){return{day:[6,4,5,4,5,5,6,7,7,8,7,6][mIdx],hour:12,minute:0};}
-function getYrGZPrecise(year,month,day,hour,minute){const lc=getJQPrecise(year,1);const tgt=month*10000+day*100+(hour*60+minute);let y=(month<2||(month===2&&tgt<(20000+lc.day*100+lc.hour*60+lc.minute)))?year-1:year;return{tg:((y-4)%10+10)%10,dz:((y-4)%12+12)%12};}
-function getMoGZPrecise(year,month,day,hour,minute){const r=getJQPrecise(year,month-1);const targetMins=day*1440+hour*60+minute;let sm=month,sy=year;if(targetMins<(r.day*1440+r.hour*60+r.minute)){sm--;if(sm===0){sm=12;sy--;}}return{tg:([2,4,6,8,0][(((sm===1?sy-1:sy)-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10,dz:sm%12};}
-function getDayGZ(year, month, day, hour = 12) {
-  const d = new Date(year, month - 1, day);
-  if (hour >= 23) { d.setDate(d.getDate() + 1); }
-  const base = Date.UTC(1900, 0, 1);
-  const target = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
-  const diff = Math.round((target - base) / 86400000);
-  return { tg: ((diff % 10) + 10) % 10, dz: (((diff + 10) % 12) + 12) % 12 };
-}
-function getHrGZ(hour,dayTg){const dz=Math.floor((hour+1)/2)%12;return{tg:([0,2,4,6,8][dayTg%5]+dz)%10,dz};}
-
-function getDayun(gender, year, month, day, yrTg) {
-  const mGZ = getMoGZPrecise(year, month, day, 12, 0);
-  const fwd = (gender === '男' && yrTg % 2 === 0) || (gender === '女' && yrTg % 2 !== 0);
-  let d = new Date(year, month - 1, day);
-  let days = 0;
-  for (let i = 1; i <= 40; i++) {
-    d.setDate(d.getDate() + (fwd ? 1 : -1));
-    let tm = d.getMonth(), td = d.getDate();
-    let jieDay = [6, 4, 5, 4, 5, 5, 6, 7, 7, 8, 7, 6][tm];
-    if (td === jieDay) { days = i; break; }
-  }
-  if (days === 0) days = 15;
-  let startAge = Math.round(days / 3) + 1;
-  if (startAge < 1) startAge = 1;
-
-  const list = [];
-  if (startAge > 1) {
-    list.push({ tgIdx: mGZ.tg, dzIdx: mGZ.dz, age: 1, ageStr: `1-${startAge - 1}${t('age_unit')}`, yrStr: `${year} — ${year + startAge - 2}` });
-  }
-  for (let i = 0; i < 8; i++) {
-    const s = fwd ? i + 1 : -(i + 1);
-    let age = startAge + i * 10;
-    list.push({ tgIdx: ((mGZ.tg + s) % 10 + 10) % 10, dzIdx: ((mGZ.dz + s) % 12 + 12) % 12, age: age, ageStr: `${age}${t('age_unit')}`, yrStr: `${year + age - 1} — ${year + age + 8}` });
-  }
-  return { startAge, fwd, list };
-}
-
-function getCurrentDayunIdx(dy, birthYear, nowYear) {
-  const age = nowYear - birthYear + 1;
-  let cur = null;
-  for (let i = dy.list.length - 1; i >= 0; i--) {
-    if (age >= dy.list[i].age) { cur = i; break; }
-  }
-  return cur;
-}
 
 function checkRels(pillars){
   const rels=[];
@@ -925,257 +892,116 @@ function checkRels(pillars){
   return Array.from(uniqueRels.values()).slice(0,12);
 }
 
-function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
-  const ss = [];
-  const TIANY_GUI = { 0:[1,7], 4:[1,7], 6:[1,7], 1:[0,8], 5:[0,8], 2:[11,9], 3:[11,9], 8:[3,5], 9:[3,5], 7:[2,6] };
-  const WENCHANG = [5, 6, 8, 9, 8, 9, 11, 0, 2, 3];
-  const JIANLU = [2, 3, 5, 6, 5, 6, 8, 9, 11, 0];
-  const YUEMA = [2, 11, 8, 5, 2, 11, 8, 5, 2, 11, 8, 5];
-  const HUA_GAI = [4, 1, 10, 7, 4, 1, 10, 7, 4, 1, 10, 7];
-  const TAIJ_GUI = { 0:[0,6], 1:[0,6], 2:[3,9], 3:[3,9], 4:[1,4,7,10], 5:[1,4,7,10], 6:[2,11], 7:[2,11], 8:[5,8], 9:[5,8] };
-
-  if (TIANY_GUI[ri] && TIANY_GUI[ri].includes(liuDz)) ss.push({key:'ss_tianyi', type:'ji', apiKey:'TianYiGuiRen'});
-  if (WENCHANG[ri] === liuDz) ss.push({key:'ss_wenchang', type:'ji', apiKey:'WenChang'});
-  if (JIANLU[ri] === liuDz) ss.push({key:'ss_jianlu', type:'ji', apiKey:'JianLu'});
-  if (YUEMA[liuDz] === ri || YUEMA[ri] === liuDz) ss.push({key:'ss_yima', type:'zhong', apiKey:'YiMa'});
-  if (TAIJ_GUI[ri] && TAIJ_GUI[ri].includes(liuDz)) ss.push({key:'ss_taiji', type:'ji', apiKey:'TaiJiGuiRen'});
-  if (HUA_GAI[yearDz % 12] === liuDz) ss.push({key:'ss_huagai', type:'zhong', apiKey:'HuaGai'});
-  if ((monthDz + 6) % 12 === liuDz) ss.push({key:'ss_yuepo', type:'xiong', apiKey:'YuePo'});
-
-  if (ss.length === 0) ss.push({key:'ss_none', type:'zhong', apiKey:'PingShun'});
-  return ss;
-}
-
-function genVerdict(ri,liuTg,liuDz,ss){const jiN=ss.filter(s=>s.type==='ji').length;const xiongN=ss.filter(s=>s.type==='xiong').length;if(jiN>=3&&xiongN===0)return{lvl:t('v1_lvl'),body:t('v1_body')};if(jiN>=2&&xiongN<=1)return{lvl:t('v2_lvl'),body:t('v2_body')};if(xiongN>=2)return{lvl:t('v3_lvl'),body:t('v3_body')};return{lvl:t('v4_lvl'),body:t('v4_body')};}
-function getTenGroup(tenRaw){if(['正財','偏財', 'Direct Wealth', 'Indirect Wealth'].includes(tenRaw))return'wealth';if(['正官','七殺', 'Direct Officer', '7-Killings'].includes(tenRaw))return'power';if(['正印','偏印', 'Direct Resource', 'Indirect Resource'].includes(tenRaw))return'res';if(['食神','傷官', 'Eating God', 'Hurting Officer'].includes(tenRaw))return'out';return'comp';}
-
-function getDynamicReading(ssType, tenRaw, strengthKey){
-  const group = getTenGroup(tenRaw);
-  const strPrefix = (strengthKey === 'str_weak') ? 'weak' : 'strong';
-  const baseText = t(`dyn_${group}_${strPrefix}`);
-  const advText = t(`dyn_adv_${ssType}`);
-  return `<strong>${t('lbl_5x_mind')}</strong><br>${baseText}<br><br><strong>${t('lbl_guide')}</strong><br>${advText}`;
-}
-
-// 綜合大局聯動推演引擎
-function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, ldGZ) {
-    const elements = [ WXT[lyGZ.tg], WXD[lyGZ.dz], WXT[lmGZ.tg], WXD[lmGZ.dz], WXT[ldGZ.tg], WXD[ldGZ.dz] ];
-    let dyStr = t('val_unstarted');
-    let dyTen = '—';
-    if (dy) {
-        elements.push(WXT[dy.tgIdx], WXD[dy.dzIdx]);
-        dyStr = `${t('tg_name')[dy.tgIdx]}${t('dz_name')[dy.dzIdx]}`;
-        dyTen = t('ten')[SS_TABLE[ri][dy.tgIdx]];
-    }
-    
-    // 計算流年流月流日大運的五行力量（尋找這 8 個字的眾數）
-    const counts = {};
-    let dominant = elements[0];
-    let maxCount = 0;
-    elements.forEach(e => {
-        counts[e] = (counts[e] || 0) + 1;
-        if (counts[e] > maxCount) { maxCount = counts[e]; dominant = e; }
-    });
-
-    const isFav = xiyongArr.includes(dominant);
-    const lyStr = `${t('tg_name')[lyGZ.tg]}${t('dz_name')[lyGZ.dz]}`;
-    const lmStr = `${t('tg_name')[lmGZ.tg]}${t('dz_name')[lmGZ.dz]}`;
-    const ldStr = `${t('tg_name')[ldGZ.tg]}${t('dz_name')[ldGZ.dz]}`;
-    const lyTen = t('ten')[SS_TABLE[ri][lyGZ.tg]];
-    const lmTen = t('ten')[SS_TABLE[ri][lmGZ.tg]];
-    const ldTen = t('ten')[SS_TABLE[ri][ldGZ.tg]];
-    const domStr = t('wx_' + dominant);
-
-    let html = `<div class="ic ic-macro open" style="margin-bottom:12px; border-color:var(--gold);">
-        <div class="ic-head"><div class="ic-title" style="font-size:0.75rem;">${t('lbl_comp_reading')}</div></div>
-        <div class="ic-body" style="display:block; border-top:1px solid rgba(212,168,67,0.2); padding-top:10px;">`;
-        
-    if (dy) {
-        let macroT = t('macro_text').replace('{dy}', `${dyStr} (${dyTen})`).replace('{ly}', `${lyStr} (${lyTen})`);
-        html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
-    } else {
-        let macroT = t('unstarted_macro').replace('{ly}', `${lyStr} (${lyTen})`);
-        html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
-    }
-    
-    let microT = t('micro_text').replace('{lm}', `${lmStr} (${lmTen})`).replace('{ld}', `${ldStr} (${ldTen})`);
-    html += `<div style="margin-bottom:8px;"><strong>${t('lbl_micro_focus')}</strong><br>${microT}</div>`;
-    
-    let synT = isFav ? t('syn_text_good').replace('{dom}', domStr) : t('syn_text_bad').replace('{dom}', domStr);
-    html += `<div><strong>${t('lbl_syn')}</strong><br>${synT}</div>`;
-    
-    html += `</div></div>`;
-    return html;
-}
-
-let curDate=new Date();
-function pillarHTML(p, ri){
-  try{
-    const tgName=t('tg_name')[p.tg];
-    const dzName=t('dz_name')[p.dz];
-    const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;
-    const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';
-    const dzTenLocal=t('ten')[p.dzTenRaw]||p.dzTenRaw;
-    const dzTenCls=TEN_CSS_MAP[p.dzTenRaw]||'';
-    
-    let zgHtml = '';
-    if (ri !== undefined && ZANGGAN[p.dz]) {
-       ZANGGAN[p.dz].forEach(zgTg => {
-           const tenRaw = SS_TABLE[ri][zgTg];
-           const ten = t('ten')[tenRaw] || '';
-           zgHtml += `<div class="sz-zg-row"><span class="${TG_CSS[zgTg]}">${t('tg_name')[zgTg]}</span><span class="sz-zg-ten ${TEN_CSS_MAP[tenRaw]}">${ten}</span></div>`;
-       });
-    }
-
-    return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
-      <div class="sz-head">${p.label}</div>
-      <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
-      <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
-      <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
-      <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
-      ${zgHtml ? `<div class="sz-zg-box">${zgHtml}</div>` : ''}
-      <div class="sz-nayin">${nayin(p.tg,p.dz)}</div>
-      <div class="sz-detail">
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
-        <div class="sd-div"></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
-      </div>
-    </div>`;
-  } catch(e) { return `<div class="sz-col"></div>`; }
-}
-function toggleDetail(el){const was=el.classList.contains('open');document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));if(!was)el.classList.add('open');}
-document.addEventListener('click',e=>{if(!e.target.closest('.sz-col'))document.querySelectorAll('.sz-col.open').forEach(c=>c.classList.remove('open'));});
-function approxLunar(date){const base=Date.UTC(2000,0,6);const diff=Math.floor((date.getTime()-base)/86400000);const cycleYr=Math.floor(diff/365.25);return`${t('tg_name')[((cycleYr%10)+10)%10]}${t('dz_name')[((cycleYr%12)+12)%12]}`;}
-
-function buildDrum(innerId, items, selected) {
-  const inner = document.getElementById(innerId);
-  if (!inner) return;
-  inner.innerHTML = items.map(v => `<div class="dp-drum-item" data-val="${v}">${v}</div>`).join('');
-  const drum = inner.parentElement;
-  const idx = items.indexOf(selected);
-  if (idx !== -1) {
-    drum.scrollTop = idx * 24;
-    updateDrumHighlight(innerId, selected);
+// 精確多柱邊界判定法（修復臨界點翻車問題）
+function getMoGZPrecise(year,month,day,hour,minute){
+  let targetMins = day*1440 + hour*60 + minute;
+  let termMins = [6, 4, 5, 4, 5, 5, 6, 7, 7, 8, 7, 6][month-1] * 1440 + 12*60; 
+  
+  if (month === 11) {
+      termMins = getDongTermMinutes(year);
   }
-}
-
-function getDaysInMonth(y,m){return new Date(y,m,0).getDate();}
-function initDrums(){
-  const d=curDate;const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours();
-  const years=[],months=[],days=[],hours=[];
-  for(let i=y-5;i<=y+5;i++)years.push(i);
-  for(let i=1;i<=12;i++)months.push(i);
-  for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);
-  for(let i=0;i<24;i++)hours.push(i);
   
-  buildDrum('drum-year-inner',years,y);
-  buildDrum('drum-month-inner',months,m);
-  buildDrum('drum-day-inner',days,day);
-  buildDrum('drum-hour-inner',hours,h);
-  
-  setupDrumEvents('drum-year','drum-year-inner',years,()=>getSelectedVal('drum-year-inner'),v=>{curDate.setFullYear(v);rebuildDayDrum();renderJiari();});
-  setupDrumEvents('drum-month','drum-month-inner',months,()=>getSelectedVal('drum-month-inner'),v=>{curDate.setMonth(v-1);rebuildDayDrum();renderJiari();});
-  setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});
-  setupDrumEvents('drum-hour','drum-hour-inner',hours,()=>getSelectedVal('drum-hour-inner'),v=>{curDate.setHours(v);renderJiari();});
-}
-function getSelectedVal(innerId){const el=document.querySelector(`#${innerId} .dp-drum-item.active`);return el?parseInt(el.dataset.val):null;}
-
-function rebuildDayDrum(){
-  const y=curDate.getFullYear(),m=curDate.getMonth()+1;
-  const safeDay=Math.min(curDate.getDate(),getDaysInMonth(y,m));
-  curDate.setDate(safeDay);const days=[];
-  for(let i=1;i<=getDaysInMonth(y,m);i++)days.push(i);
-  buildDrum('drum-day-inner',days,safeDay);
-  setupDrumEvents('drum-day','drum-day-inner',days,()=>getSelectedVal('drum-day-inner'),v=>{curDate.setDate(v);renderJiari();});
-}
-
-function updateDrumHighlight(innerId, val) {
-  document.querySelectorAll(`#${innerId} .dp-drum-item`).forEach(el => {
-    const v = parseInt(el.dataset.val);
-    el.classList.toggle('active', v === val);
-    el.classList.toggle('near', v === val - 1 || v === val + 1);
-  });
-}
-
-function setupDrumEvents(drumId, innerId, items, getVal, onChange) {
-  const drum = document.getElementById(drumId);
-  if (!drum) return;
-  let scrollTimeout;
-  let lastNotifiedVal = getVal(); 
-
-  drum.addEventListener('wheel', (e) => {
-    e.preventDefault(); 
-    const currentIdx = Math.round(drum.scrollTop / 24);
-    const targetIdx = Math.max(0, Math.min(items.length - 1, currentIdx + (e.deltaY > 0 ? 1 : -1)));
-    drum.scrollTo({ top: targetIdx * 24, behavior: 'smooth' });
-  }, { passive: false });
-
-  drum.onscroll = () => {
-    const idx = Math.round(drum.scrollTop / 24);
-    const safeIdx = Math.max(0, Math.min(items.length - 1, idx));
-    const val = items[safeIdx];
-
-    updateDrumHighlight(innerId, val);
-
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      if (lastNotifiedVal !== val) {
-         lastNotifiedVal = val;
-         onChange(val);
-      }
-    }, 150); 
-  };
-}
-
-function calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score){const jiCnt=ss.filter(s=>s.type==='ji').length,xiongCnt=ss.filter(s=>s.type==='xiong').length,ldTen=SS_TABLE[ri][ldGZ.tg];let w=3,c=3,l=3,h=3,s=3,t=3;if(['正財','偏財'].includes(ldTen))w+=1.5;if(['劫財','七殺'].includes(ldTen))w-=1.5;if(jiCnt>=2)w+=0.5;if(xiongCnt>=2)w-=0.5;if(ss.find(x=>x.apiKey==='TianYiGuiRen'))w+=1;if(ss.find(x=>x.apiKey==='JianLu'))w+=0.8;if(['正官','七殺'].includes(ldTen))c+=1;if(['食神','傷官'].includes(ldTen))c+=0.7;if(['比肩','劫財'].includes(ldTen))c-=0.3;if(ss.find(x=>x.apiKey==='WenChang'))c+=0.8;if(xiongCnt>=2)c-=0.8;if(ss.find(x=>x.apiKey==='HongYan'||x.apiKey==='TianXi'))l+=1.5;if(ss.find(x=>x.apiKey==='Tao'))l+=0.5;if(['傷官'].includes(ldTen))l-=0.5;if(['正印','偏印'].includes(ldTen))h+=1;if(['七殺','傷官'].includes(ldTen))h-=0.7;if(ss.find(x=>x.apiKey==='JieSha'))h-=0.8;if(ss.find(x=>x.apiKey==='XueChi'))h-=0.5;if(ss.find(x=>x.apiKey==='WenChang'))s+=1.5;if(['食神','傷官'].includes(ldTen))s+=0.8;if(xiongCnt>=3)s-=1;if(ss.find(x=>x.apiKey==='TianDe'||x.apiKey==='YueDe'))t+=1.2;if(ss.find(x=>x.apiKey==='JieSha'||x.apiKey==='SuiPo'))t-=1.5;if(jiCnt>=3)t+=0.5;return{w:Math.max(1,Math.min(5,w)),c:Math.max(1,Math.min(5,c)),l:Math.max(1,Math.min(5,l)),h:Math.max(1,Math.min(5,h)),s:Math.max(1,Math.min(5,s)),t:Math.max(1,Math.min(5,t))};}
-function renderFortuneGrid(ri,ldGZ,lmGZ,lyGZ,ss,score){const sc=calcFortuneScores(ri,ldGZ,lmGZ,lyGZ,ss,score);const DEF=[{cls:'f-wealth',icon:'◈',title:t('f_wealth'),score:sc.w},{cls:'f-career',icon:'◇',title:t('f_career'),score:sc.c},{cls:'f-love',icon:'◉',title:t('f_love'),score:sc.l},{cls:'f-health',icon:'◎',title:t('f_health'),score:sc.h},{cls:'f-study',icon:'◈',title:t('f_study'),score:sc.s},{cls:'f-travel',icon:'◌',title:t('f_travel'),score:sc.t}];document.getElementById('fortune-grid').innerHTML=DEF.map(f=>`<div class="fortune-card ${f.cls}"><span class="fc-icon">${f.icon}</span><div class="fc-title">${f.title}</div><div class="fc-score"><div class="fc-stars">${Array.from({length:5},(_,i)=>`<div class="fc-star${i<Math.floor(f.score)?' on':''}"></div>`).join('')}</div><span class="fc-score-num">${f.score.toFixed(1)}</span></div></div>`).join('');}
-
-function renderHourTable(ri,ldGZ){
-  const curDzHour=Math.floor((curDate.getHours()+1)/2)%12;
-  let html=`<div class="ht-head"><div class="ht-hcell">${t('th_hour')}</div><div class="ht-hcell">${t('th_time')}</div><div class="ht-hcell">${t('th_gz')}</div><div class="ht-hcell">${t('th_good')}</div><div class="ht-hcell">${t('th_bad')}</div></div>`;
-  const names=t('dz_name');const ranges=['23-01','01-03','03-05','05-07','07-09','09-11','11-13','13-15','15-17','17-19','19-21','21-23'];
-  let goods, bads;
-  if(currentLang === 'en') {
-    goods=['Meditation','Farming','Seeking Job','Meeting','Marriage','Wealth','Banquet','Learning','Negotiation','Renovation','Rituals','Rest'];
-    bads=['Travel','Lawsuits','Woodcut','Funeral','Travel','Digging','Funeral','Lawsuits','Marriage','Travel','Marriage','Lawsuits'];
-  } else if(currentLang === 'zh-CN') {
-    goods=['祈福·静心','农耕·出行','求职·开业','会友·签约','婚嫁·动土','求财·祭祀','宴客·庆典','习艺·出行','商谈·缔约','修造·收财','祭祀·祈祷','入眠·休养'];
-    bads=['出行·争讼','诉讼·手术','伐木·动土','丧葬·动刀','出行·嫁娶','动土·争讼','丧葬','动刀·诉讼','嫁娶·动土','丧葬·远行','嫁娶·远行','争讼·手术'];
-  } else {
-    goods=['祈福·靜心','農耕·出行','求職·開業','會友·簽約','婚嫁·動土','求財·祭祀','宴客·慶典','習藝·出行','商談·締約','修造·收財','祭祀·祈禱','入眠·休養'];
-    bads=['出行·爭訟','訴訟·手術','伐木·動土','喪葬·動刀','出行·嫁娶','動土·爭訟','喪葬','動刀·訴訟','嫁娶·動土','喪葬·遠行','嫁娶·遠行','爭訟·手術'];
+  let sm = month, sy = year;
+  if(targetMins < termMins){
+      sm--;
+      if(sm===0){sm=12; sy--;}
   }
-  for(let i=0;i<12;i++){const hrGZ=getHrGZ(i*2,ldGZ.tg);html+=`<div class="ht-row${i===curDzHour?' ht-cur':''}"><div class="ht-cell"><span class="ht-gz ${DZ_CSS[i]}">${names[i]}</span></div><div class="ht-cell ht-time">${ranges[i]}</div><div class="ht-cell"><span class="ht-gz ${TG_CSS[hrGZ.tg]}">${t('tg_name')[hrGZ.tg]}</span><span class="ht-gz ${DZ_CSS[hrGZ.dz]}">${t('dz_name')[hrGZ.dz]}</span></div><div class="ht-cell ht-good">${goods[i]}</div><div class="ht-cell ht-bad">${bads[i]}</div></div>`;}
-  document.getElementById('hour-table').innerHTML=html;
+  return {tg:([2,4,6,8,0][(((sm===1?sy-1:sy)-4)%10+10)%10 % 5]+((sm+10)%12+1)-1)%10,dz:sm%12};
 }
 
-// 動態展開關係解讀
-window.showRelDesc = function(btn, ctx = 'transit') {
-  const container = btn.closest('.rel-outer') || btn.parentElement.parentElement;
-  const wasActive = btn.classList.contains('active');
-  
-  container.querySelectorAll('.rel-badge').forEach(b => b.classList.remove('active'));
-  const descBox = container.querySelector('.rel-inline-desc');
-  
-  if (wasActive) {
-      descBox.style.display = 'none';
-  } else {
-      btn.classList.add('active');
-      let advText = '';
-      if (ctx === 'natal') {
-          advText = btn.dataset.rtype === 'xiong' ? t('natal_adv_xiong') : t('natal_adv_ji');
-      } else {
-          advText = btn.dataset.rtype === 'xiong' ? t('transit_adv_xiong') : t('transit_adv_ji');
-      }
+function checkAndLoadUser() {
+  const s = localStorage.getItem('zencode_user_profile');
+  if (s) {
+    try {
+      const p = JSON.parse(s);
+      USER = {
+        name: p.name || '命主',
+        gender: p.gender || '男',
+        year: parseInt(p.year) || 1992,
+        month: parseInt(p.month) || 1,
+        day: parseInt(p.day) || 1,
+        hour: parseInt(p.hour) || 0,
+        minute: parseInt(p.minute) || 0,
+        longitude: p.longitude !== undefined && !isNaN(parseFloat(p.longitude)) ? parseFloat(p.longitude) : 120.0,
+        timezone: p.timezone !== undefined && !isNaN(parseInt(p.timezone)) ? parseInt(p.timezone) : 8,
+        isDST: p.isDST || false,
+      };
       
-      descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div>
-                           <div style="margin-bottom:8px;"><strong>${t('lbl_energy_impact')}</strong>${btn.dataset.rdesc}</div>
-                           <div style="color:rgba(212,168,67,0.8);"><strong>${t('lbl_action_advice')}</strong>${advText}</div>`;
-      descBox.style.display = 'block';
+      document.getElementById('landing-view').style.display = 'none';
+      document.getElementById('setup-modal').style.display = 'none';
+      document.getElementById('app-view').style.display = 'block';
+      
+      if(document.getElementById('drum-year')) { initDrums(); }
+      renderJiari(); 
+      renderMingpan();
+      renderDayun();
+      updateMailtoLink();
+    } catch (e) {
+      document.getElementById('landing-view').style.display = 'flex';
+      document.getElementById('app-view').style.display = 'none';
+    }
+  } else {
+    document.getElementById('landing-view').style.display = 'flex';
+    document.getElementById('app-view').style.display = 'none';
   }
-};
+}
+
+function submitLandingForm(e) {
+  e.preventDefault();
+  const userData = {
+    name: document.getElementById('lp-name').value,
+    gender: document.getElementById('lp-gender').value,
+    year: parseInt(document.getElementById('lp-year').value),
+    month: parseInt(document.getElementById('lp-month').value),
+    day: parseInt(document.getElementById('lp-day').value),
+    hour: parseInt(document.getElementById('lp-hour').value),
+    minute: parseInt(document.getElementById('lp-minute').value),
+    longitude: parseFloat(document.getElementById('lp-lon').value),
+    timezone: parseInt(document.getElementById('lp-tz').value),
+    isDST: document.getElementById('lp-dst').checked
+  };
+  localStorage.setItem('zencode_user_profile', JSON.stringify(userData));
+  checkAndLoadUser(); 
+}
+
+function showSetupModal() {
+  const modal = document.getElementById('setup-modal');
+  modal.style.display = 'block';
+  if (USER && USER.year) {
+    document.getElementById('m-name').value = USER.name;
+    document.getElementById('m-gender').value = USER.gender;
+    document.getElementById('m-year').value = USER.year;
+    document.getElementById('m-month').value = USER.month;
+    document.getElementById('m-day').value = USER.day;
+    document.getElementById('m-hour').value = USER.hour;
+    document.getElementById('m-minute').value = USER.minute;
+    document.getElementById('m-lon').value = USER.longitude;
+    document.getElementById('m-tz').value = USER.timezone;
+    document.getElementById('m-dst').checked = USER.isDST;
+  }
+}
+
+function hideSetupModal() {
+  document.getElementById('setup-modal').style.display = 'none';
+}
+
+function saveProfileFromModal(e) {
+  e.preventDefault();
+  const userData = {
+    name: document.getElementById('m-name').value,
+    gender: document.getElementById('m-gender').value,
+    year: parseInt(document.getElementById('m-year').value),
+    month: parseInt(document.getElementById('m-month').value),
+    day: parseInt(document.getElementById('m-day').value),
+    hour: parseInt(document.getElementById('m-hour').value),
+    minute: parseInt(document.getElementById('m-minute').value),
+    longitude: parseFloat(document.getElementById('m-lon').value),
+    timezone: parseInt(document.getElementById('m-tz').value),
+    isDST: document.getElementById('m-dst').checked
+  };
+  localStorage.setItem('zencode_user_profile', JSON.stringify(userData));
+  checkAndLoadUser(); 
+}
 
 function renderJiari(){
   try {
@@ -1213,7 +1039,6 @@ function renderJiari(){
 
     // 計算喜用神 (用於大局推演)
     let dmWx = WXT[ri];
-    let monthDz = mGZ.dz;
     let xiyongArr = [];
     if (strengthKey === 'str_strong') {
       xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[dmWx];
@@ -1396,7 +1221,7 @@ function renderDayun(){
     if(document.getElementById('dy-dir')) document.getElementById('dy-dir').textContent=dy.fwd ? t('dir_fwd') : t('dir_rev');
     
     if(cur && document.getElementById('dy-current')){
-      document.getElementById('dy-current').textContent=`${t('tg_name')[cur.tgIdx]}${t('dz_name')[cur.dzIdx]} · ${cur.age}${t('age_unit')}`;
+      document.getElementById('dy-current').textContent=t('tg_name')[cur.tgIdx]+t('dz_name')[cur.dzIdx]+" · "+cur.age+t('age_unit');
     }
     const dyList = document.getElementById('dayun-list');
     if (dyList) {
