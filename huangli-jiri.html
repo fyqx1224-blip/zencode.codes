@@ -344,7 +344,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -1220,12 +1220,6 @@ function renderJiari(){
     } else {
       xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[dmWx];
     }
-    if ([11, 0, 1].includes(monthDz)) { if(!xiyongArr.includes('火')) xiyongArr.unshift('火'); }
-    if ([5, 6, 7].includes(monthDz)) { if(!xiyongArr.includes('水')) xiyongArr.unshift('水'); }
-    if ([8, 9, 10].includes(monthDz)) {
-        if (ri === 0) { xiyongArr = ['火', '木']; } 
-        else if (ri === 1) { if (strengthKey === 'str_weak') { xiyongArr = ['水', '木']; } }
-    }
     xiyongArr = [...new Set(xiyongArr)];
 
     const pillars=[
@@ -1308,27 +1302,12 @@ function renderMingpan(){
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
 
     let dmWx = WXT[ri];
-    let monthDz = mGZ.dz;
     let xiyongArr = [];
 
     if (strengthKey === 'str_strong') {
       xiyongArr = {'木':['火','土','金'],'火':['土','金','水'],'土':['金','水','木'],'金':['水','木','火'],'水':['木','火','土']}[dmWx];
     } else {
       xiyongArr = {'木':['水','木'],'火':['木','火'],'土':['火','土'],'金':['土','金'],'水':['金','水']}[dmWx];
-    }
-    
-    if ([11, 0, 1].includes(monthDz)) { 
-        if(!xiyongArr.includes('火')) xiyongArr.unshift('火'); 
-    }
-    if ([5, 6, 7].includes(monthDz)) { 
-        if(!xiyongArr.includes('水')) xiyongArr.unshift('水'); 
-    }
-    if ([8, 9, 10].includes(monthDz)) {
-        if (ri === 0) {
-            xiyongArr = ['火', '木']; 
-        } else if (ri === 1) {
-            if (strengthKey === 'str_weak') { xiyongArr = ['水', '木']; }
-        }
     }
     
     xiyongArr = [...new Set(xiyongArr)];
