@@ -965,7 +965,13 @@ function getXiyong(ri, strengthKey, envWeights, monthDz) {
 
     let arr = [];
     if (strengthKey === 'str_weak') {
-        if (envWeights[wxRel.control] >= 4.0) arr = [wxRel.res, wxRel.out]; 
+        if (envWeights[wxRel.control] >= 4.0) {
+            if (envWeights[wxRel.res] < 0.5 && envWeights[wxRel.out] > 0) {
+                arr = [wxRel.out, wxRel.res];
+            } else {
+                arr = [wxRel.res, wxRel.comp];
+            }
+        }
         else if (envWeights[wxRel.out] >= 4.0) arr = [wxRel.res, wxRel.comp]; 
         else if (envWeights[wxRel.wealth] >= 4.0) arr = [wxRel.comp, wxRel.res]; 
         else arr = [wxRel.res, wxRel.comp];
@@ -976,9 +982,6 @@ function getXiyong(ri, strengthKey, envWeights, monthDz) {
     } else {
         arr = [wxRel.control, wxRel.res, wxRel.out];
     }
-
-    if ([11, 0, 1].includes(monthDz) && !arr.includes('火') && envWeights['火'] < 0.5) arr.push('火');
-    if ([5, 6, 7].includes(monthDz) && !arr.includes('水') && envWeights['水'] < 0.5) arr.push('水');
 
     return [...new Set(arr)];
 }
@@ -1019,7 +1022,7 @@ function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, l
     const elements = [ WXT[lyGZ.tg], WXD[lyGZ.dz], WXT[lmGZ.tg], WXD[lmGZ.dz], WXT[ldGZ.tg], WXD[ldGZ.dz] ];
     let dyStr = t('val_unstarted');
     let dyTen = '—';
-    if (dy) {
+    if (dy && dy.tgIdx >= 0 && dy.dzIdx >= 0) {
         elements.push(WXT[dy.tgIdx], WXD[dy.dzIdx]);
         dyStr = `${t('tg_name')[dy.tgIdx]}${t('dz_name')[dy.dzIdx]}`;
         dyTen = t('ten')[SS_TABLE[ri][dy.tgIdx]];
@@ -1046,7 +1049,7 @@ function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, l
         <div class="ic-head"><div class="ic-title" style="font-size:0.75rem;">${t('lbl_comp_reading')}</div></div>
         <div class="ic-body" style="display:block; border-top:1px solid rgba(212,168,67,0.2); padding-top:10px;">`;
         
-    if (dy) {
+    if (dy && dy.tgIdx >= 0) {
         let macroT = t('macro_text').replace('{dy}', `${dyStr} (${dyTen})`).replace('{ly}', `${lyStr} (${lyTen})`);
         html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
     } else {
@@ -1260,6 +1263,7 @@ function renderJiari(){
     const lyGZ=getYrGZPrecise(y,m,day,h,mn); const lmGZ=getMoGZPrecise(y,m,day,h,mn);
     const ldGZ=getDayGZ(y,m,day, h); const lhGZ=getHrGZ(h, ldGZ.tg);
 
+    // 重新計算身強弱以傳遞給解讀引擎
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
     const wList = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
