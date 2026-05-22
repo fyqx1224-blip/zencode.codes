@@ -173,7 +173,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .consult-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--gold); }
 .consult-icon { font-size: 1.1rem; }
 
-/* 綜合推演卡片專屬樣式 */
 .ic-macro { border: 1px solid rgba(212,168,67,0.4); background: rgba(212,168,67,0.05); }
 .ic-macro .ic-title { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
 
@@ -521,7 +520,7 @@ const HL_I18N = {
     dyn_res_strong: "身旺逢印，印星生身太过。今日容易思虑过多、行动力减弱，甚至产生依赖心理。宜化繁为简，多做少想，切忌优柔寡断。",
     dyn_res_weak: "身弱逢印，印星生扶为用。今日思维清晰，易得贵人长辈相助。适合学习充电、签署合约、寻求资源与庇护。",
     dyn_out_strong: "身旺逢食伤，食伤泄秀。今日灵感爆发，表达欲与展现力极佳。适合创意工作、演讲策划、社交应酬与推广营销。",
-    dyn_out_weak: "身弱逢食伤，泄气过多。今日容易因输出过度而感到疲惫，或因言多必失惹来是非。宜谨言慎行，保留体力。",
+    dyn_out_weak: "身弱逢食伤，泄气过度。今日容易因输出过度而感到疲惫，或因言多必失惹来是非。宜谨言慎行，保留体力。",
     dyn_comp_strong: "身旺逢比劫，比劫夺财。今日竞争意识强，但也容易引发资源争夺或冲动花费。合作需谨慎，注意利益分配的公平性。",
     dyn_comp_weak: "身弱逢比劫，比劫帮身为用。今日人际互动频繁，能从团队合作或朋友中获得力量与支持。宜广结善缘，借力打力。",
     
@@ -793,7 +792,6 @@ function getTrueSolarTime(year, month, day, hour, minute, longitude, tzOffset, i
   return { hour: Math.floor(minTotal / 60), minute: Math.round(minTotal % 60), dayOffset: dayOffset };
 }
 
-// 2000-2030 精確立冬節氣分鐘級對照表 (核心演算法：修正盲目平均翻車Bug)
 function getDongTermMinutes(year) {
     const baseMinutes = {
         2000: 7*1440 + 2*60 + 41, 2001: 7*1440 + 8*60 + 41, 2002: 7*1440 + 14*60 + 30,
@@ -862,6 +860,9 @@ function checkRels(pillars){
   for(let i=0;i<pillars.length;i++){
     for(let j=i+1;j<pillars.length;j++){
       const a=pillars[i],b=pillars[j];
+      
+      if(a.dz === -1 || b.dz === -1) continue;
+      
       const pLabel = `${a.label}×${b.label}`;
       
       if(CHONG6[a.dz]===b.dz) rels.push({cls:'rb-chong', txt:`${t('dz_name')[a.dz]}${t('dz_name')[b.dz]} ${t('rel_chong')}`, type:'xiong', key:'rel_interp_chong', scope: pLabel});
@@ -892,7 +893,6 @@ function checkRels(pillars){
   return Array.from(uniqueRels.values()).slice(0,12);
 }
 
-// 精確多柱邊界判定法
 function getMoGZPrecise(year,month,day,hour,minute){
   let targetMins = day*1440 + hour*60 + minute;
   let termMins = [6, 4, 5, 4, 5, 5, 6, 7, 7, 8, 7, 6][month-1] * 1440 + 12*60; 
@@ -954,7 +954,6 @@ function getCurrentDayunIdx(dy, birthYear, nowYear) {
   return cur;
 }
 
-// 核心病藥喜用神引擎
 function getXiyong(ri, strengthKey, envWeights, monthDz) {
     const dmWx = WXT[ri];
     const wxRel = {
@@ -967,20 +966,23 @@ function getXiyong(ri, strengthKey, envWeights, monthDz) {
 
     let arr = [];
     if (strengthKey === 'str_weak') {
-        if (envWeights[wxRel.control] >= 4.0) arr = [wxRel.res, wxRel.out]; 
+        if (envWeights[wxRel.control] >= 4.0) {
+            if (envWeights[wxRel.res] < 0.5 && envWeights[wxRel.out] > 0) {
+                arr = [wxRel.comp, wxRel.out];
+            } else {
+                arr = [wxRel.res, wxRel.comp];
+            }
+        }
         else if (envWeights[wxRel.out] >= 4.0) arr = [wxRel.res, wxRel.comp]; 
         else if (envWeights[wxRel.wealth] >= 4.0) arr = [wxRel.comp, wxRel.res]; 
-        else arr = [wxRel.res, wxRel.comp];
+        else arr = [wxRel.comp, wxRel.res];
     } else if (strengthKey === 'str_strong') {
         if (envWeights[wxRel.res] >= 4.0) arr = [wxRel.wealth, wxRel.out]; 
         else if (envWeights[wxRel.comp] >= 4.0) arr = [wxRel.control, wxRel.out]; 
         else arr = [wxRel.control, wxRel.out, wxRel.wealth]; 
     } else {
-        arr = [wxRel.control, wxRel.res, wxRel.out];
+        arr = [wxRel.control, wxRel.out]; 
     }
-
-    if ([11, 0, 1].includes(monthDz) && !arr.includes('火') && envWeights['火'] < 0.5) arr.push('火');
-    if ([5, 6, 7].includes(monthDz) && !arr.includes('水') && envWeights['水'] < 0.5) arr.push('水');
 
     return [...new Set(arr)];
 }
@@ -1021,7 +1023,7 @@ function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, l
     const elements = [ WXT[lyGZ.tg], WXD[lyGZ.dz], WXT[lmGZ.tg], WXD[lmGZ.dz], WXT[ldGZ.tg], WXD[ldGZ.dz] ];
     let dyStr = t('val_unstarted');
     let dyTen = '—';
-    if (dy) {
+    if (dy && dy.tgIdx >= 0 && dy.dzIdx >= 0) {
         elements.push(WXT[dy.tgIdx], WXD[dy.dzIdx]);
         dyStr = `${t('tg_name')[dy.tgIdx]}${t('dz_name')[dy.dzIdx]}`;
         dyTen = t('ten')[SS_TABLE[ri][dy.tgIdx]];
@@ -1048,7 +1050,7 @@ function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, l
         <div class="ic-head"><div class="ic-title" style="font-size:0.75rem;">${t('lbl_comp_reading')}</div></div>
         <div class="ic-body" style="display:block; border-top:1px solid rgba(212,168,67,0.2); padding-top:10px;">`;
         
-    if (dy) {
+    if (dy && dy.tgIdx >= 0) {
         let macroT = t('macro_text').replace('{dy}', `${dyStr} (${dyTen})`).replace('{ly}', `${lyStr} (${lyTen})`);
         html += `<div style="margin-bottom:8px;"><strong>${t('lbl_macro_trend')}</strong><br>${macroT}</div>`;
     } else {
@@ -1070,14 +1072,14 @@ let curDate=new Date();
 function pillarHTML(p, ri){
   try{
     const tgName=t('tg_name')[p.tg];
-    const dzName=t('dz_name')[p.dz];
+    const dzName=p.dz >= 0 ? t('dz_name')[p.dz] : '—';
     const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;
     const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';
     const dzTenLocal=t('ten')[p.dzTenRaw]||p.dzTenRaw;
     const dzTenCls=TEN_CSS_MAP[p.dzTenRaw]||'';
     
     let zgHtml = '';
-    if (ri !== undefined && ZANGGAN[p.dz]) {
+    if (ri !== undefined && p.dz >= 0 && ZANGGAN[p.dz]) {
        ZANGGAN[p.dz].forEach(zgTg => {
            const tenRaw = SS_TABLE[ri][zgTg];
            const ten = t('ten')[tenRaw] || '';
@@ -1088,16 +1090,16 @@ function pillarHTML(p, ri){
     return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
       <div class="sz-head">${p.label}</div>
       <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
-      <div class="sz-tg ${TG_CSS[p.tg]}">${tgName}</div>
-      <div class="sz-dz ${DZ_CSS[p.dz]}">${dzName}</div>
+      <div class="sz-tg ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${p.tg>=0 ? tgName : '—'}</div>
+      <div class="sz-dz ${p.dz>=0 ? DZ_CSS[p.dz] : ''}">${dzName}</div>
       <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
       ${zgHtml ? `<div class="sz-zg-box">${zgHtml}</div>` : ''}
-      <div class="sz-nayin">${nayin(p.tg,p.dz)}</div>
+      <div class="sz-nayin">${p.tg>=0 && p.dz>=0 ? nayin(p.tg,p.dz) : '—'}</div>
       <div class="sz-detail">
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${TG_CSS[p.tg]}">${tgName}</span></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${p.tg>=0 ? tgName : '—'}</span></div>
         <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
         <div class="sd-div"></div>
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${DZ_CSS[p.dz]}">${dzName}</span></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${p.dz>=0 ? DZ_CSS[p.dz] : ''}">${dzName}</span></div>
         <div class="sd-row"><span class="sd-lbl">${t('lbl_dz_ten')}</span><span class="sd-val ${dzTenCls}">${dzTenLocal}</span></div>
       </div>
     </div>`;
@@ -1262,7 +1264,7 @@ function renderJiari(){
     const lyGZ=getYrGZPrecise(y,m,day,h,mn); const lmGZ=getMoGZPrecise(y,m,day,h,mn);
     const ldGZ=getDayGZ(y,m,day, h); const lhGZ=getHrGZ(h, ldGZ.tg);
 
-    // 精準計算身強弱及環境五行力量 (用於動態病藥喜用神判定)
+    // 精準計算身強弱及環境五行力量
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
     const wList = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
@@ -1276,7 +1278,7 @@ function renderJiari(){
     let score = envWeights[supports[0]] + envWeights[supports[1]];
     const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
 
-    // 調用核心病藥喜用神引擎
+    // 動態喜用神判定
     let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz);
 
     const pillars=[
@@ -1284,7 +1286,7 @@ function renderJiari(){
       {label: t('lbl_month'), tg:mGZ.tg, dz:mGZ.dz, tgTenRaw:SS_TABLE[ri][mGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]], colCls:''},
       {label: t('lbl_day'), tg:dGZ.tg, dz:dGZ.dz, tgTenRaw:'日主', dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[dGZ.dz]], colCls:'sz-rizhu'},
       {label: t('lbl_hour'), tg:hGZ.tg, dz:hGZ.dz, tgTenRaw:SS_TABLE[ri][hGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[hGZ.dz]], colCls:''},
-      {label: t('grp_luck'), tg:curDy?curDy.tgIdx:0, dz:curDy?curDy.dzIdx:0, tgTenRaw:curDy?SS_TABLE[ri][curDy.tgIdx]:'—', dzTenRaw:curDy?SS_TABLE[ri][HIDDEN_MAIN_QI[curDy.dzIdx]]:'—', colCls:'sz-dayun'},
+      {label: t('grp_luck'), tg:curDy?curDy.tgIdx:-1, dz:curDy?curDy.dzIdx:-1, tgTenRaw:curDy?SS_TABLE[ri][curDy.tgIdx]:'—', dzTenRaw:curDy?SS_TABLE[ri][HIDDEN_MAIN_QI[curDy.dzIdx]]:'—', colCls:'sz-dayun'},
       {label: t('grp_year'), tg:lyGZ.tg, dz:lyGZ.dz, tgTenRaw:SS_TABLE[ri][lyGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lyGZ.dz]], colCls:'sz-liuyear'},
       {label: t('grp_month'), tg:lmGZ.tg, dz:lmGZ.dz, tgTenRaw:SS_TABLE[ri][lmGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[lmGZ.dz]], colCls:'sz-liumonth'},
       {label: t('grp_day'), tg:ldGZ.tg, dz:ldGZ.dz, tgTenRaw:SS_TABLE[ri][ldGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[ldGZ.dz]], colCls:'sz-liuday'},
