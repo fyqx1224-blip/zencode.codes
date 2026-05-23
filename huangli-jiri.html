@@ -342,7 +342,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_hours">今 日 十 二 時 辰</span></div>
     <div class="hour-table" id="hour-table"></div>
     <div class="divider"></div>
-    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
+    <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_ss">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
     
     <div class="consult-btn-wrap">
@@ -492,7 +492,7 @@ const HL_I18N = {
     hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运',
     val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）',
     click_tip:'点击查看关系',
-    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫財':'劫财','日主':'日主','—':'—'},
+    ten:{'七殺':'七杀','正官':'正官','偏財':'偏财','正財':'正财','偏印':'偏印','正印':'正印','食神':'食神','傷官':'伤官','比肩':'比肩','劫财':'劫财','日主':'日主','—':'—'},
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'纳音', lbl_tengod:'十神',
     yang: '阳', yin: '阴',
@@ -953,6 +953,7 @@ function getCurrentDayunIdx(dy, birthYear, nowYear) {
   return cur;
 }
 
+// 核心病藥喜用神引擎 (修復殺重無印、食傷制殺等高階判斷)
 function getXiyong(ri, strengthKey, envWeights, monthDz, counts) {
     const dmWx = WXT[ri];
     const wxRel = {
@@ -965,16 +966,17 @@ function getXiyong(ri, strengthKey, envWeights, monthDz, counts) {
 
     let arr = [];
     if (strengthKey === 'str_weak') {
-        if (envWeights[wxRel.control] >= 5.0 || counts[wxRel.control] >= 3) {
-            if (counts[wxRel.res] === 0 && (envWeights[wxRel.out] >= 2.0 || counts[wxRel.out] >= 2)) {
-                arr = [wxRel.comp, wxRel.out];
-            } else {
-                arr = [wxRel.res, wxRel.comp];
-            }
+        let maxEnemy = 'wealth';
+        if (envWeights[wxRel.control] > envWeights[wxRel.wealth] && envWeights[wxRel.control] >= envWeights[wxRel.out]) maxEnemy = 'control';
+        if (envWeights[wxRel.out] > envWeights[wxRel.wealth] && envWeights[wxRel.out] > envWeights[wxRel.control]) maxEnemy = 'out';
+
+        if (maxEnemy === 'control' && counts[wxRel.res] === 0) {
+            arr = [wxRel.comp, wxRel.out]; // 殺重無印，用比劫食傷 (e.g. 丙逢水重無木，喜火土)
+        } else if (maxEnemy === 'out' && counts[wxRel.res] === 0) {
+            arr = [wxRel.comp, wxRel.wealth]; // 食傷重無印，用比劫財
+        } else {
+            arr = [wxRel.res, wxRel.comp]; // 常規身弱用印比
         }
-        else if (envWeights[wxRel.out] >= 5.0 || counts[wxRel.out] >= 3) arr = [wxRel.res, wxRel.comp]; 
-        else if (envWeights[wxRel.wealth] >= 5.0 || counts[wxRel.wealth] >= 3) arr = [wxRel.comp, wxRel.res]; 
-        else arr = [wxRel.res, wxRel.comp];
     } else if (strengthKey === 'str_strong') {
         if (envWeights[wxRel.res] >= 5.0 || counts[wxRel.res] >= 3) arr = [wxRel.wealth, wxRel.out]; 
         else if (envWeights[wxRel.comp] >= 5.0 || counts[wxRel.comp] >= 3) arr = [wxRel.control, wxRel.out]; 
@@ -982,9 +984,6 @@ function getXiyong(ri, strengthKey, envWeights, monthDz, counts) {
     } else {
         arr = [wxRel.control, wxRel.out]; 
     }
-
-    if ([11, 0, 1].includes(monthDz) && !arr.includes('火') && envWeights['火'] < 1.0) arr.push('火');
-    if ([5, 6, 7].includes(monthDz) && !arr.includes('水') && envWeights['水'] < 1.0) arr.push('水');
 
     return [...new Set(arr)];
 }
@@ -1073,7 +1072,7 @@ function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, l
 let curDate=new Date();
 function pillarHTML(p, ri){
   try{
-    const tgName=t('tg_name')[p.tg];
+    const tgName=p.tg >= 0 ? t('tg_name')[p.tg] : '—';
     const dzName=p.dz >= 0 ? t('dz_name')[p.dz] : '—';
     const tgTenLocal=t('ten')[p.tgTenRaw]||p.tgTenRaw;
     const tgTenCls=TEN_CSS_MAP[p.tgTenRaw]||'';
@@ -1092,13 +1091,13 @@ function pillarHTML(p, ri){
     return `<div class="sz-col ${p.colCls||''}" tabindex="0" onclick="toggleDetail(this)">
       <div class="sz-head">${p.label}</div>
       <div class="sz-ten ${tgTenCls}" style="margin-top:4px;">${tgTenLocal}</div>
-      <div class="sz-tg ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${p.tg>=0 ? tgName : '—'}</div>
+      <div class="sz-tg ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${tgName}</div>
       <div class="sz-dz ${p.dz>=0 ? DZ_CSS[p.dz] : ''}">${dzName}</div>
       <div class="sz-ten ${dzTenCls}">${dzTenLocal}</div>
       ${zgHtml ? `<div class="sz-zg-box">${zgHtml}</div>` : ''}
       <div class="sz-nayin">${p.tg>=0 && p.dz>=0 ? nayin(p.tg,p.dz) : '—'}</div>
       <div class="sz-detail">
-        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${p.tg>=0 ? tgName : '—'}</span></div>
+        <div class="sd-row"><span class="sd-lbl">${t('lbl_stem')}</span><span class="sd-val ${p.tg>=0 ? TG_CSS[p.tg] : ''}">${tgName}</span></div>
         <div class="sd-row"><span class="sd-lbl">${t('lbl_tg_ten')}</span><span class="sd-val ${tgTenCls}">${tgTenLocal}</span></div>
         <div class="sd-div"></div>
         <div class="sd-row"><span class="sd-lbl">${t('lbl_branch')}</span><span class="sd-val ${p.dz>=0 ? DZ_CSS[p.dz] : ''}">${dzName}</span></div>
@@ -1281,7 +1280,6 @@ function renderJiari(){
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = envWeights[supports[0]] + envWeights[supports[1]];
     
-    // 得勢、殺印相生等複雜判斷加分
     let supportCount = counts[supports[0]] + counts[supports[1]];
     if (supportCount >= 5) score += 3.0; 
     else if (supportCount === 4) score += 1.5; 
