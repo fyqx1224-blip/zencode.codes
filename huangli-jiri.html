@@ -82,7 +82,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sd-val{font-size:0.6rem;color:var(--text-d);}
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
 
-/* 地支關係徽章與動態展開框樣式 */
 .rel-outer{padding:4px 16px 10px;min-width:640px;}
 .rel-badges{display:flex;gap:3px;flex-wrap:wrap;}
 .rel-badge{font-size:0.5rem;padding:4px 10px;border:1px solid;cursor:pointer;transition:all 0.2s;}
@@ -954,7 +953,7 @@ function getCurrentDayunIdx(dy, birthYear, nowYear) {
   return cur;
 }
 
-function getXiyong(ri, strengthKey, envWeights, monthDz) {
+function getXiyong(ri, strengthKey, envWeights, monthDz, counts) {
     const dmWx = WXT[ri];
     const wxRel = {
         '木': { res: '水', comp: '木', out: '火', wealth: '土', control: '金' },
@@ -966,23 +965,26 @@ function getXiyong(ri, strengthKey, envWeights, monthDz) {
 
     let arr = [];
     if (strengthKey === 'str_weak') {
-        if (envWeights[wxRel.control] >= 4.0) {
-            if (envWeights[wxRel.res] < 0.5 && envWeights[wxRel.out] > 0) {
+        if (envWeights[wxRel.control] >= 5.0 || counts[wxRel.control] >= 3) {
+            if (counts[wxRel.res] === 0 && (envWeights[wxRel.out] >= 2.0 || counts[wxRel.out] >= 2)) {
                 arr = [wxRel.comp, wxRel.out];
             } else {
                 arr = [wxRel.res, wxRel.comp];
             }
         }
-        else if (envWeights[wxRel.out] >= 4.0) arr = [wxRel.res, wxRel.comp]; 
-        else if (envWeights[wxRel.wealth] >= 4.0) arr = [wxRel.comp, wxRel.res]; 
-        else arr = [wxRel.comp, wxRel.res];
+        else if (envWeights[wxRel.out] >= 5.0 || counts[wxRel.out] >= 3) arr = [wxRel.res, wxRel.comp]; 
+        else if (envWeights[wxRel.wealth] >= 5.0 || counts[wxRel.wealth] >= 3) arr = [wxRel.comp, wxRel.res]; 
+        else arr = [wxRel.res, wxRel.comp];
     } else if (strengthKey === 'str_strong') {
-        if (envWeights[wxRel.res] >= 4.0) arr = [wxRel.wealth, wxRel.out]; 
-        else if (envWeights[wxRel.comp] >= 4.0) arr = [wxRel.control, wxRel.out]; 
+        if (envWeights[wxRel.res] >= 5.0 || counts[wxRel.res] >= 3) arr = [wxRel.wealth, wxRel.out]; 
+        else if (envWeights[wxRel.comp] >= 5.0 || counts[wxRel.comp] >= 3) arr = [wxRel.control, wxRel.out]; 
         else arr = [wxRel.control, wxRel.out, wxRel.wealth]; 
     } else {
         arr = [wxRel.control, wxRel.out]; 
     }
+
+    if ([11, 0, 1].includes(monthDz) && !arr.includes('火') && envWeights['火'] < 1.0) arr.push('火');
+    if ([5, 6, 7].includes(monthDz) && !arr.includes('水') && envWeights['水'] < 1.0) arr.push('水');
 
     return [...new Set(arr)];
 }
@@ -1266,20 +1268,37 @@ function renderJiari(){
 
     // 精準計算身強弱及環境五行力量
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
-    const wList = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
+    const counts = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const wList = [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5]; // 滿分13
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
     
     chartElements.forEach((item, i) => {
         let wx = (i % 2 === 0) ? WXT[item] : WXD[item];
+        counts[wx]++;
         envWeights[wx] += wList[i];
     });
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = envWeights[supports[0]] + envWeights[supports[1]];
-    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
+    
+    // 得勢、殺印相生等複雜判斷加分
+    let supportCount = counts[supports[0]] + counts[supports[1]];
+    if (supportCount >= 5) score += 3.0; 
+    else if (supportCount === 4) score += 1.5; 
+    
+    if (mGZ.dz === 1 && (supports[0] === '水' || supports[0] === '金')) score += 1.0;
+    if (mGZ.dz === 4 && (supports[0] === '木' || supports[0] === '水')) score += 1.0;
+    if (mGZ.dz === 7 && (supports[0] === '火' || supports[0] === '土')) score += 1.0;
+    if (mGZ.dz === 10 && (supports[0] === '金' || supports[0] === '火')) score += 1.0;
 
-    // 動態喜用神判定
-    let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz);
+    const enemies = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
+    const killer = enemies[supports[0]];
+    if (WXD[mGZ.dz] === killer && counts[supports[1]] >= 2) { score += 2.0; }
+
+    const strengthKey = score >= 6.5 ? 'str_strong' : (score < 5.5 ? 'str_weak' : 'str_bal');
+
+    // 動態病藥喜用神判定
+    let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz, counts);
 
     const pillars=[
       {label: t('lbl_year'), tg:yGZ.tg, dz:yGZ.dz, tgTenRaw:SS_TABLE[ri][yGZ.tg], dzTenRaw:SS_TABLE[ri][HIDDEN_MAIN_QI[yGZ.dz]], colCls:''},
@@ -1347,19 +1366,34 @@ function renderMingpan(){
     const hGZ = getHrGZ(adj.hour, dGZ.tg); const ri=dGZ.tg;
 
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
-    const wList = [0.5, 0.5, 1.5, 4.0, 0, 2.5, 1.0, 1.0];
+    const counts = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const wList = [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5];
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
     
     chartElements.forEach((item, i) => {
         let wx = (i % 2 === 0) ? WXT[item] : WXD[item];
+        counts[wx]++;
         envWeights[wx] += wList[i];
     });
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = envWeights[supports[0]] + envWeights[supports[1]];
-    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
+    
+    let supportCount = counts[supports[0]] + counts[supports[1]];
+    if (supportCount >= 5) score += 3.0; 
+    else if (supportCount === 4) score += 1.5; 
+    
+    if (mGZ.dz === 1 && (supports[0] === '水' || supports[0] === '金')) score += 1.0;
+    if (mGZ.dz === 4 && (supports[0] === '木' || supports[0] === '水')) score += 1.0;
+    if (mGZ.dz === 7 && (supports[0] === '火' || supports[0] === '土')) score += 1.0;
+    if (mGZ.dz === 10 && (supports[0] === '金' || supports[0] === '火')) score += 1.0;
 
-    let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz);
+    const enemies = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
+    const killer = enemies[supports[0]];
+    if (WXD[mGZ.dz] === killer && counts[supports[1]] >= 2) { score += 2.0; }
+
+    const strengthKey = score >= 6.5 ? 'str_strong' : (score < 5.5 ? 'str_weak' : 'str_bal');
+    let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz, counts);
     
     let gejuTenGod = (WXT[mGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][mGZ.tg] : ((WXT[yGZ.tg] === WXD[mGZ.dz]) ? SS_TABLE[ri][yGZ.tg] : SS_TABLE[ri][HIDDEN_MAIN_QI[mGZ.dz]]);
     let gejuStr = ['比肩','劫財'].includes(gejuTenGod) ? t(gejuTenGod==='比肩'?'pat_jianlu':'pat_yangren') : t('ten')[gejuTenGod]+t('pat_suffix');
