@@ -81,6 +81,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .sd-lbl{font-size:0.55rem;color:var(--text-f);letter-spacing:0.08em;}
 .sd-val{font-size:0.6rem;color:var(--text-d);}
 .sd-div{height:1px;background:rgba(212,168,67,0.08);margin:7px 0;}
+
 .rel-outer{padding:4px 16px 10px;min-width:640px;}
 .rel-badges{display:flex;gap:3px;flex-wrap:wrap;}
 .rel-badge{font-size:0.5rem;padding:4px 10px;border:1px solid;cursor:pointer;transition:all 0.2s;}
@@ -91,6 +92,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .rel-inline-desc {display:none; margin-top:10px; padding:12px 14px; background:rgba(13,11,24,0.9); border:1px dashed rgba(212,168,67,0.3); border-radius:4px; font-size:0.6rem; color:var(--text-d); line-height:1.7; text-align:left; animation:fadeIn 0.2s ease;}
 .rid-title {color:var(--gold); margin-bottom:6px; font-weight:500; font-size:0.65rem;}
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
 .verdict-box{margin:0 16px 14px;padding:14px 16px;background:rgba(8,7,14,0.85);border:1px solid rgba(212,168,67,0.13);display:flex;gap:12px;}
 .verdict-icon{font-size:1.1rem;color:var(--gold);}
 .verdict-title{font-size:0.82rem;color:var(--gold);margin-bottom:5px;}
@@ -164,46 +166,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 .modal-box input:focus, .modal-box select:focus { border-color:var(--gold); }
 .modal-flex { display:flex; gap:10px; }
 .modal-flex > div { flex:1; }
-
 .consult-btn-wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 10px 16px 30px; }
 .consult-btn { flex: 1; min-width: 220px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(212,168,67,0.08); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); padding: 14px 20px; font-size: 0.75rem; font-weight: 500; cursor: pointer; letter-spacing: 0.15em; border-radius: 4px; transition: all 0.3s; text-decoration: none; }
 .consult-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--gold); }
 .consult-icon { font-size: 1.1rem; }
-
 .ic-macro { border: 1px solid rgba(212,168,67,0.4); background: rgba(212,168,67,0.05); }
 .ic-macro .ic-title { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
 
 @media (max-width: 768px) {
-  .topbar { padding: 15px; }
-  .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
-  .settings-btn { font-size: 0.8rem; padding: 6px 12px; }
-  .lang-select { font-size: 0.75rem; padding: 6px 10px; }
-  .date-solar { font-size: 1.15rem; }
-  .date-lunar { font-size: 0.75rem; }
-  .dp-goto-today { font-size: 0.6rem; padding: 6px 12px; }
-  .verdict-title { font-size: 0.95rem; }
-  .verdict-body { font-size: 0.85rem; }
-  .ss-tag { font-size: 0.75rem; padding: 6px 14px; }
-  .ic-title { font-size: 0.85rem; }
-  .ic-body { font-size: 0.8rem; }
-  .ic-api-engine { font-size: 0.75rem; }
-  .ic-hint { font-size: 0.6rem; margin-top: 8px; }
-  .fc-title { font-size: 0.75rem; }
-  .fc-score-num { font-size: 0.9rem; }
-  .ht-hcell { font-size: 0.7rem; }
-  .ht-cell { font-size: 0.75rem; }
-  .ht-time { font-size: 0.7rem; }
-  .ht-good, .ht-bad { font-size: 0.7rem; }
-  .ht-gz { font-size: 1rem; }
-  .info-row { font-size: 0.85rem; padding: 4px 0; }
-  .dy-item { padding: 12px 15px; }
-  .dy-gz { font-size: 1.4rem; }
-  .dy-age { font-size: 0.85rem; }
-  .dy-years { font-size: 0.75rem; margin-top: 4px; }
-  .lp-box label, .modal-box label { font-size: 0.85rem; }
-  .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
-  .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
-  .consult-btn { padding: 12px 16px; font-size: 0.7rem; min-width: 100%; }
+  .topbar { padding: 15px; } .tab-btn { font-size: 0.8rem; padding: 8px 16px; } .settings-btn { font-size: 0.8rem; padding: 6px 12px; } .lang-select { font-size: 0.75rem; padding: 6px 10px; } .date-solar { font-size: 1.15rem; } .date-lunar { font-size: 0.75rem; } .dp-goto-today { font-size: 0.6rem; padding: 6px 12px; } .verdict-title { font-size: 0.95rem; } .verdict-body { font-size: 0.85rem; } .ss-tag { font-size: 0.75rem; padding: 6px 14px; } .ic-title { font-size: 0.85rem; } .ic-body { font-size: 0.8rem; } .ic-api-engine { font-size: 0.75rem; } .ic-hint { font-size: 0.6rem; margin-top: 8px; } .fc-title { font-size: 0.75rem; } .fc-score-num { font-size: 0.9rem; } .ht-hcell { font-size: 0.7rem; } .ht-cell { font-size: 0.75rem; } .ht-time { font-size: 0.7rem; } .ht-good, .ht-bad { font-size: 0.7rem; } .ht-gz { font-size: 1rem; } .info-row { font-size: 0.85rem; padding: 4px 0; } .dy-item { padding: 12px 15px; } .dy-gz { font-size: 1.4rem; } .dy-age { font-size: 0.85rem; } .dy-years { font-size: 0.75rem; margin-top: 4px; } .lp-box label, .modal-box label { font-size: 0.85rem; } .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; } .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; } .consult-btn { padding: 12px 16px; font-size: 0.7rem; min-width: 100%; }
 }
 </style>
 </head>
@@ -216,43 +187,14 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="lp-title" data-hl="lp_title">排盤建檔</div>
     <div class="lp-sub" data-hl="lp_sub">輸入您的出生資訊以生成真太陽時命盤</div>
     <form id="landingForm" onsubmit="submitLandingForm(event)">
-      <div>
-        <label data-hl="modal_name">姓名 / 暱稱</label>
-        <input type="text" id="lp-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg">
-      </div>
-      <div>
-        <label data-hl="modal_gender">性別</label>
-        <select id="lp-gender">
-          <option value="男" data-hl="val_male">男</option>
-          <option value="女" data-hl="val_female">女</option>
-        </select>
-      </div>
-      <div class="lp-row">
-        <div><label data-hl="modal_year">年</label><input type="number" id="lp-year" required value="1992" min="1900" max="2100"></div>
-        <div><label data-hl="modal_month">月</label><input type="number" id="lp-month" required value="6" min="1" max="12"></div>
-        <div><label data-hl="modal_day">日</label><input type="number" id="lp-day" required value="15" min="1" max="31"></div>
-      </div>
-      <div class="lp-row">
-        <div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="lp-hour" required value="13" min="0" max="23"></div>
-        <div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="lp-minute" required value="0" min="0" max="59"></div>
-      </div>
-      <div class="lp-row" style="margin-bottom: 5px;">
-        <div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="lp-lon" required value="120.00" step="0.01"></div>
-        <div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="lp-tz" required value="8"></div>
-        <div style="flex:1; display:flex; align-items:center; padding-top:12px;">
-          <input type="checkbox" id="lp-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);">
-          <label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label>
-        </div>
-      </div>
+      <div><label data-hl="modal_name">姓名 / 暱稱</label><input type="text" id="lp-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg"></div>
+      <div><label data-hl="modal_gender">性別</label><select id="lp-gender"><option value="男" data-hl="val_male">男</option><option value="女" data-hl="val_female">女</option></select></div>
+      <div class="lp-row"><div><label data-hl="modal_year">年</label><input type="number" id="lp-year" required value="1992" min="1900" max="2100"></div><div><label data-hl="modal_month">月</label><input type="number" id="lp-month" required value="6" min="1" max="12"></div><div><label data-hl="modal_day">日</label><input type="number" id="lp-day" required value="15" min="1" max="31"></div></div>
+      <div class="lp-row"><div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="lp-hour" required value="13" min="0" max="23"></div><div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="lp-minute" required value="0" min="0" max="59"></div></div>
+      <div class="lp-row" style="margin-bottom: 5px;"><div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="lp-lon" required value="120.00" step="0.01"></div><div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="lp-tz" required value="8"></div><div style="flex:1; display:flex; align-items:center; padding-top:12px;"><input type="checkbox" id="lp-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);"><label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label></div></div>
       <button type="submit" class="lp-btn" data-hl="lp_submit">查看黃道吉日與命盤</button>
     </form>
-    <div style="text-align:center; margin-top:15px;">
-        <select id="landingLangSelect" class="lang-select" onchange="changeLang(this.value)">
-          <option value="zh-TW" data-hl="lang_tw">繁體中文</option>
-          <option value="zh-CN" data-hl="lang_cn">简体/汉语</option>
-          <option value="en" data-hl="lang_en">English</option>
-        </select>
-    </div>
+    <div style="text-align:center; margin-top:15px;"><select id="landingLangSelect" class="lang-select" onchange="changeLang(this.value)"><option value="zh-TW" data-hl="lang_tw">繁體中文</option><option value="zh-CN" data-hl="lang_cn">简体/汉语</option><option value="en" data-hl="lang_en">English</option></select></div>
   </div>
 </div>
 
@@ -261,38 +203,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="modal-title" data-hl="modal_title">建立個人命盤</div>
     <div class="modal-sub" data-hl="modal_sub">輸入您的出生資訊以生成專屬排盤</div>
     <form id="modalForm" onsubmit="saveProfileFromModal(event)">
-      <div>
-        <label data-hl="modal_name">姓名 / 暱稱</label>
-        <input type="text" id="m-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg">
-      </div>
-      <div>
-        <label data-hl="modal_gender">性別</label>
-        <select id="m-gender">
-          <option value="男" data-hl="val_male">男</option>
-          <option value="女" data-hl="val_female">女</option>
-        </select>
-      </div>
-      <div class="modal-flex">
-        <div><label data-hl="modal_year">年</label><input type="number" id="m-year" required value="1992" min="1900" max="2100"></div>
-        <div><label data-hl="modal_month">月</label><input type="number" id="m-month" required value="6" min="1" max="12"></div>
-        <div><label data-hl="modal_day">日</label><input type="number" id="m-day" required value="15" min="1" max="31"></div>
-      </div>
-      <div class="modal-flex">
-        <div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="m-hour" required value="13" min="0" max="23"></div>
-        <div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="m-minute" required value="0" min="0" max="59"></div>
-      </div>
-      <div class="modal-flex" style="margin-bottom: 5px;">
-        <div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="m-lon" required value="120.00" step="0.01"></div>
-        <div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="m-tz" required value="8"></div>
-        <div style="flex:1; display:flex; align-items:center; padding-top:12px;">
-          <input type="checkbox" id="m-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);">
-          <label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label>
-        </div>
-      </div>
-      <div style="display:flex; gap:10px; margin-top:10px;">
-        <button type="submit" style="flex:2; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; font-weight:bold; cursor:pointer; letter-spacing:0.1em; border-radius:2px;" data-hl="modal_submit">確認排盤</button>
-        <button type="button" onclick="hideSetupModal()" id="m-cancel" style="flex:1; background:none; border:1px solid rgba(212,168,67,0.3); color:var(--text); cursor:pointer; border-radius:2px;" data-hl="modal_cancel">取消</button>
-      </div>
+      <div><label data-hl="modal_name">姓名 / 暱稱</label><input type="text" id="m-name" required placeholder="例如：陳先生" data-hl-ph="ph_name_eg"></div>
+      <div><label data-hl="modal_gender">性別</label><select id="m-gender"><option value="男" data-hl="val_male">男</option><option value="女" data-hl="val_female">女</option></select></div>
+      <div class="modal-flex"><div><label data-hl="modal_year">年</label><input type="number" id="m-year" required value="1992" min="1900" max="2100"></div><div><label data-hl="modal_month">月</label><input type="number" id="m-month" required value="6" min="1" max="12"></div><div><label data-hl="modal_day">日</label><input type="number" id="m-day" required value="15" min="1" max="31"></div></div>
+      <div class="modal-flex"><div><label data-hl="modal_hour">出生時 (0-23)</label><input type="number" id="m-hour" required value="13" min="0" max="23"></div><div><label data-hl="modal_minute">分 (0-59)</label><input type="number" id="m-minute" required value="0" min="0" max="59"></div></div>
+      <div class="modal-flex" style="margin-bottom: 5px;"><div style="flex:1.5;"><label data-hl="modal_lon">經度 (東經+ / 西經-)</label><input type="number" id="m-lon" required value="120.00" step="0.01"></div><div style="flex:1;"><label data-hl="modal_tz">時區 (UTC)</label><input type="number" id="m-tz" required value="8"></div><div style="flex:1; display:flex; align-items:center; padding-top:12px;"><input type="checkbox" id="m-dst" style="width:auto; margin:0 8px 0 0; transform:scale(1.2);"><label data-hl="modal_dst" style="margin:0; cursor:pointer;">夏令時</label></div></div>
+      <div style="display:flex; gap:10px; margin-top:10px;"><button type="submit" style="flex:2; background:linear-gradient(160deg, #A0680A 0%, #D4A843 100%); color:#000; border:none; font-weight:bold; cursor:pointer; letter-spacing:0.1em; border-radius:2px;" data-hl="modal_submit">確認排盤</button><button type="button" onclick="hideSetupModal()" id="m-cancel" style="flex:1; background:none; border:1px solid rgba(212,168,67,0.3); color:var(--text); cursor:pointer; border-radius:2px;" data-hl="modal_cancel">取消</button></div>
     </form>
   </div>
 </div>
@@ -306,14 +222,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <button class="tab-btn" onclick="switchTab('mingpan')" data-hl="tab_chart">命盤</button>
         <button class="tab-btn" onclick="switchTab('dayun')" data-hl="tab_luck">大運</button>
       </div>
-      <div class="lang-switch" style="display:flex; gap:8px;">
-        <button class="settings-btn" onclick="showSetupModal()" title="修改資料">⚙️</button>
-        <select id="appLangSelect" class="lang-select" onchange="changeLang(this.value)">
-          <option value="zh-TW" data-hl="lang_tw">繁體中文</option>
-          <option value="zh-CN" data-hl="lang_cn">简体/汉语</option>
-          <option value="en" data-hl="lang_en">English</option>
-        </select>
-      </div>
+      <div class="lang-switch" style="display:flex; gap:8px;"><button class="settings-btn" onclick="showSetupModal()" title="修改資料">⚙️</button><select id="appLangSelect" class="lang-select" onchange="changeLang(this.value)"><option value="zh-TW" data-hl="lang_tw">繁體中文</option><option value="zh-CN" data-hl="lang_cn">简体/汉语</option><option value="en" data-hl="lang_en">English</option></select></div>
     </div>
   </div>
 
@@ -326,10 +235,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
         <div class="dp-drum-wrap"><div class="dp-drum-lbl" data-hl="lbl_drum_day">日</div><div class="dp-drum-box"><div class="dp-drum-hl"></div><div class="dp-drum" id="drum-day"><div class="dp-drum-inner" id="drum-day-inner"></div></div></div></div>
         <div class="dp-drum-wrap"><div class="dp-drum-lbl" data-hl="lbl_drum_hr">時</div><div class="dp-drum-box"><div class="dp-drum-hl"></div><div class="dp-drum" id="drum-hour"><div class="dp-drum-inner" id="drum-hour-inner"></div></div></div></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
-        <div class="date-solar" id="disp-solar" style="font-size:0.72rem;"></div><div class="date-lunar" id="disp-lunar" style="font-size:0.52rem;"></div>
-        <button class="dp-goto-today" onclick="goToday()" data-hl="btn_today">今天</button>
-      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;"><div class="date-solar" id="disp-solar" style="font-size:0.72rem;"></div><div class="date-lunar" id="disp-lunar" style="font-size:0.52rem;"></div><button class="dp-goto-today" onclick="goToday()" data-hl="btn_today">今天</button></div>
     </div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_pillars">命 盤 × 今 日 四 柱</span></div>
     <div class="sizhu-outer"><div class="sizhu-main" id="sizhu-main"></div><div class="rel-outer" id="rel-outer"></div></div>
@@ -342,11 +248,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
     <div class="divider"></div>
     <div class="sect-hd"><span class="sect-hd-txt" data-hl="hd_interp">流 日 綜 合 解 讀</span></div>
     <div class="interp-list" id="interp-list"></div>
-    
-    <div class="consult-btn-wrap">
-      <a href="liuyao.html" class="consult-btn tool-btn"><span class="consult-icon">☯</span><span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span></a>
-      <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn"><span class="consult-icon">✉</span><span data-hl="btn_consult">預約命理師精準測算</span></a>
-    </div>
+    <div class="consult-btn-wrap"><a href="liuyao.html" class="consult-btn tool-btn"><span class="consult-icon">☯</span><span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span></a><a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn"><span class="consult-icon">✉</span><span data-hl="btn_consult">預約命理師精準測算</span></a></div>
   </div>
 
   <div id="tab-mingpan" style="display:none;padding-top:16px;">
@@ -364,15 +266,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
       <div class="info-row"><span class="ir-lbl" data-hl="lbl_bone">骨重</span><span class="ir-val" id="mp-bone"></span></div>
     </div>
     <div class="sect-hd" style="margin-bottom:8px;"><span class="sect-hd-txt" data-hl="hd_base4">原 命 盤 四 柱</span></div>
-    <div class="sizhu-outer" style="margin-bottom:16px;">
-        <div class="bazi4-grid" id="bazi4-grid"></div>
-        <div class="rel-outer" id="mp-rel-outer" style="padding: 10px 0 0;"></div>
-    </div>
-
-    <div class="consult-btn-wrap">
-      <a href="liuyao.html" class="consult-btn tool-btn"><span class="consult-icon">☯</span><span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span></a>
-      <a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn"><span class="consult-icon">✉</span><span data-hl="btn_consult">預約命理師精準測算</span></a>
-    </div>
+    <div class="sizhu-outer" style="margin-bottom:16px;"><div class="bazi4-grid" id="bazi4-grid"></div><div class="rel-outer" id="mp-rel-outer" style="padding: 10px 0 0;"></div></div>
+    <div class="consult-btn-wrap"><a href="liuyao.html" class="consult-btn tool-btn"><span class="consult-icon">☯</span><span data-hl="btn_liuyao">六爻起卦 · 具體事件決斷</span></a><a href="mailto:vip@zencode.codes" class="consult-btn mailto-btn"><span class="consult-icon">✉</span><span data-hl="btn_consult">預約命理師精準測算</span></a></div>
   </div>
 
   <div id="tab-dayun" style="display:none;padding-top:16px;">
@@ -387,9 +282,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Noto Serif TC',ser
 </div>
 
 <script>
-let USER = {}; 
-let currentLang = localStorage.getItem('zencode_lang') || 'zh-TW';
-
+let USER = {}; let currentLang = localStorage.getItem('zencode_lang') || 'zh-TW';
 const BW_Y = [1.2,0.9,0.6,0.7,1.2,0.5,0.9,0.8,0.7,0.8, 1.5,0.9,1.6,0.8,0.8,1.9,1.2,0.6,0.8,0.7, 0.5,1.5,0.6,1.6,1.5,0.7,0.8,1.2,1.0,0.7, 1.5,0.6,0.5,1.4,1.4,0.9,0.7,0.7,0.9,1.2, 0.8,0.7,1.3,0.5,1.4,0.5,0.9,1.6,0.5,0.7, 1.2,0.8,0.8,0.6,1.9,0.6,0.8,1.6,1.0,0.7];
 const BW_M = [0, 0.6,0.7,1.8,0.9,0.5,1.6,0.9,1.5,1.8,0.8,0.9,0.5];
 const BW_D = [0, 0.5,1.0,0.8,1.5,1.6,1.5,0.8,1.6,0.8,1.6, 0.9,1.7,0.8,1.7,1.0,0.8,0.9,1.8,0.5,1.5, 1.0,0.9,0.8,0.9,1.5,1.8,0.7,0.8,1.6,0.6];
@@ -397,42 +290,26 @@ const BW_H = [1.6,0.6,0.7,1.0,0.9,1.6,1.0,0.8,0.8,0.9,0.6,0.6];
 
 const HL_I18N = {
   'zh-TW': {
-    page_title: '黃道吉日 · 真太陽時精準排盤', ph_name_eg: '例如：陳先生', lang_tw: '繁體中文', lang_cn: '簡體/漢語', lang_en: 'English',
-    logo:'黃道吉日', sub:'個人命盤 · 每日流日', tab_today:'今日', tab_chart:'命盤', tab_luck:'大運', btn_today:'回到今天',
-    lbl_select_date: '選 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '時',
-    hd_pillars:'命 盤 × 今 日 四 柱', grp_base:'原 命 盤', grp_luck:'大 運', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 時',
+    page_title: '黃道吉日 · 真太陽時精準排盤', ph_name_eg: '例如：陳先生', lang_tw: '繁體中文', lang_cn: '簡體/漢語', lang_en: 'English', logo:'黃道吉日', sub:'個人命盤 · 每日流日', tab_today:'今日', tab_chart:'命盤', tab_luck:'大運', btn_today:'回到今天',
+    lbl_select_date: '選 日', lbl_drum_yr: '年', lbl_drum_mo: '月', lbl_drum_day: '日', lbl_drum_hr: '時', hd_pillars:'命 盤 × 今 日 四 柱', grp_base:'原 命 盤', grp_luck:'大 運', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 時',
     lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'時柱', rel_he:'相合', rel_chong:'相沖', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑',
-    vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰',
-    hd_ss:'流 日 綜 合 解 讀', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
-    lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', 
-    lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重', hd_luck_plan:'大 運 排 盤', lbl_start_age:'起運年齡', lbl_dir:'順 / 逆運', lbl_cur_luck:'當前大運',
-    val_male:'男', val_female:'女', val_unstarted:'未起運', age_start:'歲起運', age_unit:'歲', dir_fwd:'順運（陽男 / 陰女）', dir_rev:'逆運（陰男 / 陽女）',
-    click_tip:'點擊查看關係',
+    vd_title:'今日綜評：', hd_fortune6: '六 維 運 勢', hd_hours: '今 日 十 二 時 辰', hd_ss:'流 日 綜 合 解 讀', hd_interp:'流 日 綜 合 解 讀', hd_mychart:'個 人 命 盤', hd_base4:'原 命 盤 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 時 柱',
+    lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性別', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身強弱', lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重',
+    hd_luck_plan:'大 運 排 盤', lbl_start_age:'起運年齡', lbl_dir:'順 / 逆運', lbl_cur_luck:'當前大運', val_male:'男', val_female:'女', val_unstarted:'未起運', age_start:'歲起運', age_unit:'歲', dir_fwd:'順運（陽男 / 陰女）', dir_rev:'逆運（陰男 / 陽女）', click_tip:'點擊查看關係',
     ten:{'七殺':'七殺','正官':'正官','偏財':'偏財','正財':'正財','偏印':'偏印','正印':'正印','食神':'食神','傷官':'傷官','比肩':'比肩','劫財':'劫財','日主':'日主','—':'—'},
     tg_name:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name:['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names:['日','一','二','三','四','五','六'],
     lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'納音', lbl_tengod:'十神', yang: '陽', yin: '陰',
-    v1_lvl:'大吉之日，諸事皆宜', v1_body:'流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，把握每個主動接觸的機會。',
-    v2_lvl:'吉多於凶，宜積極進取', v2_body:'流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。',
-    v3_lvl:'吉凶參半，宜謹慎守靜', v3_body:'今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭。',
-    v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
+    v1_lvl:'大吉之日，諸事皆宜', v1_body:'流日與日主相生，貴人星照，諸神護佑。今日宜主動出擊，把握每個主動接觸的機會。', v2_lvl:'吉多於凶，宜積極進取', v2_body:'流日與命盤形成有利格局，吉星照臨。雖有小凶，貴人之力足以化解。',
+    v3_lvl:'吉凶參半，宜謹慎守靜', v3_body:'今日凶煞偏重，流日與部分柱位有沖刑之象。宜低調行事，避免簽約、遠行及口舌之爭。', v4_lvl:'平穩之日，循序漸進', v4_body:'流日格局平和，無大吉亦無大凶。適合推進日常積累事務，保持既有節奏。',
     str_strong:'身旺', str_weak:'身弱', str_bal:'中和', wx_木:'木', wx_火:'火', wx_土:'土', wx_金:'金', wx_水:'水', pat_jianlu:'建祿格', pat_yangren:'羊刃格', pat_suffix:'格', bw_liang:'兩', bw_qian:'錢',
-    lbl_energy_impact: '能量影響：', lbl_action_advice: '實戰建議：', lbl_5x_mind: '✦ 五行心性與能量：', lbl_guide: '✦ 趨吉避凶指南：', lbl_comp_reading: '【大局聯動解析】多柱綜合推演',
-    lbl_macro_trend: '宏觀大勢 (大運 × 流年)：', lbl_micro_focus: '短線聚焦 (流月 × 流日)：', lbl_syn: '綜合吉凶判定：', btn_liuyao: '六爻起卦 · 具體事件決斷',
-    macro_text: '您當前處於大運 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此階段大環境的能量聚焦於此，決定了您近期的發展上限與核心課題。',
-    micro_text: '本月步入 <strong>{lm}</strong> 月，今日為 <strong>{ld}</strong> 日。短線能量匯聚，是觸發事件或情緒起伏的關鍵引爆點。',
-    syn_text_good: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行極為強勢。這正是您的<strong>喜用神</strong>！氣勢如虹，順風順水，宜把握時機大膽推進目標。',
-    syn_text_bad: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行最為強勢。但這屬於您的<strong>忌神</strong>。大勢逆風，容易遭遇阻礙或過度消耗，今日宜低調保守，以靜制動。',
-    unstarted_macro: '您目前尚未起運，命局受流年 <strong>{ly}</strong> 的直接影響。',
-    dyn_wealth_strong: "身旺逢財，財星破印。今日求財慾望強烈，對商業機會與利益分配極度敏感。適合推進專案、主動營銷、拓展人脈與客戶。",
-    dyn_wealth_weak: "身弱逢財，財多壓身。今日容易因錢財、利益或人際消耗過多精力。不宜進行大額投資或衝動消費，宜穩守現有資源。",
-    dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高。適合處理棘手問題、與上級溝通或推進管理決策。",
-    dyn_power_weak: "身弱逢官殺，克身過度。今日易感壓力倍增，或遇到規則、上級的限制與苛責。宜低調行事，凡事按部就班，避免出頭。",
-    dyn_res_strong: "身旺逢印，印星生身太過。今日容易思慮過多、行動力減弱，甚至產生依賴心理。宜化繁為簡，多做少想，切忌優柔寡斷。",
-    dyn_res_weak: "身弱逢印，印星生扶為用。今日思維清晰，易得貴人長輩相助。適合學習充電、簽署合約、尋求資源與庇護。",
-    dyn_out_strong: "身旺逢食傷，食傷泄秀。今日靈感爆發，表達欲與展現力極佳。適合創意工作、演講策劃、社交應酬與推廣營銷。",
-    dyn_out_weak: "身弱逢食傷，泄氣過多。今日容易因輸出過度而感到疲憊，或因言多必失惹來是非。宜謹言慎行，保留體力。",
-    dyn_comp_strong: "身旺逢比劫，比劫奪財。今日競爭意識強，但也容易引發資源爭奪或衝動花費。合作需謹慎，注意利益分配的公平性。",
-    dyn_comp_weak: "身弱逢比劫，比劫幫身為用。今日人際互動頻繁，能從團隊合作或朋友中獲得力量與支持。宜廣結善緣，借力打力。",
+    lbl_energy_impact: '能量影響：', lbl_action_advice: '實戰建議：', lbl_5x_mind: '✦ 五行心性與能量：', lbl_guide: '✦ 趨吉避凶指南：', lbl_comp_reading: '【大局聯動解析】多柱綜合推演', lbl_macro_trend: '宏觀大勢 (大運 × 流年)：', lbl_micro_focus: '短線聚焦 (流月 × 流日)：', lbl_syn: '綜合吉凶判定：', btn_liuyao: '六爻起卦 · 具體事件決斷',
+    macro_text: '您當前處於大運 <strong>{dy}</strong>，流年 <strong>{ly}</strong>。此階段大環境的能量聚焦於此，決定了您近期的發展上限與核心課題。', micro_text: '本月步入 <strong>{lm}</strong> 月，今日為 <strong>{ld}</strong> 日。短線能量匯聚，是觸發事件或情緒起伏的關鍵引爆點。',
+    syn_text_good: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行極為強勢。這正是您的<strong>喜用神</strong>！氣勢如虹，順風順水，宜把握時機大膽推進目標。', syn_text_bad: '當前（大運+流年+流月+流日）的氣場中，<strong>{dom}</strong> 五行最為強勢。但這屬於您的<strong>忌神</strong>。大勢逆風，容易遭遇阻礙或過度消耗，今日宜低調保守，以靜制動。', unstarted_macro: '您目前尚未起運，命局受流年 <strong>{ly}</strong> 的直接影響。',
+    dyn_wealth_strong: "身旺逢財，財星破印。今日求財慾望強烈，對商業機會與利益分配極度敏感。適合推進專案、主動營銷、拓展人脈與客戶。", dyn_wealth_weak: "身弱逢財，財多壓身。今日容易因錢財、利益或人際消耗過多精力。不宜進行大額投資或衝動消費，宜穩守現有資源。",
+    dyn_power_strong: "身旺逢官殺，官殺制身為用。今日事業企圖心強，執行力高。適合處理棘手問題、與上級溝通或推進管理決策。", dyn_power_weak: "身弱逢官殺，克身過度。今日易感壓力倍增，或遇到規則、上級的限制與苛責。宜低調行事，凡事按部就班，避免出頭。",
+    dyn_res_strong: "身旺逢印，印星生身太過。今日容易思慮過多、行動力減弱，甚至產生依賴心理。宜化繁為簡，多做少想，切忌優柔寡斷。", dyn_res_weak: "身弱逢印，印星生扶為用。今日思維清晰，易得貴人長輩相助。適合學習充電、簽署合約、尋求資源與庇護。",
+    dyn_out_strong: "身旺逢食傷，食傷泄秀。今日靈感爆發，表達欲與展現力極佳。適合創意工作、演講策劃、社交應酬與推廣營銷。", dyn_out_weak: "身弱逢食傷，泄氣過多。今日容易因輸出過度而感到疲憊，或因言多必失惹來是非。宜謹言慎行，保留體力。",
+    dyn_comp_strong: "身旺逢比劫，比劫奪財。今日競爭意識強，但也容易引發資源爭奪或衝動花費。合作需謹慎，注意利益分配的公平性。", dyn_comp_weak: "身弱逢比劫，比劫幫身為用。今日人際互動頻繁，能從團隊合作或朋友中獲得力量與支持。宜廣結善緣，借力打力。",
     dyn_adv_ji:'今日神煞助陣，能量增幅，如虎添翼，宜果斷推進。', dyn_adv_xiong:'今日暗藏凶煞，易生變數。建議保持理性，預留備選方案。', dyn_adv_zhong:'今日星象平和，無過多外力干擾，發展全憑自身把控。', api_hint_replaced:'✦ 基於真太陽時與八字生剋演算法生成',
     ss_tianyi: {n: '天乙貴人', d: '逢凶化吉，貴人相助'}, ss_wenchang: {n: '文昌貴人', d: '才華橫溢，利學業與文思'}, ss_jianlu: {n: '建祿', d: '得令身旺，事業根基穩固'}, ss_yima: {n: '驛馬', d: '奔波變動，宜向外走動發展'}, ss_taiji: {n: '太極貴人', d: '做事有始有終，與玄学有緣'}, ss_huagai: {n: '華蓋', d: '才華出眾，思想獨特，性情孤高'}, ss_yuepo: {n: '月破', d: '謀事易生波折，諸事不宜急進'}, ss_none: {n: '平順', d: '無特殊神煞影響，運勢平穩過渡'},
     natal_adv_ji: '原局相合，先天人緣與潛在貴人運佳，此特質伴隨一生，宜多加發揮。', natal_adv_xiong: '原局帶有刑沖破害，代表性格易有內耗或六親緣分考驗。建議修心養性，後天多加覺察與包容。',
@@ -681,15 +558,19 @@ function getXiyong(ri, strengthKey, envWeights, monthDz, chartElements) {
 
     let arr = [];
     if (strengthKey === 'str_weak') {
-        if (envWeights[wxRel.control] >= 4.0) {
-            if (!hasRes && hasOut) arr = [wxRel.comp, wxRel.out]; // 殺重無印，用食傷制殺 (e.g. 火、土)
-            else arr = [wxRel.res, wxRel.comp]; // 殺印相生 (e.g. 木、火)
+        let maxEnemy = 'wealth';
+        if (envWeights[wxRel.control] > envWeights[wxRel.wealth] && envWeights[wxRel.control] >= envWeights[wxRel.out]) maxEnemy = 'control';
+        if (envWeights[wxRel.out] > envWeights[wxRel.wealth] && envWeights[wxRel.out] > envWeights[wxRel.control]) maxEnemy = 'out';
+
+        if (maxEnemy === 'control' && !hasRes) {
+            arr = [wxRel.out, wxRel.comp]; // 殺重無印，用食傷比劫 (e.g. 火、土)
+        } else if (maxEnemy === 'out' && !hasRes) {
+            arr = [wxRel.comp, wxRel.wealth]; // 食傷重無印，用比劫財
+        } else {
+            arr = [wxRel.res, wxRel.comp]; // 常規身弱用印比
         }
-        else if (envWeights[wxRel.out] >= 4.0) arr = [wxRel.res, wxRel.comp]; 
-        else if (envWeights[wxRel.wealth] >= 4.0) arr = [wxRel.comp, wxRel.res]; 
-        else arr = [wxRel.res, wxRel.comp];
     } else if (strengthKey === 'str_strong') {
-        if (envWeights[wxRel.res] >= 4.0) arr = [wxRel.wealth, wxRel.out]; 
+        if (envWeights[wxRel.res] >= 4.0 || hasRes) arr = [wxRel.wealth, wxRel.out]; 
         else if (envWeights[wxRel.comp] >= 4.0) arr = [wxRel.control, wxRel.out]; 
         else arr = [wxRel.control, wxRel.out, wxRel.wealth]; 
     } else {
@@ -828,19 +709,6 @@ function renderHourTable(ri,ldGZ){
   document.getElementById('hour-table').innerHTML=html;
 }
 
-window.showRelDesc = function(btn, ctx = 'transit') {
-  const container = btn.closest('.rel-outer') || btn.parentElement.parentElement;
-  const wasActive = btn.classList.contains('active');
-  container.querySelectorAll('.rel-badge').forEach(b => b.classList.remove('active'));
-  const descBox = container.querySelector('.rel-inline-desc');
-  if (wasActive) { descBox.style.display = 'none'; } else {
-      btn.classList.add('active');
-      let advText = ctx === 'natal' ? (btn.dataset.rtype === 'xiong' ? t('natal_adv_xiong') : t('natal_adv_ji')) : (btn.dataset.rtype === 'xiong' ? t('transit_adv_xiong') : t('transit_adv_ji'));
-      descBox.innerHTML = `<div class="rid-title">${btn.dataset.rtitle}</div><div style="margin-bottom:8px;"><strong>${t('lbl_energy_impact')}</strong>${btn.dataset.rdesc}</div><div style="color:rgba(212,168,67,0.8);"><strong>${t('lbl_action_advice')}</strong>${advText}</div>`;
-      descBox.style.display = 'block';
-  }
-};
-
 function renderJiari(){
   try {
     const d=curDate; const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours(),mn=d.getMinutes();
@@ -862,17 +730,33 @@ function renderJiari(){
     const ldGZ=getDayGZ(y,m,day, h); const lhGZ=getHrGZ(h, ldGZ.tg);
 
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const counts = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const wList = [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5];
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
-    chartElements.forEach((item, i) => { envWeights[(i % 2 === 0) ? WXT[item] : WXD[item]] += [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5][i]; });
+    
+    chartElements.forEach((item, i) => {
+        let wx = (i % 2 === 0) ? WXT[item] : WXD[item];
+        counts[wx]++; envWeights[wx] += wList[i];
+    });
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = envWeights[supports[0]] + envWeights[supports[1]];
-    if (mGZ.dz === 1 && (supports[0] === '水' || supports[0] === '金')) score += 1.0;
-    if (mGZ.dz === 4 && (supports[0] === '木' || supports[0] === '水')) score += 1.0;
-    if (mGZ.dz === 7 && (supports[0] === '火' || supports[0] === '土')) score += 1.0;
-    if (mGZ.dz === 10 && (supports[0] === '金' || supports[0] === '火')) score += 1.0;
+    
+    let supportCount = counts[supports[0]] + counts[supports[1]];
+    let stemSupportCount = 0;
+    [yGZ.tg, mGZ.tg, dGZ.tg, hGZ.tg].forEach(tg => { if (supports.includes(WXT[tg])) stemSupportCount++; });
 
-    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
+    if (mGZ.dz === 1 && (supports.includes('水') || supports.includes('金'))) score += 1.0;
+    if (mGZ.dz === 4 && (supports.includes('木') || supports.includes('水'))) score += 1.0;
+    if (mGZ.dz === 7 && (supports.includes('火') || supports.includes('土'))) score += 1.0;
+    if (mGZ.dz === 10 && (supports.includes('金') || supports.includes('火'))) score += 1.0;
+
+    let isStrong = false;
+    if (supportCount >= 5) { isStrong = true; } 
+    else if (supportCount === 4) { if (stemSupportCount >= 3) isStrong = true; else if (score >= 6.0) isStrong = true; } 
+    else { if (score >= 6.5) isStrong = true; }
+
+    const strengthKey = isStrong ? 'str_strong' : 'str_weak';
     let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz, chartElements);
 
     const pillars=[
@@ -926,17 +810,33 @@ function renderMingpan(){
     const hGZ = getHrGZ(adj.hour, dGZ.tg); const ri=dGZ.tg;
 
     const envWeights = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const counts = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+    const wList = [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5];
     const chartElements = [yGZ.tg, yGZ.dz, mGZ.tg, mGZ.dz, dGZ.tg, dGZ.dz, hGZ.tg, hGZ.dz];
-    chartElements.forEach((item, i) => { envWeights[(i % 2 === 0) ? WXT[item] : WXD[item]] += [1.0, 1.0, 1.5, 4.0, 0, 2.5, 1.5, 1.5][i]; });
+    
+    chartElements.forEach((item, i) => {
+        let wx = (i % 2 === 0) ? WXT[item] : WXD[item];
+        counts[wx]++; envWeights[wx] += wList[i];
+    });
 
     const supports = {'木':['木','水'],'火':['火','木'],'土':['土','火'],'金':['金','土'],'水':['水','金']}[WXT[ri]];
     let score = envWeights[supports[0]] + envWeights[supports[1]];
-    if (mGZ.dz === 1 && (supports[0] === '水' || supports[0] === '金')) score += 1.0;
-    if (mGZ.dz === 4 && (supports[0] === '木' || supports[0] === '水')) score += 1.0;
-    if (mGZ.dz === 7 && (supports[0] === '火' || supports[0] === '土')) score += 1.0;
-    if (mGZ.dz === 10 && (supports[0] === '金' || supports[0] === '火')) score += 1.0;
+    
+    let supportCount = counts[supports[0]] + counts[supports[1]];
+    let stemSupportCount = 0;
+    [yGZ.tg, mGZ.tg, dGZ.tg, hGZ.tg].forEach(tg => { if (supports.includes(WXT[tg])) stemSupportCount++; });
 
-    const strengthKey = score >= 5.5 ? 'str_strong' : (score < 5.0 ? 'str_weak' : 'str_bal');
+    if (mGZ.dz === 1 && (supports.includes('水') || supports.includes('金'))) score += 1.0;
+    if (mGZ.dz === 4 && (supports.includes('木') || supports.includes('水'))) score += 1.0;
+    if (mGZ.dz === 7 && (supports.includes('火') || supports.includes('土'))) score += 1.0;
+    if (mGZ.dz === 10 && (supports.includes('金') || supports.includes('火'))) score += 1.0;
+
+    let isStrong = false;
+    if (supportCount >= 5) { isStrong = true; } 
+    else if (supportCount === 4) { if (stemSupportCount >= 3) isStrong = true; else if (score >= 6.0) isStrong = true; } 
+    else { if (score >= 6.5) isStrong = true; }
+
+    const strengthKey = isStrong ? 'str_strong' : 'str_weak';
     let xiyongArr = getXiyong(ri, strengthKey, envWeights, mGZ.dz, chartElements);
     
     // 修復羊刃格被錯誤標記為劫財的 Bug
