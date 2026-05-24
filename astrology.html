@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+html = r"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>七政星盘 · 黑金浮光版</title>
+<title>七政四余星盘 · 黑金浮光版</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -16,81 +16,82 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#050504;color:var(--text-primary);font-family:'Noto Serif SC',serif;min-height:100vh;overflow-x:hidden;}
 .app{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px 14px 60px;}
-header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:16px;width:100%;max-width:980px;}
+header{text-align:center;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:14px;width:100%;max-width:1000px;}
 .title-main{font-family:'Cinzel',serif;font-size:clamp(20px,4vw,34px);font-weight:700;letter-spacing:.25em;
   background:linear-gradient(135deg,#C9A84C 0%,#F0D080 40%,#C9A84C 60%,#7A5E2A 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(201,168,76,0.5));}
-.title-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:12px;color:var(--text-dim);letter-spacing:.15em;margin-top:5px;}
-.ornament{color:var(--gold-dim);font-size:15px;letter-spacing:.3em;margin:4px 0;}
-.input-panel{background:linear-gradient(135deg,rgba(17,16,8,.96),rgba(10,9,4,.98));border:1px solid var(--border);border-radius:4px;padding:16px 22px;width:100%;max-width:980px;margin-bottom:18px;position:relative;box-shadow:var(--glow),inset 0 1px 0 rgba(201,168,76,.12);}
+.title-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:12px;color:var(--text-dim);letter-spacing:.15em;margin-top:4px;}
+.ornament{color:var(--gold-dim);font-size:14px;letter-spacing:.3em;margin:3px 0;}
+.input-panel{background:linear-gradient(135deg,rgba(17,16,8,.96),rgba(10,9,4,.98));border:1px solid var(--border);border-radius:4px;padding:14px 20px;width:100%;max-width:1000px;margin-bottom:16px;position:relative;box-shadow:var(--glow),inset 0 1px 0 rgba(201,168,76,.12);}
 .input-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.05) 0%,transparent 70%);pointer-events:none;border-radius:4px;}
-.input-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
-.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;}
-.field label{font-size:10px;letter-spacing:.12em;color:var(--text-dim);font-family:'Cinzel',serif;text-transform:uppercase;}
-.field input,.field select{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:2px;color:var(--text-primary);font-family:'Noto Serif SC',serif;font-size:12px;padding:6px 8px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.input-row{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end;}
+.field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:95px;}
+.field label{font-size:9.5px;letter-spacing:.12em;color:var(--text-dim);font-family:'Cinzel',serif;text-transform:uppercase;}
+.field input,.field select{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:2px;color:var(--text-primary);font-family:'Noto Serif SC',serif;font-size:12px;padding:5px 7px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
 .field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.22);}
 .field select option{background:#111;color:var(--text-primary);}
-.panel-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.sec-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.18em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;}
-.toggle-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-.toggle-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--border);border-radius:2px;cursor:pointer;font-size:11px;color:var(--text-dim);font-family:'Cinzel',serif;letter-spacing:.07em;transition:all .2s;background:transparent;white-space:nowrap;user-select:none;}
+.panel-section{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.sec-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.18em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:7px;}
+.toggle-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.toggle-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border:1px solid var(--border);border-radius:2px;cursor:pointer;font-size:11px;color:var(--text-dim);font-family:'Cinzel',serif;letter-spacing:.06em;transition:all .18s;background:transparent;white-space:nowrap;user-select:none;}
 .toggle-chip:hover{border-color:var(--gold-dim);color:var(--text-primary);}
-.toggle-chip.on{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.1);box-shadow:0 0 7px rgba(201,168,76,.18);}
+.toggle-chip.on{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.1);box-shadow:0 0 6px rgba(201,168,76,.18);}
 .toggle-chip input[type=checkbox]{display:none;}
-.radio-group{display:flex;gap:0;}
-.radio-chip{padding:5px 12px;border:1px solid var(--border);cursor:pointer;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.07em;color:var(--text-dim);transition:all .2s;background:transparent;white-space:nowrap;user-select:none;}
+.radio-group{display:flex;}
+.radio-chip{padding:4px 11px;border:1px solid var(--border);cursor:pointer;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.06em;color:var(--text-dim);transition:all .18s;background:transparent;white-space:nowrap;user-select:none;}
 .radio-chip:first-child{border-radius:2px 0 0 2px;}
 .radio-chip:last-child{border-radius:0 2px 2px 0;}
 .radio-chip+.radio-chip{border-left:none;}
 .radio-chip.on{color:var(--gold-pale);background:rgba(201,168,76,.12);border-color:var(--gold);}
-.switch-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;}
-.switch-col{display:flex;flex-direction:column;gap:5px;}
-.switch-label{font-size:9px;color:var(--gold-dim);letter-spacing:.1em;font-family:'Cinzel',serif;text-transform:uppercase;}
-.orb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 14px;margin-top:4px;}
-.orb-item{display:flex;align-items:center;gap:6px;font-size:11px;}
+.switch-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}
+.switch-col{display:flex;flex-direction:column;gap:4px;}
+.switch-label{font-size:9px;color:var(--gold-dim);letter-spacing:.09em;font-family:'Cinzel',serif;text-transform:uppercase;}
+.orb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:5px 12px;margin-top:4px;}
+.orb-item{display:flex;align-items:center;gap:5px;}
 .orb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.orb-label{min-width:58px;color:var(--text-dim);font-size:10px;}
+.orb-label{min-width:56px;color:var(--text-dim);font-size:10px;}
 .orb-item input[type=range]{flex:1;accent-color:var(--gold);cursor:pointer;height:3px;}
 .orb-val{min-width:22px;text-align:right;color:var(--gold-pale);font-size:10px;}
-.btn-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center;}
-.btn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.13em;padding:8px 16px;border-radius:2px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;white-space:nowrap;}
+.btn-group{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;justify-content:center;}
+.btn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;padding:7px 15px;border-radius:2px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;white-space:nowrap;}
 .btn-primary{background:linear-gradient(135deg,#7A5E2A,#C9A84C,#7A5E2A);border:1px solid var(--gold);color:#080808;font-weight:700;box-shadow:var(--glow);}
-.btn-primary:hover{box-shadow:var(--glow-strong);filter:brightness(1.14);transform:translateY(-1px);}
+.btn-primary:hover{box-shadow:var(--glow-strong);filter:brightness(1.12);transform:translateY(-1px);}
 .btn-secondary{background:transparent;border:1px solid var(--border-bright);color:var(--gold-pale);}
 .btn-secondary:hover{background:rgba(201,168,76,.1);box-shadow:var(--glow);transform:translateY(-1px);}
-.btn-secondary.active{background:rgba(201,168,76,.14);border-color:var(--gold);box-shadow:var(--glow);}
-.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);transform:translateX(-100%);transition:transform .38s;}
+.btn-secondary.active{background:rgba(201,168,76,.13);border-color:var(--gold);box-shadow:var(--glow);}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);transform:translateX(-100%);transition:transform .36s;}
 .btn:hover::after{transform:translateX(100%);}
 .chart-outer{width:100%;max-width:700px;position:relative;margin:0 auto;}
 .chart-wrap{position:relative;display:flex;justify-content:center;align-items:center;}
-.chart-wrap svg{filter:drop-shadow(0 0 28px rgba(201,168,76,.14));max-width:100%;height:auto;}
-.tooltip{position:absolute;background:rgba(6,6,2,.97);border:1px solid var(--border-bright);border-radius:3px;padding:8px 12px;font-size:11px;pointer-events:none;box-shadow:var(--glow);z-index:50;display:none;max-width:200px;line-height:1.7;}
+.chart-wrap svg{filter:drop-shadow(0 0 26px rgba(201,168,76,.14));max-width:100%;height:auto;}
+.tooltip{position:absolute;background:rgba(5,5,2,.97);border:1px solid var(--border-bright);border-radius:3px;padding:8px 12px;font-size:11px;pointer-events:none;box-shadow:var(--glow);z-index:50;display:none;max-width:210px;line-height:1.75;}
 .tooltip strong{color:var(--gold);font-family:'Cinzel',serif;font-size:12px;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:700px;margin-top:16px;}
-.info-card{background:rgba(15,14,7,.95);border:1px solid var(--border);border-radius:4px;padding:13px;box-shadow:var(--glow);}
-.info-card h3{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.17em;color:var(--gold);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);text-transform:uppercase;}
-.planet-row{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;border-bottom:1px solid rgba(201,168,76,.05);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;width:100%;max-width:700px;margin-top:14px;}
+.info-card{background:rgba(14,13,6,.96);border:1px solid var(--border);border-radius:4px;padding:12px;box-shadow:var(--glow);}
+.info-card h3{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.17em;color:var(--gold);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);text-transform:uppercase;}
+.planet-row{display:flex;align-items:center;gap:5px;padding:2.5px 0;font-size:11px;border-bottom:1px solid rgba(201,168,76,.05);}
 .planet-row:last-child{border-bottom:none;}
-.psym{font-size:14px;width:19px;text-align:center;}
-.pname{width:40px;font-size:10px;color:var(--text-dim);}
-.ppos{flex:1;}
+.psym{font-size:13px;width:18px;text-align:center;flex-shrink:0;}
+.pname{width:38px;font-size:9.5px;color:var(--text-dim);}
+.ppos{flex:1;font-size:10.5px;}
 .pmansion{font-size:9px;color:var(--gold-dim);}
-.overlay-panel{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.papp{font-size:9px;font-style:italic;}
+.overlay-panel{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.87);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .28s;}
 .overlay-panel.show{opacity:1;pointer-events:all;}
-.overlay-inner{background:linear-gradient(135deg,rgba(15,14,7,.99),rgba(6,6,2,.99));border:1px solid var(--border-bright);border-radius:4px;padding:22px;max-width:500px;width:92%;max-height:82vh;overflow-y:auto;box-shadow:var(--glow-strong),inset 0 1px 0 rgba(201,168,76,.18);position:relative;}
-.overlay-close{position:absolute;top:10px;right:13px;background:none;border:none;color:var(--gold-dim);font-size:17px;cursor:pointer;}
+.overlay-inner{background:linear-gradient(135deg,rgba(14,13,6,.99),rgba(5,5,2,.99));border:1px solid var(--border-bright);border-radius:4px;padding:20px;max-width:500px;width:92%;max-height:82vh;overflow-y:auto;box-shadow:var(--glow-strong),inset 0 1px 0 rgba(201,168,76,.16);position:relative;}
+.overlay-close{position:absolute;top:9px;right:12px;background:none;border:none;color:var(--gold-dim);font-size:16px;cursor:pointer;}
 .overlay-close:hover{color:var(--gold);}
-.fir-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:9px;}
-.fir-table th{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold-dim);padding:4px 6px;text-align:left;border-bottom:1px solid var(--border);}
-.fir-table td{padding:4px 6px;border-bottom:1px solid rgba(201,168,76,.05);}
+.fir-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+.fir-table th{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold-dim);padding:4px 5px;text-align:left;border-bottom:1px solid var(--border);}
+.fir-table td{padding:3.5px 5px;border-bottom:1px solid rgba(201,168,76,.05);}
 .fir-table tr.cur td{color:var(--gold-light);background:rgba(201,168,76,.07);}
 .lr-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid rgba(201,168,76,.07);}
 .lr-label{color:var(--text-dim);font-size:10px;}
-.transit-legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--text-dim);margin-top:8px;}
+.transit-legend{display:flex;flex-wrap:wrap;gap:9px;font-size:11px;color:var(--text-dim);margin-top:8px;}
 .leg-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
 @keyframes fadeIn{from{opacity:0;transform:scale(.93) rotate(-2deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-@keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
 .chart-wrap svg{animation:fadeIn .5s ease-out both;}
 .t-active{animation:pulse 2.5s ease-in-out infinite;}
 @media(max-width:540px){.info-grid{grid-template-columns:1fr;}}
@@ -99,16 +100,14 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
 <body>
 <canvas id="starfield" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
 <div class="app">
-
 <header>
   <div class="ornament">✦ ✧ ✦</div>
-  <h1 class="title-main">七政星盘</h1>
-  <div class="ornament" style="font-size:10px;letter-spacing:.5em;">SEPTEM PLANETAE</div>
+  <h1 class="title-main">七政四余星盘</h1>
+  <div class="ornament" style="font-size:10px;letter-spacing:.5em;">SEPTEM PLANETAE · QUATTUOR RELIQUA</div>
   <p class="title-sub">Black Gold Astrolabe · 二十八星宿 · 法达星限 · 月亮返照 · 行运扩展</p>
 </header>
 
 <div class="input-panel">
-  <!-- 出生数据 -->
   <div class="input-row">
     <div class="field"><label>姓名</label><input type="text" id="inp-name" value="星命者"></div>
     <div class="field"><label>出生日期</label><input type="date" id="inp-date" value="1990-06-15"></div>
@@ -133,18 +132,17 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
         <option value="12">UTC+12</option><option value="13">UTC+13</option>
       </select>
     </div>
-    <div class="field" style="min-width:80px;max-width:88px;">
+    <div class="field" style="min-width:78px;max-width:86px;">
       <label>夏令时</label>
-      <label style="display:flex;align-items:center;gap:5px;height:32px;cursor:pointer;">
+      <label style="display:flex;align-items:center;gap:5px;height:30px;cursor:pointer;">
         <input type="checkbox" id="inp-dst" style="width:13px;height:13px;accent-color:var(--gold);cursor:pointer;">
         <span style="font-size:11px;color:var(--text-dim);">DST +1h</span>
       </label>
     </div>
   </div>
 
-  <!-- 黄道 & 分宫 & Ayanamsa -->
   <div class="panel-section">
-    <div class="sec-title">黄道坐标系 &amp; 分宫制</div>
+    <div class="sec-title">黄道系 &amp; 分宫制 &amp; 星宿制</div>
     <div class="switch-row">
       <div class="switch-col">
         <div class="switch-label">黄道坐标系</div>
@@ -157,8 +155,8 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
         <div class="switch-label">分宫制</div>
         <div class="radio-group">
           <span class="radio-chip on" id="house-placidus" onclick="setHouseSystem('placidus')">Placidus</span>
-          <span class="radio-chip" id="house-equal" onclick="setHouseSystem('equal')">等宫制</span>
-          <span class="radio-chip" id="house-whole" onclick="setHouseSystem('whole')">整宫制</span>
+          <span class="radio-chip" id="house-equal" onclick="setHouseSystem('equal')">等宫</span>
+          <span class="radio-chip" id="house-whole" onclick="setHouseSystem('whole')">整宫</span>
         </div>
       </div>
       <div class="switch-col">
@@ -169,27 +167,38 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
           <span class="radio-chip" id="ayan-raman" onclick="setAyanamsa('raman')">Raman</span>
         </div>
       </div>
+      <div class="switch-col">
+        <div class="switch-label">二十八星宿制</div>
+        <div class="radio-group">
+          <span class="radio-chip on" id="man-ancient" onclick="setMansionSystem('ancient')">古制（黄道）</span>
+          <span class="radio-chip" id="man-modern" onclick="setMansionSystem('modern')">今制（赤道）</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- 天体选项 -->
   <div class="panel-section">
     <div class="sec-title">天体选项</div>
     <div class="toggle-row">
-      <label class="toggle-chip" id="chip-uranus"><input type="checkbox" onchange="toggleBody('uranus',this)">⛢ 天王星</label>
-      <label class="toggle-chip" id="chip-neptune"><input type="checkbox" onchange="toggleBody('neptune',this)">♆ 海王星</label>
-      <label class="toggle-chip" id="chip-pluto"><input type="checkbox" onchange="toggleBody('pluto',this)">♇ 冥王星</label>
-      <span style="width:1px;height:18px;background:var(--border);flex-shrink:0;"></span>
+      <span style="font-size:9px;color:var(--gold-dim);letter-spacing:.1em;font-family:Cinzel,serif;">三王星</span>
+      <label class="toggle-chip" id="chip-uranus"><input type="checkbox" onchange="toggleBody('uranus',this)">⛢ 天王</label>
+      <label class="toggle-chip" id="chip-neptune"><input type="checkbox" onchange="toggleBody('neptune',this)">♆ 海王</label>
+      <label class="toggle-chip" id="chip-pluto"><input type="checkbox" onchange="toggleBody('pluto',this)">♇ 冥王</label>
+      <span style="width:1px;height:16px;background:var(--border);flex-shrink:0;margin:0 3px;"></span>
+      <span style="font-size:9px;color:var(--gold-dim);letter-spacing:.1em;font-family:Cinzel,serif;">四余虚点</span>
+      <label class="toggle-chip on" id="chip-lilith"><input type="checkbox" checked onchange="toggleBody('lilith',this)">☾ 月孛</label>
+      <label class="toggle-chip on" id="chip-luohu"><input type="checkbox" checked onchange="toggleBody('luohu',this)">☊ 罗睺</label>
+      <label class="toggle-chip on" id="chip-jidu"><input type="checkbox" checked onchange="toggleBody('jidu',this)">☋ 计都</label>
+      <label class="toggle-chip on" id="chip-ziqi"><input type="checkbox" checked onchange="toggleBody('ziqi',this)">✦ 紫炁</label>
+      <span style="width:1px;height:16px;background:var(--border);flex-shrink:0;margin:0 3px;"></span>
+      <span style="font-size:9px;color:var(--gold-dim);letter-spacing:.1em;font-family:Cinzel,serif;">小行星</span>
       <label class="toggle-chip" id="chip-chiron"><input type="checkbox" onchange="toggleBody('chiron',this)">⚷ 凯龙</label>
       <label class="toggle-chip" id="chip-ceres"><input type="checkbox" onchange="toggleBody('ceres',this)">⚳ 谷神</label>
-      <label class="toggle-chip" id="chip-juno"><input type="checkbox" onchange="toggleBody('juno',this)">⚵ 婚神</label>
-      <label class="toggle-chip" id="chip-vesta"><input type="checkbox" onchange="toggleBody('vesta',this)">⚶ 灶神</label>
     </div>
   </div>
 
-  <!-- 容许度 -->
   <div class="panel-section">
-    <div class="sec-title">相位容许度 Orb</div>
+    <div class="sec-title">相位容许度 Orb &amp; 出入相</div>
     <div class="orb-grid">
       <div class="orb-item"><span class="orb-dot" style="background:#F5D060;"></span><span class="orb-label">合相 0°</span><input type="range" id="orb-conj" min="1" max="15" value="8" oninput="document.getElementById('ov-conj').textContent=this.value+'°'"><span class="orb-val" id="ov-conj">8°</span></div>
       <div class="orb-item"><span class="orb-dot" style="background:#7EB8D4;"></span><span class="orb-label">六合 60°</span><input type="range" id="orb-sext" min="1" max="10" value="4" oninput="document.getElementById('ov-sext').textContent=this.value+'°'"><span class="orb-val" id="ov-sext">4°</span></div>
@@ -198,9 +207,13 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
       <div class="orb-item"><span class="orb-dot" style="background:#D4A07E;"></span><span class="orb-label">对冲 180°</span><input type="range" id="orb-oppo" min="1" max="12" value="8" oninput="document.getElementById('ov-oppo').textContent=this.value+'°'"><span class="orb-val" id="ov-oppo">8°</span></div>
       <div class="orb-item"><span class="orb-dot" style="background:#C088C0;"></span><span class="orb-label">补八 135°</span><input type="range" id="orb-ses" min="1" max="6" value="2" oninput="document.getElementById('ov-ses').textContent=this.value+'°'"><span class="orb-val" id="ov-ses">2°</span></div>
     </div>
+    <div style="margin-top:7px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-dim);">
+      <span>出入相标注：</span>
+      <span style="color:#A8D4FF;">▶ 入相</span><span>（行星趋近相位）</span>
+      <span style="color:#FFD080;">◀ 出相</span><span>（行星离开相位）</span>
+    </div>
   </div>
 
-  <!-- 功能按钮 -->
   <div class="btn-group">
     <button class="btn btn-primary" onclick="buildChart()">✦ 排盘</button>
     <button class="btn btn-secondary" id="btn-firdaria" onclick="showFirdaria()">法达星限</button>
@@ -208,7 +221,6 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
     <button class="btn btn-secondary" id="btn-lunar" onclick="showLunarReturn()">月亮返照盘</button>
   </div>
 
-  <!-- 月亮返照输入 -->
   <div id="lr-inputs" style="display:none;" class="panel-section">
     <div class="input-row">
       <div class="field"><label>返照地经度</label><input type="number" id="lr-lon" value="116.4" step="0.1"></div>
@@ -219,7 +231,6 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
   </div>
 </div>
 
-<!-- 星盘 SVG -->
 <div class="chart-outer">
   <div class="chart-wrap" id="chart-wrap">
     <svg id="main-svg" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg" width="700" height="700"></svg>
@@ -227,23 +238,22 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
   <div class="tooltip" id="tooltip"></div>
 </div>
 
-<!-- 信息面板 -->
 <div class="info-grid" id="info-grid" style="display:none;">
-  <div class="info-card"><h3>七政位置</h3><div id="planet-list"></div></div>
+  <div class="info-card"><h3>七政四余</h3><div id="planet-list"></div></div>
   <div class="info-card"><h3>二十八星宿</h3><div id="mansion-list"></div></div>
 </div>
-<div id="transit-legend" style="display:none;width:100%;max-width:700px;margin-top:10px;">
+<div id="transit-legend" style="display:none;width:100%;max-width:700px;margin-top:9px;">
   <div class="transit-legend">
     <span><span class="leg-dot" style="background:#E8CC88;"></span>本命</span>
     <span><span class="leg-dot" style="background:#7EB8D4;"></span>行运日月</span>
     <span><span class="leg-dot" style="background:#D47E7E;"></span>行运五星</span>
     <span><span class="leg-dot" style="background:#88C088;"></span>行运交点</span>
     <span><span class="leg-dot" style="background:#C088C0;"></span>行运三王</span>
+    <span><span class="leg-dot" style="background:#D0B860;border:1px dashed #C9A84C;"></span>行运四余</span>
   </div>
 </div>
-</div><!-- /app -->
+</div>
 
-<!-- 法达浮层 -->
 <div class="overlay-panel" id="firdaria-panel">
   <div class="overlay-inner">
     <button class="overlay-close" onclick="closeFirdaria()">✕</button>
@@ -252,8 +262,6 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
     <div id="firdaria-content"></div>
   </div>
 </div>
-
-<!-- 月亮返照浮层 -->
 <div class="overlay-panel" id="lr-panel">
   <div class="overlay-inner">
     <button class="overlay-close" onclick="document.getElementById('lr-panel').classList.remove('show')">✕</button>
@@ -268,187 +276,205 @@ header{text-align:center;margin-bottom:24px;border-bottom:1px solid var(--border
 (function(){
   const cv=document.getElementById('starfield'),ctx=cv.getContext('2d');
   let W,H,stars=[];
-  function resize(){
-    W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];
-    for(let i=0;i<200;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,a:Math.random(),da:Math.random()*.008+.003,g:Math.random()>.7});
-  }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    stars.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<0)s.da=-s.da;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.g?`rgba(201,168,76,${s.a})`:`rgba(255,250,235,${s.a*.55})`;ctx.fill();});
-    requestAnimationFrame(draw);
-  }
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,a:Math.random(),da:Math.random()*.008+.003,g:Math.random()>.7});}
+  function draw(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<0)s.da=-s.da;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.g?`rgba(201,168,76,${s.a})`:`rgba(255,250,235,${s.a*.55})`;ctx.fill();});requestAnimationFrame(draw);}
   addEventListener('resize',resize);resize();draw();
 })();
 
-// ══ 常量数据 ══
+// ══ 数据常量 ══
 const SIGNS=[
   {n:'白羊',s:'♈'},{n:'金牛',s:'♉'},{n:'双子',s:'♊'},{n:'巨蟹',s:'♋'},
   {n:'狮子',s:'♌'},{n:'处女',s:'♍'},{n:'天秤',s:'♎'},{n:'天蝎',s:'♏'},
   {n:'射手',s:'♐'},{n:'摩羯',s:'♑'},{n:'水瓶',s:'♒'},{n:'双鱼',s:'♓'}
 ];
 
-// 二十八星宿起始度（热带黄道J2000）
-const MANSIONS=[
-  {n:'角',l:0},{n:'亢',l:12},{n:'氐',l:25},{n:'房',l:52},
-  {n:'心',l:57},{n:'尾',l:69},{n:'箕',l:84},{n:'斗',l:98},
-  {n:'牛',l:110},{n:'女',l:122},{n:'虚',l:132},{n:'危',l:140},
-  {n:'室',l:153},{n:'壁',l:166},{n:'奎',l:180},{n:'娄',l:194},
-  {n:'胃',l:208},{n:'昴',l:222},{n:'毕',l:236},{n:'觜',l:248},
-  {n:'参',l:255},{n:'井',l:270},{n:'鬼',l:284},{n:'柳',l:294},
-  {n:'星',l:304},{n:'张',l:314},{n:'翼',l:326},{n:'轸',l:343}
+// 古制：黄道恒星经度（J2000 sidereal ecliptic, degrees）
+const MANSIONS_ANCIENT=[
+  {n:'角',l:0},{n:'亢',l:12},{n:'氐',l:25},{n:'房',l:52},{n:'心',l:57},{n:'尾',l:69},{n:'箕',l:84},
+  {n:'斗',l:98},{n:'牛',l:110},{n:'女',l:122},{n:'虚',l:132},{n:'危',l:140},
+  {n:'室',l:153},{n:'壁',l:166},{n:'奎',l:180},{n:'娄',l:194},{n:'胃',l:208},
+  {n:'昴',l:222},{n:'毕',l:236},{n:'觜',l:248},{n:'参',l:255},{n:'井',l:270},
+  {n:'鬼',l:284},{n:'柳',l:294},{n:'星',l:304},{n:'张',l:314},{n:'翼',l:326},{n:'轸',l:343}
 ];
 
+// 今制：赤经 RA（J2000，degrees），基于距星实测位置
+// 验证：2002-12-24 太阳RA≈272.35° → 箕宿(271.5°~283.8°) ✓
+const MANSIONS_MODERN=[
+  {n:'角',l:193.9},{n:'亢',l:198.3},{n:'氐',l:204.0},{n:'房',l:239.9},{n:'心',l:245.0},{n:'尾',l:249.2},
+  {n:'箕',l:271.5},{n:'斗',l:283.8},{n:'牛',l:299.0},{n:'女',l:322.5},{n:'虚',l:337.0},{n:'危',l:343.5},
+  {n:'室',l:352.5},{n:'壁',l:8.0},{n:'奎',l:17.2},{n:'娄',l:28.0},{n:'胃',l:42.5},
+  {n:'昴',l:56.0},{n:'毕',l:65.5},{n:'觜',l:85.5},{n:'参',l:88.5},{n:'井',l:110.0},
+  {n:'鬼',l:127.5},{n:'柳',l:140.5},{n:'星',l:152.0},{n:'张',l:167.5},{n:'翼',l:177.5},{n:'轸',l:189.0}
+];
+
+// 七政
 const BASE_PLANETS=[
-  {id:'sun',   nm:'太阳',sym:'☉',col:'#F5D060'},
-  {id:'moon',  nm:'月亮',sym:'☽',col:'#C8D8E8'},
-  {id:'mercury',nm:'水星',sym:'☿',col:'#A8C8A0'},
-  {id:'venus', nm:'金星',sym:'♀',col:'#E8A0B0'},
-  {id:'mars',  nm:'火星',sym:'♂',col:'#E08060'},
-  {id:'jupiter',nm:'木星',sym:'♃',col:'#D0A860'},
-  {id:'saturn',nm:'土星',sym:'♄',col:'#A8A090'},
-  {id:'node',  nm:'北交',sym:'☊',col:'#88C088'},
+  {id:'sun',   nm:'太阳',sym:'☉',col:'#F5D060',speed:0.9856},
+  {id:'moon',  nm:'月亮',sym:'☽',col:'#C8D8E8',speed:13.176},
+  {id:'mercury',nm:'水星',sym:'☿',col:'#A8C8A0',speed:1.38},
+  {id:'venus', nm:'金星',sym:'♀',col:'#E8A0B0',speed:1.20},
+  {id:'mars',  nm:'火星',sym:'♂',col:'#E08060',speed:0.524},
+  {id:'jupiter',nm:'木星',sym:'♃',col:'#D0A860',speed:0.0831},
+  {id:'saturn',nm:'土星',sym:'♄',col:'#A8A090',speed:0.0335},
 ];
+// 四余虚点
+const VIRTUAL_POINTS=[
+  {id:'lilith',nm:'月孛',sym:'☾',col:'#B8A0E0',speed:0.1114,dashed:true},
+  {id:'luohu', nm:'罗睺',sym:'☊',col:'#E08888',speed:-0.0529,dashed:true},
+  {id:'jidu',  nm:'计都',sym:'☋',col:'#88C888',speed:0.0529,dashed:true},
+  {id:'ziqi',  nm:'紫炁',sym:'✦',col:'#D0C070',speed:0.01833,dashed:true},
+];
+// 三王星
 const OUTER=[
-  {id:'uranus', nm:'天王星',sym:'⛢',col:'#80C8D0'},
-  {id:'neptune',nm:'海王星',sym:'♆',col:'#8090D8'},
-  {id:'pluto',  nm:'冥王星',sym:'♇',col:'#C090A8'},
+  {id:'uranus', nm:'天王星',sym:'⛢',col:'#80C8D0',speed:0.01172},
+  {id:'neptune',nm:'海王星',sym:'♆',col:'#8090D8',speed:0.006022},
+  {id:'pluto',  nm:'冥王星',sym:'♇',col:'#C090A8',speed:0.003975},
 ];
+// 小行星
 const ASTEROIDS=[
-  {id:'chiron',nm:'凯龙',sym:'⚷',col:'#C8B060'},
-  {id:'ceres', nm:'谷神',sym:'⚳',col:'#90C880'},
-  {id:'juno',  nm:'婚神',sym:'⚵',col:'#D09080'},
-  {id:'vesta', nm:'灶神',sym:'⚶',col:'#9898C8'},
+  {id:'chiron',nm:'凯龙',sym:'⚷',col:'#C8B060',speed:0.01981},
+  {id:'ceres', nm:'谷神',sym:'⚳',col:'#90C880',speed:0.21408},
 ];
 
 // ══ 应用状态 ══
 const ST={
-  zodiac:'tropical', ayanamsa:'lahiri', houseSystem:'placidus',
-  bodies:new Set(),
+  zodiac:'tropical',ayanamsa:'lahiri',houseSystem:'placidus',mansionSystem:'ancient',
+  bodies:new Set(['lilith','luohu','jidu','ziqi']),
   showTransit:false,
-  birthData:null, planets:null, asc:null, cusps:null, transitPlanets:null
+  birthData:null,planets:null,asc:null,cusps:null,transitPlanets:null
 };
 
-// Ayanamsa J2000基准值
-const AYAN={lahiri:23.85, fagan:24.75, raman:22.46};
-function getAyan(jd){ return (AYAN[ST.ayanamsa]||23.85)+(jd-2451545)/36525*1.396; }
-function effLon(lon,jd){ return ST.zodiac==='sidereal'?((lon-getAyan(jd)+360)%360):lon; }
+// Ayanamsa
+const AYAN={lahiri:23.85,fagan:24.75,raman:22.46};
+function getAyan(J){return(AYAN[ST.ayanamsa]||23.85)+(J-2451545)/36525*1.396;}
+function effLon(lon,J){return ST.zodiac==='sidereal'?((lon-getAyan(J)+360)%360):lon;}
 
-// ══ UI 开关 ══
-function setZodiac(v){
-  ST.zodiac=v;
-  ['tropical','sidereal'].forEach(k=>document.getElementById('zod-'+k).classList.toggle('on',k===v));
-  if(ST.planets) drawChart();
+// 星宿查找
+function getMansion(planetLon, ra, J){
+  // 古制：用黄道恒星经度
+  if(ST.mansionSystem==='ancient'){
+    // planetLon here should already be sidereal ecliptic lon
+    const lon=((planetLon%360)+360)%360;
+    const M=MANSIONS_ANCIENT;
+    let best=M[M.length-1];
+    for(let i=M.length-1;i>=0;i--){if(lon>=M[i].l){best=M[i];break;}}
+    return best;
+  } else {
+    // 今制：用赤经 RA
+    const r=((ra%360)+360)%360;
+    const M=MANSIONS_MODERN;
+    let best=M[M.length-1];
+    for(let i=0;i<M.length;i++){
+      const s=M[i].l, e=M[(i+1)%M.length].l;
+      const eAdj=e<s?e+360:e;
+      const rAdj=r>=s?r:r+360;
+      if(rAdj>=s&&rAdj<eAdj){best=M[i];break;}
+    }
+    return best;
+  }
 }
-function setHouseSystem(v){
-  ST.houseSystem=v;
-  ['placidus','equal','whole'].forEach(k=>document.getElementById('house-'+k).classList.toggle('on',k===v));
-  if(ST.planets){ST.cusps=calcCusps(ST.asc);drawChart();}
-}
-function setAyanamsa(v){
-  ST.ayanamsa=v;
-  ['lahiri','fagan','raman'].forEach(k=>document.getElementById('ayan-'+k).classList.toggle('on',k===v));
-  if(ST.planets) drawChart();
-}
-function toggleBody(id,el){
-  el.checked?ST.bodies.add(id):ST.bodies.delete(id);
-  document.getElementById('chip-'+id).classList.toggle('on',el.checked);
-  if(ST.planets) drawChart();
-}
+
+// UI 切换
+function setZodiac(v){ST.zodiac=v;['tropical','sidereal'].forEach(k=>document.getElementById('zod-'+k).classList.toggle('on',k===v));if(ST.planets)drawChart();}
+function setHouseSystem(v){ST.houseSystem=v;['placidus','equal','whole'].forEach(k=>document.getElementById('house-'+k).classList.toggle('on',k===v));if(ST.planets){ST.cusps=calcCusps(ST.asc);drawChart();}}
+function setAyanamsa(v){ST.ayanamsa=v;['lahiri','fagan','raman'].forEach(k=>document.getElementById('ayan-'+k).classList.toggle('on',k===v));if(ST.planets)drawChart();}
+function setMansionSystem(v){ST.mansionSystem=v;['ancient','modern'].forEach(k=>document.getElementById('man-'+k).classList.toggle('on',k===v));if(ST.planets){updatePanels();drawChart();}}
+function toggleBody(id,el){el.checked?ST.bodies.add(id):ST.bodies.delete(id);document.getElementById('chip-'+id).classList.toggle('on',el.checked);if(ST.planets)drawChart();}
 
 // ══ 天文计算 ══
-function jd(y,m,d,h){
-  if(m<=2){y--;m+=12;}
-  const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
-  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+h/24+B-1524.5;
-}
-function sunL(J){
-  const n=J-2451545,L=280.460+.9856474*n,g=(357.528+.9856003*n)*Math.PI/180;
-  return(((L+1.915*Math.sin(g)+.020*Math.sin(2*g))%360)+360)%360;
-}
-function moonL(J){
-  const n=J-2451545,L=218.316+13.176396*n,M=(134.963+13.064993*n)*Math.PI/180;
-  return(((L+6.289*Math.sin(M))%360)+360)%360;
-}
+function jd(y,m,d,h){if(m<=2){y--;m+=12;}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+h/24+B-1524.5;}
+function sunL(J){const n=J-2451545,L=280.460+.9856474*n,g=(357.528+.9856003*n)*Math.PI/180;return(((L+1.915*Math.sin(g)+.020*Math.sin(2*g))%360)+360)%360;}
+function moonL(J){const n=J-2451545,L=218.316+13.176396*n,M=(134.963+13.064993*n)*Math.PI/180;return(((L+6.289*Math.sin(M))%360)+360)%360;}
 function pL(J,a,b){return(((a+b*(J-2451545))%360)+360)%360;}
 
+// 黄道→赤经转换（用于今制星宿）
+function eclToRA(lon,J){
+  const n=J-2451545,eps=(23.439-.0000004*n)*Math.PI/180;
+  const lam=lon*Math.PI/180;
+  return((Math.atan2(Math.sin(lam)*Math.cos(eps),Math.cos(lam))*180/Math.PI)+360)%360;
+}
+
 function calcPlanets(J){
+  const n=J-2451545;
+  // 月孛 Mean Lunar Apogee (Lilith): perigee+180
+  const perigee=(83.3532430+0.11140408*n);
+  const lilith=(perigee+180+360*100)%360;
+  // 北交点（计都）：传统中国 计都=北交，罗睺=南交
+  const northNode=((125.044-.05295*n)%360+360)%360;
+  const southNode=(northNode+180)%360;
+  // 紫炁：NAOC epoch公式 J1900=2415020.5
+  const J1900=2415020.5;
+  const ziqi=((359.5+0.01833*(J-J1900))%360+360)%360;
+
   return{
     sun:sunL(J), moon:moonL(J),
     mercury:pL(J,252.25,4.09234), venus:pL(J,181.98,1.60212),
     mars:pL(J,355.43,.52403), jupiter:pL(J,34.35,.08309),
     saturn:pL(J,50.08,.03346),
-    node:((125.044-.05295*(J-2451545))%360+360)%360,
-    // 三王星（平均根数近似）
-    uranus:pL(J,314.05,.01172), neptune:pL(J,304.35,.006022),
-    pluto:pL(J,238.90,.003975),
-    // 小行星
+    lilith, luohu:southNode, jidu:northNode, ziqi,
+    uranus:pL(J,314.05,.01172), neptune:pL(J,304.35,.006022), pluto:pL(J,238.90,.003975),
     chiron:pL(J,208.7,.01981), ceres:pL(J,95.98,.21408),
-    juno:pL(J,273.15,.17960), vesta:pL(J,103.81,.27168),
   };
 }
 
 function calcAsc(J,lat,lon){
   const n=J-2451545,LST=((280.46061837+360.98564736629*n+lon)%360+360)%360;
-  const eps=23.439-.0000004*n,e=eps*Math.PI/180;
-  const rmc=LST*Math.PI/180,tL=Math.tan(lat*Math.PI/180);
-  return((Math.atan2(Math.cos(rmc),-(Math.sin(rmc)*Math.cos(e)+tL*Math.sin(e)))*180/Math.PI)+360)%360;
+  const eps=(23.439-.0000004*n)*Math.PI/180,rmc=LST*Math.PI/180,tL=Math.tan(lat*Math.PI/180);
+  return((Math.atan2(Math.cos(rmc),-(Math.sin(rmc)*Math.cos(eps)+tL*Math.sin(eps)))*180/Math.PI)+360)%360;
 }
 
 function calcCusps(asc){
   const c=[];
-  if(ST.houseSystem==='whole'){
-    const s=Math.floor(asc/30);
-    for(let i=0;i<12;i++) c.push(((s+i)*30)%360);
-  } else {
-    // equal + placidus fallback equal
-    for(let i=0;i<12;i++) c.push(((asc+i*30)%360+360)%360);
-  }
+  if(ST.houseSystem==='whole'){const s=Math.floor(asc/30);for(let i=0;i<12;i++)c.push(((s+i)*30)%360);}
+  else{for(let i=0;i<12;i++)c.push(((asc+i*30)%360+360)%360);}
   return c;
 }
 
-function getMansion(lon){
-  lon=((lon%360)+360)%360;
-  let best=MANSIONS[0];
-  for(let i=MANSIONS.length-1;i>=0;i--){if(lon>=MANSIONS[i].l){best=MANSIONS[i];break;}}
-  return best;
+// 出入相判断：比较当前与次日位置差距
+function getApplicability(id1,id2,lon1,lon2,J){
+  // 计算明日的两行星经度
+  const J2=J+1;
+  const pl2=calcPlanets(J2);
+  const ef=l=>effLon(l,J2);
+  const allPl={...calcPlanets(J)};
+  // 找该id对应的速度方向
+  const getLon=(pid,plObj)=>{
+    const raw=plObj[pid];
+    return raw!==undefined?raw:null;
+  };
+  const l1t=getLon(id1,allPl),l2t=getLon(id2,allPl);
+  const l1n=getLon(id1,pl2),l2n=getLon(id2,pl2);
+  if(l1t===null||l2t===null||l1n===null||l2n===null)return{app:false,sep:false};
+  const diff=Math.abs(((lon1-lon2+180+360)%360)-180);
+  const lon1n=ef(l1n),lon2n=ef(l2n);
+  const diffN=Math.abs(((lon1n-lon2n+180+360)%360)-180);
+  const app=diffN<diff; // 明天距离更小=入相
+  return{app,sep:!app};
 }
 
-// ══ 坐标变换 ══
+// ══ 坐标 ══
 const CX=350,CY=350,ROUT=320,RZOD=298,RZIN=265,RMO=262,RMI=232,RH=228,RHIN=155,RIN=150,RPL=195,RPT=310;
-
-function d2r(d){return(d-90)*Math.PI/180;} // 0°=上,顺时针
-
-function pXY(r,deg){ const a=d2r(deg); return{x:CX+r*Math.cos(a),y:CY+r*Math.sin(a)}; }
-
-// ASC在左侧(270°方向)，黄道逆时针展开
+function d2r(d){return(d-90)*Math.PI/180;}
+function pXY(r,deg){const a=d2r(deg);return{x:CX+r*Math.cos(a),y:CY+r*Math.sin(a)};}
+// ASC=左(270°方向)，黄道逆时针
 function l2a(lon,asc){return((asc-lon+270+360)%360);}
 
-// ══ 排盘入口 ══
+// ══ 排盘 ══
 function buildChart(){
-  const ds=document.getElementById('inp-date').value;
-  const ts=document.getElementById('inp-time').value;
-  const lat=+document.getElementById('inp-lat').value||39.9;
-  const lon=+document.getElementById('inp-lon').value||116.4;
-  const [y,mo,d]=ds.split('-').map(Number);
-  const [h,mi]=ts.split(':').map(Number);
-  const hr=h+mi/60;
-  const tz=+document.getElementById('inp-tz').value||8;
-  const dst=document.getElementById('inp-dst').checked?1:0;
+  const ds=document.getElementById('inp-date').value,ts=document.getElementById('inp-time').value;
+  const lat=+document.getElementById('inp-lat').value||39.9,lon=+document.getElementById('inp-lon').value||116.4;
+  const [y,mo,d]=ds.split('-').map(Number),[h,mi]=ts.split(':').map(Number);
+  const hr=h+mi/60,tz=+document.getElementById('inp-tz').value||8,dst=document.getElementById('inp-dst').checked?1:0;
   const J=jd(y,mo,d,hr-tz-dst);
-  const pl=calcPlanets(J);
-  const asc=calcAsc(J,lat,lon);
-  const cusps=calcCusps(asc);
+  const pl=calcPlanets(J),asc=calcAsc(J,lat,lon),cusps=calcCusps(asc);
   ST.birthData={J,lat,lon,ds,ts,hr,tz,dst};
-  ST.planets=pl; ST.asc=asc; ST.cusps=cusps; ST.showTransit=false;
-  const nowJ=jd(...today());
-  ST.transitPlanets=calcPlanets(nowJ);
-  drawChart(); updatePanels();
+  ST.planets=pl;ST.asc=asc;ST.cusps=cusps;ST.showTransit=false;
+  ST.transitPlanets=calcPlanets(jd(...today()));
+  drawChart();updatePanels();
   document.getElementById('info-grid').style.display='grid';
   document.getElementById('btn-transit').classList.remove('active');
 }
-
 function today(){const n=new Date();return[n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours()+n.getMinutes()/60];}
-
 function toggleTransit(){
   if(!ST.planets){buildChart();return;}
   ST.showTransit=!ST.showTransit;
@@ -457,16 +483,16 @@ function toggleTransit(){
   drawChart();
 }
 
-// ══ 绘图核心 ══
-function activePlanets(pl,J){
-  const list=BASE_PLANETS.map(p=>({...p,lon:pl[p.id]||0}));
-  [...OUTER,...ASTEROIDS].forEach(p=>{if(ST.bodies.has(p.id)) list.push({...p,lon:pl[p.id]||0});});
+function allActive(pl,J){
+  const list=[...BASE_PLANETS.map(p=>({...p,lon:pl[p.id]||0}))];
+  [...VIRTUAL_POINTS,...OUTER,...ASTEROIDS].forEach(p=>{if(ST.bodies.has(p.id))list.push({...p,lon:pl[p.id]||0});});
   return list;
 }
 
+// ══ 绘图 ══
 function drawChart(){
   const svg=document.getElementById('main-svg');
-  const {planets,asc,cusps,showTransit,transitPlanets}=ST;
+  const{planets,asc,cusps,showTransit,transitPlanets}=ST;
   const J=ST.birthData?ST.birthData.J:2451545;
   const ef=lon=>effLon(lon,J);
 
@@ -475,83 +501,80 @@ function drawChart(){
     oppo:+document.getElementById('orb-oppo').value,ses:+document.getElementById('orb-ses').value};
 
   let h='';
-
-  // DEFS
   h+=`<defs>
-  <radialGradient id="bg" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#1A1608"/><stop offset="65%" stop-color="#0D0C05"/><stop offset="100%" stop-color="#060504"/>
-  </radialGradient>
-  <radialGradient id="gl" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#C9A84C" stop-opacity=".07"/><stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
-  </radialGradient>
+  <radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1A1608"/><stop offset="65%" stop-color="#0D0C05"/><stop offset="100%" stop-color="#060504"/></radialGradient>
+  <radialGradient id="gl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C9A84C" stop-opacity=".06"/><stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/></radialGradient>
   <filter id="fg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   <filter id="ft"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="fv"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>`;
 
   h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT+4}" fill="url(#bg)"/>`;
   h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT+4}" fill="url(#gl)"/>`;
   h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT+2}" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".6"/>`;
-  h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".3"/>`;
-
-  if(showTransit) h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT-2}" fill="none" stroke="#7EB8D4" stroke-width=".5" opacity=".45" stroke-dasharray="4,4"/>`;
+  h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".28"/>`;
+  if(showTransit)h+=`<circle cx="${CX}" cy="${CY}" r="${ROUT-2}" fill="none" stroke="#7EB8D4" stroke-width=".5" opacity=".42" stroke-dasharray="4,4"/>`;
 
   // ── 黄道宫带 ──
   for(let i=0;i<12;i++){
     const a1=l2a(i*30,asc),a2=l2a((i+1)*30,asc),mid=l2a(i*30+15,asc);
     const diff=((a1-a2)+360)%360,large=diff>180?1:0;
     const p1=pXY(RZIN,a1),p2=pXY(RZOD,a1),p3=pXY(RZOD,a2),p4=pXY(RZIN,a2);
-    // sweep=1 → 顺时针弧（因为a1>a2在逆时针黄道中）
-    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${RZOD},${RZOD},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${RZIN},${RZIN},0,${large},0,${p1.x},${p1.y}"
-      fill="${i%2===0?'rgba(201,168,76,.07)':'rgba(201,168,76,.03)'}" stroke="#C9A84C" stroke-width=".3" opacity=".85"/>`;
+    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${RZOD},${RZOD},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${RZIN},${RZIN},0,${large},0,${p1.x},${p1.y}" fill="${i%2===0?'rgba(201,168,76,.07)':'rgba(201,168,76,.03)'}" stroke="#C9A84C" stroke-width=".35" opacity=".85"/>`;
     const sm=pXY((RZOD+RZIN)/2,mid);
     h+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#C9A84C" filter="url(#ft)" opacity=".9">${SIGNS[i].s}</text>`;
   }
 
-  // ── 二十八星宿带（绘制在热带坐标，位置与黄道宫带同参考系）──
-  // 修正：星宿是以恒星黄道为基准，绘制时需在热带坐标中偏移 ayanamsa
-  const ayanOff=ST.zodiac==='sidereal'?0:getAyan(J); // 热带模式下，星宿需加回ayanamsa使其显示在恒星位置
+  // ── 二十八星宿带 ──
+  // 古制：星宿经度是恒星黄道经度，加ayanamsa转成热带后plot
+  // 今制：星宿用RA，需要把RA转成对应的黄道经度（近似：ecliptic≈RA for small eps correction）
+  // 为了在同一盘面显示，两制都需要映射到热带黄道坐标
+  const MANSIONS = ST.mansionSystem==='ancient'?MANSIONS_ANCIENT:MANSIONS_MODERN;
+  const ayan=getAyan(J);
   for(let i=0;i<28;i++){
     const m=MANSIONS[i],m2=MANSIONS[(i+1)%28];
-    const span=i<27?(m2.l-m.l):(360-m.l+m2.l);
-    // 星宿在热带坐标 = 恒星经度 + ayanamsa
-    const mLon=(m.l+ayanOff)%360;
-    const mLon2=(mLon+span)%360;
-    const mMid=(mLon+span/2)%360;
-    const a1=l2a(mLon,asc),a2=l2a(mLon2,asc),mid=l2a(mMid,asc);
+    const span=((m2.l-m.l)+360)%360||((360-m.l+m2.l));
+    // 转到热带黄道坐标（用于绘图）
+    let mLonTrop, spanTrop=span;
+    if(ST.mansionSystem==='ancient'){
+      // 古制：恒星经度→热带 = 恒星+ayanamsa
+      mLonTrop=(m.l+ayan)%360;
+    } else {
+      // 今制：RA近似=热带黄道经度（赤道面接近黄道的近似）
+      mLonTrop=m.l;
+    }
+    const mMidTrop=(mLonTrop+span/2)%360;
+    const a1=l2a(mLonTrop,asc),a2=l2a((mLonTrop+span)%360,asc),mid=l2a(mMidTrop,asc);
     const diff=((a1-a2)+360)%360,large=diff>180?1:0;
     const p1=pXY(RMI,a1),p2=pXY(RMO,a1),p3=pXY(RMO,a2),p4=pXY(RMI,a2);
-    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${RMO},${RMO},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${RMI},${RMI},0,${large},0,${p1.x},${p1.y}"
-      fill="${i%2===0?'rgba(201,168,76,.05)':'transparent'}" stroke="#C9A84C" stroke-width=".4" opacity=".5"/>`;
+    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${RMO},${RMO},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${RMI},${RMI},0,${large},0,${p1.x},${p1.y}" fill="${i%2===0?'rgba(201,168,76,.05)':'transparent'}" stroke="#C9A84C" stroke-width=".4" opacity=".5"/>`;
     const sm=pXY((RMO+RMI)/2,mid);
     h+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#C9A84C" opacity=".7">${m.n}</text>`;
   }
 
-  // ── 宫位环 ──
-  h+=`<circle cx="${CX}" cy="${CY}" r="${RH}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".33"/>`;
-  h+=`<circle cx="${CX}" cy="${CY}" r="${RHIN}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".22"/>`;
-  h+=`<circle cx="${CX}" cy="${CY}" r="${RIN}" fill="rgba(0,0,0,.3)" stroke="#C9A84C" stroke-width=".8" opacity=".38"/>`;
-
+  // ── 宫位环 + 宫线 ──
+  h+=`<circle cx="${CX}" cy="${CY}" r="${RH}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".32"/>`;
+  h+=`<circle cx="${CX}" cy="${CY}" r="${RHIN}" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".2"/>`;
+  h+=`<circle cx="${CX}" cy="${CY}" r="${RIN}" fill="rgba(0,0,0,.28)" stroke="#C9A84C" stroke-width=".8" opacity=".35"/>`;
   cusps.forEach((cusp,i)=>{
     const ang=l2a(cusp,asc),isA=[0,3,6,9].includes(i);
     const p1=pXY(isA?0:RHIN,ang),p2=pXY(RH,ang);
-    h+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#C9A84C" stroke-width="${isA?1.2:.5}" opacity="${isA?.8:.38}"/>`;
-    if(isA){const p3=pXY(RZIN,ang);h+=`<line x1="${p2.x}" y1="${p2.y}" x2="${p3.x}" y2="${p3.y}" stroke="#C9A84C" stroke-width=".8" opacity=".55" stroke-dasharray="3,3"/>`;}
-    const nc=cusps[(i+1)%12];
-    let ml=(cusp+nc)/2;if(nc<cusp)ml=(cusp+(nc+360))/2;ml=ml%360;
+    h+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#C9A84C" stroke-width="${isA?1.2:.5}" opacity="${isA?.78:.35}"/>`;
+    if(isA){const p3=pXY(RZIN,ang);h+=`<line x1="${p2.x}" y1="${p2.y}" x2="${p3.x}" y2="${p3.y}" stroke="#C9A84C" stroke-width=".8" opacity=".52" stroke-dasharray="3,3"/>`;}
+    const nc=cusps[(i+1)%12];let ml=(cusp+nc)/2;if(nc<cusp)ml=(cusp+(nc+360))/2;ml=ml%360;
     const np=pXY((RH+RHIN)/2,l2a(ml,asc));
-    h+=`<text x="${np.x}" y="${np.y}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#C9A84C" opacity=".58" font-family="Cinzel,serif">${i+1}</text>`;
+    h+=`<text x="${np.x}" y="${np.y}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#C9A84C" opacity=".55" font-family="Cinzel,serif">${i+1}</text>`;
   });
 
   // ── 四轴标签 ──
   [{lb:'ASC',ln:asc,c:'#F5D060'},{lb:'MC',ln:(asc+90)%360,c:'#E8A0B0'},{lb:'DSC',ln:(asc+180)%360,c:'#F5D060'},{lb:'IC',ln:(asc+270)%360,c:'#E8A0B0'}]
-  .forEach(a=>{
-    const p=pXY(RZOD+14,l2a(a.ln,asc));
-    h+=`<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central" font-size="9" font-family="Cinzel,serif" fill="${a.c}" filter="url(#ft)" font-weight="600">${a.lb}</text>`;
-  });
+  .forEach(a=>{const p=pXY(RZOD+14,l2a(a.ln,asc));h+=`<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central" font-size="9" font-family="Cinzel,serif" fill="${a.c}" filter="url(#ft)" font-weight="600">${a.lb}</text>`;});
 
-  // ── 相位线 ──
-  const ASPECTS=[{a:0,c:'#F5D060',w:.6,o:'conj'},{a:60,c:'#7EB8D4',w:.5,o:'sext'},{a:90,c:'#D47E7E',w:.6,o:'squa'},{a:120,c:'#A8D4A0',w:.7,o:'trin'},{a:135,c:'#C088C0',w:.4,o:'ses'},{a:180,c:'#D4A07E',w:.5,o:'oppo'}];
-  const apl=activePlanets(planets,J);
+  // ── 相位线（带出入相标注）──
+  const ASPECTS=[{a:0,c:'#F5D060',w:.6,o:'conj',nm:'合'},{a:60,c:'#7EB8D4',w:.5,o:'sext',nm:'六合'},{a:90,c:'#D47E7E',w:.6,o:'squa',nm:'四分'},{a:120,c:'#A8D4A0',w:.7,o:'trin',nm:'三合'},{a:135,c:'#C088C0',w:.4,o:'ses',nm:'补八'},{a:180,c:'#D4A07E',w:.55,o:'oppo',nm:'对冲'}];
+  const apl=allActive(planets,J);
+  const aspectList=[]; // 收集相位用于出入相标注
+
   for(let i=0;i<apl.length;i++){
     for(let k=i+1;k<apl.length;k++){
       const l1=ef(apl[i].lon),l2=ef(apl[k].lon);
@@ -559,77 +582,113 @@ function drawChart(){
       for(const asp of ASPECTS){
         if(Math.abs(diff-asp.a)<=orbs[asp.o]){
           const p1=pXY(RIN-10,l2a(l1,asc)),p2=pXY(RIN-10,l2a(l2,asc));
-          h+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${asp.c}" stroke-width="${asp.w}" opacity=".35"/>`;
+          h+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${asp.c}" stroke-width="${asp.w}" opacity=".32"/>`;
+          // 出入相
+          const apInfo=getApplicability(apl[i].id,apl[k].id,l1,l2,J);
+          aspectList.push({p1,p2,asp,apInfo,orb:(diff-asp.a).toFixed(2),sym1:apl[i].sym,sym2:apl[k].sym});
           break;
         }
       }
     }
   }
+  // 在相位线中点画出入相符号
+  aspectList.forEach(({p1,p2,asp,apInfo,orb})=>{
+    const mx=(p1.x+p2.x)/2,my=(p1.y+p2.y)/2;
+    if(apInfo.app){
+      h+=`<text x="${mx}" y="${my}" text-anchor="middle" dominant-baseline="central" font-size="8" fill="#A8D4FF" opacity=".85">▶</text>`;
+    } else {
+      h+=`<text x="${mx}" y="${my}" text-anchor="middle" dominant-baseline="central" font-size="8" fill="#FFD080" opacity=".85">◀</text>`;
+    }
+  });
 
-  // ── 本命行星 ──
-  // 碰撞轻微偏移
-  const usedAngles=[];
+  // ── 本命行星（含四余） ──
+  // 简单碰撞位移
+  const usedAngs=[];
+  function resolveAng(ang){
+    let a=ang,tries=0;
+    while(tries<8){
+      let clash=false;
+      for(const ua of usedAngs){if(Math.abs(((a-ua+180+360)%360)-180)<7){a=(a+8)%360;clash=true;break;}}
+      if(!clash)break;
+      tries++;
+    }
+    usedAngs.push(a);return a;
+  }
+
   apl.forEach(p=>{
-    let lon=ef(p.lon);
-    let ang=l2a(lon,asc);
-    // 简单碰撞检测
-    for(const ua of usedAngles){if(Math.abs(((ang-ua+180+360)%360)-180)<6){ang=(ang+7)%360;break;}}
-    usedAngles.push(ang);
+    const lon=ef(p.lon);
+    const ang=resolveAng(l2a(lon,asc));
     const pos=pXY(RPL,ang);
-    h+=`<circle cx="${pos.x}" cy="${pos.y}" r="13" fill="${p.col}" opacity=".1" filter="url(#fg)"/>`;
-    h+=`<circle cx="${pos.x}" cy="${pos.y}" r="9" fill="rgba(0,0,0,.78)" stroke="${p.col}" stroke-width="1.2" opacity=".9"/>`;
-    h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="${p.col}" filter="url(#ft)" class="psym" data-id="${p.id}" data-lon="${lon.toFixed(2)}" style="cursor:pointer">${p.sym}</text>`;
-    const lp1=pXY(RH,ang),lp2=pXY(RPL-14,ang);
-    h+=`<line x1="${lp1.x}" y1="${lp1.y}" x2="${lp2.x}" y2="${lp2.y}" stroke="${p.col}" stroke-width=".5" opacity=".25"/>`;
+    const isVirtual=VIRTUAL_POINTS.some(v=>v.id===p.id);
+    if(isVirtual){
+      // 虚点：虚线圆圈，较小
+      h+=`<circle cx="${pos.x}" cy="${pos.y}" r="11" fill="${p.col}" opacity=".08" filter="url(#fv)"/>`;
+      h+=`<circle cx="${pos.x}" cy="${pos.y}" r="8" fill="rgba(0,0,0,.65)" stroke="${p.col}" stroke-width=".9" opacity=".8" stroke-dasharray="3,2"/>`;
+    } else {
+      h+=`<circle cx="${pos.x}" cy="${pos.y}" r="13" fill="${p.col}" opacity=".1" filter="url(#fg)"/>`;
+      h+=`<circle cx="${pos.x}" cy="${pos.y}" r="9" fill="rgba(0,0,0,.78)" stroke="${p.col}" stroke-width="1.2" opacity=".9"/>`;
+    }
+    h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${isVirtual?10:11}" fill="${p.col}" filter="url(#ft)" class="psym" data-id="${p.id}" data-lon="${lon.toFixed(2)}" style="cursor:pointer">${p.sym}</text>`;
+    const lp1=pXY(RH,ang),lp2=pXY(RPL-12,ang);
+    h+=`<line x1="${lp1.x}" y1="${lp1.y}" x2="${lp2.x}" y2="${lp2.y}" stroke="${p.col}" stroke-width="${isVirtual?.4:.5}" opacity="${isVirtual?.18:.23}" stroke-dasharray="${isVirtual?'3,3':''}"/>`;
   });
 
   // ── 行运行星（外环）──
   if(showTransit&&transitPlanets){
     const nowJ=jd(...today());
-    activePlanets(transitPlanets,nowJ).forEach((p)=>{
-      const lon=effLon(p.lon,nowJ);
-      const ang=l2a(lon,asc),pos=pXY(RPT,ang);
+    allActive(transitPlanets,nowJ).forEach(p=>{
+      const lon=effLon(p.lon,nowJ),ang=l2a(lon,asc),pos=pXY(RPT,ang);
       const isKing=OUTER.some(o=>o.id===p.id);
-      const tc=isKing?'#C088C0':(p.id==='sun'||p.id==='moon'?'#7EB8D4':(p.id==='node'?'#88C088':'#D47E7E'));
-      h+=`<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="rgba(0,0,0,.82)" stroke="${tc}" stroke-width="1" opacity=".85"/>`;
-      h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="${tc}" filter="url(#ft)">${p.sym}</text>`;
+      const isVP=VIRTUAL_POINTS.some(v=>v.id===p.id);
+      const tc=isVP?'#D0B860':(isKing?'#C088C0':(p.id==='sun'||p.id==='moon'?'#7EB8D4':(p.id==='node'?'#88C088':'#D47E7E')));
+      if(isVP){h+=`<circle cx="${pos.x}" cy="${pos.y}" r="9" fill="rgba(0,0,0,.8)" stroke="${tc}" stroke-width=".8" stroke-dasharray="3,2" opacity=".8"/>`;}
+      else{h+=`<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="rgba(0,0,0,.82)" stroke="${tc}" stroke-width="1" opacity=".85"/>`;}
+      h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${isVP?9:10}" fill="${tc}" filter="url(#ft)">${p.sym}</text>`;
     });
-    h+=`<circle cx="${CX}" cy="${CY}" r="${RPT+17}" fill="none" stroke="#7EB8D4" stroke-width=".5" opacity=".28" stroke-dasharray="2,6" class="t-active"/>`;
+    h+=`<circle cx="${CX}" cy="${CY}" r="${RPT+17}" fill="none" stroke="#7EB8D4" stroke-width=".5" opacity=".25" stroke-dasharray="2,6" class="t-active"/>`;
   }
 
   // ── 中心装饰 ──
-  h+=`<circle cx="${CX}" cy="${CY}" r="28" fill="rgba(0,0,0,.87)" stroke="#C9A84C" stroke-width="1" opacity=".6"/>`;
-  h+=`<circle cx="${CX}" cy="${CY}" r="22" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".38"/>`;
+  h+=`<circle cx="${CX}" cy="${CY}" r="28" fill="rgba(0,0,0,.88)" stroke="#C9A84C" stroke-width="1" opacity=".58"/>`;
+  h+=`<circle cx="${CX}" cy="${CY}" r="22" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".35"/>`;
   const sp=[];for(let i=0;i<8;i++){const r=i%2===0?20:10,a=(i*45-90)*Math.PI/180;sp.push(`${CX+r*Math.cos(a)},${CY+r*Math.sin(a)}`);}
-  h+=`<polygon points="${sp.join(' ')}" fill="#C9A84C" opacity=".38"/>`;
+  h+=`<polygon points="${sp.join(' ')}" fill="#C9A84C" opacity=".36"/>`;
   const eA=ef(asc),eAs=Math.floor(eA/30),eAd=(eA%30).toFixed(1);
-  const sl=ST.zodiac==='sidereal'?'S':'T';
   h+=`<text x="${CX}" y="${CY-8}" text-anchor="middle" font-size="7.5" fill="#C9A84C" font-family="Cinzel,serif" opacity=".85">${SIGNS[eAs].s}${eAd}°</text>`;
-  h+=`<text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" fill="#C9A84C" font-family="Cinzel,serif" opacity=".58">ASC·${sl}</text>`;
+  h+=`<text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" fill="#C9A84C" font-family="Cinzel,serif" opacity=".55">ASC·${ST.zodiac==='sidereal'?'S':'T'}</text>`;
 
   const nm=document.getElementById('inp-name').value||'星命者';
   h+=`<text x="${CX}" y="21" text-anchor="middle" font-size="13" fill="#C9A84C" font-family="Cinzel,serif" filter="url(#ft)" letter-spacing=".15em" opacity=".85">${nm}</text>`;
-  const info=`${document.getElementById('inp-date').value} · ${document.getElementById('inp-time').value} · ${document.getElementById('inp-place').value} · UTC${ST.birthData?((ST.birthData.tz>=0?'+':'')+ST.birthData.tz):''}`;
-  h+=`<text x="${CX}" y="679" text-anchor="middle" font-size="8.5" fill="#C9A84C" font-family="Cinzel,serif" opacity=".45" letter-spacing=".07em">${info}</text>`;
+  const info=`${document.getElementById('inp-date').value} · ${document.getElementById('inp-time').value} · ${document.getElementById('inp-place').value} · ${ST.mansionSystem==='ancient'?'古制':'今制'}`;
+  h+=`<text x="${CX}" y="679" text-anchor="middle" font-size="8.5" fill="#C9A84C" font-family="Cinzel,serif" opacity=".42" letter-spacing=".07em">${info}</text>`;
 
   svg.innerHTML=h;
 
-  // Tooltip
+  // Tooltip（含相位出入相查询）
   svg.querySelectorAll('.psym').forEach(el=>{
     el.addEventListener('mouseenter',function(){
       const id=this.getAttribute('data-id');
-      const all=[...BASE_PLANETS,...OUTER,...ASTEROIDS];
+      const all=[...BASE_PLANETS,...VIRTUAL_POINTS,...OUTER,...ASTEROIDS];
       const pl=all.find(p=>p.id===id)||{sym:'?',nm:id,col:'#fff'};
       const lon=parseFloat(this.getAttribute('data-lon'));
       const sgn=Math.floor(lon/30),deg=(lon%30).toFixed(2);
-      const man=getMansion(lon);
+      // 星宿
+      const raForMansion=eclToRA(lon,J);
+      const sidLon=((lon-getAyan(J)+360)%360);
+      const man=getMansion(sidLon,raForMansion,J);
+      // 与太阳的出入相
+      const sunLon=ef(planets.sun);
+      const diffSun=Math.abs(((lon-sunLon+180+360)%360)-180);
+      const apSun=getApplicability(id,'sun',lon,sunLon,J);
+      const appStr=apSun.app?'▶ 入相':'◀ 出相';
+      const isVP=VIRTUAL_POINTS.some(v=>v.id===id);
       const tt=document.getElementById('tooltip');
-      tt.innerHTML=`<strong>${pl.sym} ${pl.nm}</strong><br>${SIGNS[sgn].s}${SIGNS[sgn].n} ${deg}°<br>宿：${man.n}宿<br><span style="color:var(--text-dim);font-size:10px;">${ST.zodiac==='sidereal'?'恒星':'回归'}黄道 · ${ST.houseSystem}</span>`;
+      tt.innerHTML=`<strong>${pl.sym} ${pl.nm}</strong>${isVP?'<span style="font-size:9px;color:var(--gold-dim);"> 虚点</span>':''}<br>${SIGNS[sgn].s}${SIGNS[sgn].n} ${deg}°<br>宿：${man.n}宿 (${ST.mansionSystem==='ancient'?'古':'今'}制)<br><span style="color:#A8D4FF;font-size:10px;">${appStr}（距☉${diffSun.toFixed(1)}°）</span>`;
       tt.style.display='block';
     });
     el.addEventListener('mousemove',function(e){
       const tt=document.getElementById('tooltip'),wr=document.getElementById('chart-wrap').getBoundingClientRect();
-      tt.style.left=(e.clientX-wr.left+14)+'px';tt.style.top=(e.clientY-wr.top-32)+'px';
+      tt.style.left=(e.clientX-wr.left+14)+'px';tt.style.top=(e.clientY-wr.top-35)+'px';
     });
     el.addEventListener('mouseleave',()=>document.getElementById('tooltip').style.display='none');
   });
@@ -637,21 +696,38 @@ function drawChart(){
 
 // ══ 信息面板 ══
 function updatePanels(){
-  const {planets,asc}=ST,J=ST.birthData.J;
+  const{planets,asc}=ST,J=ST.birthData.J;
   const ef=lon=>effLon(lon,J);
-  const list=activePlanets(planets,J);
+  const list=allActive(planets,J);
   let ph='';
   list.forEach(p=>{
-    const lon=ef(p.lon),sgn=Math.floor(lon/30),deg=(lon%30).toFixed(1),man=getMansion(lon);
-    ph+=`<div class="planet-row"><span class="psym">${p.sym}</span><span class="pname">${p.nm}</span><span class="ppos">${SIGNS[sgn].s}${SIGNS[sgn].n} ${deg}°</span><span class="pmansion">${man.n}宿</span></div>`;
+    const lon=ef(p.lon),sgn=Math.floor(lon/30),deg=(lon%30).toFixed(1);
+    const raForMan=eclToRA(lon,J),sidLon=((lon-getAyan(J)+360)%360);
+    const man=getMansion(sidLon,raForMan,J);
+    const isVP=VIRTUAL_POINTS.some(v=>v.id===p.id);
+    // 出入相：与太阳
+    const sunLon=ef(planets.sun);
+    const apSun=getApplicability(p.id,'sun',lon,sunLon,J);
+    const appStr=isVP?'':(apSun.app?'<span style="color:#A8D4FF;font-size:9px;">▶入</span>':'<span style="color:#FFD080;font-size:9px;">◀出</span>');
+    ph+=`<div class="planet-row">
+      <span class="psym" style="${isVP?'font-size:11px;opacity:.8;':''}">${p.sym}</span>
+      <span class="pname">${p.nm}</span>
+      <span class="ppos">${SIGNS[sgn].s}${SIGNS[sgn].n} ${deg}°</span>
+      <span class="pmansion">${man.n}宿</span>
+      ${appStr}
+    </div>`;
   });
   const eA=ef(asc),eAs=Math.floor(eA/30);
   ph+=`<div class="planet-row"><span class="psym" style="font-size:9px;">ASC</span><span class="pname"></span><span class="ppos">${SIGNS[eAs].s}${SIGNS[eAs].n} ${(eA%30).toFixed(1)}°</span><span class="pmansion"></span></div>`;
   document.getElementById('planet-list').innerHTML=ph;
 
+  const MANSIONS=ST.mansionSystem==='ancient'?MANSIONS_ANCIENT:MANSIONS_MODERN;
   let mh='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">';
   MANSIONS.forEach(m=>{
-    const inM=list.filter(p=>getMansion(ef(p.lon)).n===m.n);
+    const inM=list.filter(p=>{
+      const lon=ef(p.lon),ra=eclToRA(lon,J),sid=((lon-getAyan(J)+360)%360);
+      return getMansion(sid,ra,J).n===m.n;
+    });
     mh+=`<div style="padding:2px 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:10px;"><span style="color:var(--gold);font-weight:600;">${m.n}</span><span style="color:var(--text-dim);margin-left:3px;">${inM.map(p=>p.sym).join('')||'·'}</span></div>`;
   });
   mh+='</div>';
@@ -661,7 +737,6 @@ function updatePanels(){
 // ══ 法达星限 ══
 const FD=[{p:'太阳',s:'☉',y:10},{p:'金星',s:'♀',y:8},{p:'水星',s:'☿',y:13},{p:'月亮',s:'☽',y:9},{p:'土星',s:'♄',y:11},{p:'木星',s:'♃',y:12},{p:'火星',s:'♂',y:7},{p:'北交',s:'☊',y:3},{p:'南交',s:'☋',y:2}];
 const FN=[{p:'月亮',s:'☽',y:9},{p:'土星',s:'♄',y:11},{p:'水星',s:'☿',y:13},{p:'火星',s:'♂',y:7},{p:'北交',s:'☊',y:3},{p:'太阳',s:'☉',y:10},{p:'金星',s:'♀',y:8},{p:'木星',s:'♃',y:12},{p:'南交',s:'☋',y:2}];
-
 function showFirdaria(){
   if(!ST.planets){buildChart();return;}
   const isDay=ST.birthData.hr>=6&&ST.birthData.hr<18;
@@ -682,33 +757,27 @@ function showFirdaria(){
 function closeFirdaria(){document.getElementById('firdaria-panel').classList.remove('show');}
 
 // ══ 月亮返照 ══
-function showLunarReturn(){
-  document.getElementById('lr-inputs').style.display='block';
-  document.getElementById('btn-lunar').classList.add('active');
-}
+function showLunarReturn(){document.getElementById('lr-inputs').style.display='block';document.getElementById('btn-lunar').classList.add('active');}
 function calcLunarReturn(){
   if(!ST.birthData){buildChart();}
   const yr=+document.getElementById('lr-year').value||new Date().getFullYear();
-  const rLat=+document.getElementById('lr-lat').value||39.9;
-  const rLon=+document.getElementById('lr-lon').value||116.4;
+  const rLat=+document.getElementById('lr-lat').value||39.9,rLon=+document.getElementById('lr-lon').value||116.4;
   const bMoon=ST.planets.moon;
-  let J=jd(yr,1,1,0);
-  let ml=moonL(J);
+  let J=jd(yr,1,1,0),ml=moonL(J);
   while(((ml-bMoon+360)%360)>10){J+=1;ml=moonL(J);}
-  for(let i=0;i<2000;i++){ml=moonL(J);let d=((ml-bMoon+180+360)%360)-180;if(Math.abs(d)<.0001)break;J-=d/13.176;}
-  const lrP=calcPlanets(J);
-  const lrA=calcAsc(J,rLat,rLon);
-  const lrDate=new Date((J-2440587.5)*86400000);
-  const ef=lon=>effLon(lon,J);
-  const eA=ef(lrA),eAs=Math.floor(eA/30),eMoon=ef(lrP.moon),eMs=Math.floor(eMoon/30);
+  for(let i=0;i<2000;i++){ml=moonL(J);let diff=((ml-bMoon+180+360)%360)-180;if(Math.abs(diff)<.0001)break;J-=diff/13.176;}
+  const lrP=calcPlanets(J),lrA=calcAsc(J,rLat,rLon),lrDate=new Date((J-2440587.5)*86400000);
+  const ef=lon=>effLon(lon,J),eA=ef(lrA),eAs=Math.floor(eA/30),eMoon=ef(lrP.moon),eMs=Math.floor(eMoon/30);
   let html=`<div>
     <div class="lr-row"><span class="lr-label">返照时刻</span><span>${lrDate.toLocaleString('zh-CN')}</span></div>
     <div class="lr-row"><span class="lr-label">返照ASC</span><span>${SIGNS[eAs].s}${SIGNS[eAs].n} ${(eA%30).toFixed(2)}°</span></div>
     <div class="lr-row"><span class="lr-label">返照月亮</span><span>${SIGNS[eMs].s}${SIGNS[eMs].n} ${(eMoon%30).toFixed(2)}°</span></div>
-    <div style="margin:9px 0 6px;font-family:Cinzel,serif;font-size:9px;color:var(--gold-dim);letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:4px;">七政位置</div>`;
-  BASE_PLANETS.forEach(p=>{
-    const lon=ef(lrP[p.id]),sgn=Math.floor(lon/30);
-    html+=`<div class="lr-row"><span>${p.sym} ${p.nm}</span><span>${SIGNS[sgn].s}${SIGNS[sgn].n} ${(lon%30).toFixed(2)}°</span><span style="font-size:9px;color:var(--gold-dim)">${getMansion(lon).n}宿</span></div>`;
+    <div style="margin:9px 0 6px;font-family:Cinzel,serif;font-size:9px;color:var(--gold-dim);letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:4px;">七政四余</div>`;
+  [...BASE_PLANETS,...VIRTUAL_POINTS].forEach(p=>{
+    const lon=ef(lrP[p.id]);if(lon===undefined)return;
+    const sgn=Math.floor(lon/30),raM=eclToRA(lon,J),sidL=((lon-getAyan(J)+360)%360);
+    const man=getMansion(sidL,raM,J);
+    html+=`<div class="lr-row"><span>${p.sym} ${p.nm}</span><span>${SIGNS[sgn].s}${SIGNS[sgn].n} ${(lon%30).toFixed(2)}°</span><span style="font-size:9px;color:var(--gold-dim)">${man.n}宿</span></div>`;
   });
   html+=`<div style="margin-top:13px;text-align:center;">${miniChart(lrP,lrA,J)}</div></div>`;
   document.getElementById('lr-content').innerHTML=html;
@@ -716,34 +785,40 @@ function calcLunarReturn(){
 }
 
 function miniChart(pl,asc,J){
-  const cx=150,cy=150,ro=134,rz=120,rh=96,ri=60;
+  const cx=150,cy=150,ro=133,rz=120,rh=95,ri=58;
   const ef=lon=>effLon(lon,J);
   let h=`<svg viewBox="0 0 300 300" width="260" height="260">`;
-  h+=`<circle cx="${cx}" cy="${cy}" r="${ro}" fill="#0D0C05" stroke="#C9A84C" stroke-width="1" opacity=".8"/>`;
+  h+=`<circle cx="${cx}" cy="${cy}" r="${ro}" fill="#0D0C05" stroke="#C9A84C" stroke-width=".9" opacity=".8"/>`;
+  function pxy2(r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
   for(let i=0;i<12;i++){
     const a1=l2a(i*30,asc),a2=l2a((i+1)*30,asc),mid=l2a(i*30+15,asc);
     const diff=((a1-a2)+360)%360,large=diff>180?1:0;
-    const p1=pXY2(cx,cy,ri,a1),p2=pXY2(cx,cy,rz,a1),p3=pXY2(cx,cy,rz,a2),p4=pXY2(cx,cy,ri,a2);
-    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${rz},${rz},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${ri},${ri},0,${large},0,${p1.x},${p1.y}" fill="${i%2?'rgba(201,168,76,.05)':'transparent'}" stroke="#C9A84C" stroke-width=".4" opacity=".6"/>`;
-    const sm=pXY2(cx,cy,(rz+ri)/2+8,mid);
+    const p1=pxy2(ri,a1),p2=pxy2(rz,a1),p3=pxy2(rz,a2),p4=pxy2(ri,a2);
+    h+=`<path d="M${p1.x},${p1.y}L${p2.x},${p2.y}A${rz},${rz},0,${large},1,${p3.x},${p3.y}L${p4.x},${p4.y}A${ri},${ri},0,${large},0,${p1.x},${p1.y}" fill="${i%2?'rgba(201,168,76,.05)':'transparent'}" stroke="#C9A84C" stroke-width=".35" opacity=".6"/>`;
+    const sm=pxy2((rz+ri)/2+8,mid);
     h+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="8" fill="#C9A84C" opacity=".85">${SIGNS[i].s}</text>`;
   }
-  h+=`<circle cx="${cx}" cy="${cy}" r="${rh}" fill="none" stroke="#C9A84C" stroke-width=".4" opacity=".3"/>`;
-  h+=`<circle cx="${cx}" cy="${cy}" r="${ri}" fill="rgba(0,0,0,.5)" stroke="#C9A84C" stroke-width=".6" opacity=".4"/>`;
-  BASE_PLANETS.forEach(p=>{
-    const lon=ef(pl[p.id]),ang=l2a(lon,asc),pos=pXY2(cx,cy,rh+12,ang);
-    h+=`<circle cx="${pos.x}" cy="${pos.y}" r="9" fill="rgba(0,0,0,.8)" stroke="${p.col}" stroke-width=".9"/>`;
-    h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="${p.col}">${p.sym}</text>`;
+  h+=`<circle cx="${cx}" cy="${cy}" r="${rh}" fill="none" stroke="#C9A84C" stroke-width=".35" opacity=".28"/>`;
+  h+=`<circle cx="${cx}" cy="${cy}" r="${ri}" fill="rgba(0,0,0,.5)" stroke="#C9A84C" stroke-width=".55" opacity=".38"/>`;
+  [...BASE_PLANETS,...VIRTUAL_POINTS].forEach(p=>{
+    const lon=ef(pl[p.id]);if(lon===undefined)return;
+    const ang=l2a(lon,asc),pos=pxy2(rh+11,ang);
+    const isVP=VIRTUAL_POINTS.some(v=>v.id===p.id);
+    h+=`<circle cx="${pos.x}" cy="${pos.y}" r="${isVP?7:8}" fill="rgba(0,0,0,.8)" stroke="${p.col}" stroke-width=".9" ${isVP?'stroke-dasharray="2,2"':''}/>`;
+    h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${isVP?8:9}" fill="${p.col}">${p.sym}</text>`;
   });
-  h+=`<circle cx="${cx}" cy="${cy}" r="11" fill="#0D0C05" stroke="#C9A84C" stroke-width=".8" opacity=".6"/>`;
+  h+=`<circle cx="${cx}" cy="${cy}" r="11" fill="#0D0C05" stroke="#C9A84C" stroke-width=".7" opacity=".6"/>`;
   h+=`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="central" font-size="7" fill="#C9A84C" font-family="Cinzel,serif">☽ R</text>`;
-  h+=`</svg>`;return h;
+  return h+'</svg>';
 }
-function pXY2(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
 
 window.addEventListener('load',()=>buildChart());
 document.getElementById('firdaria-panel').addEventListener('click',function(e){if(e.target===this)closeFirdaria();});
 document.getElementById('lr-panel').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
 </script>
 </body>
-</html>
+</html>"""
+
+with open('/home/claude/astro_chart.html','w',encoding='utf-8') as f:
+    f.write(html)
+print(f"Written {len(html)} chars, {html.count(chr(10))} lines")
