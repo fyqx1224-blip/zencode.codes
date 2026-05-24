@@ -42,72 +42,28 @@
             overflow-x: hidden;
             min-height: 100vh;
         }
-        .tg-jia {
-            color: var(--jia);
-        }
-        .tg-yi {
-            color: var(--yi);
-        }
-        .tg-bing {
-            color: var(--bing);
-        }
-        .tg-ding {
-            color: var(--ding);
-        }
-        .tg-wu {
-            color: var(--wu);
-        }
-        .tg-ji {
-            color: var(--ji);
-        }
-        .tg-geng {
-            color: var(--geng);
-        }
-        .tg-xin {
-            color: var(--xin);
-        }
-        .tg-ren {
-            color: var(--ren);
-        }
-        .tg-gui {
-            color: var(--gui);
-        }
-        .dz-zi {
-            color: #6AACDC;
-        }
-        .dz-chou {
-            color: #C8A840;
-        }
-        .dz-yin {
-            color: #5AB86C;
-        }
-        .dz-mao {
-            color: #8ED49A;
-        }
-        .dz-chen {
-            color: #B89840;
-        }
-        .dz-si {
-            color: #E07050;
-        }
-        .dz-wu2 {
-            color: #E05030;
-        }
-        .dz-wei {
-            color: #C8A060;
-        }
-        .dz-shen {
-            color: #A0AABB;
-        }
-        .dz-you {
-            color: #C8D0DC;
-        }
-        .dz-xu {
-            color: #B08840;
-        }
-        .dz-hai {
-            color: #80B4E0;
-        }
+        .tg-jia { color: var(--jia); }
+        .tg-yi { color: var(--yi); }
+        .tg-bing { color: var(--bing); }
+        .tg-ding { color: var(--ding); }
+        .tg-wu { color: var(--wu); }
+        .tg-ji { color: var(--ji); }
+        .tg-geng { color: var(--geng); }
+        .tg-xin { color: var(--xin); }
+        .tg-ren { color: var(--ren); }
+        .tg-gui { color: var(--gui); }
+        .dz-zi { color: #6AACDC; }
+        .dz-chou { color: #C8A840; }
+        .dz-yin { color: #5AB86C; }
+        .dz-mao { color: #8ED49A; }
+        .dz-chen { color: #B89840; }
+        .dz-si { color: #E07050; }
+        .dz-wu2 { color: #E05030; }
+        .dz-wei { color: #C8A060; }
+        .dz-shen { color: #A0AABB; }
+        .dz-you { color: #C8D0DC; }
+        .dz-xu { color: #B08840; }
+        .dz-hai { color: #80B4E0; }
         #bg-canvas,
         .grid-ov,
         .scan {
@@ -129,35 +85,8 @@
             animation: scan 9s linear infinite;
         }
         @keyframes scan {
-            0% {
-                top: -2px;
-            }
-            100% {
-                top: 100vh;
-            }
-        }
-        .fp {
-            position: fixed;
-            pointer-events: none;
-            z-index: 2;
-            border-radius: 50%;
-            animation: fu linear both;
-        }
-        @keyframes fu {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 0;
-            }
-            10% {
-                opacity: .7;
-            }
-            90% {
-                opacity: .3;
-            }
-            100% {
-                transform: translateY(-100vh) scale(.2);
-                opacity: 0;
-            }
+            0% { top: -2px; }
+            100% { top: 100vh; }
         }
         #landing-view {
             position: relative;
@@ -212,16 +141,9 @@
             border-radius: 2px;
         }
         .lp-box input:focus,
-        .lp-box select:focus {
-            border-color: var(--gold);
-        }
-        .lp-row {
-            display: flex;
-            gap: 10px;
-        }
-        .lp-row>div {
-            flex: 1;
-        }
+        .lp-box select:focus { border-color: var(--gold); }
+        .lp-row { display: flex; gap: 10px; }
+        .lp-row>div { flex: 1; }
         .lp-btn {
             width: 100%;
             background: linear-gradient(160deg, #A0680A 0%, #D4A843 100%);
@@ -254,9 +176,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .logo-wrap {
-            flex-shrink: 0;
-        }
+        .logo-wrap { flex-shrink: 0; }
         .app-logo {
             font-family: 'Ma Shan Zheng', cursive;
             font-size: 1.4rem;
@@ -280,10 +200,7 @@
             gap: 12px;
             flex-wrap: wrap;
         }
-        .tab-nav {
-            display: flex;
-            gap: 2px;
-        }
+        .tab-nav { display: flex; gap: 2px; }
         .tab-btn {
             background: none;
             border: 1px solid transparent;
@@ -312,10 +229,7 @@
             cursor: pointer;
             letter-spacing: 0.1em;
         }
-        .lang-select option {
-            background: #0D0B18;
-            color: var(--text);
-        }
+        .lang-select option { background: #0D0B18; color: var(--text); }
         .settings-btn {
             background: rgba(212, 168, 67, 0.06);
             border: 1px solid rgba(212, 168, 67, 0.2);
@@ -330,10 +244,6 @@
             align-items: center;
             gap: 10px;
             padding: 16px 24px 12px;
-        }
-        .date-center {
-            text-align: center;
-            flex: 1;
         }
         .date-solar {
             font-family: 'Noto Serif TC', serif;
@@ -373,9 +283,7 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(212, 168, 67, 0.18));
         }
-        .sect-hd::after {
-            transform: scaleX(-1);
-        }
+        .sect-hd::after { transform: scaleX(-1); }
         .sect-hd-txt {
             font-size: 0.55rem;
             letter-spacing: 0.5em;
@@ -390,9 +298,7 @@
             scrollbar-width: none;
             -webkit-mask-image: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
         }
-        .sizhu-outer::-webkit-scrollbar {
-            display: none;
-        }
+        .sizhu-outer::-webkit-scrollbar { display: none; }
         .sizhu-main {
             display: grid;
             grid-template-columns: repeat(4, 1fr) 1px repeat(5, 1fr);
@@ -413,26 +319,11 @@
             padding: 5px 2px 4px;
             border-bottom: 1px solid rgba(212, 168, 67, 0.08);
         }
-        .grp-bazi {
-            color: rgba(212, 168, 67, 0.65);
-            background: rgba(212, 168, 67, 0.035);
-        }
-        .grp-sep {
-            background: rgba(212, 168, 67, 0.1);
-            padding: 0;
-        }
-        .grp-dayun {
-            color: rgba(220, 120, 60, 0.7);
-            background: rgba(220, 120, 60, 0.03);
-        }
-        .grp-liuyear {
-            color: rgba(150, 100, 220, 0.7);
-            background: rgba(150, 100, 220, 0.03);
-        }
-        .grp-liumonth {
-            color: rgba(80, 160, 220, 0.7);
-            background: rgba(80, 160, 220, 0.03);
-        }
+        .grp-bazi { color: rgba(212, 168, 67, 0.65); background: rgba(212, 168, 67, 0.035); }
+        .grp-sep { background: rgba(212, 168, 67, 0.1); padding: 0; }
+        .grp-dayun { color: rgba(220, 120, 60, 0.7); background: rgba(220, 120, 60, 0.03); }
+        .grp-liuyear { color: rgba(150, 100, 220, 0.7); background: rgba(150, 100, 220, 0.03); }
+        .grp-liumonth { color: rgba(80, 160, 220, 0.7); background: rgba(80, 160, 220, 0.03); }
         .grp-liuday {
             color: rgba(212, 168, 67, 0.9);
             background: rgba(212, 168, 67, 0.06);
@@ -457,20 +348,12 @@
             transition: background .18s;
             position: relative;
         }
-        .sz-col:last-child {
-            border-right: none;
-        }
+        .sz-col:last-child { border-right: none; }
         .sz-col:hover,
-        .sz-col.open {
-            background: rgba(212, 168, 67, 0.045);
-        }
-        .sz-col.sz-liuhour {
-            background: var(--teal-dim);
-        }
+        .sz-col.open { background: rgba(212, 168, 67, 0.045); }
+        .sz-col.sz-liuhour { background: var(--teal-dim); }
         .sz-col.sz-liuhour:hover,
-        .sz-col.sz-liuhour.open {
-            background: rgba(49, 151, 149, 0.18);
-        }
+        .sz-col.sz-liuhour.open { background: rgba(49, 151, 149, 0.18); }
         .sz-head {
             width: 100%;
             text-align: center;
@@ -486,12 +369,8 @@
             font-size: 1.7rem;
             line-height: 1;
         }
-        .sz-tg {
-            padding: 2px 4px 1px;
-        }
-        .sz-dz {
-            padding: 1px 4px 3px;
-        }
+        .sz-tg { padding: 2px 4px 1px; }
+        .sz-dz { padding: 1px 4px 3px; }
         .sz-ten {
             font-size: 0.48rem;
             letter-spacing: 0.06em;
@@ -522,43 +401,18 @@
             gap: 6px;
             font-size: 0.5rem;
         }
-        .sz-zg-ten {
-            font-size: 0.44rem;
-            opacity: 0.8;
-        }
-        .ten-qisha {
-            color: #D05050;
-        }
-        .ten-zhengguang {
-            color: #7080B8;
-        }
-        .ten-pianyin {
-            color: #9060C0;
-        }
-        .ten-zhengyin {
-            color: #A878D0;
-        }
-        .ten-shishen {
-            color: #60A870;
-        }
-        .ten-shangguan {
-            color: #50B880;
-        }
-        .ten-piancai {
-            color: #9090C0;
-        }
-        .ten-zhengcai {
-            color: #8090C0;
-        }
-        .ten-bijian {
-            color: rgba(200, 170, 100, 0.6);
-        }
-        .ten-jiecai {
-            color: rgba(180, 145, 80, 0.6);
-        }
-        .ten-rizhu {
-            color: rgba(212, 168, 67, 0.75);
-        }
+        .sz-zg-ten { font-size: 0.44rem; opacity: 0.8; }
+        .ten-qisha { color: #D05050; }
+        .ten-zhengguang { color: #7080B8; }
+        .ten-pianyin { color: #9060C0; }
+        .ten-zhengyin { color: #A878D0; }
+        .ten-shishen { color: #60A870; }
+        .ten-shangguan { color: #50B880; }
+        .ten-piancai { color: #9090C0; }
+        .ten-zhengcai { color: #8090C0; }
+        .ten-bijian { color: rgba(200, 170, 100, 0.6); }
+        .ten-jiecai { color: rgba(180, 145, 80, 0.6); }
+        .ten-rizhu { color: rgba(212, 168, 67, 0.75); }
         .sz-detail {
             display: none;
             position: absolute;
@@ -571,9 +425,7 @@
             border: 1px solid rgba(212, 168, 67, 0.22);
             padding: 13px 14px 11px;
         }
-        .sz-col.open .sz-detail {
-            display: block;
-        }
+        .sz-col.open .sz-detail { display: block; }
         .sd-row {
             display: flex;
             justify-content: space-between;
@@ -594,15 +446,8 @@
             background: rgba(212, 168, 67, 0.08);
             margin: 7px 0;
         }
-        .rel-outer {
-            padding: 4px 16px 10px;
-            min-width: 640px;
-        }
-        .rel-badges {
-            display: flex;
-            gap: 3px;
-            flex-wrap: wrap;
-        }
+        .rel-outer { padding: 4px 16px 10px; min-width: 640px; }
+        .rel-badges { display: flex; gap: 3px; flex-wrap: wrap; }
         .rel-badge {
             font-size: 0.5rem;
             padding: 4px 10px;
@@ -615,21 +460,9 @@
             border-color: var(--gold) !important;
             box-shadow: 0 0 6px rgba(212, 168, 67, 0.3);
         }
-        .rb-he {
-            color: #7DE09A;
-            border-color: rgba(125, 224, 154, 0.28);
-            background: rgba(125, 224, 154, 0.04);
-        }
-        .rb-chong {
-            color: #F07840;
-            border-color: rgba(240, 120, 64, 0.28);
-            background: rgba(240, 120, 64, 0.04);
-        }
-        .rb-hai {
-            color: #B090D0;
-            border-color: rgba(176, 144, 208, 0.28);
-            background: rgba(176, 144, 208, 0.04);
-        }
+        .rb-he { color: #7DE09A; border-color: rgba(125, 224, 154, 0.28); background: rgba(125, 224, 154, 0.04); }
+        .rb-chong { color: #F07840; border-color: rgba(240, 120, 64, 0.28); background: rgba(240, 120, 64, 0.04); }
+        .rb-hai { color: #B090D0; border-color: rgba(176, 144, 208, 0.28); background: rgba(176, 144, 208, 0.04); }
         .rel-inline-desc {
             display: none;
             margin-top: 10px;
@@ -643,21 +476,10 @@
             text-align: left;
             animation: fadeIn 0.2s ease;
         }
-        .rid-title {
-            color: var(--gold);
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 0.65rem;
-        }
+        .rid-title { color: var(--gold); margin-bottom: 6px; font-weight: 500; font-size: 0.65rem; }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .verdict-box {
             margin: 0 16px 14px;
@@ -667,26 +489,10 @@
             display: flex;
             gap: 12px;
         }
-        .verdict-icon {
-            font-size: 1.1rem;
-            color: var(--gold);
-        }
-        .verdict-title {
-            font-size: 0.82rem;
-            color: var(--gold);
-            margin-bottom: 5px;
-        }
-        .verdict-body {
-            font-size: 0.65rem;
-            color: var(--text-d);
-            line-height: 1.95;
-        }
-        .ss-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            padding: 0 16px 14px;
-        }
+        .verdict-icon { font-size: 1.1rem; color: var(--gold); }
+        .verdict-title { font-size: 0.82rem; color: var(--gold); margin-bottom: 5px; }
+        .verdict-body { font-size: 0.65rem; color: var(--text-d); line-height: 1.95; }
+        .ss-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 14px; }
         .ss-tag {
             font-size: 0.58rem;
             padding: 4px 11px;
@@ -694,52 +500,20 @@
             cursor: pointer;
             color: var(--text-d);
         }
-        .ss-ji {
-            border-color: rgba(125, 224, 154, 0.35);
-            background: rgba(125, 224, 154, 0.08);
-        }
-        .ss-xiong {
-            border-color: rgba(240, 120, 64, 0.35);
-            background: rgba(240, 120, 64, 0.08);
-        }
-        .ss-zhong {
-            border-color: rgba(212, 168, 67, 0.35);
-            background: rgba(212, 168, 67, 0.08);
-        }
-        .interp-list {
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-            margin-bottom: 18px;
-        }
+        .ss-ji { border-color: rgba(125, 224, 154, 0.35); background: rgba(125, 224, 154, 0.08); }
+        .ss-xiong { border-color: rgba(240, 120, 64, 0.35); background: rgba(240, 120, 64, 0.08); }
+        .ss-zhong { border-color: rgba(212, 168, 67, 0.35); background: rgba(212, 168, 67, 0.08); }
+        .interp-list { padding: 0 16px; display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
         .ic {
             background: rgba(7, 6, 12, 0.9);
             border: 1px solid rgba(212, 168, 67, 0.09);
             padding: 11px 14px;
             cursor: pointer;
         }
-        .ic-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .ic-title {
-            font-size: 0.65rem;
-            color: var(--text-d);
-            display: flex;
-            gap: 8px;
-            font-weight: 500;
-        }
-        .ic-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            margin-top: 4px;
-        }
-        .ic.open .ic-body {
-            display: block;
-        }
+        .ic-head { display: flex; align-items: center; justify-content: space-between; }
+        .ic-title { font-size: 0.65rem; color: var(--text-d); display: flex; gap: 8px; font-weight: 500; }
+        .ic-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 4px; }
+        .ic.open .ic-body { display: block; }
         .ic-body {
             font-size: 0.62rem;
             color: var(--text-f);
@@ -777,473 +551,105 @@
             background: rgba(0, 0, 0, 0.18);
             border-bottom: 1px solid rgba(212, 168, 67, 0.07);
         }
-        .dp-label {
-            font-size: 0.52rem;
-            color: rgba(212, 168, 67, 0.45);
-            letter-spacing: 0.3em;
-            flex-shrink: 0;
-        }
-        .dp-drums {
-            display: flex;
-            gap: 2px;
-            flex: 1;
-            justify-content: center;
-        }
-        .dp-drum-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .dp-drum-lbl {
-            font-size: 0.42rem;
-            color: var(--text-f);
-            margin-bottom: 2px;
-        }
-        .dp-drum-box {
-            position: relative;
-            height: 72px;
-            width: 48px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 168, 67, 0.12);
-        }
+        .dp-label { font-size: 0.52rem; color: rgba(212, 168, 67, 0.45); letter-spacing: 0.3em; flex-shrink: 0; }
+        .dp-drums { display: flex; gap: 2px; flex: 1; justify-content: center; }
+        .dp-drum-wrap { display: flex; flex-direction: column; align-items: center; }
+        .dp-drum-lbl { font-size: 0.42rem; color: var(--text-f); margin-bottom: 2px; }
+        .dp-drum-box { position: relative; height: 72px; width: 48px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 168, 67, 0.12); }
         .dp-drum {
-            height: 100%;
-            width: 100%;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            overscroll-behavior-y: contain;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            height: 100%; width: 100%; overflow-y: auto; scroll-snap-type: y mandatory;
+            overscroll-behavior-y: contain; scrollbar-width: none; -ms-overflow-style: none;
         }
-        .dp-drum::-webkit-scrollbar {
-            display: none;
-        }
-        .dp-drum-inner {
-            padding: 24px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .dp-drum-item {
-            height: 24px;
-            min-height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.78rem;
-            color: var(--text-f);
-            scroll-snap-align: center;
-        }
-        .dp-drum-item.active {
-            color: var(--gold);
-            font-weight: 500;
-        }
-        .dp-drum-item.near {
-            color: var(--text-f);
-            opacity: 0.8;
-        }
+        .dp-drum::-webkit-scrollbar { display: none; }
+        .dp-drum-inner { padding: 24px 0; display: flex; flex-direction: column; }
+        .dp-drum-item { height: 24px; min-height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: var(--text-f); scroll-snap-align: center; }
+        .dp-drum-item.active { color: var(--gold); font-weight: 500; }
+        .dp-drum-item.near { color: var(--text-f); opacity: 0.8; }
         .dp-drum-hl {
-            position: absolute;
-            top: 24px;
-            left: 0;
-            right: 0;
-            height: 24px;
-            border-top: 1px solid rgba(212, 168, 67, 0.2);
-            border-bottom: 1px solid rgba(212, 168, 67, 0.2);
-            background: rgba(212, 168, 67, 0.04);
-            pointer-events: none;
+            position: absolute; top: 24px; left: 0; right: 0; height: 24px;
+            border-top: 1px solid rgba(212, 168, 67, 0.2); border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+            background: rgba(212, 168, 67, 0.04); pointer-events: none;
         }
-        .dp-goto-today {
-            font-size: 0.48rem;
-            color: rgba(212, 168, 67, 0.6);
-            border: 1px solid rgba(212, 168, 67, 0.14);
-            background: none;
-            padding: 4px 10px;
-            cursor: pointer;
-        }
-        .fortune-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            padding: 0 16px;
-            margin-bottom: 14px;
-        }
-        .fortune-card {
-            background: rgba(7, 6, 12, 0.9);
-            border: 1px solid rgba(212, 168, 67, 0.09);
-            padding: 12px 14px;
-        }
-        .fc-icon {
-            font-size: 1rem;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .fc-title {
-            font-size: 0.55rem;
-            color: var(--text-f);
-            margin-bottom: 6px;
-        }
-        .fc-score {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-        .fc-stars {
-            display: flex;
-            gap: 2px;
-        }
-        .fc-star {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(212, 168, 67, 0.15);
-        }
-        .fc-star.on {
-            background: var(--gold);
-        }
-        .fc-score-num {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 0.72rem;
-            color: var(--gold);
-        }
-        .hour-table {
-            margin: 0 16px 14px;
-            background: rgba(7, 6, 12, 0.85);
-            border: 1px solid rgba(212, 168, 67, 0.09);
-        }
-        .ht-head,
-        .ht-row {
-            display: grid;
-            grid-template-columns: 1.8fr repeat(4, 1fr);
-            border-bottom: 1px solid rgba(212, 168, 67, 0.05);
-        }
-        .ht-head {
-            background: rgba(212, 168, 67, 0.04);
-        }
-        .ht-hcell {
-            font-size: 0.48rem;
-            color: var(--text-f);
-            padding: 6px 4px;
-            text-align: center;
-        }
-        .ht-row.ht-cur {
-            background: rgba(212, 168, 67, 0.04);
-        }
-        .ht-cell {
-            font-size: 0.52rem;
-            padding: 7px 4px;
-            text-align: center;
-            color: var(--text-d);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-        }
-        .ht-time {
-            font-size: 0.45rem;
-            color: var(--text-f);
-        }
-        .ht-good,
-        .ht-bad {
-            font-size: 0.44rem;
-            color: var(--text-f);
-        }
-        .ht-gz {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 0.85rem;
-        }
-        .info-card {
-            margin: 0 16px 12px;
-            background: rgba(7, 6, 12, 0.85);
-            border: 1px solid rgba(212, 168, 67, 0.12);
-            padding: 15px 17px;
-        }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 7px;
-            font-size: 0.66rem;
-        }
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-        .ir-lbl {
-            color: rgba(240, 234, 214, 0.75);
-            font-weight: 500;
-        }
-        .ir-val {
-            color: var(--text-d);
-        }
-        .ir-val.gold {
-            color: var(--gold);
-        }
-        .bazi4-grid {
-            margin: 0;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            border: 1px solid rgba(212, 168, 67, 0.12);
-            background: rgba(0, 0, 0, 0.22);
-        }
-        .b4-grp {
-            grid-column: span 4;
-            text-align: center;
-            font-size: 0.5rem;
-            color: rgba(212, 168, 67, 0.6);
-            padding: 5px;
-            background: rgba(212, 168, 67, 0.03);
-            border-bottom: 1px solid rgba(212, 168, 67, 0.08);
-        }
-        .dayun-list {
-            margin: 0 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .dy-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 9px 15px;
-            background: rgba(7, 6, 12, 0.7);
-            border: 1px solid rgba(212, 168, 67, 0.07);
-        }
-        .dy-item.current {
-            border-color: rgba(212, 168, 67, 0.32);
-            background: rgba(212, 168, 67, 0.04);
-        }
-        .dy-gz {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.25rem;
-            display: flex;
-            gap: 2px;
-        }
-        .dy-info {
-            flex: 1;
-        }
-        .dy-age {
-            font-size: 0.62rem;
-            color: var(--text-d);
-        }
-        .dy-years {
-            font-size: 0.53rem;
-            color: var(--text-f);
-            margin-top: 2px;
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(6, 5, 10, 0.95);
-            z-index: 9999;
-            padding: 24px;
-            overflow-y: auto;
-            backdrop-filter: blur(5px);
-        }
-        .modal-box {
-            max-width: 460px;
-            margin: 40px auto;
-            background: rgba(13, 11, 24, 0.95);
-            border: 1px solid rgba(212, 168, 67, 0.3);
-            padding: 30px;
-            border-radius: 4px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        .modal-title {
-            color: var(--gold);
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.6rem;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .modal-sub {
-            color: var(--text-f);
-            font-size: 0.65rem;
-            text-align: center;
-            letter-spacing: 0.1em;
-            margin-bottom: 25px;
-        }
-        .modal-box label {
-            color: var(--gold);
-            font-size: 0.7rem;
-            display: block;
-            margin-bottom: 6px;
-            letter-spacing: 0.1em;
-        }
-        .modal-box input,
-        .modal-box select {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(212, 168, 67, 0.2);
-            color: #fff;
-            font-size: 0.9rem;
-            outline: none;
-            border-radius: 2px;
-            margin-bottom: 15px;
-        }
-        .modal-box input:focus,
-        .modal-box select:focus {
-            border-color: var(--gold);
-        }
-        .modal-flex {
-            display: flex;
-            gap: 10px;
-        }
-        .modal-flex>div {
-            flex: 1;
-        }
-        .consult-btn-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            padding: 10px 16px 30px;
-        }
-        .consult-btn {
-            flex: 1;
-            min-width: 220px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: rgba(212, 168, 67, 0.08);
-            border: 1px solid rgba(212, 168, 67, 0.3);
-            color: var(--gold);
-            padding: 14px 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            letter-spacing: 0.15em;
-            border-radius: 4px;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-        .consult-btn:hover {
-            background: rgba(212, 168, 67, 0.18);
-            border-color: var(--gold);
-        }
-        .consult-icon {
-            font-size: 1.1rem;
-        }
-        .ic-macro {
-            border: 1px solid rgba(212, 168, 67, 0.4);
-            background: rgba(212, 168, 67, 0.05);
-        }
-        .ic-macro .ic-title {
-            color: var(--gold);
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
+        .dp-goto-today { font-size: 0.48rem; color: rgba(212, 168, 67, 0.6); border: 1px solid rgba(212, 168, 67, 0.14); background: none; padding: 4px 10px; cursor: pointer; }
+        .fortune-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 16px; margin-bottom: 14px; }
+        .fortune-card { background: rgba(7, 6, 12, 0.9); border: 1px solid rgba(212, 168, 67, 0.09); padding: 12px 14px; }
+        .fc-icon { font-size: 1rem; margin-bottom: 5px; display: block; }
+        .fc-title { font-size: 0.55rem; color: var(--text-f); margin-bottom: 6px; }
+        .fc-score { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .fc-stars { display: flex; gap: 2px; }
+        .fc-star { width: 8px; height: 8px; border-radius: 50%; background: rgba(212, 168, 67, 0.15); }
+        .fc-star.on { background: var(--gold); }
+        .fc-score-num { font-family: 'Noto Serif TC', serif; font-size: 0.72rem; color: var(--gold); }
+        .hour-table { margin: 0 16px 14px; background: rgba(7, 6, 12, 0.85); border: 1px solid rgba(212, 168, 67, 0.09); }
+        .ht-head, .ht-row { display: grid; grid-template-columns: 1.8fr repeat(4, 1fr); border-bottom: 1px solid rgba(212, 168, 67, 0.05); }
+        .ht-head { background: rgba(212, 168, 67, 0.04); }
+        .ht-hcell { font-size: 0.48rem; color: var(--text-f); padding: 6px 4px; text-align: center; }
+        .ht-row.ht-cur { background: rgba(212, 168, 67, 0.04); }
+        .ht-cell { font-size: 0.52rem; padding: 7px 4px; text-align: center; color: var(--text-d); display: flex; align-items: center; justify-content: center; gap: 2px; }
+        .ht-time { font-size: 0.45rem; color: var(--text-f); }
+        .ht-good, .ht-bad { font-size: 0.44rem; color: var(--text-f); }
+        .ht-gz { font-family: 'Ma Shan Zheng', cursive; font-size: 0.85rem; }
+        .info-card { margin: 0 16px 12px; background: rgba(7, 6, 12, 0.85); border: 1px solid rgba(212, 168, 67, 0.12); padding: 15px 17px; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; font-size: 0.66rem; }
+        .info-row:last-child { margin-bottom: 0; }
+        .ir-lbl { color: rgba(240, 234, 214, 0.75); font-weight: 500; }
+        .ir-val { color: var(--text-d); }
+        .ir-val.gold { color: var(--gold); }
+        .bazi4-grid { margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgba(212, 168, 67, 0.12); background: rgba(0, 0, 0, 0.22); }
+        .b4-grp { grid-column: span 4; text-align: center; font-size: 0.5rem; color: rgba(212, 168, 67, 0.6); padding: 5px; background: rgba(212, 168, 67, 0.03); border-bottom: 1px solid rgba(212, 168, 67, 0.08); }
+        .dayun-list { margin: 0 16px; display: flex; flex-direction: column; gap: 5px; }
+        .dy-item { display: flex; align-items: center; gap: 14px; padding: 9px 15px; background: rgba(7, 6, 12, 0.7); border: 1px solid rgba(212, 168, 67, 0.07); }
+        .dy-item.current { border-color: rgba(212, 168, 67, 0.32); background: rgba(212, 168, 67, 0.04); }
+        .dy-gz { font-family: 'Ma Shan Zheng', cursive; font-size: 1.25rem; display: flex; gap: 2px; }
+        .dy-info { flex: 1; }
+        .dy-age { font-size: 0.62rem; color: var(--text-d); }
+        .dy-years { font-size: 0.53rem; color: var(--text-f); margin-top: 2px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(6, 5, 10, 0.95); z-index: 9999; padding: 24px; overflow-y: auto; backdrop-filter: blur(5px); }
+        .modal-box { max-width: 460px; margin: 40px auto; background: rgba(13, 11, 24, 0.95); border: 1px solid rgba(212, 168, 67, 0.3); padding: 30px; border-radius: 4px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+        .modal-title { color: var(--gold); font-family: 'Ma Shan Zheng', cursive; font-size: 1.6rem; text-align: center; margin-bottom: 5px; }
+        .modal-sub { color: var(--text-f); font-size: 0.65rem; text-align: center; letter-spacing: 0.1em; margin-bottom: 25px; }
+        .modal-box label { color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 6px; letter-spacing: 0.1em; }
+        .modal-box input, .modal-box select { width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 168, 67, 0.2); color: #fff; font-size: 0.9rem; outline: none; border-radius: 2px; margin-bottom: 15px; }
+        .modal-box input:focus, .modal-box select:focus { border-color: var(--gold); }
+        .modal-flex { display: flex; gap: 10px; }
+        .modal-flex>div { flex: 1; }
+        .consult-btn-wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 10px 16px 30px; }
+        .consult-btn { flex: 1; min-width: 220px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(212, 168, 67, 0.08); border: 1px solid rgba(212, 168, 67, 0.3); color: var(--gold); padding: 14px 20px; font-size: 0.75rem; font-weight: 500; cursor: pointer; letter-spacing: 0.15em; border-radius: 4px; transition: all 0.3s; text-decoration: none; }
+        .consult-btn:hover { background: rgba(212, 168, 67, 0.18); border-color: var(--gold); }
+        .consult-icon { font-size: 1.1rem; }
+        .ic-macro { border: 1px solid rgba(212, 168, 67, 0.4); background: rgba(212, 168, 67, 0.05); }
+        .ic-macro .ic-title { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
         @media (max-width: 768px) {
-            .topbar {
-                padding: 15px;
-            }
-            .tab-btn {
-                font-size: 0.8rem;
-                padding: 8px 16px;
-            }
-            .settings-btn {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
-            .lang-select {
-                font-size: 0.75rem;
-                padding: 6px 10px;
-            }
-            .date-solar {
-                font-size: 1.15rem;
-            }
-            .date-lunar {
-                font-size: 0.75rem;
-            }
-            .dp-goto-today {
-                font-size: 0.6rem;
-                padding: 6px 12px;
-            }
-            .verdict-title {
-                font-size: 0.95rem;
-            }
-            .verdict-body {
-                font-size: 0.85rem;
-            }
-            .ss-tag {
-                font-size: 0.75rem;
-                padding: 6px 14px;
-            }
-            .ic-title {
-                font-size: 0.85rem;
-            }
-            .ic-body {
-                font-size: 0.8rem;
-            }
-            .ic-api-engine {
-                font-size: 0.75rem;
-            }
-            .ic-hint {
-                font-size: 0.6rem;
-                margin-top: 8px;
-            }
-            .fc-title {
-                font-size: 0.75rem;
-            }
-            .fc-score-num {
-                font-size: 0.9rem;
-            }
-            .ht-hcell {
-                font-size: 0.7rem;
-            }
-            .ht-cell {
-                font-size: 0.75rem;
-            }
-            .ht-time {
-                font-size: 0.7rem;
-            }
-            .ht-good,
-            .ht-bad {
-                font-size: 0.7rem;
-            }
-            .ht-gz {
-                font-size: 1rem;
-            }
-            .info-row {
-                font-size: 0.85rem;
-                padding: 4px 0;
-            }
-            .dy-item {
-                padding: 12px 15px;
-            }
-            .dy-gz {
-                font-size: 1.4rem;
-            }
-            .dy-age {
-                font-size: 0.85rem;
-            }
-            .dy-years {
-                font-size: 0.75rem;
-                margin-top: 4px;
-            }
-            .lp-box label,
-            .modal-box label {
-                font-size: 0.85rem;
-            }
-            .lp-box input,
-            .lp-box select,
-            .modal-box input,
-            .modal-box select {
-                font-size: 1rem;
-                padding: 12px;
-            }
-            .lp-btn,
-            .modal-box button {
-                font-size: 1rem;
-                padding: 14px;
-            }
-            .consult-btn {
-                padding: 12px 16px;
-                font-size: 0.7rem;
-                min-width: 100%;
-            }
+            .topbar { padding: 15px; }
+            .tab-btn { font-size: 0.8rem; padding: 8px 16px; }
+            .settings-btn { font-size: 0.8rem; padding: 6px 12px; }
+            .lang-select { font-size: 0.75rem; padding: 6px 10px; }
+            .date-solar { font-size: 1.15rem; }
+            .date-lunar { font-size: 0.75rem; }
+            .dp-goto-today { font-size: 0.6rem; padding: 6px 12px; }
+            .verdict-title { font-size: 0.95rem; }
+            .verdict-body { font-size: 0.85rem; }
+            .ss-tag { font-size: 0.75rem; padding: 6px 14px; }
+            .ic-title { font-size: 0.85rem; }
+            .ic-body { font-size: 0.8rem; }
+            .ic-api-engine { font-size: 0.75rem; }
+            .ic-hint { font-size: 0.6rem; margin-top: 8px; }
+            .fc-title { font-size: 0.75rem; }
+            .fc-score-num { font-size: 0.9rem; }
+            .ht-hcell { font-size: 0.7rem; }
+            .ht-cell { font-size: 0.75rem; }
+            .ht-time { font-size: 0.7rem; }
+            .ht-good, .ht-bad { font-size: 0.7rem; }
+            .ht-gz { font-size: 1rem; }
+            .info-row { font-size: 0.85rem; padding: 4px 0; }
+            .dy-item { padding: 12px 15px; }
+            .dy-gz { font-size: 1.4rem; }
+            .dy-age { font-size: 0.85rem; }
+            .dy-years { font-size: 0.75rem; margin-top: 4px; }
+            .lp-box label, .modal-box label { font-size: 0.85rem; }
+            .lp-box input, .lp-box select, .modal-box input, .modal-box select { font-size: 1rem; padding: 12px; }
+            .lp-btn, .modal-box button { font-size: 1rem; padding: 14px; }
+            .consult-btn { padding: 12px 16px; font-size: 0.7rem; min-width: 100%; }
         }
     </style>
 </head>
@@ -2514,40 +1920,44 @@
             return sc;
         }
 
-        // 修改：严格根据地支本气和透干来定格局，避免盲目定建禄
+        // ==========================================
+        // 核心修正 1：透干取格与建禄羊刃精准判定
+        // ==========================================
         function getGejuTenGod(ri, yGZ, mGZ, hGZ) {
-            // 建禄格严格映射：甲-寅(2), 乙-卯(3), 丙戊-巳(5), 丁己-午(6), 庚-申(8), 辛-酉(9), 壬-亥(11), 癸-子(0)
             const luMap = {0:2, 1:3, 2:5, 3:6, 4:5, 5:6, 6:8, 7:9, 8:11, 9:0};
-            // 羊刃格映射
             const yangrenMap = {0:3, 2:6, 4:6, 6:9, 8:0};
 
             if (luMap[ri] === mGZ.dz) return '建祿格';
             if (yangrenMap[ri] === mGZ.dz) return '羊刃格';
 
-            const exposed = new Set([yGZ.tg, mGZ.tg, hGZ.tg]);
             const hidden = ZANGGAN_FULL[mGZ.dz];
-            let picked = hidden[0][0];
+            const monthMainQiTg = hidden[0][0];
+            const monthMainQiWx = WXT[monthMainQiTg];
 
-            if (exposed.has(hidden[0][0])) {
-                picked = hidden[0][0];
-            } else {
-                for (let i = 1; i < hidden.length; i++) {
-                    if (exposed.has(hidden[i][0])) {
-                        picked = hidden[i][0];
-                        break;
-                    }
+            let patternTg = monthMainQiTg; // 預設取月令本氣
+
+            // 檢查透干：若年、月、時干有透出與月令本氣同五行之干，以此干取格（優先月干）
+            const checkOrder = [mGZ.tg, yGZ.tg, hGZ.tg];
+            for (let tg of checkOrder) {
+                if (tg !== -1 && WXT[tg] === monthMainQiWx) {
+                    patternTg = tg;
+                    break;
                 }
             }
 
-            const tenGod = SS_TABLE[ri][picked];
-            // 如果是非禄刃月令，但取出了比肩/劫财，则退回使用月令本气定格（避免癸生丑月透癸水误判建禄）
+            const tenGod = SS_TABLE[ri][patternTg];
+            
+            // 若非祿刃格，且透出之干仍為比肩/劫財（例如甲生寅月透甲，但前面已判建祿則不會走到這；
+            // 處理如戊生辰月透戊的特殊情況），則退回取月支本氣。
             if (tenGod === '比肩' || tenGod === '劫財') {
-                return SS_TABLE[ri][hidden[0][0]];
+                return SS_TABLE[ri][monthMainQiTg];
             }
             return tenGod;
         }
 
-        // 修改：引入调候理论（冬生喜火，夏生喜水），并综合强弱来判定
+        // ==========================================
+        // 核心修正 2：調候與扶抑邏輯的防呆融合
+        // ==========================================
         function getXiyong(ri, strengthKey, gejuTen, monthDz) {
             const dmWx = WXT[ri];
             const gen = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
@@ -2557,41 +1967,55 @@
 
             let xiyong = [];
             
-            // 调候判断：冬季（亥11、子0、丑1）极寒喜火；夏季（巳5、午6、未7）极热喜水。
             const isWinter = monthDz === 0 || monthDz === 1 || monthDz === 11;
             const isSummer = monthDz === 5 || monthDz === 6 || monthDz === 7;
 
-            // 修正：如果冬生但命局火土极旺（火/土日主且身强），则说明原局不寒，无需强制补火，反而要克泄
+            // 防呆機制：若冬生，但命局火土極旺（身強），代表原局已不寒，不強制補火
             let needWarm = isWinter && !(strengthKey === 'str_strong' && (dmWx === '火' || dmWx === '土'));
-            // 修正：如果夏生但命局金水极旺（水/木日主且身强），则说明原局不热，无需强制补水，反而要克泄
+            // 防呆機制：若夏生，但命局金水極旺（身強），代表原局已不燥，不強制補水
             let needCool = isSummer && !(strengthKey === 'str_strong' && (dmWx === '水' || dmWx === '木'));
 
-            if (needWarm) {
-                xiyong.push('火'); 
-                if (strengthKey === 'str_weak' && dmWx !== '火') xiyong.push(genBy[dmWx]);
-                if (strengthKey === 'str_strong' && dmWx !== '火' && dmWx !== '木') xiyong.push('木');
-            } else if (needCool) {
-                xiyong.push('水'); 
-                if (strengthKey === 'str_weak' && dmWx !== '水') xiyong.push(genBy[dmWx]);
-                if (strengthKey === 'str_strong' && dmWx !== '水' && dmWx !== '金') xiyong.push('金');
+            // 基準扶抑取用
+            let standardFav = [];
+            if (strengthKey === 'str_weak') {
+                standardFav = [genBy[dmWx], dmWx];
             } else {
-                // 常规强弱取用
-                if (strengthKey === 'str_weak') {
-                    xiyong.push(genBy[dmWx], dmWx);
+                if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
+                    standardFav = [ctrlBy[dmWx], gen[dmWx], ctrl[dmWx]];
                 } else {
-                    if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
-                        xiyong.push(ctrlBy[dmWx], gen[dmWx], ctrl[dmWx]);
-                    } else if (gejuTen === '正官' || gejuTen === '七殺') {
-                        xiyong.push(gen[dmWx], ctrl[dmWx]);
-                    } else {
-                        xiyong.push(gen[dmWx], ctrl[dmWx]);
-                    }
+                    standardFav = [gen[dmWx], ctrl[dmWx]];
                 }
             }
 
-            // 去重并限制输出
+            // 疊加調候
+            if (needWarm) {
+                xiyong.push('火');
+                standardFav.forEach(el => {
+                    // 若本身需要調候火，則盡量不取水，除非日主本身是水
+                    if (el !== '水' || dmWx === '水') xiyong.push(el);
+                });
+                if (xiyong.length < 2) xiyong.push(...standardFav);
+            } else if (needCool) {
+                xiyong.push('水');
+                standardFav.forEach(el => {
+                    // 若本身需要調候水，則盡量不取火，除非日主本身是火
+                    if (el !== '火' || dmWx === '火') xiyong.push(el);
+                });
+                if (xiyong.length < 2) xiyong.push(...standardFav);
+            } else {
+                xiyong = standardFav;
+            }
+
+            // 去重並截取前兩個
             xiyong = [...new Set(xiyong)].slice(0, 2);
-            if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]]; // 兜底
+            if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
+            
+            // 針對特定優選顯示順序進行排序（如木火、金水）
+            if (xiyong.includes('木') && xiyong.includes('火')) return ['木', '火'];
+            if (xiyong.includes('金') && xiyong.includes('水')) return ['金', '水'];
+            if (xiyong.includes('水') && xiyong.includes('木')) return ['水', '木'];
+            if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
+            if (xiyong.includes('土') && xiyong.includes('金')) return ['土', '金'];
             
             return xiyong;
         }
@@ -2957,7 +2381,7 @@
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
                 const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); // 修正：加入月支，支持调候
+                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
 
                 const pillars = [
                     { label: t('lbl_year'), tg: yGZ.tg, dz: yGZ.dz, tgTenRaw: SS_TABLE[ri][yGZ.tg],
@@ -3045,9 +2469,8 @@
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
                 const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); // 修正：加入月支，支持调候
+                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
 
-                // 修正：确保真实建禄格时显示正常名称，不含重复后缀
                 let gejuStr = '';
                 if (gejuTen === '建祿格') gejuStr = t('pat_jianlu');
                 else if (gejuTen === '羊刃格') gejuStr = t('pat_yangren');
