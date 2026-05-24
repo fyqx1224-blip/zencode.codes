@@ -1920,12 +1920,20 @@
             return sc;
         }
 
+        // 檢查天干是否被地支截腳（無力化，无法成格）
+        function isJiejiao(tg, dz) {
+            if (tg === -1 || dz === -1) return false;
+            const tgWx = WXT[tg];
+            const dzWx = WXD[dz];
+            const ctrl = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
+            return ctrl[dzWx] === tgWx; // 如果地支五行克天干五行，即为截脚
+        }
+
         // ==========================================
-        // 核心修正 1：透干取格、建祿羊刃精準判定與月干有根取格
+        // 核心修正 1：透干取格增加「截腳無力」判定與月干优先降级
         // ==========================================
         function getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ) {
             const luMap = {0:2, 1:3, 2:5, 3:6, 4:5, 5:6, 6:8, 7:9, 8:11, 9:0};
-            // 補全所有天干的羊刃映射
             const yangrenMap = {0:3, 1:2, 2:6, 3:5, 4:6, 5:5, 6:9, 7:8, 8:0, 9:11};
 
             if (luMap[ri] === mGZ.dz) return '建祿格';
@@ -1933,53 +1941,27 @@
 
             const hidden = ZANGGAN_FULL[mGZ.dz];
             const mainQiTg = hidden[0][0];
-            const checkOrder = [mGZ.tg, yGZ.tg, hGZ.tg];
+            const pillars = [mGZ, yGZ, hGZ];
 
-            // 1. 優先檢查月令本氣是否透干
-            for (let tg of checkOrder) {
-                if (tg === mainQiTg) {
-                    const ten = SS_TABLE[ri][tg];
-                    if (ten !== '比肩' && ten !== '劫財') return ten;
-                }
-            }
-
-            // 2. 其次檢查月中氣、餘氣是否透干
-            for (let i = 1; i < hidden.length; i++) {
-                const hiddenTg = hidden[i][0];
-                for (let tg of checkOrder) {
-                    if (tg === hiddenTg) {
-                        const ten = SS_TABLE[ri][tg];
+            // 1. 檢查藏干透出，但必須排除「截腳」被克的死干（例如己坐卯，土被木克死，不能成格）
+            for (let tgCheck of [mainQiTg, ...(hidden.slice(1).map(h => h[0]))]) {
+                for (let p of pillars) {
+                    if (p.tg === tgCheck && !isJiejiao(p.tg, p.dz)) {
+                        const ten = SS_TABLE[ri][p.tg];
                         if (ten !== '比肩' && ten !== '劫財') return ten;
                     }
                 }
             }
 
-            // 3. 都不透，但月干有根（例如：癸生丑月，乙木透月干，雖丑不含木，但年支未中有乙木根）
-            const mStem = mGZ.tg;
-            if (mStem !== -1) {
-                const mTen = SS_TABLE[ri][mStem];
+            // 2. 如果藏干都没透，或透出的都无力（如上方的假七杀），则退一步看月干
+            if (mGZ.tg !== -1) {
+                const mTen = SS_TABLE[ri][mGZ.tg];
                 if (mTen !== '比肩' && mTen !== '劫財') {
-                    // 檢查月干在四柱地支中是否有根
-                    const branches = [yGZ.dz, mGZ.dz, dGZ.dz, hGZ.dz];
-                    let hasRoot = false;
-                    for (let dz of branches) {
-                        if (dz !== -1) {
-                            const dzHidden = ZANGGAN_FULL[dz];
-                            for (let h of dzHidden) {
-                                // 只要藏干中包含該天干，或五行屬性相同即視為有根
-                                if (h[0] === mStem || WXT[h[0]] === WXT[mStem]) {
-                                    hasRoot = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (hasRoot) break;
-                    }
-                    if (hasRoot) return mTen;
+                    return mTen; 
                 }
             }
 
-            // 4. 最終防呆退回：取月令本氣
+            // 3. 最终防呆退回：取月令本气
             const fallbackTen = SS_TABLE[ri][mainQiTg];
             if (fallbackTen === '比肩' || fallbackTen === '劫財') {
                 if (hidden.length > 1) return SS_TABLE[ri][hidden[1][0]];
@@ -1988,7 +1970,7 @@
         }
 
         // ==========================================
-        // 核心修正 2：調候與扶抑邏輯的防呆融合
+        // 核心修正 2：调候与扶抑逻辑的防呆融合（精准抓取财官）
         // ==========================================
         function getXiyong(ri, strengthKey, gejuTen, monthDz) {
             const dmWx = WXT[ri];
@@ -1998,39 +1980,29 @@
             const ctrlBy = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
 
             let xiyong = [];
-            
             const isWinter = monthDz === 0 || monthDz === 1 || monthDz === 11;
             const isSummer = monthDz === 5 || monthDz === 6 || monthDz === 7;
 
-            // 防呆機制：若冬生，但命局火土極旺（身強），代表原局已不寒，不強制補火
             let needWarm = isWinter && !(strengthKey === 'str_strong' && (dmWx === '火' || dmWx === '土'));
-            // 防呆機制：若夏生，但命局金水極旺（身強），代表原局已不燥，不強制補水
             let needCool = isSummer && !(strengthKey === 'str_strong' && (dmWx === '水' || dmWx === '木'));
 
-            // 基準扶抑取用
             let standardFav = [];
             if (strengthKey === 'str_weak') {
                 standardFav = [genBy[dmWx], dmWx];
             } else {
-                if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
-                    standardFav = [ctrlBy[dmWx], gen[dmWx], ctrl[dmWx]];
-                } else {
-                    standardFav = [gen[dmWx], ctrl[dmWx]];
-                }
+                // 【关键修正】：身旺时，最需要的是财(耗)与官杀(克)。优先顺序改为 [财, 官, 食伤]
+                standardFav = [ctrlBy[dmWx], ctrl[dmWx], gen[dmWx]]; 
             }
 
-            // 疊加調候
             if (needWarm) {
                 xiyong.push('火');
                 standardFav.forEach(el => {
-                    // 若本身需要調候火，則盡量不取水，除非日主本身是水
                     if (el !== '水' || dmWx === '水') xiyong.push(el);
                 });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
             } else if (needCool) {
                 xiyong.push('水');
                 standardFav.forEach(el => {
-                    // 若本身需要調候水，則盡量不取火，除非日主本身是火
                     if (el !== '火' || dmWx === '火') xiyong.push(el);
                 });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
@@ -2038,16 +2010,14 @@
                 xiyong = standardFav;
             }
 
-            // 去重並截取前兩個
+            // 提取前两个最重要的喜用神
             xiyong = [...new Set(xiyong)].slice(0, 2);
-            if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
+            if(xiyong.length === 0) xiyong = [ctrlBy[dmWx], ctrl[dmWx]];
             
-            // 針對特定優選顯示順序進行排序（如木火、金水）
-            if (xiyong.includes('木') && xiyong.includes('火')) return ['木', '火'];
-            if (xiyong.includes('金') && xiyong.includes('水')) return ['金', '水'];
-            if (xiyong.includes('水') && xiyong.includes('木')) return ['水', '木'];
+            // 针对特定优选组合进行排序显示，确保如“火土”顺利输出
+            if (xiyong.includes('木') && xiyong.includes('火')) return ['火', '木']; 
+            if (xiyong.includes('金') && xiyong.includes('水')) return ['水', '金'];
             if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
-            if (xiyong.includes('土') && xiyong.includes('金')) return ['土', '金'];
             
             return xiyong;
         }
