@@ -332,6 +332,52 @@ header {
       <label>纬度 °N</label>
       <input type="number" id="inp-lat" value="39.9" step="0.1" min="-90" max="90">
     </div>
+    <div class="field">
+      <label>时区 UTC±</label>
+      <select id="inp-tz">
+        <option value="-12">UTC−12</option>
+        <option value="-11">UTC−11</option>
+        <option value="-10">UTC−10</option>
+        <option value="-9">UTC−9</option>
+        <option value="-8">UTC−8</option>
+        <option value="-7">UTC−7</option>
+        <option value="-6">UTC−6</option>
+        <option value="-5">UTC−5</option>
+        <option value="-4">UTC−4</option>
+        <option value="-3">UTC−3</option>
+        <option value="-2">UTC−2</option>
+        <option value="-1">UTC−1</option>
+        <option value="0">UTC±0</option>
+        <option value="1">UTC+1</option>
+        <option value="2">UTC+2</option>
+        <option value="3">UTC+3</option>
+        <option value="3.5">UTC+3:30</option>
+        <option value="4">UTC+4</option>
+        <option value="4.5">UTC+4:30</option>
+        <option value="5">UTC+5</option>
+        <option value="5.5">UTC+5:30</option>
+        <option value="5.75">UTC+5:45</option>
+        <option value="6">UTC+6</option>
+        <option value="6.5">UTC+6:30</option>
+        <option value="7">UTC+7</option>
+        <option value="8" selected>UTC+8 北京</option>
+        <option value="8.75">UTC+8:45</option>
+        <option value="9">UTC+9 东京</option>
+        <option value="9.5">UTC+9:30</option>
+        <option value="10">UTC+10</option>
+        <option value="10.5">UTC+10:30</option>
+        <option value="11">UTC+11</option>
+        <option value="12">UTC+12</option>
+        <option value="13">UTC+13</option>
+      </select>
+    </div>
+    <div class="field" style="min-width:90px;max-width:110px;">
+      <label>夏令时 DST</label>
+      <label style="display:flex;align-items:center;gap:8px;height:34px;cursor:pointer;margin-top:2px;">
+        <input type="checkbox" id="inp-dst" style="width:14px;height:14px;accent-color:var(--gold);cursor:pointer;">
+        <span style="font-size:12px;color:var(--text-dim);">+1 小时</span>
+      </label>
+    </div>
   </div>
   <div class="btn-group" style="margin-top:14px;">
     <button class="btn btn-primary" onclick="buildChart()">✦ 排盘</button>
@@ -660,8 +706,9 @@ function svgArc(cx,cy,r,a1,a2,large,sweep){
 }
 
 function lonToAngle(lon, asc){
-  // Chart: ASC at left (180°), counter-clockwise
-  return ((asc - lon + 180 + 360)%360);
+  // ASC固定在左侧（9点钟=270°方向）
+  // degToRad(d)=(d-90)*π/180，所以d=270时在正左方
+  return ((asc - lon + 270 + 360) % 360);
 }
 
 function buildChart(){
@@ -673,14 +720,16 @@ function buildChart(){
   const [y,mo,d]=dateStr.split('-').map(Number);
   const [h,mi]=timeStr.split(':').map(Number);
   const hour=h+mi/60;
-  const utcHour=hour-lon/15;
+  const tz=parseFloat(document.getElementById('inp-tz').value)||8;
+  const dst=document.getElementById('inp-dst').checked?1:0;
+  const utcHour=hour-tz-dst;
 
   const jd=julianDay(y,mo,d,utcHour);
   const planets=calcPlanets(jd);
   const asc=calcAscendant(jd,lat,lon);
   const cusps=calcHouseCusps(asc);
 
-  chartState.birthData={jd,lat,lon,dateStr,timeStr,hour};
+  chartState.birthData={jd,lat,lon,dateStr,timeStr,hour,tz,dst};
   chartState.planets=planets;
   chartState.asc=asc;
   chartState.cusps=cusps;
