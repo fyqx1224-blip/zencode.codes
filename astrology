@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>七政星盘 · 黑金浮光版</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dim: #7A5E2A;
+  --gold-pale: #E8CC88;
+  --black: #080808;
+  --black-mid: #0E0E0E;
+  --panel: #111008;
+  --border: rgba(201,168,76,0.25);
+  --border-bright: rgba(201,168,76,0.7);
+  --text-primary: #E8CC88;
+  --text-dim: rgba(201,168,76,0.55);
+  --glow: 0 0 18px rgba(201,168,76,0.35), 0 0 40px rgba(201,168,76,0.12);
+  --glow-strong: 0 0 28px rgba(201,168,76,0.6), 0 0 60px rgba(201,168,76,0.25);
+  --ring1: 340; --ring2: 290; --ring3: 240; --ring4: 190;
+  --planet-r: 9; --house-r: 160; --zodiac-r: 175;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #050504;
+  color: var(--text-primary);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── STARFIELD ── */
+#starfield {
+  position: fixed; inset:0; pointer-events:none; z-index:0;
+}
+.star {
+  position:absolute; border-radius:50%;
+  background:rgba(201,168,76,0.6);
+  animation: twinkle var(--d,3s) ease-in-out infinite var(--delay,0s);
+}
+@keyframes twinkle {
+  0%,100%{opacity:var(--lo,0.2)} 50%{opacity:var(--hi,1)}
+}
+
+/* ── LAYOUT ── */
+.app { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:24px 16px 60px; }
+
+/* ── HEADER ── */
+header {
+  text-align:center; margin-bottom:32px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom:20px; width:100%; max-width:960px;
+}
+.title-main {
+  font-family:'Cinzel',serif; font-size:clamp(22px,4vw,36px);
+  font-weight:700; letter-spacing:.25em;
+  background: linear-gradient(135deg, #C9A84C 0%, #F0D080 40%, #C9A84C 60%, #7A5E2A 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow: none; filter: drop-shadow(0 0 12px rgba(201,168,76,0.5));
+}
+.title-sub {
+  font-family:'IM Fell English',serif; font-style:italic;
+  font-size:13px; color:var(--text-dim); letter-spacing:.15em; margin-top:6px;
+}
+.ornament { color:var(--gold-dim); font-size:18px; letter-spacing:.3em; margin:6px 0; }
+
+/* ── INPUT PANEL ── */
+.input-panel {
+  background: linear-gradient(135deg, rgba(17,16,8,0.95), rgba(12,11,5,0.98));
+  border: 1px solid var(--border);
+  border-radius:4px;
+  padding:20px 28px;
+  width:100%; max-width:960px;
+  margin-bottom:24px;
+  position:relative;
+  box-shadow: var(--glow), inset 0 1px 0 rgba(201,168,76,0.15);
+}
+.input-panel::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events:none; border-radius:4px;
+}
+.input-row {
+  display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end;
+}
+.field { display:flex; flex-direction:column; gap:5px; flex:1; min-width:130px; }
+.field label {
+  font-size:11px; letter-spacing:.12em; color:var(--text-dim);
+  font-family:'Cinzel',serif; text-transform:uppercase;
+}
+.field input, .field select {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--border);
+  border-radius:2px;
+  color: var(--text-primary);
+  font-family:'Noto Serif SC',serif;
+  font-size:13px;
+  padding:7px 10px;
+  outline:none;
+  transition: border-color .2s, box-shadow .2s;
+  width:100%;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(201,168,76,0.25);
+}
+.field select option { background:#111; color:var(--text-primary); }
+
+/* ── BUTTONS ── */
+.btn-group { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; justify-content:center; }
+.btn {
+  font-family:'Cinzel',serif; font-size:11px; letter-spacing:.15em;
+  padding:9px 20px; border-radius:2px; cursor:pointer;
+  transition: all .25s; position:relative; overflow:hidden;
+  white-space:nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #7A5E2A, #C9A84C, #7A5E2A);
+  border: 1px solid var(--gold);
+  color:#080808; font-weight:700;
+  box-shadow: var(--glow);
+}
+.btn-primary:hover {
+  box-shadow: var(--glow-strong);
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background:transparent;
+  border: 1px solid var(--border-bright);
+  color: var(--gold-pale);
+}
+.btn-secondary:hover {
+  background: rgba(201,168,76,0.1);
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+.btn-secondary.active {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+  box-shadow: var(--glow);
+}
+.btn::after {
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);
+  transform:translateX(-100%); transition:transform .4s;
+}
+.btn:hover::after { transform:translateX(100%); }
+
+/* ── CHART CONTAINER ── */
+.chart-outer {
+  width:100%; max-width:700px;
+  position:relative;
+  margin:0 auto;
+}
+.chart-wrap {
+  position:relative;
+  display:flex; justify-content:center; align-items:center;
+}
+.chart-wrap svg {
+  filter: drop-shadow(0 0 30px rgba(201,168,76,0.15));
+  max-width:100%; height:auto;
+}
+
+/* ── INFO PANELS ── */
+.info-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:16px; width:100%; max-width:700px;
+  margin-top:20px;
+}
+.info-card {
+  background: rgba(17,16,8,0.95);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:16px;
+  box-shadow: var(--glow);
+}
+.info-card h3 {
+  font-family:'Cinzel',serif; font-size:11px; letter-spacing:.18em;
+  color:var(--gold); margin-bottom:12px;
+  padding-bottom:8px; border-bottom:1px solid var(--border);
+  text-transform:uppercase;
+}
+.planet-row {
+  display:flex; align-items:center; gap:8px;
+  padding:4px 0; font-size:12px; color:var(--text-primary);
+  border-bottom:1px solid rgba(201,168,76,0.06);
+}
+.planet-row:last-child { border-bottom:none; }
+.planet-sym { font-size:16px; width:22px; text-align:center; }
+.planet-name { width:48px; font-size:11px; color:var(--text-dim); }
+.planet-pos { flex:1; }
+.planet-mansion { font-size:10px; color:var(--gold-dim); }
+
+/* ── OVERLAY PANELS ── */
+.overlay-panel {
+  position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,0.85);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition: opacity .35s;
+}
+.overlay-panel.show { opacity:1; pointer-events:all; }
+.overlay-inner {
+  background: linear-gradient(135deg, rgba(17,16,8,0.99), rgba(8,8,4,0.99));
+  border:1px solid var(--border-bright);
+  border-radius:4px; padding:28px;
+  max-width:500px; width:90%;
+  box-shadow: var(--glow-strong), inset 0 1px 0 rgba(201,168,76,0.2);
+  position:relative;
+}
+.overlay-close {
+  position:absolute; top:12px; right:16px;
+  background:none; border:none; color:var(--gold-dim);
+  font-size:20px; cursor:pointer; font-family:'Cinzel',serif;
+}
+.overlay-close:hover { color:var(--gold); }
+
+/* ── FIRDARIA TABLE ── */
+.firdaria-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:12px; }
+.firdaria-table th {
+  font-family:'Cinzel',serif; font-size:10px; letter-spacing:.12em;
+  color:var(--gold-dim); padding:6px 8px; text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.firdaria-table td { padding:5px 8px; border-bottom:1px solid rgba(201,168,76,0.06); }
+.firdaria-table tr.active-period td { color:var(--gold-light); background:rgba(201,168,76,0.08); }
+.firdaria-table .period-lord { font-size:14px; }
+
+/* ── LUNAR RETURN ── */
+.lr-result { margin-top:12px; }
+.lr-row { display:flex; justify-content:space-between; padding:5px 0; font-size:12px; border-bottom:1px solid rgba(201,168,76,0.08); }
+.lr-label { color:var(--text-dim); font-size:11px; }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  position:absolute; background:rgba(8,8,4,0.97);
+  border:1px solid var(--border-bright);
+  border-radius:3px; padding:8px 12px;
+  font-size:11px; pointer-events:none;
+  box-shadow: var(--glow); z-index:50;
+  display:none; max-width:180px;
+  line-height:1.6;
+}
+.tooltip strong { color:var(--gold); font-family:'Cinzel',serif; font-size:12px; }
+
+/* ── TRANSIT RING LEGEND ── */
+.transit-legend {
+  display:flex; flex-wrap:wrap; gap:12px;
+  margin-top:8px; font-size:11px; color:var(--text-dim);
+}
+.leg-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+
+/* ── SCROLL BAR ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--gold-dim); border-radius:2px; }
+
+/* ── SECTION DIVIDER ── */
+.divider {
+  width:100%; max-width:700px;
+  display:flex; align-items:center; gap:12px;
+  margin:20px 0 12px; color:var(--gold-dim);
+  font-family:'Cinzel',serif; font-size:10px; letter-spacing:.2em;
+}
+.divider::before,.divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+@media(max-width:560px){
+  .info-grid{grid-template-columns:1fr;}
+  .input-row{flex-direction:column;}
+}
+
+/* ── ANIMATION: CHART APPEAR ── */
+@keyframes chartFadeIn {
+  from{opacity:0;transform:scale(0.92) rotate(-3deg)}
+  to{opacity:1;transform:scale(1) rotate(0deg)}
+}
+.chart-wrap svg { animation: chartFadeIn .6s ease-out both; }
+
+/* ── TRANSIT RING PULSE ── */
+@keyframes ringPulse {
+  0%,100%{opacity:0.7} 50%{opacity:1}
+}
+.transit-active { animation: ringPulse 2.5s ease-in-out infinite; }
+
+</style>
+</head>
+<body>
+
+<canvas id="starfield" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
+<div class="app">
+
+<header>
+  <div class="ornament">✦ ✧ ✦</div>
+  <h1 class="title-main">七政星盘</h1>
+  <div class="ornament" style="font-size:12px;letter-spacing:.5em;">SEPTEM PLANETAE</div>
+  <p class="title-sub">Black Gold Astrolabe · 二十八星宿 · 法达星限 · 月亮返照 · 行运扩展</p>
+</header>
+
+<!-- INPUT PANEL -->
+<div class="input-panel">
+  <div class="input-row">
+    <div class="field">
+      <label>姓名 / Name</label>
+      <input type="text" id="inp-name" value="星命者" placeholder="姓名">
+    </div>
+    <div class="field">
+      <label>出生日期</label>
+      <input type="date" id="inp-date" value="1990-06-15">
+    </div>
+    <div class="field">
+      <label>出生时间</label>
+      <input type="time" id="inp-time" value="14:30">
+    </div>
+    <div class="field">
+      <label>出生地点</label>
+      <input type="text" id="inp-place" value="北京" placeholder="城市名称">
+    </div>
+    <div class="field">
+      <label>经度 °E</label>
+      <input type="number" id="inp-lon" value="116.4" step="0.1" min="-180" max="180">
+    </div>
+    <div class="field">
+      <label>纬度 °N</label>
+      <input type="number" id="inp-lat" value="39.9" step="0.1" min="-90" max="90">
+    </div>
+  </div>
+  <div class="btn-group" style="margin-top:14px;">
+    <button class="btn btn-primary" onclick="buildChart()">✦ 排盘</button>
+    <button class="btn btn-secondary" id="btn-firdaria" onclick="showFirdaria()">法达星限</button>
+    <button class="btn btn-secondary" id="btn-transit" onclick="toggleTransit()">行运盘扩展</button>
+    <button class="btn btn-secondary" id="btn-lunar" onclick="showLunarReturn()">月亮返照盘</button>
+  </div>
+
+  <!-- LUNAR RETURN SUB-INPUTS (hidden) -->
+  <div id="lr-inputs" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
+    <div class="input-row">
+      <div class="field">
+        <label>返照地点经度</label>
+        <input type="number" id="lr-lon" value="116.4" step="0.1">
+      </div>
+      <div class="field">
+        <label>返照地点纬度</label>
+        <input type="number" id="lr-lat" value="39.9" step="0.1">
+      </div>
+      <div class="field">
+        <label>返照年份</label>
+        <input type="number" id="lr-year" value="2025">
+      </div>
+      <div>
+        <label class="field"><span style="font-size:11px;color:var(--text-dim);font-family:Cinzel,serif;text-transform:uppercase;letter-spacing:.12em;">地点</span></label>
+        <button class="btn btn-primary" style="margin-top:5px;" onclick="calcLunarReturn()">计算返照盘</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHART SVG -->
+<div class="chart-outer">
+  <div class="chart-wrap" id="chart-wrap">
+    <svg id="main-svg" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg" width="700" height="700"></svg>
+  </div>
+  <div class="tooltip" id="tooltip"></div>
+</div>
+
+<!-- INFO GRID -->
+<div class="info-grid" id="info-grid" style="display:none;">
+  <div class="info-card">
+    <h3>七政位置</h3>
+    <div id="planet-list"></div>
+  </div>
+  <div class="info-card">
+    <h3>二十八星宿</h3>
+    <div id="mansion-list"></div>
+  </div>
+</div>
+
+<!-- TRANSIT LEGEND -->
+<div id="transit-legend" style="display:none;" class="divider" style="max-width:700px;width:100%;">
+  行运层
+  <div class="transit-legend">
+    <span><span class="leg-dot" style="background:#E8CC88;"></span>本命</span>
+    <span><span class="leg-dot" style="background:#7EB8D4;"></span>行运日月</span>
+    <span><span class="leg-dot" style="background:#D47E7E;"></span>行运五星</span>
+    <span><span class="leg-dot" style="background:#8ED47E;"></span>行运交点</span>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- FIRDARIA OVERLAY -->
+<div class="overlay-panel" id="firdaria-panel">
+  <div class="overlay-inner">
+    <button class="overlay-close" onclick="closeFirdaria()">✕</button>
+    <h2 style="font-family:Cinzel,serif;font-size:16px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px;">法达星限</h2>
+    <p style="font-size:11px;color:var(--text-dim);margin-bottom:4px;font-style:italic;">Firdaria — 七政大限序列</p>
+    <div id="firdaria-content"></div>
+  </div>
+</div>
+
+<!-- LUNAR RETURN RESULT OVERLAY -->
+<div class="overlay-panel" id="lr-panel">
+  <div class="overlay-inner">
+    <button class="overlay-close" onclick="document.getElementById('lr-panel').classList.remove('show')">✕</button>
+    <h2 style="font-family:Cinzel,serif;font-size:16px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px;">月亮返照盘</h2>
+    <p style="font-size:11px;color:var(--text-dim);margin-bottom:4px;font-style:italic;">Lunar Return Chart</p>
+    <div id="lr-content"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  STARFIELD
+// ══════════════════════════════════════════════
+(function(){
+  const canvas=document.getElementById('starfield');
+  const ctx=canvas.getContext('2d');
+  let W,H,stars=[];
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+    stars=[];
+    for(let i=0;i<200;i++){
+      stars.push({
+        x:Math.random()*W, y:Math.random()*H,
+        r:Math.random()*1.2+0.2,
+        a:Math.random(), da:Math.random()*0.008+0.003,
+        gold:Math.random()>0.7
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      s.a+=s.da;
+      if(s.a>1||s.a<0) s.da=-s.da;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.gold?`rgba(201,168,76,${s.a})`:`rgba(255,250,235,${s.a*0.6})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize(); draw();
+})();
+
+// ══════════════════════════════════════════════
+//  ASTROLOGY ENGINE
+// ══════════════════════════════════════════════
+
+const ZODIAC_SIGNS=[
+  {n:'白羊',sym:'♈',en:'Aries'},
+  {n:'金牛',sym:'♉',en:'Taurus'},
+  {n:'双子',sym:'♊',en:'Gemini'},
+  {n:'巨蟹',sym:'♋',en:'Cancer'},
+  {n:'狮子',sym:'♌',en:'Leo'},
+  {n:'处女',sym:'♍',en:'Virgo'},
+  {n:'天秤',sym:'♎',en:'Libra'},
+  {n:'天蝎',sym:'♏',en:'Scorpio'},
+  {n:'射手',sym:'♐',en:'Sagittarius'},
+  {n:'摩羯',sym:'♑',en:'Capricorn'},
+  {n:'水瓶',sym:'♒',en:'Aquarius'},
+  {n:'双鱼',sym:'♓',en:'Pisces'}
+];
+
+const PLANETS=[
+  {id:'sun',  name:'太阳',sym:'☉',color:'#F5D060',trail:'#F5D06044'},
+  {id:'moon', name:'月亮',sym:'☽',color:'#C8D8E8',trail:'#C8D8E844'},
+  {id:'mercury',name:'水星',sym:'☿',color:'#A8C8A0',trail:'#A8C8A044'},
+  {id:'venus',name:'金星',sym:'♀',color:'#E8A0B0',trail:'#E8A0B044'},
+  {id:'mars', name:'火星',sym:'♂',color:'#E08060',trail:'#E0806044'},
+  {id:'jupiter',name:'木星',sym:'♃',color:'#D0A860',trail:'#D0A86044'},
+  {id:'saturn',name:'土星',sym:'♄',color:'#A8A090',trail:'#A8A09044'},
+  {id:'node', name:'北交',sym:'☊',color:'#88C088',trail:'#88C08844'},
+];
+
+// 28 Chinese Lunar Mansions (宿)
+const MANSIONS=[
+  {name:'角',en:'Horn',lon:0},{name:'亢',en:'Neck',lon:12},{name:'氐',en:'Root',lon:25},
+  {name:'房',en:'Room',lon:52},{name:'心',en:'Heart',lon:57},{name:'尾',en:'Tail',lon:69},
+  {name:'箕',en:'Basket',lon:84},{name:'斗',en:'Dipper',lon:98},{name:'牛',en:'Ox',lon:110},
+  {name:'女',en:'Girl',lon:122},{name:'虚',en:'Emptiness',lon:132},{name:'危',en:'Rooftop',lon:140},
+  {name:'室',en:'Encampment',lon:153},{name:'壁',en:'Wall',lon:166},{name:'奎',en:'Stride',lon:180},
+  {name:'娄',en:'Bond',lon:194},{name:'胃',en:'Stomach',lon:208},{name:'昴',en:'Hairy Head',lon:222},
+  {name:'毕',en:'Net',lon:236},{name:'觜',en:'Turtle Beak',lon:248},{name:'参',en:'Three Stars',lon:255},
+  {name:'井',en:'Well',lon:270},{name:'鬼',en:'Ghost',lon:284},{name:'柳',en:'Willow',lon:294},
+  {name:'星',en:'Star',lon:304},{name:'张',en:'Extended Net',lon:314},{name:'翼',en:'Wings',lon:326},
+  {name:'轸',en:'Chariot',lon:343}
+];
+
+function getMansion(lon){
+  lon=((lon%360)+360)%360;
+  let best=MANSIONS[0];
+  for(let i=MANSIONS.length-1;i>=0;i--){
+    if(lon>=MANSIONS[i].lon){ best=MANSIONS[i]; break; }
+  }
+  return best;
+}
+
+// ── SIMPLIFIED PLANET CALCULATION (VSOP87 approximation) ──
+function julianDay(y,m,d,h){
+  if(m<=2){y--;m+=12;}
+  const A=Math.floor(y/100);
+  const B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+h/24+B-1524.5;
+}
+
+function sunLongitude(jd){
+  const n=jd-2451545.0;
+  const L=280.460+0.9856474*n;
+  const g=(357.528+0.9856003*n)*Math.PI/180;
+  const lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g));
+  return ((lam%360)+360)%360;
+}
+
+function moonLongitude(jd){
+  const n=jd-2451545.0;
+  const L=218.316+13.176396*n;
+  const M=(134.963+13.064993*n)*Math.PI/180;
+  const F=(93.272+13.229350*n)*Math.PI/180;
+  const lam=L+6.289*Math.sin(M);
+  return ((lam%360)+360)%360;
+}
+
+function planetLon(jd, a, b){
+  // simple mean longitude approximation
+  return (((a+b*(jd-2451545.0))%360)+360)%360;
+}
+
+function calcPlanets(jd){
+  const sun=sunLongitude(jd);
+  const moon=moonLongitude(jd);
+  const mer=planetLon(jd,252.25,4.09234);
+  const ven=planetLon(jd,181.98,1.60212);
+  const mar=planetLon(jd,355.43,0.52403);
+  const jup=planetLon(jd,34.35,0.08309);
+  const sat=planetLon(jd,50.08,0.03346);
+  const node=((125.044-0.05295*(jd-2451545.0))%360+360)%360;
+  return {sun,moon,mercury:mer,venus:ven,mars:mar,jupiter:jup,saturn:sat,node};
+}
+
+// Ascendant (simplified oblique ascension)
+function calcAscendant(jd, lat, lon){
+  const n=jd-2451545.0;
+  const LST=(280.46061837+360.98564736629*n+lon);
+  const RAMC=((LST%360)+360)%360;
+  const eps=23.439-0.0000004*n;
+  const e=eps*Math.PI/180;
+  const tanL=Math.tan(lat*Math.PI/180);
+  const rmc=RAMC*Math.PI/180;
+  const asc=Math.atan2(Math.cos(rmc), -(Math.sin(rmc)*Math.cos(e)+tanL*Math.sin(e)));
+  return ((asc*180/Math.PI)+360)%360;
+}
+
+// House cusps (Placidus approximation via equal houses from ASC)
+function calcHouseCusps(asc){
+  const cusps=[];
+  for(let i=0;i<12;i++) cusps.push(((asc+i*30)%360+360)%360);
+  return cusps;
+}
+
+// ── FIRDARIA SYSTEM (Day chart/Night chart) ──
+const FIRDARIA_DAY=[
+  {planet:'太阳',sym:'☉',years:10},
+  {planet:'金星',sym:'♀',years:8},
+  {planet:'水星',sym:'☿',years:13},
+  {planet:'月亮',sym:'☽',years:9},
+  {planet:'土星',sym:'♄',years:11},
+  {planet:'木星',sym:'♃',years:12},
+  {planet:'火星',sym:'♂',years:7},
+  {planet:'北交',sym:'☊',years:3},
+  {planet:'南交',sym:'☋',years:2},
+];
+const FIRDARIA_NIGHT=[
+  {planet:'月亮',sym:'☽',years:9},
+  {planet:'土星',sym:'♄',years:11},
+  {planet:'水星',sym:'☿',years:13},
+  {planet:'火星',sym:'♂',years:7},
+  {planet:'北交',sym:'☊',years:3},
+  {planet:'太阳',sym:'☉',years:10},
+  {planet:'金星',sym:'♀',years:8},
+  {planet:'木星',sym:'♃',years:12},
+  {planet:'南交',sym:'☋',years:2},
+];
+
+function calcFirdaria(birthDate, birthHour, sunLon){
+  // Day chart if sun above horizon (roughly 6-18 local hour)
+  const isDay = birthHour>=6 && birthHour<18;
+  const seq = isDay? FIRDARIA_DAY : FIRDARIA_NIGHT;
+  const birth=new Date(birthDate);
+  let rows=[]; let cur=new Date(birth); let age=0;
+  const totalYears=75;
+  seq.forEach(p=>{
+    const start=new Date(cur);
+    const end=new Date(cur);
+    end.setFullYear(end.getFullYear()+p.years);
+    rows.push({...p, start:start.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit'}), end:end.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit'}), startAge:age, endAge:age+p.years});
+    cur=new Date(end); age+=p.years;
+  });
+  return rows;
+}
+
+// ── LUNAR RETURN ──
+function calcLunarReturn(birthJD, birthMoonLon, targetYear, retLat, retLon){
+  // Find next lunar return after Jan 1 of target year
+  const yearStart=julianDay(targetYear,1,1,0);
+  let jd=yearStart;
+  const period=27.32158;
+  // Advance to approximate month
+  let ml=moonLongitude(jd);
+  while(((ml-birthMoonLon+360)%360)>5) { jd+=1; ml=moonLongitude(jd); }
+  // Refine
+  for(let i=0;i<1000;i++){
+    ml=moonLongitude(jd);
+    let diff=((ml-birthMoonLon+180)%360)-180;
+    if(Math.abs(diff)<0.001) break;
+    jd-=diff/13.176;
+  }
+  const lrPlanets=calcPlanets(jd);
+  const lrAsc=calcAscendant(jd, parseFloat(retLat), parseFloat(retLon));
+  const d=new Date((jd-2440587.5)*86400000);
+  return {jd, planets:lrPlanets, asc:lrAsc, date:d};
+}
+
+// ══════════════════════════════════════════════
+//  SVG CHART RENDERER
+// ══════════════════════════════════════════════
+
+const CX=350, CY=350;
+const R_OUTER=320, R_ZODIAC=298, R_ZODIAC_IN=265, R_MANSION=262, R_MANSION_IN=232;
+const R_HOUSE=228, R_HOUSE_IN=155, R_INNER=150;
+const R_PLANET_NAT=195, R_PLANET_TRANS=310;
+
+let chartState={
+  birthData:null, planets:null, asc:null, cusps:null,
+  showTransit:false, transitPlanets:null,
+  lrData:null
+};
+
+function degToRad(d){ return (d-90)*Math.PI/180; } // SVG: 0=top, clockwise
+
+function polarToXY(cx,cy,r,deg){
+  const a=degToRad(deg);
+  return {x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)};
+}
+
+function svgArc(cx,cy,r,a1,a2,large,sweep){
+  const p1=polarToXY(cx,cy,r,a1);
+  const p2=polarToXY(cx,cy,r,a2);
+  return `M${p1.x},${p1.y} A${r},${r},0,${large},${sweep},${p2.x},${p2.y}`;
+}
+
+function lonToAngle(lon, asc){
+  // Chart: ASC at left (180°), counter-clockwise
+  return ((asc - lon + 180 + 360)%360);
+}
+
+function buildChart(){
+  const dateStr=document.getElementById('inp-date').value;
+  const timeStr=document.getElementById('inp-time').value;
+  const lat=parseFloat(document.getElementById('inp-lat').value)||39.9;
+  const lon=parseFloat(document.getElementById('inp-lon').value)||116.4;
+
+  const [y,mo,d]=dateStr.split('-').map(Number);
+  const [h,mi]=timeStr.split(':').map(Number);
+  const hour=h+mi/60;
+  const utcHour=hour-lon/15;
+
+  const jd=julianDay(y,mo,d,utcHour);
+  const planets=calcPlanets(jd);
+  const asc=calcAscendant(jd,lat,lon);
+  const cusps=calcHouseCusps(asc);
+
+  chartState.birthData={jd,lat,lon,dateStr,timeStr,hour};
+  chartState.planets=planets;
+  chartState.asc=asc;
+  chartState.cusps=cusps;
+  chartState.showTransit=false;
+
+  // Today's transits
+  const nowJD=julianDay(...getToday());
+  chartState.transitPlanets=calcPlanets(nowJD);
+
+  drawChart();
+  updateInfoPanels();
+  document.getElementById('info-grid').style.display='grid';
+  document.getElementById('btn-transit').classList.remove('active');
+}
+
+function getToday(){
+  const n=new Date();
+  return [n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours()+n.getMinutes()/60];
+}
+
+function toggleTransit(){
+  if(!chartState.planets){ buildChart(); return; }
+  chartState.showTransit=!chartState.showTransit;
+  document.getElementById('btn-transit').classList.toggle('active',chartState.showTransit);
+  document.getElementById('transit-legend').style.display=chartState.showTransit?'flex':'none';
+  drawChart();
+}
+
+function drawChart(){
+  const svg=document.getElementById('main-svg');
+  const {planets,asc,cusps,showTransit,transitPlanets}=chartState;
+  let html='';
+
+  // ── DEFS ──
+  html+=`<defs>
+  <radialGradient id="bg-grad" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#1A1608"/>
+    <stop offset="60%" stop-color="#0D0C05"/>
+    <stop offset="100%" stop-color="#060504"/>
+  </radialGradient>
+  <radialGradient id="glow-grad" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.08"/>
+    <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="glow-f">
+    <feGaussianBlur stdDeviation="2.5" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="planet-glow">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="text-glow">
+    <feGaussianBlur stdDeviation="1.5" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  </defs>`;
+
+  // ── BACKGROUND ──
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_OUTER+4}" fill="url(#bg-grad)"/>`;
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_OUTER+4}" fill="url(#glow-grad)"/>`;
+
+  // ── DECORATIVE OUTER RING ──
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_OUTER+2}" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>`;
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_OUTER}" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>`;
+
+  // ── TRANSIT RING (outer if active) ──
+  if(showTransit){
+    html+=`<circle cx="${CX}" cy="${CY}" r="${R_OUTER-2}" fill="none" stroke="#7EB8D4" stroke-width="0.5" opacity="0.5" stroke-dasharray="4,4"/>`;
+  }
+
+  // ── ZODIAC BAND ──
+  for(let i=0;i<12;i++){
+    const a1=lonToAngle(i*30, asc);
+    const a2=lonToAngle((i+1)*30, asc);
+    const mid=lonToAngle(i*30+15, asc);
+    const even=i%2===0;
+    // segment fill
+    const p1=polarToXY(CX,CY,R_ZODIAC_IN,a1);
+    const p2=polarToXY(CX,CY,R_ZODIAC,a1);
+    const p3=polarToXY(CX,CY,R_ZODIAC,a2);
+    const p4=polarToXY(CX,CY,R_ZODIAC_IN,a2);
+    const large=Math.abs(a2-a1)>180?1:0;
+    html+=`<path d="M${p1.x},${p1.y} L${p2.x},${p2.y} A${R_ZODIAC},${R_ZODIAC},0,${large},0,${p3.x},${p3.y} L${p4.x},${p4.y} A${R_ZODIAC_IN},${R_ZODIAC_IN},0,${large},1,${p1.x},${p1.y}"
+      fill="${even?'rgba(201,168,76,0.07)':'rgba(201,168,76,0.03)'}" stroke="#C9A84C" stroke-width="0.3" opacity="0.8"/>`;
+    // zodiac symbol
+    const sm=polarToXY(CX,CY,(R_ZODIAC+R_ZODIAC_IN)/2,mid);
+    const sign=ZODIAC_SIGNS[i];
+    html+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central"
+      font-size="13" fill="#C9A84C" filter="url(#text-glow)" opacity="0.9">${sign.sym}</text>`;
+  }
+
+  // ── 28 MANSION BAND ──
+  for(let i=0;i<28;i++){
+    const m=MANSIONS[i];
+    const m2=MANSIONS[(i+1)%28];
+    const span=i<27?(m2.lon-m.lon):(360-m.lon+m2.lon);
+    const a1=lonToAngle(m.lon, asc);
+    const a2=lonToAngle(m.lon+span, asc);
+    const mid=lonToAngle(m.lon+span/2, asc);
+    const p1=polarToXY(CX,CY,R_MANSION_IN,a1);
+    const p2=polarToXY(CX,CY,R_MANSION,a1);
+    const p3=polarToXY(CX,CY,R_MANSION,a2);
+    const p4=polarToXY(CX,CY,R_MANSION_IN,a2);
+    const large=span>180?1:0;
+    const even=i%2===0;
+    html+=`<path d="M${p1.x},${p1.y} L${p2.x},${p2.y} A${R_MANSION},${R_MANSION},0,${large},0,${p3.x},${p3.y} L${p4.x},${p4.y} A${R_MANSION_IN},${R_MANSION_IN},0,${large},1,${p1.x},${p1.y}"
+      fill="${even?'rgba(201,168,76,0.05)':'transparent'}" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>`;
+    const sm=polarToXY(CX,CY,(R_MANSION+R_MANSION_IN)/2,mid);
+    html+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central"
+      font-size="9" fill="#C9A84C" opacity="0.7">${m.name}</text>`;
+  }
+
+  // ── HOUSE RING ──
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_HOUSE}" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.35"/>`;
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_HOUSE_IN}" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.25"/>`;
+  html+=`<circle cx="${CX}" cy="${CY}" r="${R_INNER}" fill="rgba(0,0,0,0.3)" stroke="#C9A84C" stroke-width="0.8" opacity="0.4"/>`;
+
+  // ── HOUSE LINES + NUMBERS ──
+  cusps.forEach((cusp,i)=>{
+    const ang=lonToAngle(cusp,asc);
+    const isAngle=[0,3,6,9].includes(i);
+    const inner=isAngle?0:R_HOUSE_IN;
+    const p1=polarToXY(CX,CY,inner,ang);
+    const p2=polarToXY(CX,CY,R_HOUSE,ang);
+    html+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"
+      stroke="#C9A84C" stroke-width="${isAngle?1.2:0.5}" opacity="${isAngle?0.8:0.4}"/>`;
+    if(isAngle){
+      // extend to zodiac
+      const p3=polarToXY(CX,CY,R_ZODIAC_IN,ang);
+      html+=`<line x1="${p2.x}" y1="${p2.y}" x2="${p3.x}" y2="${p3.y}"
+        stroke="#C9A84C" stroke-width="0.8" opacity="0.6" stroke-dasharray="3,3"/>`;
+    }
+    // house number
+    const nextCusp=cusps[(i+1)%12];
+    let midLon=(cusp+nextCusp)/2;
+    if(nextCusp<cusp) midLon=(cusp+(nextCusp+360))/2;
+    midLon=midLon%360;
+    const midAng=lonToAngle(midLon,asc);
+    const np=polarToXY(CX,CY,(R_HOUSE+R_HOUSE_IN)/2,midAng);
+    html+=`<text x="${np.x}" y="${np.y}" text-anchor="middle" dominant-baseline="central"
+      font-size="10" fill="#C9A84C" opacity="0.6" font-family="Cinzel,serif">${i+1}</text>`;
+  });
+
+  // ── ANGLE MARKERS: ASC / MC / DSC / IC ──
+  const angles=[
+    {label:'ASC',lon:asc,color:'#F5D060'},
+    {label:'MC',lon:(asc+90)%360,color:'#E8A0B0'},
+    {label:'DSC',lon:(asc+180)%360,color:'#F5D060'},
+    {label:'IC',lon:(asc+270)%360,color:'#E8A0B0'},
+  ];
+  angles.forEach(a=>{
+    const ang=lonToAngle(a.lon,asc);
+    const p=polarToXY(CX,CY,R_ZODIAC+14,ang);
+    html+=`<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central"
+      font-size="9" font-family="Cinzel,serif" fill="${a.color}" filter="url(#text-glow)" font-weight="600">${a.label}</text>`;
+  });
+
+  // ── ASPECT LINES (inner) ──
+  const aspectAngles=[{a:60,c:'#88C088',w:0.5},{a:90,c:'#D47E7E',w:0.6},{a:120,c:'#7EB8D4',w:0.7},{a:180,c:'#D4A07E',w:0.5}];
+  const pkeys=Object.keys(planets).filter(k=>k!=='node');
+  for(let i=0;i<pkeys.length;i++){
+    for(let j=i+1;j<pkeys.length;j++){
+      const lon1=planets[pkeys[i]], lon2=planets[pkeys[j]];
+      const diff=Math.abs(((lon1-lon2+180+360)%360)-180);
+      for(const asp of aspectAngles){
+        if(Math.abs(diff-asp.a)<6){
+          const a1=lonToAngle(lon1,asc);
+          const a2=lonToAngle(lon2,asc);
+          const p1=polarToXY(CX,CY,R_INNER-10,a1);
+          const p2=polarToXY(CX,CY,R_INNER-10,a2);
+          html+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"
+            stroke="${asp.c}" stroke-width="${asp.w}" opacity="0.4"/>`;
+          break;
+        }
+      }
+    }
+  }
+
+  // ── NATAL PLANETS ──
+  PLANETS.forEach(p=>{
+    const lon=planets[p.id];
+    if(lon===undefined) return;
+    const ang=lonToAngle(lon,asc);
+    const pos=polarToXY(CX,CY,R_PLANET_NAT,ang);
+    // glow circle
+    html+=`<circle cx="${pos.x}" cy="${pos.y}" r="13" fill="${p.color}" opacity="0.12" filter="url(#planet-glow)"/>`;
+    html+=`<circle cx="${pos.x}" cy="${pos.y}" r="9" fill="rgba(0,0,0,0.7)" stroke="${p.color}" stroke-width="1.2" opacity="0.9"/>`;
+    // symbol
+    html+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central"
+      font-size="11" fill="${p.color}" filter="url(#text-glow)"
+      class="planet-sym" data-planet="${p.id}" data-lon="${lon.toFixed(2)}"
+      style="cursor:pointer">${p.sym}</text>`;
+    // degree line
+    const lp1=polarToXY(CX,CY,R_HOUSE,ang);
+    const lp2=polarToXY(CX,CY,R_PLANET_NAT-14,ang);
+    html+=`<line x1="${lp1.x}" y1="${lp1.y}" x2="${lp2.x}" y2="${lp2.y}"
+      stroke="${p.color}" stroke-width="0.5" opacity="0.3"/>`;
+  });
+
+  // ── TRANSIT PLANETS (outer ring) ──
+  if(showTransit && transitPlanets){
+    PLANETS.forEach((p,pi)=>{
+      const lon=transitPlanets[p.id];
+      if(lon===undefined) return;
+      const ang=lonToAngle(lon,asc);
+      const pos=polarToXY(CX,CY,R_PLANET_TRANS,ang);
+      const tc=pi<2?'#7EB8D4':(pi>=7?'#88C088':'#D47E7E');
+      html+=`<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="rgba(0,0,0,0.8)" stroke="${tc}" stroke-width="1" opacity="0.85"/>`;
+      html+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central"
+        font-size="10" fill="${tc}" filter="url(#text-glow)">${p.sym}</text>`;
+    });
+    // transit ring marker
+    html+=`<circle cx="${CX}" cy="${CY}" r="${R_PLANET_TRANS+18}" fill="none" stroke="#7EB8D4" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,6" class="transit-active"/>`;
+  }
+
+  // ── CENTRAL DECORATION ──
+  html+=`<circle cx="${CX}" cy="${CY}" r="28" fill="rgba(0,0,0,0.8)" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>`;
+  html+=`<circle cx="${CX}" cy="${CY}" r="22" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.4"/>`;
+  // 8-pointed star
+  const starPts=[];
+  for(let i=0;i<8;i++){
+    const r=i%2===0?20:10;
+    const a=(i*45-90)*Math.PI/180;
+    starPts.push(`${CX+r*Math.cos(a)},${CY+r*Math.sin(a)}`);
+  }
+  html+=`<polygon points="${starPts.join(' ')}" fill="#C9A84C" opacity="0.4"/>`;
+  // ASC degree display
+  const ascSign=Math.floor(asc/30);
+  const ascDeg=(asc%30).toFixed(1);
+  html+=`<text x="${CX}" y="${CY-8}" text-anchor="middle" font-size="8" fill="#C9A84C" font-family="Cinzel,serif" opacity="0.8">${ZODIAC_SIGNS[ascSign].sym}${ascDeg}°</text>`;
+  html+=`<text x="${CX}" y="${CY+8}" text-anchor="middle" font-size="7" fill="#C9A84C" font-family="Cinzel,serif" opacity="0.6">ASC</text>`;
+
+  // ── NAME TAG ──
+  const name=document.getElementById('inp-name').value||'星命者';
+  html+=`<text x="${CX}" y="24" text-anchor="middle" font-size="13" fill="#C9A84C"
+    font-family="Cinzel,serif" filter="url(#text-glow)" letter-spacing="0.15em" opacity="0.85">${name}</text>`;
+  html+=`<text x="${CX}" y="676" text-anchor="middle" font-size="10" fill="#C9A84C"
+    font-family="Cinzel,serif" opacity="0.5" letter-spacing="0.1em">
+    ${document.getElementById('inp-date').value} · ${document.getElementById('inp-time').value} · ${document.getElementById('inp-place').value}</text>`;
+
+  svg.innerHTML=html;
+
+  // Tooltip events
+  svg.querySelectorAll('.planet-sym').forEach(el=>{
+    el.addEventListener('mouseenter',function(e){
+      const pid=this.getAttribute('data-planet');
+      const pl=PLANETS.find(p=>p.id===pid);
+      const lon=parseFloat(this.getAttribute('data-lon'));
+      const sign=Math.floor(lon/30);
+      const deg=(lon%30).toFixed(2);
+      const mansion=getMansion(lon);
+      const tt=document.getElementById('tooltip');
+      tt.innerHTML=`<strong>${pl.sym} ${pl.name}</strong><br>${ZODIAC_SIGNS[sign].sym} ${ZODIAC_SIGNS[sign].n} ${deg}°<br>宿：${mansion.name}宿 (${mansion.en})`;
+      tt.style.display='block';
+    });
+    el.addEventListener('mousemove',function(e){
+      const tt=document.getElementById('tooltip');
+      const wrap=document.getElementById('chart-wrap').getBoundingClientRect();
+      tt.style.left=(e.clientX-wrap.left+14)+'px';
+      tt.style.top=(e.clientY-wrap.top-30)+'px';
+    });
+    el.addEventListener('mouseleave',function(){
+      document.getElementById('tooltip').style.display='none';
+    });
+  });
+}
+
+function updateInfoPanels(){
+  const {planets,asc}=chartState;
+  // Planet list
+  let ph='';
+  PLANETS.forEach(p=>{
+    const lon=planets[p.id];
+    const sign=Math.floor(lon/30);
+    const deg=(lon%30).toFixed(1);
+    const mansion=getMansion(lon);
+    ph+=`<div class="planet-row">
+      <span class="planet-sym">${p.sym}</span>
+      <span class="planet-name">${p.name}</span>
+      <span class="planet-pos">${ZODIAC_SIGNS[sign].sym}${ZODIAC_SIGNS[sign].n} ${deg}°</span>
+      <span class="planet-mansion">${mansion.name}宿</span>
+    </div>`;
+  });
+  // ASC
+  const ascSign=Math.floor(asc/30);
+  ph+=`<div class="planet-row">
+    <span class="planet-sym" style="font-size:10px;">ASC</span>
+    <span class="planet-name"></span>
+    <span class="planet-pos">${ZODIAC_SIGNS[ascSign].sym}${ZODIAC_SIGNS[ascSign].n} ${(asc%30).toFixed(1)}°</span>
+    <span class="planet-mansion"></span>
+  </div>`;
+  document.getElementById('planet-list').innerHTML=ph;
+
+  // Mansion list — which planets in each mansion
+  let mh='<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
+  MANSIONS.forEach(m=>{
+    const inMansion=PLANETS.filter(p=>{
+      const lon=planets[p.id];
+      return getMansion(lon).name===m.name;
+    });
+    mh+=`<div style="padding:3px 0;border-bottom:1px solid rgba(201,168,76,0.08);font-size:11px;">
+      <span style="color:var(--gold);font-weight:600;">${m.name}宿</span>
+      <span style="color:var(--text-dim);margin-left:4px;">${inMansion.map(p=>p.sym).join('') || '·'}</span>
+    </div>`;
+  });
+  mh+='</div>';
+  document.getElementById('mansion-list').innerHTML=mh;
+}
+
+// ══════════════════════════════════════════════
+//  FIRDARIA
+// ══════════════════════════════════════════════
+function showFirdaria(){
+  if(!chartState.planets){ buildChart(); return; }
+  const {birthData}=chartState;
+  const rows=calcFirdaria(
+    document.getElementById('inp-date').value,
+    birthData.hour,
+    chartState.planets.sun
+  );
+  const now=new Date();
+  let html=`<table class="firdaria-table">
+    <thead><tr><th>星主</th><th>大限开始</th><th>大限结束</th><th>年龄</th></tr></thead>
+    <tbody>`;
+  rows.forEach(r=>{
+    const startD=new Date(document.getElementById('inp-date').value);
+    startD.setFullYear(startD.getFullYear()+r.startAge);
+    const endD=new Date(document.getElementById('inp-date').value);
+    endD.setFullYear(endD.getFullYear()+r.endAge);
+    const active=now>=startD && now<endD;
+    html+=`<tr class="${active?'active-period':''}">
+      <td><span class="period-lord">${r.sym}</span> ${r.planet}</td>
+      <td>${r.start}</td>
+      <td>${r.end}</td>
+      <td>${r.startAge}–${r.endAge}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table>
+  <p style="font-size:10px;color:var(--text-dim);margin-top:10px;text-align:center;">
+  ◆ 高亮行为当前大限 ◆ 共75年序列</p>`;
+  document.getElementById('firdaria-content').innerHTML=html;
+  document.getElementById('firdaria-panel').classList.add('show');
+}
+function closeFirdaria(){
+  document.getElementById('firdaria-panel').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════
+//  LUNAR RETURN
+// ══════════════════════════════════════════════
+function showLunarReturn(){
+  document.getElementById('lr-inputs').style.display='block';
+  document.getElementById('btn-lunar').classList.add('active');
+}
+
+function calcLunarReturn(){
+  const {birthData,planets}=chartState;
+  if(!birthData){ buildChart(); }
+  const targetYear=parseInt(document.getElementById('lr-year').value)||new Date().getFullYear();
+  const retLat=parseFloat(document.getElementById('lr-lat').value)||39.9;
+  const retLon=parseFloat(document.getElementById('lr-lon').value)||116.4;
+
+  const birthMoonLon=chartState.planets.moon;
+  const lr=calcLunarReturn(chartState.birthData.jd, birthMoonLon, targetYear, retLat, retLon);
+  chartState.lrData=lr;
+
+  const ascSign=Math.floor(lr.asc/30);
+  const moonSign=Math.floor(lr.planets.moon/30);
+
+  let html=`<div class="lr-result">
+    <div class="lr-row"><span class="lr-label">返照时刻</span><span>${lr.date.toLocaleString('zh-CN')}</span></div>
+    <div class="lr-row"><span class="lr-label">返照ASC</span><span>${ZODIAC_SIGNS[ascSign].sym}${ZODIAC_SIGNS[ascSign].n} ${(lr.asc%30).toFixed(2)}°</span></div>
+    <div class="lr-row"><span class="lr-label">返照月亮</span><span>${ZODIAC_SIGNS[moonSign].sym}${ZODIAC_SIGNS[moonSign].n} ${(lr.planets.moon%30).toFixed(2)}°</span></div>
+  `;
+
+  // Show all return planets
+  html+=`<div style="margin-top:12px;font-family:Cinzel,serif;font-size:10px;color:var(--gold-dim);letter-spacing:.1em;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:8px;">月亮返照盘七政</div>`;
+  PLANETS.forEach(p=>{
+    const lon=lr.planets[p.id];
+    if(lon===undefined) return;
+    const sign=Math.floor(lon/30);
+    const deg=(lon%30).toFixed(2);
+    const mansion=getMansion(lon);
+    html+=`<div class="lr-row">
+      <span>${p.sym} ${p.name}</span>
+      <span>${ZODIAC_SIGNS[sign].sym}${ZODIAC_SIGNS[sign].n} ${deg}°</span>
+      <span style="font-size:10px;color:var(--gold-dim)">${mansion.name}宿</span>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Draw mini return chart in SVG (overlay style)
+  html+=`<div style="margin-top:16px;text-align:center;">
+    <svg viewBox="0 0 300 300" width="280" height="280" style="overflow:visible;">${buildMiniChart(lr.planets,lr.asc)}</svg>
+  </div>`;
+
+  document.getElementById('lr-content').innerHTML=html;
+  document.getElementById('lr-panel').classList.add('show');
+}
+
+function buildMiniChart(planets, asc){
+  const cx=150,cy=150;
+  const ro=138,rz=125,rh=100,ri=65;
+  let h='';
+  // bg
+  h+=`<circle cx="${cx}" cy="${cy}" r="${ro}" fill="#0D0C05" stroke="#C9A84C" stroke-width="1" opacity="0.8"/>`;
+  // zodiac
+  for(let i=0;i<12;i++){
+    const a1=lonToAngle(i*30,asc);
+    const a2=lonToAngle((i+1)*30,asc);
+    const mid=lonToAngle(i*30+15,asc);
+    const p1=polarToXY(cx,cy,ri+5,a1);
+    const p2=polarToXY(cx,cy,rz,a1);
+    const p3=polarToXY(cx,cy,rz,a2);
+    const p4=polarToXY(cx,cy,ri+5,a2);
+    h+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>`;
+    const sm=polarToXY(cx,cy,(rz+ri+5)/2+12,mid);
+    h+=`<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#C9A84C" opacity="0.8">${ZODIAC_SIGNS[i].sym}</text>`;
+  }
+  h+=`<circle cx="${cx}" cy="${cy}" r="${rh}" fill="none" stroke="#C9A84C" stroke-width="0.4" opacity="0.3"/>`;
+  h+=`<circle cx="${cx}" cy="${cy}" r="${ri}" fill="rgba(0,0,0,0.5)" stroke="#C9A84C" stroke-width="0.6" opacity="0.4"/>`;
+  // planets
+  PLANETS.forEach(p=>{
+    const lon=planets[p.id];
+    if(!lon) return;
+    const ang=lonToAngle(lon,asc);
+    const pos=polarToXY(cx,cy,rh+14,ang);
+    h+=`<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="rgba(0,0,0,0.8)" stroke="${PLANETS.find(x=>x.id===p.id).color}" stroke-width="1"/>`;
+    h+=`<text x="${pos.x}" y="${pos.y+1}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="${PLANETS.find(x=>x.id===p.id).color}">${p.sym}</text>`;
+  });
+  // center
+  h+=`<circle cx="${cx}" cy="${cy}" r="12" fill="#0D0C05" stroke="#C9A84C" stroke-width="0.8" opacity="0.6"/>`;
+  h+=`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="central" font-size="7" fill="#C9A84C" font-family="Cinzel,serif">☽ R</text>`;
+  return h;
+}
+
+// ══════════════════════════════════════════════
+//  INIT: draw empty chart on load
+// ══════════════════════════════════════════════
+window.addEventListener('load', ()=>{
+  buildChart();
+});
+
+// Click outside overlay to close
+document.getElementById('firdaria-panel').addEventListener('click',function(e){
+  if(e.target===this) closeFirdaria();
+});
+document.getElementById('lr-panel').addEventListener('click',function(e){
+  if(e.target===this) this.classList.remove('show');
+});
+</script>
+</body>
+</html>
