@@ -1921,38 +1921,70 @@
         }
 
         // ==========================================
-        // 核心修正 1：透干取格与建禄羊刃精准判定
+        // 核心修正 1：透干取格、建祿羊刃精準判定與月干有根取格
         // ==========================================
-        function getGejuTenGod(ri, yGZ, mGZ, hGZ) {
+        function getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ) {
             const luMap = {0:2, 1:3, 2:5, 3:6, 4:5, 5:6, 6:8, 7:9, 8:11, 9:0};
-            const yangrenMap = {0:3, 2:6, 4:6, 6:9, 8:0};
+            // 補全所有天干的羊刃映射
+            const yangrenMap = {0:3, 1:2, 2:6, 3:5, 4:6, 5:5, 6:9, 7:8, 8:0, 9:11};
 
             if (luMap[ri] === mGZ.dz) return '建祿格';
             if (yangrenMap[ri] === mGZ.dz) return '羊刃格';
 
             const hidden = ZANGGAN_FULL[mGZ.dz];
-            const monthMainQiTg = hidden[0][0];
-            const monthMainQiWx = WXT[monthMainQiTg];
-
-            let patternTg = monthMainQiTg; // 預設取月令本氣
-
-            // 檢查透干：若年、月、時干有透出與月令本氣同五行之干，以此干取格（優先月干）
+            const mainQiTg = hidden[0][0];
             const checkOrder = [mGZ.tg, yGZ.tg, hGZ.tg];
+
+            // 1. 優先檢查月令本氣是否透干
             for (let tg of checkOrder) {
-                if (tg !== -1 && WXT[tg] === monthMainQiWx) {
-                    patternTg = tg;
-                    break;
+                if (tg === mainQiTg) {
+                    const ten = SS_TABLE[ri][tg];
+                    if (ten !== '比肩' && ten !== '劫財') return ten;
                 }
             }
 
-            const tenGod = SS_TABLE[ri][patternTg];
-            
-            // 若非祿刃格，且透出之干仍為比肩/劫財（例如甲生寅月透甲，但前面已判建祿則不會走到這；
-            // 處理如戊生辰月透戊的特殊情況），則退回取月支本氣。
-            if (tenGod === '比肩' || tenGod === '劫財') {
-                return SS_TABLE[ri][monthMainQiTg];
+            // 2. 其次檢查月中氣、餘氣是否透干
+            for (let i = 1; i < hidden.length; i++) {
+                const hiddenTg = hidden[i][0];
+                for (let tg of checkOrder) {
+                    if (tg === hiddenTg) {
+                        const ten = SS_TABLE[ri][tg];
+                        if (ten !== '比肩' && ten !== '劫財') return ten;
+                    }
+                }
             }
-            return tenGod;
+
+            // 3. 都不透，但月干有根（例如：癸生丑月，乙木透月干，雖丑不含木，但年支未中有乙木根）
+            const mStem = mGZ.tg;
+            if (mStem !== -1) {
+                const mTen = SS_TABLE[ri][mStem];
+                if (mTen !== '比肩' && mTen !== '劫財') {
+                    // 檢查月干在四柱地支中是否有根
+                    const branches = [yGZ.dz, mGZ.dz, dGZ.dz, hGZ.dz];
+                    let hasRoot = false;
+                    for (let dz of branches) {
+                        if (dz !== -1) {
+                            const dzHidden = ZANGGAN_FULL[dz];
+                            for (let h of dzHidden) {
+                                // 只要藏干中包含該天干，或五行屬性相同即視為有根
+                                if (h[0] === mStem || WXT[h[0]] === WXT[mStem]) {
+                                    hasRoot = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (hasRoot) break;
+                    }
+                    if (hasRoot) return mTen;
+                }
+            }
+
+            // 4. 最終防呆退回：取月令本氣
+            const fallbackTen = SS_TABLE[ri][mainQiTg];
+            if (fallbackTen === '比肩' || fallbackTen === '劫財') {
+                if (hidden.length > 1) return SS_TABLE[ri][hidden[1][0]];
+            }
+            return fallbackTen;
         }
 
         // ==========================================
@@ -2380,7 +2412,7 @@
 
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
-                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
+                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
                 let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
 
                 const pillars = [
@@ -2468,7 +2500,7 @@
 
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
-                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
+                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
                 let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
 
                 let gejuStr = '';
