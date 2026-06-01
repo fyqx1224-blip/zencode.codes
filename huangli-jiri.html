@@ -2057,12 +2057,95 @@
             return fallbackTen;
         }
 
-        function getXiyong(ri, strengthKey, gejuTen, monthDz) {
+        // ==========================================
+        // 核心修正：特殊格局判定引擎 (嚴格破局防護)
+        // ==========================================
+        function getSpecialPatterns(pillars, baseGeju, ri) {
+            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+            const tgList = [pillars[0].tg, pillars[1].tg, pillars[3].tg].filter(t => t !== -1);
+            
+            pillars.forEach(p => {
+                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
+                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
+            });
+
+            const specials = [];
+            const monthDz = pillars[1].dz;
+            const dmWx = WXT[ri];
+
+            const tgTenGods = tgList.map(tg => SS_TABLE[ri][tg]);
+
+            if (baseGeju === '羊刃格' && tgTenGods.includes('七殺')) {
+                specials.push('sp_yangren_sha');
+            }
+
+            const hasSha = tgTenGods.includes('七殺') || baseGeju === '七殺';
+            const hasYin = tgTenGods.includes('正印') || tgTenGods.includes('偏印') || baseGeju === '正印' || baseGeju === '偏印';
+            if (hasSha && hasYin && !specials.includes('sp_yangren_sha')) {
+                specials.push('sp_shayin');
+            }
+
+            if (tgTenGods.includes('七殺') && tgTenGods.includes('食神')) {
+                specials.push('sp_shishen_sha');
+            }
+
+            if ((baseGeju === '傷官' || baseGeju === '伤官') && (tgTenGods.includes('正印') || tgTenGods.includes('偏印'))) {
+                specials.push('sp_shangguan_yin');
+            }
+
+            if (counts['木'] > 0 && counts['火'] > 0 && counts['土'] > 0 && counts['金'] > 0 && counts['水'] > 0) {
+                specials.push('sp_wuxing');
+            }
+
+            if ((dmWx === '木' || dmWx === '火') && (counts['木'] + counts['火'] >= 6) && counts['水'] === 0) {
+                specials.push('sp_muhuo');
+            }
+
+            const isAutumnWinter = [8, 9, 10, 11, 0, 1].includes(monthDz); 
+            if ((dmWx === '金' || dmWx === '水') && (counts['金'] + counts['水'] >= 6) && counts['土'] === 0 && counts['火'] === 0 && isAutumnWinter) {
+                specials.push('sp_jinshui');
+            }
+
+            if ((dmWx === '水' || dmWx === '木') && (counts['水'] + counts['木'] >= 6) && counts['金'] === 0) {
+                specials.push('sp_shuimu');
+            }
+
+            if (counts['火'] >= 3 && counts['金'] >= 3 && counts['水'] === 0 && counts['土'] <= 1) {
+                specials.push('sp_huojin');
+            }
+
+            const isWinter = [11, 0, 1].includes(monthDz); 
+            if (isWinter && (counts['金'] + counts['水'] >= 5) && counts['火'] === 0) {
+                specials.push('sp_jinhan');
+            }
+
+            return specials;
+        }
+
+        function getXiyong(ri, strengthKey, gejuTen, monthDz, specials, pillarsRaw) {
             const dmWx = WXT[ri];
             const gen = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
             const ctrl = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
             const genBy = { '木': '水', '火': '木', '土': '火', '金': '土', '水': '金' };
             const ctrlBy = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
+
+            // 1. 特殊格局绝对优先
+            if (specials.includes('sp_muhuo')) return ['火', '土'];
+            if (specials.includes('sp_jinshui')) return ['水', '木'];
+            if (specials.includes('sp_shuimu')) return ['木', '火'];
+            if (specials.includes('sp_huojin')) return ['土']; // 湿土通关
+            if (specials.includes('sp_jinhan')) return ['火', '木'];
+            if (specials.includes('sp_shayin')) return [genBy[dmWx]]; // 喜印
+            if (specials.includes('sp_yangren_sha')) return [ctrl[dmWx], ctrlBy[dmWx]]; // 喜官杀，次财
+            if (specials.includes('sp_shishen_sha')) return [gen[dmWx], dmWx]; // 喜食伤，次比劫
+            if (specials.includes('sp_shangguan_yin')) return [genBy[dmWx]]; // 喜印
+
+            // 2. 统计五行力量用于动态扶抑
+            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+            pillarsRaw.forEach(p => {
+                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
+                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
+            });
 
             let xiyong = [];
             const isWinter = monthDz === 0 || monthDz === 1 || monthDz === 11;
@@ -2075,28 +2158,35 @@
             if (strengthKey === 'str_weak') {
                 standardFav = [genBy[dmWx], dmWx];
             } else {
-                standardFav = [ctrlBy[dmWx], ctrl[dmWx], gen[dmWx]]; 
+                // 身旺的重大修正：动态判断「用官杀」还是「用食伤」
+                const powerWx = ctrl[dmWx];   
+                const outputWx = gen[dmWx];   
+                const wealthWx = ctrlBy[dmWx];
+
+                // 如果原局食伤力量 >= 官杀，或者官杀极弱/被克严重，首选食伤泄秀生财
+                if (counts[outputWx] >= counts[powerWx] || counts[powerWx] <= 0) {
+                    standardFav = [outputWx, wealthWx]; 
+                } else {
+                    standardFav = [powerWx, wealthWx]; 
+                }
             }
 
             if (needWarm) {
                 xiyong.push('火');
-                standardFav.forEach(el => {
-                    if (el !== '水' || dmWx === '水') xiyong.push(el);
-                });
+                standardFav.forEach(el => { if (el !== '水' || dmWx === '水') xiyong.push(el); });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
             } else if (needCool) {
                 xiyong.push('水');
-                standardFav.forEach(el => {
-                    if (el !== '火' || dmWx === '火') xiyong.push(el);
-                });
+                standardFav.forEach(el => { if (el !== '火' || dmWx === '火') xiyong.push(el); });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
             } else {
                 xiyong = standardFav;
             }
 
             xiyong = [...new Set(xiyong)].slice(0, 2);
-            if(xiyong.length === 0) xiyong = [ctrlBy[dmWx], ctrl[dmWx]];
-            
+            if(xiyong.length === 0) xiyong = standardFav;
+
+            // 格式化输出顺序
             if (xiyong.includes('木') && xiyong.includes('火')) return ['火', '木']; 
             if (xiyong.includes('金') && xiyong.includes('水')) return ['水', '金'];
             if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
@@ -2147,84 +2237,6 @@
             const baseText = t(`dyn_${group}_${strPrefix}`);
             const advText = t(`dyn_adv_${ssType}`);
             return `<strong>${t('lbl_5x_mind')}</strong><br>${baseText}<br><br><strong>${t('lbl_guide')}</strong><br>${advText}`;
-        }
-
-        // ==========================================
-        // 核心修正：特殊格局判定引擎 (嚴格破局防護)
-        // ==========================================
-        function getSpecialPatterns(pillars, baseGeju, ri) {
-            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
-            const tgList = [pillars[0].tg, pillars[1].tg, pillars[3].tg].filter(t => t !== -1);
-            
-            pillars.forEach(p => {
-                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
-                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
-            });
-
-            const specials = [];
-            const monthDz = pillars[1].dz;
-            const dmWx = WXT[ri];
-
-            // 獲取所有透出的十神
-            const tgTenGods = tgList.map(tg => SS_TABLE[ri][tg]);
-
-            // === 經典結構組合 ===
-            // 羊刃駕殺: 原局必須是羊刃格，且天干透出七殺
-            if (baseGeju === '羊刃格' && tgTenGods.includes('七殺')) {
-                specials.push('sp_yangren_sha');
-            }
-
-            // 殺印相生: 七殺透出 或 本局為七殺格，且透出印星 或 本局為印星
-            const hasSha = tgTenGods.includes('七殺') || baseGeju === '七殺';
-            const hasYin = tgTenGods.includes('正印') || tgTenGods.includes('偏印') || baseGeju === '正印' || baseGeju === '偏印';
-            if (hasSha && hasYin && !specials.includes('sp_yangren_sha')) {
-                specials.push('sp_shayin');
-            }
-
-            // 食神制殺: 七殺透出，且食神透出
-            if (tgTenGods.includes('七殺') && tgTenGods.includes('食神')) {
-                specials.push('sp_shishen_sha');
-            }
-
-            // 傷官佩印: 傷官格，透印星
-            if ((baseGeju === '傷官' || baseGeju === '伤官') && (tgTenGods.includes('正印') || tgTenGods.includes('偏印'))) {
-                specials.push('sp_shangguan_yin');
-            }
-
-            // === 五行氣象格局 (嚴格判定) ===
-            // 五行俱全
-            if (counts['木'] > 0 && counts['火'] > 0 && counts['土'] > 0 && counts['金'] > 0 && counts['水'] > 0) {
-                specials.push('sp_wuxing');
-            }
-
-            // 木火通明: 日主為木/火，木火總數 >= 6，且無水破局(水=0)
-            if ((dmWx === '木' || dmWx === '火') && (counts['木'] + counts['火'] >= 6) && counts['水'] === 0) {
-                specials.push('sp_muhuo');
-            }
-
-            // 金白水清: 日主為金/水，金水總數 >= 6，秋冬生，且無土濁水、無火剋金
-            const isAutumnWinter = [8, 9, 10, 11, 0, 1].includes(monthDz); // 申酉戌亥子丑
-            if ((dmWx === '金' || dmWx === '水') && (counts['金'] + counts['水'] >= 6) && counts['土'] === 0 && counts['火'] === 0 && isAutumnWinter) {
-                specials.push('sp_jinshui');
-            }
-
-            // 水木清華: 日主為水/木，水木總數 >= 6，無金剋木
-            if ((dmWx === '水' || dmWx === '木') && (counts['水'] + counts['木'] >= 6) && counts['金'] === 0) {
-                specials.push('sp_shuimu');
-            }
-
-            // 火金交戰: 火金兩旺，互相剋伐
-            if (counts['火'] >= 3 && counts['金'] >= 3 && counts['水'] === 0 && counts['土'] <= 1) {
-                specials.push('sp_huojin');
-            }
-
-            // 金寒水冷: 亥子丑月生，金水總數 >= 5，全局無火調候
-            const isWinter = [11, 0, 1].includes(monthDz); // 亥子丑
-            if (isWinter && (counts['金'] + counts['水'] >= 5) && counts['火'] === 0) {
-                specials.push('sp_jinhan');
-            }
-
-            return specials;
         }
 
         function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, ldGZ) {
@@ -2563,7 +2575,15 @@
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
                 const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
+
+                const mpPillarsRaw = [
+                    { tg: yGZ.tg, dz: yGZ.dz },
+                    { tg: mGZ.tg, dz: mGZ.dz },
+                    { tg: dGZ.tg, dz: dGZ.dz },
+                    { tg: hGZ.tg, dz: hGZ.dz }
+                ];
+                const specials = getSpecialPatterns(mpPillarsRaw, gejuTen, ri);
+                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz, specials, mpPillarsRaw); 
 
                 const pillars = [
                     { label: t('lbl_year'), tg: yGZ.tg, dz: yGZ.dz, tgTenRaw: SS_TABLE[ri][yGZ.tg],
@@ -2661,12 +2681,6 @@
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
                 const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
                 const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz); 
-
-                let gejuStr = '';
-                if (gejuTen === '建祿格') gejuStr = t('pat_jianlu');
-                else if (gejuTen === '羊刃格') gejuStr = t('pat_yangren');
-                else gejuStr = (t('ten')[gejuTen] || gejuTen) + t('pat_suffix');
 
                 // ====== 附加特殊格局 Badge ======
                 const mpPillarsRaw = [
@@ -2676,6 +2690,13 @@
                     { tg: hGZ.tg, dz: hGZ.dz }
                 ];
                 const specials = getSpecialPatterns(mpPillarsRaw, gejuTen, ri);
+                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz, specials, mpPillarsRaw); 
+
+                let gejuStr = '';
+                if (gejuTen === '建祿格') gejuStr = t('pat_jianlu');
+                else if (gejuTen === '羊刃格') gejuStr = t('pat_yangren');
+                else gejuStr = (t('ten')[gejuTen] || gejuTen) + t('pat_suffix');
+
                 if (specials.length > 0) {
                     const spTags = specials.map(sKey => `<span style="font-size:0.55rem; background:rgba(212,168,67,0.15); color:var(--gold-b); padding:2px 5px; border-radius:3px; margin-left:6px; letter-spacing:0.05em; vertical-align:middle;">${t(sKey)}</span>`).join('');
                     gejuStr += spTags;
