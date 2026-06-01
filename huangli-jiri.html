@@ -2122,6 +2122,9 @@
             return specials;
         }
 
+        // ==========================================
+        // 核心修正：防交戰喜用神抓取引擎
+        // ==========================================
         function getXiyong(ri, strengthKey, gejuTen, monthDz, specials, pillarsRaw) {
             const dmWx = WXT[ri];
             const gen = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
@@ -2156,28 +2159,42 @@
 
             let standardFav = [];
             if (strengthKey === 'str_weak') {
-                standardFav = [genBy[dmWx], dmWx];
+                standardFav = [genBy[dmWx], dmWx]; // 印, 比
             } else {
-                // 身旺的重大修正：动态判断「用官杀」还是「用食伤」
-                const powerWx = ctrl[dmWx];   
-                const outputWx = gen[dmWx];   
-                const wealthWx = ctrlBy[dmWx];
+                // 身旺的重大修正：嚴格區分「用官殺」還是「用食傷」，兩者不可並用（水火不容/金木交戰）
+                const powerWx = ctrl[dmWx];    // 官杀
+                const outputWx = gen[dmWx];    // 食伤
+                const wealthWx = ctrlBy[dmWx]; // 财星
 
-                // 如果原局食伤力量 >= 官杀，或者官杀极弱/被克严重，首选食伤泄秀生财
-                if (counts[outputWx] >= counts[powerWx] || counts[powerWx] <= 0) {
-                    standardFav = [outputWx, wealthWx]; 
-                } else {
-                    standardFav = [powerWx, wealthWx]; 
+                // 判斷原局食傷與官殺的力量對比與透干情況
+                let outPower = counts[outputWx] * 1.5 + (pillarsRaw[0].tg>=0 && WXT[pillarsRaw[0].tg]===outputWx ? 2 : 0) + (pillarsRaw[1].tg>=0 && WXT[pillarsRaw[1].tg]===outputWx ? 2 : 0) + (pillarsRaw[3].tg>=0 && WXT[pillarsRaw[3].tg]===outputWx ? 2 : 0);
+                let ctrlPower = counts[powerWx] * 1.5 + (pillarsRaw[0].tg>=0 && WXT[pillarsRaw[0].tg]===powerWx ? 2 : 0) + (pillarsRaw[1].tg>=0 && WXT[pillarsRaw[1].tg]===powerWx ? 2 : 0) + (pillarsRaw[3].tg>=0 && WXT[pillarsRaw[3].tg]===powerWx ? 2 : 0);
+
+                // 极端情况：如果日主五行 >= 4 (极旺)，绝对不能用官杀去硬碰硬（激怒旺神），必须用食伤泄秀
+                if (counts[dmWx] >= 4) {
+                    standardFav = [outputWx, wealthWx]; // 强制喜 食伤、财
+                }
+                // 原局食伤力量大于等于官杀，或者官杀极弱被克，则顺势用食伤泄秀生财
+                else if (outPower >= ctrlPower || counts[powerWx] <= 0) {
+                    standardFav = [outputWx, wealthWx];
+                }
+                // 原局官杀有力且无严重克损，用财官
+                else {
+                    standardFav = [wealthWx, powerWx];
                 }
             }
 
             if (needWarm) {
                 xiyong.push('火');
-                standardFav.forEach(el => { if (el !== '水' || dmWx === '水') xiyong.push(el); });
+                standardFav.forEach(el => {
+                    if (el !== '水' || dmWx === '水') xiyong.push(el);
+                });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
             } else if (needCool) {
                 xiyong.push('水');
-                standardFav.forEach(el => { if (el !== '火' || dmWx === '火') xiyong.push(el); });
+                standardFav.forEach(el => {
+                    if (el !== '火' || dmWx === '火') xiyong.push(el);
+                });
                 if (xiyong.length < 2) xiyong.push(...standardFav);
             } else {
                 xiyong = standardFav;
@@ -2185,8 +2202,8 @@
 
             xiyong = [...new Set(xiyong)].slice(0, 2);
             if(xiyong.length === 0) xiyong = standardFav;
-
-            // 格式化输出顺序
+            
+            // 格式化輸出順序
             if (xiyong.includes('木') && xiyong.includes('火')) return ['火', '木']; 
             if (xiyong.includes('金') && xiyong.includes('水')) return ['水', '金'];
             if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
@@ -2743,7 +2760,7 @@
 
                 if (document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent =
                     `${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyTxt}${t('wx_'+WXT[dGZ.tg])}`;
-                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').innerHTML = gejuStr; // 改為 innerHTML 渲染徽章
+                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').innerHTML = gejuStr; 
 
                 if (document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x =>
                     t('wx_' + x)).join(currentLang === 'en' ? ', ' : '、');
