@@ -903,7 +903,7 @@ const JQTBL_PRECISE={
   2001:[[5,13,17],[3,17,28],[5,12,13],[5,6,4],[5,0,44],[6,21,53],[7,17,6],[7,14,16],[8,5,46],[8,8,25],[7,13,1],[7,6,57]],
   2002:[[5,19,24],[4,23,23],[6,17,16],[5,12,26],[5,6,31],[6,3,9],[7,22,15],[7,21,55],[8,11,17],[8,15,23],[7,18,36],[7,13,14]],
   2003:[[6,1,9],[4,3,57],[6,0,22],[5,18,52],[6,12,35],[6,8,45],[7,4,31],[7,2,8],[8,18,8],[8,20,3],[8,1,13],[7,19,4]],
-  2004:[[6,6,18],[4,9,56],[5,4,56],[4,21,43],[5,17,42],[5,12,35],[7,8,27],[7,6,23],[7,21,13],[8,1,14],[7,4,49],[5,22,50]],
+  2004:[[6,6,18],[4,19,56],[5,4,56],[4,21,43],[5,17,42],[5,12,35],[7,8,27],[7,6,23],[7,21,13],[8,1,14],[7,4,49],[5,22,50]],
   2005:[[5,12,3],[4,18,43],[6,11,9],[5,5,34],[4,23,34],[6,18,46],[7,15,42],[7,12,43],[8,4,43],[8,7,17],[7,11,24],[7,6,15]],
   2006:[[5,18,47],[4,0,15],[6,17,29],[5,11,26],[6,5,31],[6,2,17],[7,21,18],[7,19,12],[8,11,11],[8,14,9],[7,17,55],[7,12,20]],
   2007:[[5,23,43],[4,6,18],[5,23,8],[5,17,4],[6,11,56],[6,7,56],[7,3,20],[7,0,31],[8,16,8],[8,20,7],[8,0,50],[7,17,14]],
@@ -995,12 +995,17 @@ const DZC=['cwa','ce','cw','cw','ce','cf','cf','ce','cm','cm','ce','cwa'];
 function jdn(y,m,d){const a=Math.floor((14-m)/12),yr=y+4800-a,mo=m+12*a-3;return d+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)-Math.floor(yr/100)+Math.floor(yr/400)-32045;}
 
 function getYrGZ(year, month, day, hour=12, minute=0){
-  const lc=getJQPrecise(year,1);
-  const tgt=month*10000+day*100+(hour*60+minute);
-  const jqt=2*10000+lc.day*100+(lc.hour*60+lc.minute);
-  let y=year;
-  if(month<2||(month===2&&tgt<jqt))y=year-1;
-  return{tg:((y-4)%10+10)%10,dz:((y-4)%12+12)%12};
+  const lc = getJQPrecise(year, 1);
+  const targetMins = day * 1440 + hour * 60 + minute;
+  const lcMins = lc.day * 1440 + lc.hour * 60 + lc.minute;
+  let y = year;
+  if (month < 2 || (month === 2 && targetMins < lcMins)) {
+    y = year - 1;
+  }
+  return {
+    tg: ((y - 4) % 10 + 10) % 10,
+    dz: ((y - 4) % 12 + 12) % 12
+  };
 }
 
 function getMoGZ(year, month, day, hour=12, minute=0){
@@ -1087,21 +1092,39 @@ function getDayun(gender,year,month,day,yrTg){
 }
 
 function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
-  const st=correctSolarTime(hour,minute,birthplace,tzOffset);
-  let ah=st.hour,am=st.minute,dy=day;
-  const yGZ=getYrGZ(year,month,dy,ah,am),mGZ=getMoGZ(year,month,dy,ah,am),dGZ=getDayGZ(year,month,dy),hGZ=getHrGZ(ah,dGZ.tg);
-  const ri=dGZ.tg;
-  const pillars=[
-    {label:'年柱',tgIdx:yGZ.tg,dzIdx:yGZ.dz,tg:TG[yGZ.tg],dz:DZ[yGZ.dz],tenGod:SS[ri][yGZ.tg],ws:getWS(ri,yGZ.dz)},
-    {label:'月柱',tgIdx:mGZ.tg,dzIdx:mGZ.dz,tg:TG[mGZ.tg],dz:DZ[mGZ.dz],tenGod:SS[ri][mGZ.tg],ws:getWS(ri,mGZ.dz)},
-    {label:'日柱',tgIdx:dGZ.tg,dzIdx:dGZ.dz,tg:TG[dGZ.tg],dz:DZ[dGZ.dz],tenGod:'日主',ws:getWS(ri,dGZ.dz)},
-    {label:'時柱',tgIdx:hGZ.tg,dzIdx:hGZ.dz,tg:TG[hGZ.tg],dz:DZ[hGZ.dz],tenGod:SS[ri][hGZ.tg],ws:getWS(ri,hGZ.dz)},
+  const st = correctSolarTime(hour, minute, birthplace, tzOffset);
+  let ah = st.hour, am = st.minute;
+  
+  let calcYear = year, calcMonth = month, calcDay = day;
+  if (ah >= 23) {
+    const dateObj = new Date(Date.UTC(year, month - 1, day));
+    dateObj.setUTCDate(dateObj.getUTCDate() + 1);
+    calcYear = dateObj.getUTCFullYear();
+    calcMonth = dateObj.getUTCMonth() + 1;
+    calcDay = dateObj.getUTCDate();
+  }
+
+  const yGZ = getYrGZ(calcYear, calcMonth, calcDay, ah, am);
+  const mGZ = getMoGZ(calcYear, calcMonth, calcDay, ah, am);
+  const dGZ = getDayGZ(calcYear, calcMonth, calcDay); 
+  const hGZ = getHrGZ(ah, dGZ.tg);
+  
+  const ri = dGZ.tg;
+  
+  const pillars = [
+    {label:'年柱', tgIdx:yGZ.tg, dzIdx:yGZ.dz, tg:TG[yGZ.tg], dz:DZ[yGZ.dz], tenGod:SS[ri][yGZ.tg], ws:getWS(ri,yGZ.dz)},
+    {label:'月柱', tgIdx:mGZ.tg, dzIdx:mGZ.dz, tg:TG[mGZ.tg], dz:DZ[mGZ.dz], tenGod:SS[ri][mGZ.tg], ws:getWS(ri,mGZ.dz)},
+    {label:'日柱', tgIdx:dGZ.tg, dzIdx:dGZ.dz, tg:TG[dGZ.tg], dz:DZ[dGZ.dz], tenGod:'日主', ws:getWS(ri,dGZ.dz)},
+    {label:'時柱', tgIdx:hGZ.tg, dzIdx:hGZ.dz, tg:TG[hGZ.tg], dz:DZ[hGZ.dz], tenGod:SS[ri][hGZ.tg], ws:getWS(ri,hGZ.dz)},
   ];
-  const dy2=getDayun(gender,year,month,dy,yGZ.tg);
-  const ny=[nayin(yGZ.tg,yGZ.dz),nayin(mGZ.tg,mGZ.dz),nayin(dGZ.tg,dGZ.dz),nayin(hGZ.tg,hGZ.dz)];
-  const bt10=Math.round((BT[yGZ.tg]+BD[yGZ.dz]+BT[mGZ.tg]+BD[mGZ.dz]+BT[dGZ.tg]+BD[dGZ.dz]+BT[hGZ.tg]+BD[hGZ.dz])*10);
-  const bl=Math.floor(bt10/10),bq=bt10%10;
-  return{pillars,dayunData:dy2,nayin:ny,boneWeight:`${bl}兩${bq}錢`,solarTime:st};
+  
+  const dy2 = getDayun(gender, calcYear, calcMonth, calcDay, yGZ.tg);
+  const ny = [nayin(yGZ.tg,yGZ.dz), nayin(mGZ.tg,mGZ.dz), nayin(dGZ.tg,dGZ.dz), nayin(hGZ.tg,hGZ.dz)];
+  
+  const bt10 = Math.round((BT[yGZ.tg] + BD[yGZ.dz] + BT[mGZ.tg] + BD[mGZ.dz] + BT[dGZ.tg] + BD[dGZ.dz] + BT[hGZ.tg] + BD[hGZ.dz]) * 10);
+  const bl = Math.floor(bt10/10), bq = bt10 % 10;
+  
+  return { pillars, dayunData:dy2, nayin:ny, boneWeight:`${bl}兩${bq}錢`, solarTime:st };
 }
 
 /* ═══════════════════════════════════════════════════════
