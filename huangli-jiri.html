@@ -1029,7 +1029,19 @@
                 modal_lon: '經度 (東經+ / 西經-)',
                 modal_tz: '時區 (UTC)',
                 modal_dst: '夏令時',
-                btn_consult: '預約命理師精準解析'
+                btn_consult: '預約命理師精準解析',
+                
+                // ===== 特殊格局 =====
+                sp_wuxing: '五行俱全',
+                sp_muhuo: '木火通明',
+                sp_jinshui: '金白水清',
+                sp_shuimu: '水木清華',
+                sp_huojin: '火金交戰',
+                sp_jinhan: '金寒水冷',
+                sp_shayin: '殺印相生',
+                sp_yangren_sha: '羊刃駕殺',
+                sp_shishen_sha: '食神制殺',
+                sp_shangguan_yin: '傷官佩印'
             },
             'zh-CN': {
                 page_title: '黄道吉日 · 真太阳时精准排盘',
@@ -1205,7 +1217,19 @@
                 modal_lon: '经度 (东经+ / 西经-)',
                 modal_tz: '时区 (UTC)',
                 modal_dst: '夏令时',
-                btn_consult: '预约命理师精准解析'
+                btn_consult: '预约命理师精准解析',
+                
+                // ===== 特殊格局 =====
+                sp_wuxing: '五行俱全',
+                sp_muhuo: '木火通明',
+                sp_jinshui: '金白水清',
+                sp_shuimu: '水木清华',
+                sp_huojin: '火金交战',
+                sp_jinhan: '金寒水冷',
+                sp_shayin: '杀印相生',
+                sp_yangren_sha: '羊刃驾杀',
+                sp_shishen_sha: '食神制杀',
+                sp_shangguan_yin: '伤官佩印'
             },
             'en': {
                 page_title: 'Auspicious Days · Solar Time Bazi',
@@ -1388,7 +1412,19 @@
                 modal_lon: 'Longitude (+E / -W)',
                 modal_tz: 'Timezone (UTC)',
                 modal_dst: 'DST',
-                btn_consult: 'Book Expert Consultation'
+                btn_consult: 'Book Expert Consultation',
+
+                // ===== 特殊格局 =====
+                sp_wuxing: 'All Five Elements',
+                sp_muhuo: 'Wood-Fire Brightness',
+                sp_jinshui: 'Metal-Water Purity',
+                sp_shuimu: 'Water-Wood Clarity',
+                sp_huojin: 'Fire-Metal Clash',
+                sp_jinhan: 'Cold Metal & Water',
+                sp_shayin: 'Killings & Resource',
+                sp_yangren_sha: 'Yangren & Killings',
+                sp_shishen_sha: 'Eating God controls Killings',
+                sp_shangguan_yin: 'Hurting Officer & Resource'
             }
         };
 
@@ -1787,9 +1823,6 @@
             return Array.from(uniqueRels.values()).slice(0, 12);
         }
 
-        // ==========================================
-        // 核心修正：引入完整的精密節氣字典，取代寫死的日曆
-        // ==========================================
         const JQTBL_PRECISE={
           1950:[[6,17,29],[4,7,9],[6,23,9],[5,17,3],[6,12,15],[6,8,31],[8,4,24],[8,2,8],[8,17,37],[8,20,45],[8,0,38],[7,18,17]],
           1951:[[6,22,33],[4,12,54],[6,5,11],[5,23,5],[6,18,39],[6,14,34],[7,10,59],[8,8,35],[8,23,1],[8,2,28],[8,5,53],[7,0,2]],
@@ -1881,9 +1914,6 @@
             return { day: r[0], hour: r[1], minute: r[2] };
         }
 
-        // ==========================================
-        // 核心修正：將所有年柱與月柱的排盤，降維到絕對分鐘對比
-        // ==========================================
         function getYrGZPrecise(year, month, day, hour, minute) {
             const lc = getJQPrecise(year, 1);
             const targetMins = day * 1440 + hour * 60 + minute;
@@ -1910,9 +1940,6 @@
             };
         }
 
-        // ==========================================
-        // 核心修正：剝離日柱內部的 23:00 判定，由外部統一調配，避免時空錯亂
-        // ==========================================
         function getDayGZ(year, month, day) {
             const d = new Date(year, month - 1, day);
             const base = Date.UTC(1900, 0, 1);
@@ -2120,6 +2147,84 @@
             const baseText = t(`dyn_${group}_${strPrefix}`);
             const advText = t(`dyn_adv_${ssType}`);
             return `<strong>${t('lbl_5x_mind')}</strong><br>${baseText}<br><br><strong>${t('lbl_guide')}</strong><br>${advText}`;
+        }
+
+        // ==========================================
+        // 核心修正：特殊格局判定引擎 (嚴格破局防護)
+        // ==========================================
+        function getSpecialPatterns(pillars, baseGeju, ri) {
+            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+            const tgList = [pillars[0].tg, pillars[1].tg, pillars[3].tg].filter(t => t !== -1);
+            
+            pillars.forEach(p => {
+                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
+                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
+            });
+
+            const specials = [];
+            const monthDz = pillars[1].dz;
+            const dmWx = WXT[ri];
+
+            // 獲取所有透出的十神
+            const tgTenGods = tgList.map(tg => SS_TABLE[ri][tg]);
+
+            // === 經典結構組合 ===
+            // 羊刃駕殺: 原局必須是羊刃格，且天干透出七殺
+            if (baseGeju === '羊刃格' && tgTenGods.includes('七殺')) {
+                specials.push('sp_yangren_sha');
+            }
+
+            // 殺印相生: 七殺透出 或 本局為七殺格，且透出印星 或 本局為印星
+            const hasSha = tgTenGods.includes('七殺') || baseGeju === '七殺';
+            const hasYin = tgTenGods.includes('正印') || tgTenGods.includes('偏印') || baseGeju === '正印' || baseGeju === '偏印';
+            if (hasSha && hasYin && !specials.includes('sp_yangren_sha')) {
+                specials.push('sp_shayin');
+            }
+
+            // 食神制殺: 七殺透出，且食神透出
+            if (tgTenGods.includes('七殺') && tgTenGods.includes('食神')) {
+                specials.push('sp_shishen_sha');
+            }
+
+            // 傷官佩印: 傷官格，透印星
+            if ((baseGeju === '傷官' || baseGeju === '伤官') && (tgTenGods.includes('正印') || tgTenGods.includes('偏印'))) {
+                specials.push('sp_shangguan_yin');
+            }
+
+            // === 五行氣象格局 (嚴格判定) ===
+            // 五行俱全
+            if (counts['木'] > 0 && counts['火'] > 0 && counts['土'] > 0 && counts['金'] > 0 && counts['水'] > 0) {
+                specials.push('sp_wuxing');
+            }
+
+            // 木火通明: 日主為木/火，木火總數 >= 6，且無水破局(水=0)
+            if ((dmWx === '木' || dmWx === '火') && (counts['木'] + counts['火'] >= 6) && counts['水'] === 0) {
+                specials.push('sp_muhuo');
+            }
+
+            // 金白水清: 日主為金/水，金水總數 >= 6，秋冬生，且無土濁水、無火剋金
+            const isAutumnWinter = [8, 9, 10, 11, 0, 1].includes(monthDz); // 申酉戌亥子丑
+            if ((dmWx === '金' || dmWx === '水') && (counts['金'] + counts['水'] >= 6) && counts['土'] === 0 && counts['火'] === 0 && isAutumnWinter) {
+                specials.push('sp_jinshui');
+            }
+
+            // 水木清華: 日主為水/木，水木總數 >= 6，無金剋木
+            if ((dmWx === '水' || dmWx === '木') && (counts['水'] + counts['木'] >= 6) && counts['金'] === 0) {
+                specials.push('sp_shuimu');
+            }
+
+            // 火金交戰: 火金兩旺，互相剋伐
+            if (counts['火'] >= 3 && counts['金'] >= 3 && counts['水'] === 0 && counts['土'] <= 1) {
+                specials.push('sp_huojin');
+            }
+
+            // 金寒水冷: 亥子丑月生，金水總數 >= 5，全局無火調候
+            const isWinter = [11, 0, 1].includes(monthDz); // 亥子丑
+            if (isWinter && (counts['金'] + counts['水'] >= 5) && counts['火'] === 0) {
+                specials.push('sp_jinhan');
+            }
+
+            return specials;
         }
 
         function generateMacroMicroReading(ri, strengthKey, xiyongArr, dy, lyGZ, lmGZ, ldGZ) {
@@ -2423,7 +2528,6 @@
                 const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER
                     .timezone, USER.isDST);
                 
-                // 【核心修正生效處】：外部剝離23:00判定
                 let calcY = adj.year, calcM = adj.month, calcD = adj.day;
                 if (adj.hour >= 23) {
                     const tempD = new Date(Date.UTC(adj.year, adj.month - 1, adj.day));
@@ -2442,7 +2546,6 @@
                 const curDyIdx = getCurrentDayunIdx(dyData, calcY, y);
                 const curDy = curDyIdx !== null ? dyData.list[curDyIdx] : null;
 
-                // 流日推演同樣需要判斷跨日
                 let liuY = y, liuM = m, liuD = day;
                 if (h >= 23) {
                     const tempL = new Date(Date.UTC(y, m - 1, day));
@@ -2565,6 +2668,19 @@
                 else if (gejuTen === '羊刃格') gejuStr = t('pat_yangren');
                 else gejuStr = (t('ten')[gejuTen] || gejuTen) + t('pat_suffix');
 
+                // ====== 附加特殊格局 Badge ======
+                const mpPillarsRaw = [
+                    { tg: yGZ.tg, dz: yGZ.dz },
+                    { tg: mGZ.tg, dz: mGZ.dz },
+                    { tg: dGZ.tg, dz: dGZ.dz },
+                    { tg: hGZ.tg, dz: hGZ.dz }
+                ];
+                const specials = getSpecialPatterns(mpPillarsRaw, gejuTen, ri);
+                if (specials.length > 0) {
+                    const spTags = specials.map(sKey => `<span style="font-size:0.55rem; background:rgba(212,168,67,0.15); color:var(--gold-b); padding:2px 5px; border-radius:3px; margin-left:6px; letter-spacing:0.05em; vertical-align:middle;">${t(sKey)}</span>`).join('');
+                    gejuStr += spTags;
+                }
+
                 let baseDate = new Date(adj.year, adj.month - 1, adj.day);
                 let lunarMD = getLunarMD(baseDate);
                 let yIdx = (adj.year - 4) % 60;
@@ -2606,7 +2722,7 @@
 
                 if (document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent =
                     `${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyTxt}${t('wx_'+WXT[dGZ.tg])}`;
-                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent = gejuStr;
+                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').innerHTML = gejuStr; // 改為 innerHTML 渲染徽章
 
                 if (document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x =>
                     t('wx_' + x)).join(currentLang === 'en' ? ', ' : '、');
