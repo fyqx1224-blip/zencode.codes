@@ -88,6 +88,19 @@
             0% { top: -2px; }
             100% { top: 100vh; }
         }
+        .fp {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2;
+            border-radius: 50%;
+            animation: fu linear both;
+        }
+        @keyframes fu {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            10% { opacity: .7; }
+            90% { opacity: .3; }
+            100% { transform: translateY(-100vh) scale(.2); opacity: 0; }
+        }
         #landing-view {
             position: relative;
             z-index: 50;
@@ -1029,19 +1042,7 @@
                 modal_lon: '經度 (東經+ / 西經-)',
                 modal_tz: '時區 (UTC)',
                 modal_dst: '夏令時',
-                btn_consult: '預約命理師精準解析',
-                
-                // ===== 特殊格局 =====
-                sp_wuxing: '五行俱全',
-                sp_muhuo: '木火通明',
-                sp_jinshui: '金白水清',
-                sp_shuimu: '水木清華',
-                sp_huojin: '火金交戰',
-                sp_jinhan: '金寒水冷',
-                sp_shayin: '殺印相生',
-                sp_yangren_sha: '羊刃駕殺',
-                sp_shishen_sha: '食神制殺',
-                sp_shangguan_yin: '傷官佩印'
+                btn_consult: '預約命理師精準解析'
             },
             'zh-CN': {
                 page_title: '黄道吉日 · 真太阳时精准排盘',
@@ -1108,7 +1109,7 @@
                 dir_fwd: '顺运（阳男 / 阴女）',
                 dir_rev: '逆运（阴男 / 阳女）',
                 click_tip: '点击查看关系',
-                ten: { '七殺': '七杀', '正官': '正官', '偏財': '偏财', '正財': '正财', '偏印': '偏印', '正印': '正印', '食神': '食神', '傷官': '伤官', '比肩': '比肩', '劫財': '劫财',
+                ten: { '七殺': '七杀', '正官': '正官', '偏財': '偏财', '正財': '正财', '偏印': '偏印', '正印': '正印', '食神': '食神', '傷官': '伤官', '比肩': '比肩', '劫财': '劫财',
                     '日主': '日主', '—': '—' },
                 tg_name: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'],
                 dz_name: ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'],
@@ -1217,19 +1218,7 @@
                 modal_lon: '经度 (东经+ / 西经-)',
                 modal_tz: '时区 (UTC)',
                 modal_dst: '夏令时',
-                btn_consult: '预约命理师精准解析',
-                
-                // ===== 特殊格局 =====
-                sp_wuxing: '五行俱全',
-                sp_muhuo: '木火通明',
-                sp_jinshui: '金白水清',
-                sp_shuimu: '水木清华',
-                sp_huojin: '火金交战',
-                sp_jinhan: '金寒水冷',
-                sp_shayin: '杀印相生',
-                sp_yangren_sha: '羊刃驾杀',
-                sp_shishen_sha: '食神制杀',
-                sp_shangguan_yin: '伤官佩印'
+                btn_consult: '预约命理师精准解析'
             },
             'en': {
                 page_title: 'Auspicious Days · Solar Time Bazi',
@@ -1412,19 +1401,7 @@
                 modal_lon: 'Longitude (+E / -W)',
                 modal_tz: 'Timezone (UTC)',
                 modal_dst: 'DST',
-                btn_consult: 'Book Expert Consultation',
-
-                // ===== 特殊格局 =====
-                sp_wuxing: 'All Five Elements',
-                sp_muhuo: 'Wood-Fire Brightness',
-                sp_jinshui: 'Metal-Water Purity',
-                sp_shuimu: 'Water-Wood Clarity',
-                sp_huojin: 'Fire-Metal Clash',
-                sp_jinhan: 'Cold Metal & Water',
-                sp_shayin: 'Killings & Resource',
-                sp_yangren_sha: 'Yangren & Killings',
-                sp_shishen_sha: 'Eating God controls Killings',
-                sp_shangguan_yin: 'Hurting Officer & Resource'
+                btn_consult: 'Book Expert Consultation'
             }
         };
 
@@ -1599,6 +1576,39 @@
                 minTotal -= 1440; } else if (minTotal < 0) { dayOffset = -1;
                 minTotal += 1440; }
             return { hour: Math.floor(minTotal / 60), minute: Math.round(minTotal % 60), dayOffset: dayOffset };
+        }
+
+        function getDongTermMinutes(year) {
+            const baseMinutes = {
+                2000: 7 * 1440 + 2 * 60 + 41,
+                2001: 7 * 1440 + 8 * 60 + 41,
+                2002: 7 * 1440 + 14 * 60 + 30,
+                2003: 7 * 1440 + 20 * 60 + 20,
+                2004: 6 * 1440 + 23 * 60 + 59,
+                2005: 7 * 1440 + 5 * 60 + 41,
+                2006: 7 * 1440 + 11 * 60 + 33,
+                2007: 7 * 1440 + 17 * 60 + 24,
+                2008: 6 * 1440 + 23 * 60 + 12,
+                2009: 7 * 1440 + 5 * 60 + 5,
+                2010: 7 * 1440 + 10 * 60 + 42,
+                2011: 7 * 1440 + 16 * 60 + 34,
+                2012: 6 * 1440 + 22 * 60 + 25,
+                2013: 7 * 1440 + 4 * 60 + 14,
+                2014: 7 * 1440 + 10 * 60 + 6,
+                2015: 7 * 1440 + 15 * 60 + 59,
+                2016: 6 * 1440 + 21 * 60 + 47,
+                2017: 7 * 1440 + 3 * 60 + 38,
+                2018: 7 * 1440 + 9 * 60 + 31,
+                2019: 7 * 1440 + 15 * 60 + 24,
+                2020: 6 * 1440 + 21 * 60 + 14,
+                2021: 7 * 1440 + 3 * 60 + 7,
+                2022: 7 * 1440 + 8 * 60 + 45,
+                2023: 7 * 1440 + 14 * 60 + 35,
+                2024: 6 * 1440 + 20 * 60 + 19,
+                2025: 7 * 1440 + 2 * 60 + 12,
+                2026: 7 * 1440 + 8 * 60 + 2
+            };
+            return baseMinutes[year] || (7 * 1440 + 8 * 60);
         }
 
         function getAdjustedSolarDate(y, m, d, h, min, lon, tz, dst) {
@@ -1823,116 +1833,16 @@
             return Array.from(uniqueRels.values()).slice(0, 12);
         }
 
-        const JQTBL_PRECISE={
-          1950:[[6,17,29],[4,7,9],[6,23,9],[5,17,3],[6,12,15],[6,8,31],[8,4,24],[8,2,8],[8,17,37],[8,20,45],[8,0,38],[7,18,17]],
-          1951:[[6,22,33],[4,12,54],[6,5,11],[5,23,5],[6,18,39],[6,14,34],[7,10,59],[8,8,35],[8,23,1],[8,2,28],[8,5,53],[7,0,2]],
-          1952:[[6,4,22],[5,18,54],[6,11,4],[5,4,57],[6,0,26],[6,20,30],[8,16,46],[7,14,19],[8,5,27],[8,8,15],[7,11,57],[6,6,2]],
-          1953:[[6,9,37],[4,23,59],[6,17,19],[5,11,13],[6,6,52],[6,2,10],[7,22,33],[7,20,24],[8,11,35],[8,14,52],[7,17,56],[7,11,45]],
-          1954:[[6,15,3],[4,5,50],[5,22,56],[5,16,40],[6,11,47],[6,7,49],[7,3,54],[8,1,29],[8,17,19],[8,19,52],[7,23,36],[7,17,32]],
-          1955:[[6,20,32],[4,11,16],[6,4,36],[5,22,20],[6,17,26],[6,13,52],[7,9,32],[8,7,14],[8,22,29],[8,1,8],[8,5,12],[7,22,59]],
-          1956:[[6,2,6],[5,16,57],[5,10,17],[4,3,56],[4,22,47],[5,19,4],[7,15,4],[7,12,40],[7,3,37],[8,6,45],[7,10,35],[6,4,45]],
-          1957:[[6,7,21],[4,22,34],[6,15,59],[5,9,38],[6,4,16],[6,1,4],[7,21,39],[8,18,39],[8,9,32],[8,12,25],[7,16,14],[7,10,16]],
-          1958:[[5,12,46],[4,4,1],[6,21,19],[5,15,17],[6,10,53],[6,6,34],[7,2,49],[7,23,59],[8,15,37],[8,18,28],[7,22,52],[7,16,40]],
-          1959:[[6,18,18],[4,9,43],[6,3,44],[5,21,32],[6,16,41],[6,12,40],[7,8,27],[7,6,8],[8,21,44],[8,0,38],[8,4,37],[7,22,18]],
-          1960:[[6,23,36],[5,15,23],[6,9,25],[4,3,5],[4,22,41],[5,18,41],[7,14,37],[7,11,50],[8,3,10],[8,6,15],[7,9,39],[6,3,26]],
-          1961:[[5,5,52],[4,21,14],[6,15,7],[5,8,47],[6,3,22],[5,23,56],[7,20,36],[7,18,22],[8,9,28],[8,12,11],[7,16,10],[7,10,2]],
-          1962:[[5,11,5],[4,3,19],[5,21,24],[5,14,52],[6,9,27],[6,5,42],[7,2,18],[8,0,6],[8,15,7],[8,18,5],[7,22,17],[7,16,29]],
-          1963:[[6,16,33],[4,9,7],[6,3,9],[5,21,9],[6,15,40],[6,11,37],[7,7,29],[7,5,14],[8,21,9],[8,0,2],[8,3,49],[7,21,21]],
-          1964:[[6,22,2],[5,14,1],[5,8,39],[4,1,58],[4,21,51],[5,18,23],[7,14,14],[7,11,18],[7,2,44],[8,5,30],[7,9,4],[6,2,52]],
-          1965:[[6,3,17],[4,19,46],[6,14,22],[5,7,54],[6,2,33],[5,22,58],[7,19,56],[7,17,42],[8,8,22],[8,11,22],[7,14,40],[7,8,41]],
-          1966:[[5,9,1],[4,1,38],[6,19,46],[5,14,11],[6,8,27],[6,5,12],[7,0,46],[7,22,38],[8,14,2],[8,16,57],[7,21,23],[7,14,55]],
-          1967:[[6,14,24],[4,7,31],[6,1,37],[5,19,54],[6,14,20],[6,10,49],[7,6,39],[7,4,38],[8,19,41],[8,22,46],[8,3,11],[7,21,0]],
-          1968:[[6,19,54],[5,12,8],[5,7,1],[3,23,50],[4,20,51],[5,16,43],[7,12,26],[7,9,18],[8,0,49],[8,4,0],[7,7,18],[6,1,4]],
-          1969:[[5,1,41],[4,18,1],[6,12,4],[5,6,27],[5,0,44],[6,21,32],[7,17,38],[7,15,9],[8,6,41],[8,9,29],[7,13,30],[7,7,35]],
-          1970:[[6,7,23],[3,23,46],[6,17,33],[5,12,42],[5,6,52],[6,3,16],[6,23,47],[7,21,37],[8,13,21],[8,15,58],[7,20,2],[7,13,39]],
-          1971:[[6,12,54],[4,5,27],[5,23,38],[5,18,54],[6,12,22],[6,8,57],[7,4,13],[7,2,15],[8,17,47],[8,21,26],[7,23,59],[7,17,33]],
-          1972:[[6,18,37],[4,11,5],[5,5,11],[3,22,59],[5,17,14],[5,13,52],[7,9,42],[7,6,32],[7,23,57],[8,3,1],[7,6,30],[5,23,18]],
-          1973:[[5,0,51],[4,16,48],[6,11,7],[5,5,16],[4,23,52],[6,20,55],[7,16,49],[7,14,28],[8,5,37],[8,8,50],[7,12,16],[7,6,5]],
-          1974:[[5,5,58],[4,22,57],[6,16,46],[5,11,21],[6,5,50],[6,1,29],[7,21,37],[7,20,9],[8,11,11],[8,14,24],[7,18,57],[7,12,37]],
-          1975:[[6,11,24],[4,4,59],[5,22,19],[5,17,10],[6,11,40],[6,7,50],[7,3,24],[7,2,0],[8,17,34],[8,20,43],[8,0,24],[7,18,4]],
-          1976:[[6,17,2],[4,10,40],[5,4,29],[4,22,18],[5,16,21],[5,13,9],[7,9,7],[7,6,28],[7,22,22],[8,2,41],[7,5,23],[5,23,12]],
-          1977:[[5,22,12],[4,16,34],[6,10,0],[5,4,58],[5,21,57],[6,18,28],[7,15,28],[7,12,48],[8,4,18],[8,8,15],[7,11,52],[7,5,36]],
-          1978:[[5,4,16],[4,21,27],[6,15,6],[5,10,17],[6,4,28],[5,23,43],[7,20,29],[7,18,10],[8,10,2],[8,13,42],[7,17,34],[7,11,19]],
-          1979:[[6,9,56],[4,2,54],[5,21,7],[5,15,35],[6,10,25],[6,6,6],[7,2,2],[7,0,8],[8,16,24],[8,19,46],[8,0,0],[7,17,39]],
-          1980:[[6,15,49],[5,8,10],[5,2,46],[4,20,56],[5,15,23],[5,11,47],[7,7,42],[7,4,48],[7,21,19],[8,1,19],[7,4,38],[5,22,41]],
-          1981:[[5,21,37],[4,14,13],[6,8,57],[5,3,36],[5,20,49],[6,17,45],[7,13,41],[7,11,37],[8,3,42],[8,7,11],[7,11,5],[7,4,49]],
-          1982:[[5,3,32],[4,20,0],[6,14,18],[5,8,43],[6,3,23],[5,23,22],[7,19,47],[7,17,15],[8,9,21],[8,12,39],[7,17,8],[7,10,52]],
-          1983:[[6,8,55],[4,1,53],[5,19,49],[5,14,50],[6,8,52],[6,5,8],[7,1,4],[7,23,12],[8,14,41],[8,18,44],[7,22,8],[7,16,7]],
-          1984:[[6,14,42],[4,7,19],[6,1,6],[5,19,2],[5,13,57],[6,9,27],[7,5,30],[7,3,9],[8,20,43],[8,23,33],[8,3,11],[7,21,21]],
-          1985:[[6,19,57],[4,12,11],[6,6,24],[5,0,14],[6,5,20],[6,15,44],[7,11,35],[7,9,43],[8,1,30],[8,5,41],[8,8,52],[7,3,51]],
-          1986:[[5,1,28],[4,17,27],[6,11,43],[5,5,44],[5,23,43],[6,21,21],[7,17,44],[7,15,18],[8,6,57],[8,9,52],[7,14,30],[7,7,41]],
-          1987:[[6,6,35],[4,0,9],[6,17,38],[5,11,59],[6,5,41],[6,3,6],[7,23,10],[7,21,0],[8,12,34],[8,16,2],[7,20,34],[7,14,40]],
-          1988:[[6,12,26],[4,4,43],[4,23,31],[4,17,40],[5,12,9],[5,8,47],[7,4,46],[7,2,3],[7,18,40],[8,22,13],[6,23,27],[5,17,56]],
-          1989:[[5,18,6],[4,10,27],[6,5,40],[4,23,39],[5,17,21],[6,15,27],[7,11,18],[7,8,41],[8,1,3],[8,3,54],[7,8,0],[7,1,41]],
-          1990:[[5,0,44],[3,20,14],[5,13,19],[5,7,23],[5,2,3],[6,22,33],[7,18,22],[7,16,5],[8,8,23],[8,10,57],[7,14,33],[7,8,30]],
-          1991:[[6,6,7],[4,18,8],[6,12,53],[5,6,48],[6,1,55],[6,21,51],[7,17,25],[7,22,53],[8,13,38],[8,17,6],[7,20,58],[7,15,3]],
-          1992:[[6,11,5],[3,23,48],[5,18,11],[4,12,58],[5,7,39],[5,3,11],[6,23,46],[7,21,27],[7,12,40],[8,16,31],[7,19,49],[6,13,52]],
-          1993:[[5,17,22],[4,10,37],[6,5,41],[4,23,17],[5,17,21],[6,17,1],[7,12,57],[7,10,46],[8,1,58],[8,5,25],[7,9,1],[7,3,13]],
-          1994:[[5,23,4],[4,16,31],[6,11,46],[5,4,55],[5,23,48],[6,20,5],[7,15,21],[7,13,43],[8,5,23],[8,8,55],[7,12,33],[7,6,50]],
-          1995:[[6,4,45],[4,22,13],[6,16,46],[5,10,38],[6,5,7],[6,1,45],[7,21,20],[7,19,29],[8,10,35],[8,13,31],[7,17,28],[7,12,12]],
-          1996:[[6,10,9],[4,3,8],[5,20,49],[4,14,49],[5,9,1],[5,5,16],[7,1,19],[6,23,33],[7,15,4],[8,19,10],[7,22,47],[6,16,51]],
-          1997:[[5,15,45],[4,9,3],[6,4,32],[5,22,2],[6,15,45],[6,12,35],[7,8,15],[7,6,43],[8,21,53],[8,1,46],[7,5,32],[6,22,55]],
-          1998:[[5,21,13],[4,15,3],[6,10,54],[5,3,52],[6,21,44],[6,17,29],[7,14,45],[7,12,48],[8,3,31],[8,6,9],[7,10,36],[7,5,38]],
-          1999:[[6,2,37],[4,20,7],[6,14,35],[5,8,46],[6,2,38],[6,22,22],[7,19,41],[7,17,29],[8,9,20],[8,12,14],[7,17,3],[7,11,10]],
-          2000:[[6,8,18],[4,11,3],[5,4,42],[4,22,50],[5,17,28],[5,14,18],[7,10,32],[7,7,43],[8,23,48],[8,2,13],[7,6,29],[7,0,25]],
-          2001:[[5,13,17],[3,17,28],[5,12,13],[5,6,4],[5,0,44],[6,21,53],[7,17,6],[7,14,16],[8,5,46],[8,8,25],[7,13,1],[7,6,57]],
-          2002:[[5,19,24],[4,23,23],[6,17,16],[5,12,26],[5,6,31],[6,3,9],[7,22,15],[7,21,55],[8,11,17],[8,15,23],[7,18,36],[7,13,14]],
-          2003:[[6,1,9],[4,3,57],[6,0,22],[5,18,52],[6,12,35],[6,8,45],[7,4,31],[7,2,8],[8,18,8],[8,20,3],[8,1,13],[7,19,4]],
-          2004:[[6,6,18],[4,19,56],[5,4,56],[4,21,43],[5,17,42],[5,12,35],[7,8,27],[7,6,23],[7,21,13],[8,1,14],[7,4,49],[5,22,50]],
-          2005:[[5,12,3],[4,18,43],[6,11,9],[5,5,34],[4,23,34],[6,18,46],[7,15,42],[7,12,43],[8,4,43],[8,7,17],[7,11,24],[7,6,15]],
-          2006:[[5,18,47],[4,0,15],[6,17,29],[5,11,26],[6,5,31],[6,2,17],[7,21,18],[7,19,12],[8,11,11],[8,14,9],[7,17,55],[7,12,20]],
-          2007:[[5,23,43],[4,6,18],[5,23,8],[5,17,4],[6,11,56],[6,7,56],[7,3,20],[7,0,31],[8,16,8],[8,20,7],[8,0,50],[7,17,14]],
-          2008:[[6,5,43],[4,12,0],[5,4,1],[4,22,25],[5,17,21],[5,13,2],[7,9,4],[7,6,25],[7,21,13],[8,0,45],[7,4,16],[6,21,5]],
-          2009:[[5,11,56],[4,17,49],[6,10,47],[5,4,34],[4,22,51],[6,18,2],[7,14,54],[7,12,55],[8,4,16],[8,6,50],[7,11,17],[7,5,22]],
-          2010:[[5,17,9],[4,23,47],[6,16,32],[5,10,30],[5,5,21],[6,1,6],[7,20,35],[7,18,48],[8,10,3],[8,13,9],[7,16,57],[7,10,40]],
-          2011:[[6,22,33],[4,5,32],[6,21,18],[5,16,12],[6,11,7],[6,6,30],[7,3,0],[7,0,30],[8,16,0],[8,20,9],[7,23,35],[7,16,47]],
-          2012:[[6,4,23],[4,10,22],[5,3,37],[4,21,12],[5,16,35],[5,12,0],[6,8,41],[7,5,0],[7,21,49],[8,0,12],[7,3,28],[6,21,19]],
-          2013:[[5,10,7],[4,16,13],[5,9,1],[5,3,57],[5,21,8],[6,17,56],[7,13,35],[7,10,20],[8,3,2],[8,6,5],[7,10,14],[7,4,9]],
-          2014:[[5,16,3],[4,22,3],[6,14,2],[5,9,38],[5,3,59],[6,21,3],[7,18,42],[7,17,3],[8,8,37],[8,12,22],[7,16,8],[7,9,37]],
-          2015:[[6,20,20],[4,3,58],[6,20,6],[5,15,39],[6,9,52],[6,6,0],[7,1,41],[6,23,0],[8,15,0],[8,18,25],[7,22,4],[7,15,53]],
-          2016:[[6,2,38],[4,9,46],[5,2,16],[4,19,47],[5,13,26],[5,10,4],[6,7,58],[7,4,53],[7,21,8],[8,0,33],[7,4,17],[6,20,23]],
-          2017:[[5,7,56],[3,15,34],[5,7,32],[4,14,17],[5,19,31],[6,14,37],[7,11,14],[7,9,40],[8,0,29],[8,3,22],[7,7,37],[7,1,32]],
-          2018:[[5,14,48],[4,21,28],[6,13,28],[5,8,13],[5,2,25],[6,20,29],[7,17,42],[7,14,30],[8,6,30],[8,9,46],[7,13,32],[7,7,23]],
-          2019:[[5,19,39],[4,3,14],[6,18,0],[5,13,51],[6,7,9],[6,3,18],[6,23,20],[7,20,13],[8,12,13],[8,15,5],[7,19,24],[7,13,57]],
-          2020:[[6,0,17],[4,9,3],[5,5,57],[4,20,38],[5,14,51],[5,9,45],[6,7,14],[7,4,50],[8,19,31],[8,22,55],[7,1,14],[7,19,9]],
-          2021:[[5,6,23],[3,17,14],[5,11,53],[5,5,35],[5,0,13],[6,20,52],[7,15,27],[7,13,54],[8,4,54],[8,7,49],[7,12,1],[7,5,57]],
-          2022:[[5,12,44],[4,16,3],[6,10,44],[5,4,20],[5,21,23],[6,17,26],[7,14,38],[7,12,29],[8,3,32],[8,7,6],[7,11,5],[7,5,19]],
-          2023:[[5,17,17],[4,10,42],[6,16,24],[5,10,13],[6,6,18],[6,14,18],[7,21,31],[8,18,22],[8,10,27],[8,12,48],[7,18,27],[7,11,33]],
-          2024:[[6,23,49],[4,16,27],[5,0,22],[4,17,2],[5,11,10],[5,8,11],[6,5,30],[7,4,9],[7,19,43],[8,22,0],[7,3,14],[6,19,17]],
-          2025:[[5,5,32],[3,10,10],[5,6,7],[4,23,48],[5,18,37],[5,14,56],[7,10,29],[7,8,36],[8,1,0],[8,3,49],[7,7,43],[7,1,5]],
-          2026:[[5,11,23],[4,16,16],[6,12,47],[5,7,4],[5,0,39],[6,20,31],[7,16,43],[7,14,4],[8,5,42],[8,8,11],[7,12,12],[7,6,39]],
-          2027:[[6,16,48],[4,22,2],[6,18,22],[5,12,52],[6,6,46],[6,2,47],[7,23,7],[7,20,26],[8,12,18],[8,14,53],[7,18,39],[7,12,48]],
-          2028:[[6,21,42],[4,3,51],[4,23,47],[4,16,4],[5,11,16],[5,7,58],[7,3,52],[7,1,5],[7,17,14],[8,20,28],[6,23,31],[6,17,15]],
-          2029:[[5,3,27],[3,9,34],[6,5,23],[4,22,53],[5,17,11],[6,12,47],[7,10,9],[7,7,23],[7,22,56],[8,1,27],[7,5,30],[6,22,41]],
-          2030:[[5,9,33],[4,15,25],[6,11,4],[5,5,32],[5,22,39],[6,18,1],[7,15,13],[7,12,32],[8,3,56],[8,7,6],[7,11,0],[7,4,40]]
-        };
-
-        function getJQPrecise(year, mIdx) {
-            let y = year;
-            while(y >= 1950 && !JQTBL_PRECISE[y]) y--;
-            const r = (JQTBL_PRECISE[y] || JQTBL_PRECISE[2000])[mIdx];
-            return { day: r[0], hour: r[1], minute: r[2] };
-        }
-
-        function getYrGZPrecise(year, month, day, hour, minute) {
-            const lc = getJQPrecise(year, 1);
-            const targetMins = day * 1440 + hour * 60 + minute;
-            const lcMins = lc.day * 1440 + lc.hour * 60 + lc.minute;
-            let y = year;
-            if (month < 2 || (month === 2 && targetMins < lcMins)) {
-                y = year - 1;
-            }
-            return { tg: ((y - 4) % 10 + 10) % 10, dz: ((y - 4) % 12 + 12) % 12 };
-        }
-
         function getMoGZPrecise(year, month, day, hour, minute) {
-            const jq = getJQPrecise(year, month - 1);
-            const targetMins = day * 1440 + hour * 60 + minute;
-            const jqMins = jq.day * 1440 + jq.hour * 60 + jq.minute;
-            let sm = month, sy = year;
-            if (targetMins < jqMins) {
+            let targetMins = day * 1440 + hour * 60 + minute;
+            let termMins = [6, 4, 5, 4, 5, 5, 6, 7, 7, 8, 7, 6][month - 1] * 1440 + 12 * 60;
+            if (month === 11) { termMins = getDongTermMinutes(year); }
+            let sm = month,
+                sy = year;
+            if (targetMins < termMins) {
                 sm--;
-                if (sm === 0) { sm = 12; sy--; }
+                if (sm === 0) { sm = 12;
+                    sy--; }
             }
             return {
                 tg: ([2, 4, 6, 8, 0][(((sm === 1 ? sy - 1 : sy) - 4) % 10 + 10) % 10 % 5] + ((sm + 10) % 12 + 1) - 1) % 10,
@@ -1940,8 +1850,24 @@
             };
         }
 
-        function getDayGZ(year, month, day) {
+        function getJQPrecise(year, mIdx) { return { day: [6, 4, 5, 4, 5, 5, 6, 7, 7, 8, 7, 6][mIdx], hour: 12, minute: 0 }; }
+
+        function getYrGZPrecise(year, month, day, hour, minute) { 
+            const lc = getJQPrecise(year, 1); 
+            // 統一轉換為「當月經歷的總分鐘數」來比較
+            const targetMins = day * 1440 + hour * 60 + minute;
+            const lcMins = lc.day * 1440 + lc.hour * 60 + lc.minute;
+            
+            let y = year;
+            if (month === 1 || (month === 2 && targetMins < lcMins)) {
+                y = year - 1;
+            }
+            return { tg: ((y - 4) % 10 + 10) % 10, dz: ((y - 4) % 12 + 12) % 12 }; 
+        }
+
+        function getDayGZ(year, month, day, hour = 12) {
             const d = new Date(year, month - 1, day);
+            if (hour >= 23) { d.setDate(d.getDate() + 1); }
             const base = Date.UTC(1900, 0, 1);
             const target = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
             const diff = Math.round((target - base) / 86400000);
@@ -1998,13 +1924,16 @@
                 const wx = WXT[tgIdx];
                 if (wx === dmWx) return 1.0;
                 if (gen[wx] === dmWx) return 1.2;
-                if (gen[dmWx] === wx) return -0.7;
-                if (ctrl[dmWx] === wx) return -0.4;
-                if (ctrl[wx] === dmWx) return -1.2;
+                if (gen[dmWx] === wx) return -0.7; // 食傷泄身
+                if (ctrl[dmWx] === wx) return -0.4; // 財星耗身
+                if (ctrl[wx] === dmWx) return -1.2; // 官殺克身
                 return 0;
             }
             const PW = { y: 1.0, yb: 1.0, m: 2.0, mb: 3.5, db: 2.0, h: 1.5, hb: 1.5 };
-            let sc = 1.5;
+            
+            // 修正點 1：移除了人工偏移量，使強弱判定回歸零界點
+            let sc = 0; 
+            
             sc += PW.y * ss(yGZ.tg);
             ZANGGAN_FULL[yGZ.dz].forEach(([t, p]) => sc += PW.yb * p * ss(t));
             sc += PW.m * ss(mGZ.tg);
@@ -2015,172 +1944,72 @@
             return sc;
         }
 
-        function isJiejiao(tg, dz) {
-            if (tg === -1 || dz === -1) return false;
-            const tgWx = WXT[tg];
-            const dzWx = WXD[dz];
-            const ctrl = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
-            return ctrl[dzWx] === tgWx; 
-        }
-
-        function getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ) {
+        function getGejuTenGod(ri, yGZ, mGZ, hGZ) {
             const luMap = {0:2, 1:3, 2:5, 3:6, 4:5, 5:6, 6:8, 7:9, 8:11, 9:0};
-            const yangrenMap = {0:3, 1:2, 2:6, 3:5, 4:6, 5:5, 6:9, 7:8, 8:0, 9:11};
+            const yangrenMap = {0:3, 2:6, 4:6, 6:9, 8:0};
 
             if (luMap[ri] === mGZ.dz) return '建祿格';
             if (yangrenMap[ri] === mGZ.dz) return '羊刃格';
 
-            const hidden = ZANGGAN_FULL[mGZ.dz];
-            const mainQiTg = hidden[0][0];
-            const pillars = [mGZ, yGZ, hGZ];
+            const exposed = [mGZ.tg, yGZ.tg, hGZ.tg].filter(t => t !== -1);
+            const hidden = ZANGGAN_FULL[mGZ.dz].map(x => x[0]);
+            let patternTg = hidden[0]; 
 
-            for (let tgCheck of [mainQiTg, ...(hidden.slice(1).map(h => h[0]))]) {
-                for (let p of pillars) {
-                    if (p.tg === tgCheck && !isJiejiao(p.tg, p.dz)) {
-                        const ten = SS_TABLE[ri][p.tg];
-                        if (ten !== '比肩' && ten !== '劫財') return ten;
+            if (exposed.includes(hidden[0])) {
+                patternTg = hidden[0];
+            } else {
+                let found = false;
+                for (let i = 1; i < hidden.length; i++) {
+                    if (exposed.includes(hidden[i])) {
+                        patternTg = hidden[i];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    const mainWx = WXT[hidden[0]];
+                    const sameElementTg = exposed.find(tg => WXT[tg] === mainWx);
+                    if (sameElementTg !== undefined) {
+                        patternTg = sameElementTg;
                     }
                 }
             }
 
-            if (mGZ.tg !== -1) {
-                const mTen = SS_TABLE[ri][mGZ.tg];
-                if (mTen !== '比肩' && mTen !== '劫財') {
-                    return mTen; 
-                }
-            }
-
-            const fallbackTen = SS_TABLE[ri][mainQiTg];
-            if (fallbackTen === '比肩' || fallbackTen === '劫財') {
-                if (hidden.length > 1) return SS_TABLE[ri][hidden[1][0]];
-            }
-            return fallbackTen;
-        }
-
-        // ==========================================
-        // 核心修正：特殊格局判定引擎 (嚴格破局防護)
-        // ==========================================
-        function getSpecialPatterns(pillars, baseGeju, ri) {
-            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
-            const tgList = [pillars[0].tg, pillars[1].tg, pillars[3].tg].filter(t => t !== -1);
+            const tenGod = SS_TABLE[ri][patternTg];
             
-            pillars.forEach(p => {
-                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
-                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
-            });
-
-            const specials = [];
-            const monthDz = pillars[1].dz;
-            const dmWx = WXT[ri];
-
-            const tgTenGods = tgList.map(tg => SS_TABLE[ri][tg]);
-
-            if (baseGeju === '羊刃格' && tgTenGods.includes('七殺')) {
-                specials.push('sp_yangren_sha');
+            if (tenGod === '比肩' || tenGod === '劫財') {
+                return SS_TABLE[ri][hidden[0]];
             }
-
-            const hasSha = tgTenGods.includes('七殺') || baseGeju === '七殺';
-            const hasYin = tgTenGods.includes('正印') || tgTenGods.includes('偏印') || baseGeju === '正印' || baseGeju === '偏印';
-            if (hasSha && hasYin && !specials.includes('sp_yangren_sha')) {
-                specials.push('sp_shayin');
-            }
-
-            if (tgTenGods.includes('七殺') && tgTenGods.includes('食神')) {
-                specials.push('sp_shishen_sha');
-            }
-
-            if ((baseGeju === '傷官' || baseGeju === '伤官') && (tgTenGods.includes('正印') || tgTenGods.includes('偏印'))) {
-                specials.push('sp_shangguan_yin');
-            }
-
-            if (counts['木'] > 0 && counts['火'] > 0 && counts['土'] > 0 && counts['金'] > 0 && counts['水'] > 0) {
-                specials.push('sp_wuxing');
-            }
-
-            if ((dmWx === '木' || dmWx === '火') && (counts['木'] + counts['火'] >= 6) && counts['水'] === 0) {
-                specials.push('sp_muhuo');
-            }
-
-            const isAutumnWinter = [8, 9, 10, 11, 0, 1].includes(monthDz); 
-            if ((dmWx === '金' || dmWx === '水') && (counts['金'] + counts['水'] >= 6) && counts['土'] === 0 && counts['火'] === 0 && isAutumnWinter) {
-                specials.push('sp_jinshui');
-            }
-
-            if ((dmWx === '水' || dmWx === '木') && (counts['水'] + counts['木'] >= 6) && counts['金'] === 0) {
-                specials.push('sp_shuimu');
-            }
-
-            if (counts['火'] >= 3 && counts['金'] >= 3 && counts['水'] === 0 && counts['土'] <= 1) {
-                specials.push('sp_huojin');
-            }
-
-            const isWinter = [11, 0, 1].includes(monthDz); 
-            if (isWinter && (counts['金'] + counts['水'] >= 5) && counts['火'] === 0) {
-                specials.push('sp_jinhan');
-            }
-
-            return specials;
+            return tenGod;
         }
 
-        // ==========================================
-        // 核心修正：防交戰喜用神抓取引擎
-        // ==========================================
-        function getXiyong(ri, strengthKey, gejuTen, monthDz, specials, pillarsRaw) {
+        // 修正點 2：傳入 dmScore，根據分數絕對正負精準輸出喜用神
+        function getXiyong(ri, dmScore, gejuTen, monthDz) {
             const dmWx = WXT[ri];
             const gen = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
             const ctrl = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
             const genBy = { '木': '水', '火': '木', '土': '火', '金': '土', '水': '金' };
             const ctrlBy = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
 
-            // 1. 特殊格局绝对优先
-            if (specials.includes('sp_muhuo')) return ['火', '土'];
-            if (specials.includes('sp_jinshui')) return ['水', '木'];
-            if (specials.includes('sp_shuimu')) return ['木', '火'];
-            if (specials.includes('sp_huojin')) return ['土']; // 湿土通关
-            if (specials.includes('sp_jinhan')) return ['火', '木'];
-            if (specials.includes('sp_shayin')) return [genBy[dmWx]]; // 喜印
-            if (specials.includes('sp_yangren_sha')) return [ctrl[dmWx], ctrlBy[dmWx]]; // 喜官杀，次财
-            if (specials.includes('sp_shishen_sha')) return [gen[dmWx], dmWx]; // 喜食伤，次比劫
-            if (specials.includes('sp_shangguan_yin')) return [genBy[dmWx]]; // 喜印
-
-            // 2. 统计五行力量用于动态扶抑
-            const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
-            pillarsRaw.forEach(p => {
-                if (p.tg >= 0 && p.tg < 10) counts[WXT[p.tg]]++;
-                if (p.dz >= 0 && p.dz < 12) counts[WXD[p.dz]]++;
-            });
-
             let xiyong = [];
+            
             const isWinter = monthDz === 0 || monthDz === 1 || monthDz === 11;
             const isSummer = monthDz === 5 || monthDz === 6 || monthDz === 7;
+            const isStrong = dmScore >= 0;
 
-            let needWarm = isWinter && !(strengthKey === 'str_strong' && (dmWx === '火' || dmWx === '土'));
-            let needCool = isSummer && !(strengthKey === 'str_strong' && (dmWx === '水' || dmWx === '木'));
+            let needWarm = isWinter && !(isStrong && (dmWx === '火' || dmWx === '土'));
+            let needCool = isSummer && !(isStrong && (dmWx === '水' || dmWx === '木'));
 
             let standardFav = [];
-            if (strengthKey === 'str_weak') {
-                standardFav = [genBy[dmWx], dmWx]; // 印, 比
-            } else {
-                // 身旺的重大修正：嚴格區分「用官殺」還是「用食傷」，兩者不可並用（水火不容/金木交戰）
-                const powerWx = ctrl[dmWx];    // 官杀
-                const outputWx = gen[dmWx];    // 食伤
-                const wealthWx = ctrlBy[dmWx]; // 财星
-
-                // 判斷原局食傷與官殺的力量對比與透干情況
-                let outPower = counts[outputWx] * 1.5 + (pillarsRaw[0].tg>=0 && WXT[pillarsRaw[0].tg]===outputWx ? 2 : 0) + (pillarsRaw[1].tg>=0 && WXT[pillarsRaw[1].tg]===outputWx ? 2 : 0) + (pillarsRaw[3].tg>=0 && WXT[pillarsRaw[3].tg]===outputWx ? 2 : 0);
-                let ctrlPower = counts[powerWx] * 1.5 + (pillarsRaw[0].tg>=0 && WXT[pillarsRaw[0].tg]===powerWx ? 2 : 0) + (pillarsRaw[1].tg>=0 && WXT[pillarsRaw[1].tg]===powerWx ? 2 : 0) + (pillarsRaw[3].tg>=0 && WXT[pillarsRaw[3].tg]===powerWx ? 2 : 0);
-
-                // 极端情况：如果日主五行 >= 4 (极旺)，绝对不能用官杀去硬碰硬（激怒旺神），必须用食伤泄秀
-                if (counts[dmWx] >= 4) {
-                    standardFav = [outputWx, wealthWx]; // 强制喜 食伤、财
-                }
-                // 原局食伤力量大于等于官杀，或者官杀极弱被克，则顺势用食伤泄秀生财
-                else if (outPower >= ctrlPower || counts[powerWx] <= 0) {
-                    standardFav = [outputWx, wealthWx];
-                }
-                // 原局官杀有力且无严重克损，用财官
-                else {
-                    standardFav = [wealthWx, powerWx];
+            if (!isStrong) { // 身弱，必取印星（生我）、比肩（同我）
+                standardFav = [genBy[dmWx], dmWx]; 
+            } else { // 身強
+                if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
+                    standardFav = [ctrlBy[dmWx], gen[dmWx], ctrl[dmWx]];
+                } else if (gejuTen === '正官' || gejuTen === '七殺') {
+                    standardFav = [gen[dmWx], ctrl[dmWx]];
+                } else {
+                    standardFav = [gen[dmWx], ctrl[dmWx]];
                 }
             }
 
@@ -2201,12 +2030,13 @@
             }
 
             xiyong = [...new Set(xiyong)].slice(0, 2);
-            if(xiyong.length === 0) xiyong = standardFav;
+            if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
             
-            // 格式化輸出順序
-            if (xiyong.includes('木') && xiyong.includes('火')) return ['火', '木']; 
-            if (xiyong.includes('金') && xiyong.includes('水')) return ['水', '金'];
+            if (xiyong.includes('木') && xiyong.includes('火')) return ['木', '火'];
+            if (xiyong.includes('金') && xiyong.includes('水')) return ['金', '水'];
+            if (xiyong.includes('水') && xiyong.includes('木')) return ['水', '木'];
             if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
+            if (xiyong.includes('土') && xiyong.includes('金')) return ['土', '金'];
             
             return xiyong;
         }
@@ -2556,51 +2386,23 @@
                 document.getElementById('disp-lunar').textContent = `${approxLunar(d)}`;
                 const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER
                     .timezone, USER.isDST);
-                
-                let calcY = adj.year, calcM = adj.month, calcD = adj.day;
-                if (adj.hour >= 23) {
-                    const tempD = new Date(Date.UTC(adj.year, adj.month - 1, adj.day));
-                    tempD.setUTCDate(tempD.getUTCDate() + 1);
-                    calcY = tempD.getUTCFullYear();
-                    calcM = tempD.getUTCMonth() + 1;
-                    calcD = tempD.getUTCDate();
-                }
-
-                const yGZ = getYrGZPrecise(calcY, calcM, calcD, adj.hour, adj.minute);
-                const mGZ = getMoGZPrecise(calcY, calcM, calcD, adj.hour, adj.minute);
-                const dGZ = getDayGZ(calcY, calcM, calcD);
+                const yGZ = getYrGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
+                const mGZ = getMoGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
+                const dGZ = getDayGZ(adj.year, adj.month, adj.day, adj.hour);
                 const hGZ = getHrGZ(adj.hour, dGZ.tg);
                 const ri = dGZ.tg;
-                const dyData = getDayun(USER.gender, calcY, calcM, calcD, yGZ.tg);
-                const curDyIdx = getCurrentDayunIdx(dyData, calcY, y);
+                const dyData = getDayun(USER.gender, adj.year, adj.month, adj.day, yGZ.tg);
+                const curDyIdx = getCurrentDayunIdx(dyData, adj.year, y);
                 const curDy = curDyIdx !== null ? dyData.list[curDyIdx] : null;
-
-                let liuY = y, liuM = m, liuD = day;
-                if (h >= 23) {
-                    const tempL = new Date(Date.UTC(y, m - 1, day));
-                    tempL.setUTCDate(tempL.getUTCDate() + 1);
-                    liuY = tempL.getUTCFullYear();
-                    liuM = tempL.getUTCMonth() + 1;
-                    liuD = tempL.getUTCDate();
-                }
-
-                const lyGZ = getYrGZPrecise(liuY, liuM, liuD, h, mn);
-                const lmGZ = getMoGZPrecise(liuY, liuM, liuD, h, mn);
-                const ldGZ = getDayGZ(liuY, liuM, liuD);
+                const lyGZ = getYrGZPrecise(y, m, day, h, mn);
+                const lmGZ = getMoGZPrecise(y, m, day, h, mn);
+                const ldGZ = getDayGZ(y, m, day, h);
                 const lhGZ = getHrGZ(h, ldGZ.tg);
 
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
-                const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
-                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
-
-                const mpPillarsRaw = [
-                    { tg: yGZ.tg, dz: yGZ.dz },
-                    { tg: mGZ.tg, dz: mGZ.dz },
-                    { tg: dGZ.tg, dz: dGZ.dz },
-                    { tg: hGZ.tg, dz: hGZ.dz }
-                ];
-                const specials = getSpecialPatterns(mpPillarsRaw, gejuTen, ri);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz, specials, mpPillarsRaw); 
+                const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -0.5 ? 'str_bal' : 'str_weak');
+                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
+                let xiyongArr = getXiyong(ri, dmScore, gejuTen, mGZ.dz); 
 
                 const pillars = [
                     { label: t('lbl_year'), tg: yGZ.tg, dz: yGZ.dz, tgTenRaw: SS_TABLE[ri][yGZ.tg],
@@ -2679,45 +2481,21 @@
             try {
                 const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER
                     .timezone, USER.isDST);
-                
-                let calcY = adj.year, calcM = adj.month, calcD = adj.day;
-                if (adj.hour >= 23) {
-                    const tempD = new Date(Date.UTC(adj.year, adj.month - 1, adj.day));
-                    tempD.setUTCDate(tempD.getUTCDate() + 1);
-                    calcY = tempD.getUTCFullYear();
-                    calcM = tempD.getUTCMonth() + 1;
-                    calcD = tempD.getUTCDate();
-                }
-
-                const yGZ = getYrGZPrecise(calcY, calcM, calcD, adj.hour, adj.minute);
-                const mGZ = getMoGZPrecise(calcY, calcM, calcD, adj.hour, adj.minute);
-                const dGZ = getDayGZ(calcY, calcM, calcD);
+                const yGZ = getYrGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
+                const mGZ = getMoGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
+                const dGZ = getDayGZ(adj.year, adj.month, adj.day, adj.hour);
                 const hGZ = getHrGZ(adj.hour, dGZ.tg);
                 const ri = dGZ.tg;
 
                 const dmScore = calcDMStrength(ri, yGZ, mGZ, dGZ, hGZ);
-                const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -1.5 ? 'str_bal' : 'str_weak');
-                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, dGZ, hGZ);
-
-                // ====== 附加特殊格局 Badge ======
-                const mpPillarsRaw = [
-                    { tg: yGZ.tg, dz: yGZ.dz },
-                    { tg: mGZ.tg, dz: mGZ.dz },
-                    { tg: dGZ.tg, dz: dGZ.dz },
-                    { tg: hGZ.tg, dz: hGZ.dz }
-                ];
-                const specials = getSpecialPatterns(mpPillarsRaw, gejuTen, ri);
-                let xiyongArr = getXiyong(ri, strengthKey, gejuTen, mGZ.dz, specials, mpPillarsRaw); 
+                const strengthKey = dmScore >= 0.5 ? 'str_strong' : (dmScore >= -0.5 ? 'str_bal' : 'str_weak');
+                const gejuTen = getGejuTenGod(ri, yGZ, mGZ, hGZ);
+                let xiyongArr = getXiyong(ri, dmScore, gejuTen, mGZ.dz); 
 
                 let gejuStr = '';
                 if (gejuTen === '建祿格') gejuStr = t('pat_jianlu');
                 else if (gejuTen === '羊刃格') gejuStr = t('pat_yangren');
                 else gejuStr = (t('ten')[gejuTen] || gejuTen) + t('pat_suffix');
-
-                if (specials.length > 0) {
-                    const spTags = specials.map(sKey => `<span style="font-size:0.55rem; background:rgba(212,168,67,0.15); color:var(--gold-b); padding:2px 5px; border-radius:3px; margin-left:6px; letter-spacing:0.05em; vertical-align:middle;">${t(sKey)}</span>`).join('');
-                    gejuStr += spTags;
-                }
 
                 let baseDate = new Date(adj.year, adj.month - 1, adj.day);
                 let lunarMD = getLunarMD(baseDate);
@@ -2760,7 +2538,7 @@
 
                 if (document.getElementById('mp-rizhu')) document.getElementById('mp-rizhu').textContent =
                     `${t('tg_name')[dGZ.tg]}${t('dz_name')[dGZ.dz]} · ${yyTxt}${t('wx_'+WXT[dGZ.tg])}`;
-                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').innerHTML = gejuStr; 
+                if (document.getElementById('mp-geju')) document.getElementById('mp-geju').textContent = gejuStr;
 
                 if (document.getElementById('mp-xiyong')) document.getElementById('mp-xiyong').textContent = xiyongArr.map(x =>
                     t('wx_' + x)).join(currentLang === 'en' ? ', ' : '、');
@@ -2806,21 +2584,12 @@
             try {
                 const adj = getAdjustedSolarDate(USER.year, USER.month, USER.day, USER.hour, USER.minute, USER.longitude, USER
                     .timezone, USER.isDST);
-                let calcY = adj.year, calcM = adj.month, calcD = adj.day;
-                if (adj.hour >= 23) {
-                    const tempD = new Date(Date.UTC(adj.year, adj.month - 1, adj.day));
-                    tempD.setUTCDate(tempD.getUTCDate() + 1);
-                    calcY = tempD.getUTCFullYear();
-                    calcM = tempD.getUTCMonth() + 1;
-                    calcD = tempD.getUTCDate();
-                }
-
-                const yGZ = getYrGZPrecise(calcY, calcM, calcD, adj.hour, adj.minute);
-                const dGZ = getDayGZ(calcY, calcM, calcD);
+                const yGZ = getYrGZPrecise(adj.year, adj.month, adj.day, adj.hour, adj.minute);
+                const dGZ = getDayGZ(adj.year, adj.month, adj.day, adj.hour);
                 const ri = dGZ.tg;
-                const dy = getDayun(USER.gender, calcY, calcM, calcD, yGZ.tg);
+                const dy = getDayun(USER.gender, adj.year, adj.month, adj.day, yGZ.tg);
                 const nowY = new Date().getFullYear();
-                const curIdx = getCurrentDayunIdx(dy, calcY, nowY);
+                const curIdx = getCurrentDayunIdx(dy, adj.year, nowY);
                 const cur = curIdx !== null ? dy.list[curIdx] : null;
                 if (document.getElementById('dy-startage')) document.getElementById('dy-startage').textContent = dy.startAge +
                     t('age_start');
