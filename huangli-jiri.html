@@ -341,7 +341,7 @@
                 lp_title:'排盤建檔', lp_sub:'輸入您的出生資訊以生成真太陽時命盤', lp_submit:'查看黃道吉日與命盤', modal_title:'修改命盤資料', modal_sub:'輸入新的出生資訊以重新排盤', modal_name:'姓名 / 暱稱', modal_gender:'性別', modal_year:'年', modal_month:'月', modal_day:'日', modal_hour:'出生時 (0-23)', modal_minute:'分 (0-59)', modal_submit:'確認排盤', modal_cancel:'取消', modal_lon:'經度 (東經+ / 西經-)', modal_tz:'時區 (UTC)', modal_dst:'夏令時', btn_consult:'預約命理師精準解析'
             },
             'zh-CN': {
-                page_title:'黄道吉日 · 真太阳时精准排盘', ph_name_eg:'例如：陈先生', lang_tw:'繁体中文', lang_cn:'简体/汉语', lang_en:'English', logo:'黄道吉日', sub:'个人命盘 · 每日流日', tab_today:'今日', tab_chart:'命盘', tab_luck:'大运', btn_today:'回到今天', lbl_select_date:'选 日', lbl_drum_yr:'年', lbl_drum_mo:'月', lbl_drum_day:'日', lbl_drum_hr:'时', hd_pillars:'命 盘 × 今 日 四 柱', grp_base:'原 命 盘', grp_luck:'大 运', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 时', lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱', rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑', vd_title:'今日综评：', hd_fortune6:'六 维 运 势', hd_hours:'今 日 十 二 时 辰', hd_ss:'流 日 综 合 解 读', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱', lbl_name:'命主', lbl_birth:'出生', lbl_gender:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重', hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运', val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）', click_tip:'点击查看关系',
+                page_title:'黄道吉日 · 真太阳时精准排盘', ph_name_eg:'例如：陈先生', lang_tw:'繁体中文', lang_cn:'简体/汉语', lang_en:'English', logo:'黄道吉日', sub:'个人命盘 · 每日流日', tab_today:'今日', tab_chart:'命盘', tab_luck:'大运', btn_today:'回到今天', lbl_select_date:'选 日', lbl_drum_yr:'年', lbl_drum_mo:'月', lbl_drum_day:'日', lbl_drum_hr:'时', hd_pillars:'命 盘 × 今 日 四 柱', grp_base:'原 命 盘', grp_luck:'大 运', grp_year:'流 年', grp_month:'流 月', grp_day:'流 日', grp_hour:'流 时', lbl_year:'年柱', lbl_month:'月柱', lbl_day:'日柱', lbl_hour:'时柱', rel_he:'相合', rel_chong:'相冲', rel_liuhe:'六合', rel_hai:'相害', rel_po:'相破', rel_xing:'相刑', rel_zixing:'自刑', vd_title:'今日综评：', hd_fortune6:'六 维 运 势', hd_hours:'今 日 十 二 时 辰', hd_ss:'流 日 综 合 解 读', hd_interp:'流 日 综 合 解 读', hd_mychart:'个 人 命 盘', hd_base4:'原 命 盘 四 柱', b4_grp:'年 柱 · 月 柱 · 日 柱 · 时 柱', lbl_name:'命主', lbl_birth:'出生', lbl_性别:'性别', lbl_dm:'日主', lbl_pattern:'格局', lbl_useful:'喜用神', lbl_strength:'身强弱', lbl_taiyuan:'胎元', lbl_kongwang:'日柱空亡', lbl_bone:'骨重', hd_luck_plan:'大 运 排 盘', lbl_start_age:'起运年龄', lbl_dir:'顺 / 逆运', lbl_cur_luck:'当前大运', val_male:'男', val_female:'女', val_unstarted:'未起运', age_start:'岁起运', age_unit:'岁', dir_fwd:'顺运（阳男 / 阴女）', dir_rev:'逆运（阴男 / 阳女）', click_tip:'点击查看关系',
                 ten: { '七殺':'七杀', '正官':'正官', '偏財':'偏财', '正財':'正财', '偏印':'偏印', '正印':'正印', '食神':'食神', '傷官':'伤官', '比肩':'比肩', '劫財':'劫财', '日主':'日主', '—':'—' },
                 tg_name: ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'], dz_name: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'], wk_names: ['日','一','二','三','四','五','六'],
                 lbl_stem:'天干', lbl_tg_ten:'天干十神', lbl_branch:'地支', lbl_dz_ten:'地支十神', lbl_nayin:'纳音', lbl_tengod:'十神', yang:'阳', yin:'阴',
@@ -462,6 +462,7 @@
         }
 
         function getTrueSolarTime(year, month, day, hour, minute, longitude, tzOffset, isDST) {
+            hour = Number(hour); minute = Number(minute); longitude = Number(longitude); tzOffset = Number(tzOffset);
             let minTotal = hour * 60 + minute;
             if (isDST) minTotal -= 60;
             const standardMeridian = tzOffset * 15;
@@ -471,7 +472,8 @@
             const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
             minTotal += eot;
             let dayOffset = 0;
-            if (minTotal >= 1440) { dayOffset = 1; minTotal -= 1440; } else if (minTotal < 0) { dayOffset = -1; minTotal += 1440; }
+            while (minTotal >= 1440) { dayOffset += 1; minTotal -= 1440; }
+            while (minTotal < 0) { dayOffset -= 1; minTotal += 1440; }
             return { hour: Math.floor(minTotal / 60), minute: Math.round(minTotal % 60), dayOffset: dayOffset };
         }
 
@@ -600,7 +602,11 @@
             return { tg: ((diff % 10) + 10) % 10, dz: (((diff + 10) % 12) + 12) % 12 };
         }
 
-        function getHrGZ(hour, dayTg) { const dz = Math.floor((hour + 1) / 2) % 12; return { tg: ([0, 2, 4, 6, 8][dayTg % 5] + dz) % 10, dz }; }
+        function getHrGZ(hour, dayTg) { 
+            hour = Number(hour);
+            const dz = Math.floor((hour + 1) / 2) % 12; 
+            return { tg: ([0, 2, 4, 6, 8][dayTg % 5] + dz) % 10, dz }; 
+        }
 
         function getDayun(gender, year, month, day, yrTg) {
             const mGZ = getMoGZPrecise(year, month, day, 12, 0);
@@ -697,54 +703,38 @@
             const genBy = { '木': '水', '火': '木', '土': '火', '金': '土', '水': '金' };
             const ctrlBy = { '木': '金', '火': '水', '土': '木', '金': '火', '水': '土' };
 
-            // --- [特例攔截：調候為急] ---
-            if ((monthDz === 11 || monthDz === 0 || monthDz === 1) && dmWx === '木') {
-                if (dmScore < 0) { return ['木', '火']; } else { return ['火', '土']; }
+            const isStrong = dmScore >= 0;
+            let standardFav = [];
+
+            if (!isStrong) { 
+                standardFav = [genBy[dmWx], dmWx]; 
+            } else { 
+                standardFav = [gen[dmWx], ctrl[dmWx]]; 
+                if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
+                    standardFav = [ctrlBy[dmWx], gen[dmWx]]; 
+                }
             }
 
             let xiyong = [];
             const isWinter = monthDz === 0 || monthDz === 1 || monthDz === 11;
             const isSummer = monthDz === 5 || monthDz === 6 || monthDz === 7;
-            const isStrong = dmScore >= 0;
 
-            let needWarm = isWinter && !(isStrong && (dmWx === '火' || dmWx === '土'));
-            let needCool = isSummer && !(isStrong && (dmWx === '水' || dmWx === '木'));
-
-            let standardFav = [];
-            if (!isStrong) { 
-                standardFav = [genBy[dmWx], dmWx]; 
-            } else { 
-                if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
-                    standardFav = [ctrlBy[dmWx], gen[dmWx], ctrl[dmWx]];
-                } else if (gejuTen === '正官' || gejuTen === '七殺') {
-                    standardFav = [gen[dmWx], ctrl[dmWx]];
-                } else {
-                    standardFav = [gen[dmWx], ctrl[dmWx]];
-                }
-            }
-
-            if (needWarm) {
+            if (isWinter) {
                 xiyong.push('火'); 
-                standardFav.forEach(el => { if (el !== '水' || !isStrong) { xiyong.push(el); } });
-            } else if (needCool) {
+                standardFav.forEach(el => {
+                    if (el !== '水' || standardFav.length === 1) xiyong.push(el);
+                });
+            } else if (isSummer) {
                 xiyong.push('水'); 
-                standardFav.forEach(el => { if (el !== '火' || !isStrong) { xiyong.push(el); } });
+                standardFav.forEach(el => {
+                    if (el !== '火' || standardFav.length === 1) xiyong.push(el);
+                });
             } else {
-                xiyong = standardFav;
+                xiyong = [...standardFav];
             }
 
             xiyong = [...new Set(xiyong)].slice(0, 2);
             if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
-            
-            if (!isStrong && dmWx === '木' && xiyong.length > 0) {
-               if (!xiyong.includes('水') && !xiyong.includes('木')) { return ['水', '木']; }
-            }
-
-            if (xiyong.includes('木') && xiyong.includes('火')) return ['木', '火'];
-            if (xiyong.includes('金') && xiyong.includes('水')) return ['金', '水'];
-            if (xiyong.includes('水') && xiyong.includes('木')) return ['水', '木'];
-            if (xiyong.includes('火') && xiyong.includes('土')) return ['火', '土'];
-            if (xiyong.includes('土') && xiyong.includes('金')) return ['土', '金'];
             return xiyong;
         }
 
