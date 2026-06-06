@@ -696,6 +696,7 @@
             return tenGod;
         }
 
+        // --- 核心修正的 getXiyong 函數 ---
         function getXiyong(ri, dmScore, gejuTen, monthDz) {
             const dmWx = WXT[ri];
             const gen = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
@@ -706,12 +707,12 @@
             const isStrong = dmScore >= 0;
             let standardFav = [];
 
-            if (!isStrong) { 
-                standardFav = [genBy[dmWx], dmWx]; 
-            } else { 
-                standardFav = [gen[dmWx], ctrl[dmWx]]; 
+            if (!isStrong) {
+                standardFav = [genBy[dmWx], dmWx];
+            } else {
+                standardFav = [gen[dmWx], ctrl[dmWx]];
                 if (gejuTen === '建祿格' || gejuTen === '羊刃格') {
-                    standardFav = [ctrlBy[dmWx], gen[dmWx]]; 
+                    standardFav = [ctrlBy[dmWx], gen[dmWx]];
                 }
             }
 
@@ -720,23 +721,33 @@
             const isSummer = monthDz === 5 || monthDz === 6 || monthDz === 7;
 
             if (isWinter) {
-                xiyong.push('火'); 
-                standardFav.forEach(el => {
-                    if (el !== '水' || standardFav.length === 1) xiyong.push(el);
-                });
+                xiyong.push('火');
+                if (dmWx === '金') {
+                    xiyong.push('木');
+                } else {
+                    standardFav.forEach(el => {
+                        if (el !== '水') xiyong.push(el);
+                    });
+                }
             } else if (isSummer) {
-                xiyong.push('水'); 
-                standardFav.forEach(el => {
-                    if (el !== '火' || standardFav.length === 1) xiyong.push(el);
-                });
+                xiyong.push('水');
+                if (dmWx === '木') {
+                    xiyong.push('金');
+                } else {
+                    standardFav.forEach(el => {
+                        if (el !== '火') xiyong.push(el);
+                    });
+                }
             } else {
                 xiyong = [...standardFav];
             }
 
             xiyong = [...new Set(xiyong)].slice(0, 2);
-            if(xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
+            if (xiyong.length === 0) xiyong = [gen[dmWx], ctrl[dmWx]];
+            
             return xiyong;
         }
+        // --------------------------------
 
         function calcShensha(ri, liuDz, liuTg, yearDz, monthDz) {
             const ss = [];
