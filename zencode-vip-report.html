@@ -11,6 +11,7 @@
   --p:#4080C8; --pb:#60A8F0; --bg:#020408;
   --pd:rgba(64,128,200,0.16); --pg:rgba(64,128,200,0.32);
   --trans: 1.2s cubic-bezier(0.4,0,0.2,1);
+  --wood:#88B08B; --fire:#D95C43; --earth:#B8A385; --metal:#C2C8D1; --water:#5C82A6;
 }
 html,body {
   background:var(--bg);
@@ -73,7 +74,7 @@ html,body {
 .hero-name {
   font-family:'Ma Shan Zheng',cursive;
   font-size:clamp(1.1rem,2.5vw,1.6rem);
-  color:rgba(255,255,255,0.7);
+  color:rgba(255,255,255,0.9);
   letter-spacing:0.22em;
   margin-bottom:8px;
   transition:color var(--trans);
@@ -82,7 +83,7 @@ html,body {
 .hero-subtitle {
   font-family:'Noto Sans TC',sans-serif;
   font-size:0.78rem;letter-spacing:0.32em;
-  color:var(--pb);opacity:0.6;
+  color:var(--pb);opacity:0.8;
   margin-bottom:44px;
   transition:color var(--trans);
 }
@@ -216,29 +217,91 @@ html,body {
   transition:color var(--trans),background var(--trans);
 }
 
-/* ══ 内容章節 ══ */
-.section-mock {
-  padding:52px 0;
-  border-top:1px solid var(--pd);
-  transition:border-color var(--trans);
-  opacity:0;transform:translateY(18px);
-  animation:sec-reveal 0.8s ease forwards;
-}
-@keyframes sec-reveal{to{opacity:1;transform:none}}
+/* ══════════════════════════════════
+   VIP 報告詳細組件 (Wood Content)
+══════════════════════════════════ */
+.birth-bar{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;background:rgba(0,0,0,0.4);border:1px solid var(--pd);border-radius:44px;padding:12px 32px;margin-bottom:44px;backdrop-filter:blur(20px);box-shadow:0 12px 40px rgba(0,0,0,0.5);font-family:'Noto Sans TC',sans-serif;font-size:0.75rem;letter-spacing:0.1em;color:rgba(255,255,255,0.8);transition:all var(--trans)}
+.birth-bar .dot{color:var(--pb);font-size:0.4rem;opacity:0.6}
+.birth-bar .hl{color:var(--pb);font-weight:500}
 
-.sec-header{display:flex;align-items:baseline;gap:18px;margin-bottom:18px}
-.sec-num{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;color:var(--pb);opacity:0.25;transition:color var(--trans)}
-.sec-title{font-size:1.1rem;font-weight:600;color:var(--pb);letter-spacing:0.1em;transition:color var(--trans)}
-.sec-body {
-  min-height:80px;
-  background:linear-gradient(90deg,var(--pd),rgba(0,0,0,0));
-  border-left:2px solid var(--p);
-  padding:18px 22px;
-  color:rgba(255,255,255,0.38);
-  font-family:'Noto Sans TC',sans-serif;
-  font-size:0.82rem;letter-spacing:0.08em;line-height:1.9;
-  transition:all var(--trans);
-}
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px;width:100%;max-width:640px;margin-left:auto;margin-right:auto}
+.pillar{display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.4);border:1px solid var(--pd);padding:20px 12px;border-radius:6px;backdrop-filter:blur(20px);transition:all .4s;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.pillar:hover{border-color:var(--p);transform:translateY(-5px);background:var(--pd);box-shadow:0 16px 40px rgba(0,0,0,0.5)}
+.pillar.day-master{border-color:var(--pg);background:var(--pd);box-shadow:inset 0 0 32px var(--pd),0 0 0 1px var(--pd);animation:dmPulse 3.5s ease-in-out infinite}
+@keyframes dmPulse{0%,100%{box-shadow:inset 0 0 32px var(--pd),0 0 0 1px var(--pd)}50%{box-shadow:inset 0 0 48px var(--pg),0 0 0 1px var(--pb)}}
+.p-lbl{font-size:0.58rem;letter-spacing:0.25em;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:'Noto Sans TC',sans-serif}
+.p-tg-god{font-size:0.6rem;color:var(--pb);margin-bottom:6px;font-family:'Noto Sans TC',sans-serif;letter-spacing:0.08em;white-space:nowrap}
+.p-tg,.p-dz{font-family:'Ma Shan Zheng',cursive;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin-bottom:6px;color:var(--wood)}
+.p-dz-god{font-size:0.6rem;color:var(--pb);margin-top:8px;font-family:'Noto Sans TC',sans-serif;letter-spacing:0.08em;white-space:nowrap}
+.p-hidden{font-size:0.52rem;color:rgba(255,255,255,0.6);margin-top:6px;font-family:'Noto Sans TC',sans-serif;letter-spacing:0.05em;border-top:1px solid var(--pd);padding-top:6px;width:100%;text-align:center;line-height:1.4}
+.p-nayin{font-size:0.5rem;color:var(--pb);margin-top:8px;font-family:'Noto Sans TC',sans-serif;letter-spacing:0.08em;background:var(--pd);padding:3px 8px;border-radius:4px;white-space:nowrap}
+
+.section{padding:82px 0;border-top:1px solid rgba(255,255,255,0.05)}
+.sec-hd{display:flex;align-items:flex-start;gap:22px;margin-bottom:48px}
+.sec-num{font-family:'Ma Shan Zheng',cursive;font-size:3rem;color:var(--pb);opacity:0.4;line-height:1;flex-shrink:0;padding-top:4px}
+.sec-ti-wrap{flex:1}
+.sec-ti{font-size:1.38rem;font-weight:600;color:var(--pb);letter-spacing:0.09em;line-height:1.4}
+.sec-en{font-size:0.6rem;letter-spacing:0.36em;color:var(--pb);opacity:0.7;font-family:'Noto Sans TC',sans-serif;margin-top:5px;text-transform:uppercase}
+.sec-intro{font-size:0.92rem;line-height:2.25;color:rgba(255,255,255,0.75);margin-top:12px;font-family:'Noto Sans TC',sans-serif;font-weight:300;letter-spacing:0.02em}
+
+.card{background:rgba(0,0,0,0.4);border:1px solid var(--pd);border-radius:6px;padding:36px 40px;margin-bottom:18px;position:relative;overflow:hidden;backdrop-filter:blur(24px);transition:all .4s}
+.card:hover{border-color:var(--p);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--pb) 28%,var(--pb) 72%,transparent)}
+.card-ti{font-size:1.04rem;color:var(--pb);font-weight:600;margin-bottom:20px;letter-spacing:0.05em;display:flex;align-items:center;gap:9px;line-height:1.5}
+.card-ti::before{content:'◆';font-size:0.38rem;color:var(--pb);flex-shrink:0}
+.card p{font-size:0.94rem;line-height:2.3;color:rgba(255,255,255,0.85);font-weight:300;margin-bottom:14px;text-align:justify;letter-spacing:0.02em}
+.card p:last-child{margin-bottom:0}
+.quote{border-left:2px solid var(--pb);padding:14px 20px;margin:14px 0 20px;background:var(--pd);font-family:'Noto Serif TC',serif;font-style:italic;color:rgba(255,255,255,0.8);font-size:0.88rem;line-height:2.05;letter-spacing:0.05em}
+
+/* Authority Box */
+.authority-box{background:rgba(0,0,0,0.3);border:1px solid var(--pd);border-radius:6px;padding:24px 28px;margin:18px 0;box-shadow:inset 0 0 20px rgba(0,0,0,0.5)}
+.authority-box-hd{font-family:'Noto Sans TC',sans-serif;font-size:0.72rem;letter-spacing:0.22em;color:var(--pb);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.authority-box-hd::before{content:'▍';color:var(--pb);opacity:0.6}
+.authority-item{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+.authority-item:last-child{margin-bottom:0}
+.authority-num{font-family:'Noto Sans TC',sans-serif;font-size:0.68rem;color:var(--pb);opacity:0.7;flex-shrink:0;width:22px;text-align:right;padding-top:3px}
+.authority-text{font-size:0.87rem;line-height:1.95;color:rgba(255,255,255,0.85);font-family:'Noto Sans TC',sans-serif;font-weight:300}
+
+/* 十神條形圖 */
+.tg-chart-box{background:rgba(0,0,0,0.3);border:1px solid var(--pd);border-radius:8px;padding:32px 36px;margin:24px 0;backdrop-filter:blur(16px)}
+.tg-row{display:flex;align-items:center;margin-bottom:12px;gap:16px}
+.tg-row:last-child{margin-bottom:0}
+.tg-label-wrap{width:105px;flex-shrink:0;text-align:right}
+.tg-label{font-size:0.8rem;color:var(--pb);font-weight:500;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg-sub{font-size:0.55rem;font-family:'Noto Sans TC',sans-serif;color:rgba(255,255,255,0.5);letter-spacing:0.05em;white-space:nowrap}
+.tg-track{flex-grow:1;height:8px;background:rgba(0,0,0,0.4);border-radius:4px;position:relative;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.03)}
+.tg-fill{height:100%;border-radius:4px;position:relative}
+.tg-fill.wood{background:linear-gradient(90deg,rgba(136,176,139,0.4),var(--wood));box-shadow:0 0 15px rgba(136,176,139,0.5)}
+.tg-fill.fire{background:linear-gradient(90deg,rgba(217,92,67,0.4),var(--fire));box-shadow:0 0 15px rgba(217,92,67,0.5)}
+.tg-pct{width:40px;flex-shrink:0;font-family:'Noto Sans TC',sans-serif;font-size:0.8rem;color:#fff;font-weight:600;text-align:left}
+
+/* 網格系統 */
+.ss-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+.ss-item{border:1px solid var(--pd);border-radius:6px;padding:26px;background:rgba(0,0,0,0.4);transition:all .35s;backdrop-filter:blur(24px)}
+.ss-item:hover{border-color:var(--p);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.ss-name{font-size:1.05rem;color:var(--pb);font-weight:600;margin-bottom:6px;letter-spacing:0.05em;display:flex;align-items:center;gap:7px}
+.ss-name::before{content:'◈';font-size:0.48rem;color:var(--pb);flex-shrink:0}
+.ss-rule{font-size:0.7rem;color:rgba(255,255,255,0.45);font-family:'Noto Sans TC',sans-serif;margin-bottom:14px;letter-spacing:0.05em;border-bottom:1px dashed var(--pd);padding-bottom:10px}
+.ss-desc{font-size:0.88rem;color:rgba(255,255,255,0.85);line-height:2.1;font-family:'Noto Sans TC',sans-serif;font-weight:300}
+
+.yun-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-top:24px}
+.yun-card{background:rgba(0,0,0,0.4);border:1px solid var(--pd);border-radius:6px;padding:22px 16px;position:relative;transition:all .35s;backdrop-filter:blur(24px);display:flex;flex-direction:column}
+.yun-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.yun-age{font-size:0.6rem;color:var(--pb);opacity:0.8;margin-bottom:8px;font-family:'Noto Sans TC',sans-serif;letter-spacing:0.12em}
+.yun-stem{font-family:'Ma Shan Zheng',cursive;font-size:2.1rem;line-height:1;margin-bottom:12px;display:flex;gap:4px}
+.yun-desc{font-size:0.76rem;color:rgba(255,255,255,0.85);line-height:1.85;font-family:'Noto Sans TC',sans-serif;flex-grow:1;font-weight:300}
+.yun-quality{display:inline-block;font-size:0.56rem;letter-spacing:0.12em;padding:3px 7px;border-radius:3px;margin-top:9px;font-family:'Noto Sans TC',sans-serif;background:var(--pd);color:var(--pb);border:1px solid var(--p)}
+
+/* 其他特殊盒子 */
+.oppo-box{background:linear-gradient(135deg,var(--pd),rgba(0,0,0,0));border:1px solid var(--p);border-radius:6px;padding:32px 36px;margin:20px 0;backdrop-filter:blur(20px)}
+.oppo-box h3{color:var(--pb);font-size:1.04rem;margin-bottom:20px;letter-spacing:0.09em;display:flex;align-items:center;gap:9px}
+.warn-box{background:linear-gradient(135deg,rgba(217,92,67,0.15),rgba(0,0,0,0));border:1px solid rgba(217,92,67,0.3);border-radius:6px;padding:32px 36px;margin:20px 0;backdrop-filter:blur(20px)}
+.warn-box h3{color:var(--fire);font-size:1.04rem;margin-bottom:20px;letter-spacing:0.09em;display:flex;align-items:center;gap:9px}
+
+.strat-list{list-style:none}
+.strat-list li{font-size:0.92rem;line-height:2.15;color:rgba(255,255,255,0.85);font-weight:300;padding-left:20px;position:relative;margin-bottom:12px;letter-spacing:0.02em}
+.strat-list li:last-child{margin-bottom:0}
+.strat-list li::before{content:'▸';position:absolute;left:0;top:0;font-size:0.95rem;color:var(--pb)}
 
 /* ══ 判詞 Verdict ══ */
 .verdict {
@@ -271,99 +334,333 @@ html,body {
   font-size:1.1rem;color:var(--pb);
   letter-spacing:0.3em;
   transition:all var(--trans);
+  background:rgba(0,0,0,0.4);
+  border-radius:4px;
 }
 
-/* ══ 響應式 ══ */
-@media(max-width:640px){
-  .wx-btn{padding:9px 13px;font-size:1rem}
-  .wx-btn .wx-label{display:none}
-  .lang-bar{top:14px;right:14px}
-  .audio-pulse{display:none}
-  .audio-btn{bottom:20px;right:20px}
-  .hero{min-height:85vh}
+/* ══ 響應式：移動端強力適配 ══ */
+@media(max-width:768px){
+  .container { padding:0 14px 100px; }
+  .section { padding:52px 0; }
+  .sec-hd { flex-direction:column; gap:10px; margin-bottom:28px; }
+  .sec-num { font-size:2.2rem; padding-top:0; }
+  .sec-ti { font-size:1.08rem; line-height:1.45; }
+  .top-bar { padding:0 14px; height:48px; }
+  .top-right { display:none; }
+  .hero { min-height:85vh; padding:68px 0 28px; }
+  
+  /* 排盤強保一行，防止錯位 */
+  .birth-bar { flex-direction:column; gap:7px; padding:14px 16px; border-radius:10px; width:100%; margin-bottom:28px; font-size:0.7rem; }
+  .birth-bar .dot { display:none; }
+  .pillars { display:flex; width:100%; gap:5px; margin-bottom:24px; padding:0; }
+  .pillar { flex:1; min-width:0; padding:12px 2px; border-radius:8px; }
+  .p-lbl { font-size:0.5rem; letter-spacing:0.12em; margin-bottom:5px; }
+  .p-tg, .p-dz { font-size:clamp(1.4rem,6vw,1.8rem); line-height:1.1; }
+  .p-hidden { font-size:0.45rem; margin-top:4px; padding-top:4px; line-height:1.3; letter-spacing:0; display:flex; flex-wrap:wrap; justify-content:center; gap:2px; }
+  .p-nayin { font-size:0.42rem; padding:2px 4px; margin-top:5px; letter-spacing:0; }
+  
+  /* 卡片與網格單列化，保證閱讀空間 */
+  .card, .oppo-box, .warn-box, .authority-box { padding:20px 14px; margin:14px 0; }
+  .card-ti { font-size:0.95rem; margin-bottom:14px; }
+  .card p, .strat-list li { font-size:0.88rem; line-height:2.1; }
+  .ss-grid, .yun-grid { grid-template-columns:1fr; gap:12px; }
+  .ss-item { padding:20px 16px; }
+  .ss-name { font-size:0.95rem; }
+  .ss-desc { font-size:0.84rem; }
+  
+  /* 十神圖表壓縮左側 */
+  .tg-chart-box { padding:24px 14px; }
+  .tg-row { gap:8px; margin-bottom:14px; }
+  .tg-label-wrap { width:70px; text-align:left; }
+  .tg-label { font-size:0.7rem; }
+  .tg-pct { width:32px; font-size:0.7rem; text-align:right; }
+  
+  .verdict { padding:72px 12px 56px; }
+  .verdict-kw { font-size:2.9rem; margin-bottom:24px; }
+  .verdict-text { font-size:0.9rem; line-height:2.1; }
+  .wx-btn { padding:9px 13px; font-size:1rem; }
+  .wx-btn .wx-label { display:none; }
+  .lang-bar { top:14px; right:14px; }
+  .audio-pulse { display:none; }
+  .audio-btn { bottom:20px; right:20px; }
 }
+@media(max-width:400px){
+  .p-tg, .p-dz { font-size:1.35rem; }
+  .p-nayin { display:none; }
+}
+
+/* ══ 隱藏 Mock 區塊 ══ */
+.section-mock { display: block; }
+#content-wood { display: none; opacity: 0; transition: opacity 0.6s ease; }
 </style>
 </head>
 <body>
 
 <canvas id="bgCanvas"></canvas>
 
-<!-- 語言切換 -->
 <div class="lang-bar">
   <button class="lang-btn active" data-lang="zh-TW">繁</button>
   <button class="lang-btn" data-lang="zh-CN">简</button>
   <button class="lang-btn" data-lang="en">EN</button>
-  <button class="lang-btn" data-lang="ko">한</button>
 </div>
 
-<!-- 音效提示 -->
 <div class="audio-pulse" id="audio-pulse">
   <span class="audio-pulse-icon">🎵</span>
   <span>
-    <span class="audio-pulse-main" id="audio-pulse-main" data-i18n="audio.hint">點擊解鎖沉浸音效</span>
-    <span class="audio-pulse-sub" id="audio-pulse-sub" data-i18n="audio.hint.sub">五行環境音 · 純程式合成</span>
+    <span class="audio-pulse-main" id="audio-pulse-main">點擊解鎖沉浸音效</span>
+    <span class="audio-pulse-sub" id="audio-pulse-sub">五行環境音 · 純程式合成</span>
   </span>
 </div>
 <button class="audio-btn" id="audio-btn" aria-label="Toggle sound">♪</button>
 
 <div class="container">
-  <!-- HERO -->
   <section class="hero">
-    <div class="hero-eyebrow" id="hero-eyebrow" data-i18n="hero.tag">ZenCode · VIP 命理深度報告</div>
+    <div class="hero-eyebrow" id="hero-eyebrow">ZenCode · VIP 命理深度報告</div>
 
     <div class="hero-emblem" id="hero-emblem">癸</div>
 
     <div class="hero-name" id="hero-name">命主 · 測試用戶</div>
-    <div class="hero-subtitle" id="hero-subtitle" data-i18n="hero.sub">深度流年 · 八字鑑定 · 大運解讀</div>
+    <div class="hero-subtitle" id="hero-subtitle">深度流年 · 八字鑑定 · 大運解讀</div>
 
-    <!-- 五行切換器（在大字下方） -->
     <div class="wx-switcher" id="wx-switcher">
       <button class="wx-btn" data-wx="木">
-        木<span class="wx-label" data-i18n-wx="木">Wood</span>
+        木<span class="wx-label">Wood</span>
       </button>
       <button class="wx-btn" data-wx="火">
-        火<span class="wx-label" data-i18n-wx="火">Fire</span>
+        火<span class="wx-label">Fire</span>
       </button>
       <button class="wx-btn" data-wx="土">
-        土<span class="wx-label" data-i18n-wx="土">Earth</span>
+        土<span class="wx-label">Earth</span>
       </button>
       <button class="wx-btn" data-wx="金">
-        金<span class="wx-label" data-i18n-wx="金">Metal</span>
+        金<span class="wx-label">Metal</span>
       </button>
       <button class="wx-btn active" data-wx="水">
-        水<span class="wx-label" data-i18n-wx="水">Water</span>
+        水<span class="wx-label">Water</span>
       </button>
     </div>
 
     <div class="hdiv"></div>
   </section>
 
-  <!-- 章節 -->
-  <div class="section-mock" style="animation-delay:0.1s">
-    <div class="sec-header">
-      <div class="sec-num" data-i18n-num="1">壹</div>
-      <div class="sec-title" data-i18n="sec.1.title">格局鑑定與能量流動</div>
+  <div id="content-mock">
+    <div class="section-mock" style="animation-delay:0.1s">
+      <div class="sec-header">
+        <div class="sec-num">壹</div>
+        <div class="sec-title">格局鑑定與能量流動</div>
+      </div>
+      <div class="sec-body">命盤格局鑑定 · 五行強弱分析 · 能量流動推演</div>
     </div>
-    <div class="sec-body" data-i18n="sec.1.body">命盤格局鑑定 · 五行強弱分析 · 能量流動推演</div>
+
+    <div class="section-mock" style="animation-delay:0.22s">
+      <div class="sec-header">
+        <div class="sec-num">貳</div>
+        <div class="sec-title">十神心理原型對照</div>
+      </div>
+      <div class="sec-body">十神性格深度解析 · 潛意識原型 · 人際關係模式</div>
+    </div>
+
+    <div class="section-mock" style="animation-delay:0.34s">
+      <div class="sec-header">
+        <div class="sec-num">叁</div>
+        <div class="sec-title">大運流年交叉推演</div>
+      </div>
+      <div class="sec-body">十年大運週期 · 流年吉凶 · 機遇與風險推演</div>
+    </div>
   </div>
 
-  <div class="section-mock" style="animation-delay:0.22s">
-    <div class="sec-header">
-      <div class="sec-num" data-i18n-num="2">貳</div>
-      <div class="sec-title" data-i18n="sec.2.title">十神心理原型對照</div>
+  <div id="content-wood">
+    <div class="birth-bar">
+      <span class="hl">乾造（純木奇局）</span>
+      <span class="dot">✦</span>
+      <span>曲直仁壽格</span>
+      <span class="dot">✦</span>
+      <span>四柱同干支</span>
     </div>
-    <div class="sec-body" data-i18n="sec.2.body">十神性格深度解析 · 潛意識原型 · 人際關係模式</div>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-lbl">年柱</div>
+        <div class="p-tg-god">比肩</div>
+        <div class="p-tg">甲</div>
+        <div class="p-dz">寅</div>
+        <div class="p-dz-god">建祿</div>
+        <div class="p-hidden">甲丙戊</div>
+        <div class="p-nayin">大溪水</div>
+      </div>
+      <div class="pillar">
+        <div class="p-lbl">月柱</div>
+        <div class="p-tg-god">比肩</div>
+        <div class="p-tg">甲</div>
+        <div class="p-dz">寅</div>
+        <div class="p-dz-god">建祿</div>
+        <div class="p-hidden">甲丙戊</div>
+        <div class="p-nayin">大溪水</div>
+      </div>
+      <div class="pillar day-master">
+        <div class="p-lbl" style="color:var(--pb)">日柱</div>
+        <div class="p-tg-god" style="color:var(--wood)">日主</div>
+        <div class="p-tg">甲</div>
+        <div class="p-dz">寅</div>
+        <div class="p-dz-god">建祿</div>
+        <div class="p-hidden">甲丙戊</div>
+        <div class="p-nayin">大溪水</div>
+      </div>
+      <div class="pillar">
+        <div class="p-lbl">時柱</div>
+        <div class="p-tg-god">比肩</div>
+        <div class="p-tg">甲</div>
+        <div class="p-dz">寅</div>
+        <div class="p-dz-god">建祿</div>
+        <div class="p-hidden">甲丙戊</div>
+        <div class="p-nayin">大溪水</div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">壹</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">源流格局與五行核心：曲直仁壽之極致</div>
+          <div class="sec-en">ORIGIN · PATTERN · FAVORABLE ELEMENTS ANALYSIS</div>
+          <div class="sec-intro">此乃命理學中極其罕見的「四柱同干同支」曠世奇局。甲木生於寅月，地支四見寅木建祿，天干四透甲木。木氣達到了絕對的壟斷地位，格局化為純粹的「曲直仁壽格」。</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-ti">五行取用深層解析：順勢而為，切忌逆伐</div>
+        <div class="quote">專旺格的最高準則在於「順其氣勢」，絕不可犯旺。</div>
+        <p><strong>1. 【順勢而為】：</strong> 滿盤皆木，氣勢如虹，猶如原始森林拔地而起。此局絕對<strong>喜水（印星）</strong>來滋養木氣，<strong>喜木（比劫）</strong>來壯大聲勢。水木交融，方能令參天大樹生生不息。</p>
+        <p><strong>2. 【泄秀之美】：</strong> 木旺至極，最喜<strong>火（食傷）</strong>來泄秀（木火通明）。地支寅木中暗藏丙火，這不僅是生機的出口，更是你絕頂聰明、才華洋溢的象徵。逢火流年，必有驚艷世人的作品或事業大爆發。</p>
+        <p><strong>3. 【絕對禁忌】：</strong> 專旺格最怕「觸怒其神」。此局<strong>絕忌金（官殺）</strong>。金來克木，猶如蚍蜉撼大樹，不僅克不動，反而會激起木的狂暴反噬，引發極大的災禍或事業傾覆。同時亦忌純土（財星），因群比爭財，見土必生爭奪。</p>
+      </div>
+      <div class="authority-box">
+        <div class="authority-box-hd">命理依據索引</div>
+        <div class="authority-item"><div class="authority-num">①</div><div class="authority-text">《滴天髓》·劉伯溫著："強木得火，方化其頑。"——木氣極旺，必以寅中丙火泄秀為用。</div></div>
+        <div class="authority-item"><div class="authority-num">②</div><div class="authority-text">《淵海子平》："曲直仁壽格，最忌庚申辛酉之鄉。"——專旺格犯金，必遭天譴，大凶。</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">貳</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">納音五行與靈魂底色：四海奔流的大溪水</div>
+          <div class="sec-en">NA YIN · MELODIC ELEMENTS ANALYSIS</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-ti">甲寅 ·【大溪水】x 4</div>
+        <div class="quote">《三命通会》云：「大溪水者，驚濤薄岸，駭浪浮天，光涵萬里之秋，碧落千尋之曉。」</div>
+        <p>八字四柱皆為甲寅，納音四柱皆為「大溪水」。這意味著在龐大堅韌的森林（木）之下，流淌著驚濤駭浪般的江河（水）。水能生木，你的靈魂底色充滿了無窮無盡的動力與生命源泉。你絕不是溫室裡的花朵，而是一股足以席捲時代浪潮的洪流。你的思想深邃如水，行動卻如雷霆般不可阻擋。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">叁</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">十神心理原型：極致的自我與絕對的意志</div>
+          <div class="sec-en">TEN GODS & YIN-YANG DYNAMICS</div>
+        </div>
+      </div>
+      <div class="tg-chart-box">
+        <div class="card-ti" style="margin-bottom:24px;color:var(--pb)">潛意識驅動力分佈</div>
+        <div class="tg-row">
+          <div class="tg-label-wrap"><div class="tg-label" style="color:var(--wood)">比肩(甲木)</div><div class="tg-sub">絕對意志/獨立</div></div>
+          <div class="tg-track"><div class="tg-fill wood" style="width:100%"></div></div>
+          <div class="tg-pct">100%</div>
+        </div>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px dashed rgba(64,128,200,0.3)">
+          <p style="font-size:0.86rem;line-height:2;color:rgba(255,255,255,0.8);font-weight:300;"><strong>100% 比肩的絕對統治：</strong>這是一種極端純粹的人格原型。你擁有超乎常人的自信、獨立與鋼鐵般的意志。你不依附於任何人，不盲從於任何權威。在你的世界裡，「我」就是宇宙的中心。這種極致的自我，賦予了你開宗立派的祖師爺氣場，但也意味著你在人際關係中極度固執，寧折不彎。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">肆</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">學業與認知：無師自通的創立者</div>
+          <div class="sec-en">ACADEMIC JOURNEY & KNOWLEDGE ACQUISITION</div>
+        </div>
+      </div>
+      <div class="oppo-box">
+        <h3 style="color:var(--pb)">💻 高維學習法：拒絕框架，自成一派</h3>
+        <ul class="strat-list">
+          <li><strong>去權威化的野蠻生長：</strong>滿盤比肩，你天生排斥被說教和被灌輸。傳統的應試教育或僵化的導師制度會讓你感到窒息。你最好的學習方式是「實戰」與「自我摸索」。</li>
+          <li><strong>哲學與抽象思維的本能：</strong>木主仁，主思想。你的大腦極其適合進行哲學、架構學、或高維度系統的創建。你不是在學習規則，你是在創造規則。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">伍</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">事業與財富：群比爭財與木火通明</div>
+          <div class="sec-en">CAREER & WEALTH STRATEGY</div>
+        </div>
+      </div>
+      <div class="wealth-tier">
+        <div class="wealth-tier-bar" style="background:linear-gradient(180deg,var(--wood) 0%,var(--fire) 100%)"></div>
+        <div class="wealth-tier-body">
+          <p><strong>財富的矛盾與解法：</strong>滿盤比肩（木），財星（土）極度微弱且暗藏於寅中。若直接追求金錢（土），必引發「群比爭財」，導致合夥破裂或嚴重破財。<br>
+          你的財富密碼在於<strong>「食傷生財」（火生土）</strong>。你必須通過展示你的才華、創意、技術或品牌（火），讓財富自然流向你，而不是在傳統紅海中與人肉搏。木火通明之時，便是你名利雙收之日。</p>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(217,92,67,0.3)">
+        <div class="card-ti" style="color:var(--fire)">🔥 最契合的黃金賽道</div>
+        <p>1. <strong>林業、建築與設計（木的本相）：</strong> 掌控實體空間的構建。</p>
+        <p>2. <strong>教育、哲學與戰略智庫（木的延伸）：</strong> 成為行業的領袖或精神導師。</p>
+        <p>3. <strong>文化創意、影視傳媒、互聯網（火的泄秀）：</strong> 將你龐大的內在能量通過光影與網絡傳播，這是你實現降維打擊的最佳途徑。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">陸</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">情緣與婚姻：參天大樹的靈魂伴侶</div>
+          <div class="sec-en">ROMANCE & MARRIAGE</div>
+        </div>
+      </div>
+      <div class="romance-diagram">
+        <div class="romance-box">
+          <div class="romance-box-ti">夫妻宮解析：寅木伏吟</div>
+          <p>日支為寅木，與自身五行相同。在親密關係中，你極度渴望一種「鏡像式」的伴侶——價值觀高度一致，甚至像兄弟哥們一樣並肩作戰。但比肩入妻宮，也意味著感情中雙方都極其強勢，互不相讓，容易產生激烈的摩擦。</p>
+        </div>
+        <div class="romance-box" style="border-color:rgba(64,128,200,0.4);background:rgba(64,128,200,0.06)">
+          <div class="romance-box-ti" style="color:var(--pb)">正緣配偶解法</div>
+          <p>你需要一個<strong>「水」性極重</strong>（極度溫柔包容，能化解你的剛強）或者<strong>「火」性極旺</strong>（崇拜你的才華，能引導你表達愛意）的伴侶。絕對不能找同樣固執（土金旺）的人，否則必然兩敗俱傷。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-hd">
+        <div class="sec-num">柒</div>
+        <div class="sec-ti-wrap">
+          <div class="sec-ti">大運流年：南方火鄉的爆發</div>
+          <div class="sec-en">LUCK PILLARS & TRAJECTORY</div>
+        </div>
+      </div>
+      <div class="warn-box">
+        <h3>⚠️ 歲運絕對雷區：庚申 / 辛酉（金旺之年）</h3>
+        <p>專旺格最怕犯旺。逢「申」年（如庚申、壬申），申寅相衝，四寅抗一申，金木劇烈交戰！此類年份必有事業動盪、健康血光或人際破裂，需極度低調，主動避讓。</p>
+      </div>
+      <div class="yun-grid">
+        <div class="yun-card" style="border-color:var(--fire);background:rgba(217,92,67,0.08)">
+          <div class="yun-age">黃金大運 · 南方火鄉（丙辰/丁巳/戊午）</div>
+          <div class="yun-stem"><span class="c-fire">火</span><span class="c-earth">土</span></div>
+          <div class="yun-desc">當大運行至南方火地，食傷星（丙丁火）引發「木火通明」之象。這是你一生中最為輝煌的巔峰期，才華得以極致施展，名聲大噪，財富如烈火烹油般爆發。</div>
+          <span class="yun-quality" style="background:rgba(217,92,67,0.2);color:#F0D0C8;border:1px solid rgba(217,92,67,0.4)">木火通明 · 大吉</span>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-  <div class="section-mock" style="animation-delay:0.34s">
-    <div class="sec-header">
-      <div class="sec-num" data-i18n-num="3">叁</div>
-      <div class="sec-title" data-i18n="sec.3.title">大運流年交叉推演</div>
-    </div>
-    <div class="sec-body" data-i18n="sec.3.body">十年大運週期 · 流年吉凶 · 機遇與風險推演</div>
-  </div>
-
-  <!-- 判詞 -->
   <div class="verdict">
     <div class="verdict-kw" id="verdict-kw">癸水歸海</div>
     <div class="verdict-text" id="verdict-text">
@@ -372,9 +669,74 @@ html,body {
       請記住，你的強大不需要向任何人證明。<br>
       讓你的水流動起來，去擁抱陽光。
     </div>
-    <div class="verdict-seal" data-i18n="verdict.seal">命盤深度解讀 · ZenCode VIP</div>
+    <div class="verdict-seal">命盤深度解讀 · ZenCode VIP</div>
   </div>
 </div>
+
+<footer style="
+  position:relative;z-index:2;
+  text-align:center;
+  padding:64px 24px 80px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  margin-top:0;
+">
+  <div style="display:flex;align-items:center;gap:20px;justify-content:center;margin-bottom:44px;">
+    <div style="flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--pb));opacity:0.3"></div>
+    <div style="font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--pb);opacity:0.4;transition:color var(--trans)">✦</div>
+    <div style="flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,var(--pb),transparent);opacity:0.3"></div>
+  </div>
+
+  <div id="footer-eyebrow" style="
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:0.58rem;letter-spacing:0.55em;
+    color:var(--pb);opacity:0.5;
+    margin-bottom:16px;
+    transition:color var(--trans);
+  " data-i18n="footer.vip.eyebrow">VIP · 私人沉浸式命盤定制服務</div>
+
+  <div id="footer-title" style="
+    font-family:'Ma Shan Zheng',cursive;
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    color:var(--pb);
+    line-height:1.2;margin-bottom:12px;
+    text-shadow:0 0 40px var(--pg);
+    transition:color var(--trans),text-shadow var(--trans);
+  " data-i18n="footer.vip.title">開啟屬於你的動態命盤</div>
+
+  <div id="footer-sub" style="
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:0.78rem;line-height:2;
+    color:rgba(255,255,255,0.38);
+    max-width:480px;margin:0 auto 36px;
+    letter-spacing:0.06em;
+  " data-i18n="footer.vip.sub">五行動態背景 · 環境音效 · 四語言深度解讀<br>每一份報告皆為獨立手工定制</div>
+
+  <a href="mailto:vip@zencode.codes?subject=VIP沉浸式命盤報告預約" style="
+    display:inline-flex;align-items:center;gap:14px;
+    padding:16px 32px;
+    border:1px solid var(--pb);
+    background:var(--pd);
+    text-decoration:none;
+    transition:all 0.35s;
+    margin-bottom:16px;
+    backdrop-filter:blur(12px);
+  "
+  onmouseover="this.style.background='var(--pg)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 32px var(--pd)'"
+  onmouseout="this.style.background='var(--pd)';this.style.transform='none';this.style.boxShadow='none'">
+    <span style="font-family:'Ma Shan Zheng',cursive;font-size:1.3rem;color:var(--pb);transition:color var(--trans)">✉</span>
+    <span style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;">
+      <span style="font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;letter-spacing:0.3em;color:var(--pb);opacity:0.7;transition:color var(--trans)" data-i18n="footer.vip.cta.label">發送郵件預約</span>
+      <span style="font-family:'Noto Serif TC',serif;font-size:1rem;color:var(--pb);letter-spacing:0.1em;transition:color var(--trans)">vip@zencode.codes</span>
+    </span>
+  </a>
+
+  <div id="footer-note" style="
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:0.6rem;letter-spacing:0.18em;
+    color:rgba(255,255,255,0.18);
+    margin-top:8px;line-height:2;
+  " data-i18n="footer.vip.note">通常 24 小時內回覆 · 全程保密 · 名額有限</div>
+</footer>
 
 <script>
 /* ==========================================================
@@ -470,12 +832,12 @@ const WX = {
   '木': {
     p:'#5AB86C', pb:'#7ADE94', bg:'#010804',
     emblem:'甲',
-    verdict:{ kw:{'zh-TW':'甲木向陽','zh-CN':'甲木向阳','en':'Jiǎ Wood Rising','ko':'갑목 향양'},
+    verdict:{ kw:{'zh-TW':'曲直仁壽','zh-CN':'曲直仁寿','en':'Ultimate Qu Zhi','ko':'곡직인수'},
       text:{
-        'zh-TW':'你是一棵生長在岩縫中的大樹。<br>根扎得極深，枝葉伸展得極其狂野。<br><br>你天生就要向著太陽肆意生長，<br>才華是你最鋒利的劍，而溫柔是劍鞘。<br><br>把劍收放自如，你才能真正贏得這個世界。',
-        'zh-CN':'你是一棵生长在岩缝中的大树。<br>根扎得极深，枝叶伸展得极其狂野。<br><br>你天生就要向着太阳肆意生长，<br>才华是你最锋利的剑，而温柔是剑鞘。<br><br>把剑收放自如，你才能真正赢得这个世界。',
-        'en':'You are a great tree rooted in stone.<br>Your roots run impossibly deep, your branches reach wild.<br><br>You were born to grow towards the sun without restraint.<br>Talent is your sharpest blade — and gentleness is its sheath.<br><br>Master both, and the world is yours.',
-        'ko':'당신은 바위 틈에서 자란 큰 나무입니다.<br>뿌리는 깊고, 가지는 자유롭게 뻗어 있습니다.<br><br>태양을 향해 마음껏 자라도록 태어났습니다.<br>재능이 가장 날카로운 검이고, 온화함이 칼집입니다.<br><br>두 가지를 자유자재로 다루면 세상을 얻을 수 있습니다.'
+        'zh-TW':'這是一盤曠世罕見的純木奇局。<br>四柱同源，參天拔地，你生來就是要建立自己的森林。<br><br>不要試圖迎合世俗的框架，因為你本身就是框架。<br>靜待南風吹起，木火通明之時，<br>這片森林必將燃起照亮時代的烈火。',
+        'zh-CN':'这是一盘旷世罕见的纯木奇局。<br>四柱同源，参天拔地，你生来就是要建立自己的森林。<br><br>不要试图迎合世俗的框架，因为你本身就是框架。<br>静待南风吹起，木火通明之时，<br>这片森林必将燃起照亮时代的烈火。',
+        'en':'This is an extremely rare and legendary pure Wood chart.<br>Identical pillars, reaching the sky. You were born to build your own forest.<br><br>Do not conform to the world\'s rules, for you are the rule-maker.<br>Wait for the southern wind. When Wood meets Fire,<br>your forest will blaze to illuminate the era.',
+        'ko':'이것은 극히 드문 순수한 나무의 명반입니다.<br>네 기둥이 모두 같아 하늘을 찌를 듯합니다.<br><br>세상의 틀에 맞추려 하지 마세요. 당신 자신이 곧 틀입니다.<br>남풍이 불어 나무와 불이 만날 때,<br>당신의 숲은 시대를 밝히는 불꽃으로 타오를 것입니다.'
       }
     }
   },
@@ -557,7 +919,7 @@ function applyLang(lang) {
   // 含 HTML 的欄位（footer sub 有 <br>）
   const fsub = document.getElementById('footer-sub');
   if(fsub){ const v=t('footer.vip.sub'); if(v) fsub.innerHTML=v; }
-  // 音效氣泡兩行文字——顯式更新，確保語言切換生效
+  // 音效氣泡兩行文字
   const apMain = document.getElementById('audio-pulse-main');
   if(apMain) apMain.textContent = t('audio.hint');
   const apSub = document.getElementById('audio-pulse-sub');
@@ -582,8 +944,10 @@ function applyVerdict() {
   const txt = data.verdict.text[currentLang] || data.verdict.text['zh-TW'];
   document.getElementById('verdict-kw').textContent = kw;
   const vt = document.getElementById('verdict-text');
-  vt.style.opacity = '0';
-  setTimeout(() => { vt.innerHTML = txt; vt.style.opacity = '1'; }, 280);
+  if(vt) {
+    vt.style.opacity = '0';
+    setTimeout(() => { vt.innerHTML = txt; vt.style.opacity = '1'; }, 280);
+  }
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -591,11 +955,12 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 });
 
 /* ==========================================================
-   ⑤ 五行切換
+   ⑤ 五行切換 (核心邏輯：控制 甲寅報告 vs Mock)
 ========================================================== */
 function switchWx(wx) {
   currentWx = wx;
   const data = WX[wx];
+  
   // CSS 變量
   const r = parseInt(data.p.slice(1,3),16);
   const g = parseInt(data.p.slice(3,5),16);
@@ -614,6 +979,30 @@ function switchWx(wx) {
     b.classList.toggle('active', b.dataset.wx === wx);
   });
 
+  // 顯示控制
+  const contentWood = document.getElementById('content-wood');
+  const contentMock = document.getElementById('content-mock');
+  
+  if(wx === '木') {
+    // 顯示甲寅專屬報告
+    contentMock.style.display = 'none';
+    contentWood.style.display = 'block';
+    setTimeout(() => contentWood.style.opacity = '1', 50);
+    
+    document.getElementById('hero-name').textContent = '甲寅年 · 甲寅月 · 甲寅日 · 甲寅時';
+    document.getElementById('hero-subtitle').textContent = '曲直仁壽 · 曠世奇局 · 四柱同干支';
+  } else {
+    // 顯示 Mock
+    contentWood.style.opacity = '0';
+    setTimeout(() => {
+      contentWood.style.display = 'none';
+      contentMock.style.display = 'block';
+    }, 400); // 等待淡出動畫
+    
+    document.getElementById('hero-name').textContent = '命主 · 測試用戶';
+    document.getElementById('hero-subtitle').textContent = '深度流年 · 八字鑑定 · 大運解讀';
+  }
+
   initParticles();
   if (audioReady) playAmbience(wx);
 }
@@ -624,7 +1013,6 @@ document.querySelectorAll('.wx-btn').forEach(btn => {
 
 /* ==========================================================
    ⑥ Web Audio API 環境音合成
-   — 不依賴外部 URL，純程式合成，零載入失敗問題
 ========================================================== */
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -653,7 +1041,6 @@ function createNoise(ctx, color='white') {
   return src;
 }
 
-// 每種五行的合成音色
 function playAmbience(wx) {
   const ctx = getAudioCtx();
   if (ctx.state === 'suspended') ctx.resume();
@@ -666,7 +1053,6 @@ function playAmbience(wx) {
   currentGain = master;
 
   if (wx === '水') {
-    // 海浪：粉噪聲 + 低頻濾波 + 緩慢 LFO
     const noise = createNoise(ctx, 'pink');
     const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=520; lp.Q.value=0.8;
     const lfo = ctx.createOscillator(); lfo.frequency.value=0.08;
@@ -675,13 +1061,10 @@ function playAmbience(wx) {
     noise.connect(lp); lp.connect(master);
     lfo.start(); noise.start();
     currentSource = noise;
-
   } else if (wx === '木') {
-    // 森林：粉噪 + 高通 + 多個鳥鳴泛音
     const noise = createNoise(ctx, 'pink');
     const hp = ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=800; hp.Q.value=0.5;
     noise.connect(hp); hp.connect(master);
-    // 鳥鳴模擬：隨機短脈衝泛音
     function chirp() {
       const osc = ctx.createOscillator();
       const g2 = ctx.createGain();
@@ -697,9 +1080,7 @@ function playAmbience(wx) {
     chirp();
     noise.start();
     currentSource = noise;
-
   } else if (wx === '火') {
-    // 火焰：白噪聲 + 帶通 + 快速 LFO
     const noise = createNoise(ctx, 'white');
     const bp = ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=320; bp.Q.value=0.4;
     const lfo = ctx.createOscillator(); lfo.frequency.value=4.5; lfo.type='triangle';
@@ -712,9 +1093,7 @@ function playAmbience(wx) {
     crackle.connect(hp2); hp2.connect(cGain); cGain.connect(master);
     lfo.start(); noise.start(); crackle.start();
     currentSource = noise;
-
   } else if (wx === '土') {
-    // 風沙：粉噪 + 中頻強化
     const noise = createNoise(ctx, 'pink');
     const bp = ctx.createBiquadFilter(); bp.type='peaking'; bp.frequency.value=680; bp.gain.value=8;
     const lfo = ctx.createOscillator(); lfo.frequency.value=0.15; lfo.type='sine';
@@ -724,9 +1103,7 @@ function playAmbience(wx) {
     noise.connect(bp); bp.connect(lfoMaster); lfoMaster.connect(master);
     lfo.start(); noise.start();
     currentSource = noise;
-
   } else if (wx === '金') {
-    // 金屬共鳴：純音疊加 + 泛音
     const freqs = [220, 440, 660, 880, 1320];
     const oscs = freqs.map((f,i) => {
       const osc = ctx.createOscillator();
@@ -738,7 +1115,6 @@ function playAmbience(wx) {
       osc.start();
       return osc;
     });
-    // 環境底噪
     const noise = createNoise(ctx,'pink');
     const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=250;
     const ng = ctx.createGain(); ng.gain.value=0.06;
@@ -788,173 +1164,116 @@ function initParticles(){
   const wx=currentWx;
 
   if(wx==='木'){
-    // 漂浮光塵粒子
     for(let i=0;i<60;i++) particles.push({
       x:Math.random()*W, y:Math.random()*H,
-      size:Math.random()*2+0.5,
-      vx:(Math.random()-0.5)*0.4,
-      vy:-Math.random()*0.35-0.1,
-      alpha:Math.random()*0.5+0.2,
-      pulse:Math.random()*Math.PI*2
+      size:Math.random()*2+0.5, vx:(Math.random()-0.5)*0.4, vy:-Math.random()*0.35-0.1,
+      alpha:Math.random()*0.5+0.2, pulse:Math.random()*Math.PI*2
     });
-    // 垂柳主幹（從頂部向下）
     for(let i=0;i<10;i++) willows.push({
-      x:W*(i/9)+( Math.random()*40-20),
-      len:H*0.55+Math.random()*H*0.2,
-      sway:Math.random()*100,
-      thick:Math.random()*2+1
+      x:W*(i/9)+( Math.random()*40-20), len:H*0.55+Math.random()*H*0.2,
+      sway:Math.random()*100, thick:Math.random()*2+1
     });
-    // 丁達爾光束（斜角從左上射下）
     for(let i=0;i<4;i++) rays.push({
-      x:W*0.1+i*W*0.25+Math.random()*80,
-      w:90+Math.random()*100,
-      angle:0.25+Math.random()*0.15
+      x:W*0.1+i*W*0.25+Math.random()*80, w:90+Math.random()*100, angle:0.25+Math.random()*0.15
     });
   }
   else if(wx==='火'){
     for(let i=0;i<120;i++) particles.push({
-      x:Math.random()*W, y:H+Math.random()*60,
-      size:Math.random()*35+15,
-      vx:(Math.random()-0.5)*2,
-      vy:-(Math.random()*4+2),
-      life:Math.random()
+      x:Math.random()*W, y:H+Math.random()*60, size:Math.random()*35+15,
+      vx:(Math.random()-0.5)*2, vy:-(Math.random()*4+2), life:Math.random()
     });
   }
   else if(wx==='土'){
     for(let i=0;i<220;i++) particles.push({
-      x:Math.random()*W, y:Math.random()*H,
-      size:Math.random()*2.2+0.4,
-      vx:Math.random()*4+2,
-      vy:(Math.random()-0.5)*0.4,
-      alpha:Math.random()*0.55+0.1
+      x:Math.random()*W, y:Math.random()*H, size:Math.random()*2.2+0.4,
+      vx:Math.random()*4+2, vy:(Math.random()-0.5)*0.4, alpha:Math.random()*0.55+0.1
     });
   }
   else if(wx==='金'){
     for(let i=0;i<70;i++) particles.push({
-      x:Math.random()*W, y:Math.random()*H,
-      offset:Math.random()*100
+      x:Math.random()*W, y:Math.random()*H, offset:Math.random()*100
     });
   }
   else { // 水
     for(let i=0;i<55;i++) particles.push({
-      x:Math.random()*W, y:Math.random()*H,
-      size:Math.random()*4+1,
-      vy:-(Math.random()*1.2+0.3),
-      offset:Math.random()*100
+      x:Math.random()*W, y:Math.random()*H, size:Math.random()*4+1,
+      vy:-(Math.random()*1.2+0.3), offset:Math.random()*100
     });
   }
 }
 
-/* ── 木：真實葱翠森林 ── */
 function drawWood(){
-  // 地面霧氣層
   const fog = ctx2d.createLinearGradient(0,H*0.7,0,H);
-  fog.addColorStop(0,'rgba(20,60,25,0)');
-  fog.addColorStop(1,'rgba(10,40,15,0.55)');
+  fog.addColorStop(0,'rgba(20,60,25,0)'); fog.addColorStop(1,'rgba(10,40,15,0.55)');
   ctx2d.fillStyle=fog; ctx2d.fillRect(0,0,W,H);
 
-  // 丁達爾光束
   ctx2d.globalCompositeOperation='screen';
   rays.forEach(r=>{
     const grd=ctx2d.createLinearGradient(r.x,0,r.x+Math.cos(r.angle)*H,H);
     grd.addColorStop(0,'rgba(180,255,160,0.09)');
     grd.addColorStop(0.5,'rgba(180,255,160,0.04)');
     grd.addColorStop(1,'rgba(180,255,160,0)');
-    ctx2d.fillStyle=grd;
-    ctx2d.beginPath();
+    ctx2d.fillStyle=grd; ctx2d.beginPath();
     const hw=r.w/2;
-    ctx2d.moveTo(r.x-hw,0);
-    ctx2d.lineTo(r.x+hw,0);
-    ctx2d.lineTo(r.x+hw+Math.cos(r.angle)*H,H);
-    ctx2d.lineTo(r.x-hw+Math.cos(r.angle)*H,H);
+    ctx2d.moveTo(r.x-hw,0); ctx2d.lineTo(r.x+hw,0);
+    ctx2d.lineTo(r.x+hw+Math.cos(r.angle)*H,H); ctx2d.lineTo(r.x-hw+Math.cos(r.angle)*H,H);
     ctx2d.fill();
   });
   ctx2d.globalCompositeOperation='source-over';
 
-  // 背景樹冠層（深色剪影，三層縱深）
   [[0.82,'rgba(5,28,10,0.85)',60],[0.68,'rgba(8,40,15,0.7)',80],[0.52,'rgba(12,55,20,0.5)',100]].forEach(([yRatio,col,amp])=>{
-    ctx2d.beginPath();
-    ctx2d.moveTo(0,H);
+    ctx2d.beginPath(); ctx2d.moveTo(0,H);
     for(let x=0;x<=W;x+=12){
-      const y=yRatio*H + Math.sin(x*0.008+time*0.004)*amp
-                       + Math.sin(x*0.019+time*0.006)*( amp*0.4);
+      const y=yRatio*H + Math.sin(x*0.008+time*0.004)*amp + Math.sin(x*0.019+time*0.006)*( amp*0.4);
       ctx2d.lineTo(x,y);
     }
-    ctx2d.lineTo(W,H); ctx2d.closePath();
-    ctx2d.fillStyle=col; ctx2d.fill();
+    ctx2d.lineTo(W,H); ctx2d.closePath(); ctx2d.fillStyle=col; ctx2d.fill();
   });
 
-  // 前景樹幹
   willows.forEach(w=>{
     const sway=Math.sin(time*0.008+w.sway)*22;
-    ctx2d.beginPath();
-    ctx2d.moveTo(w.x,0);
+    ctx2d.beginPath(); ctx2d.moveTo(w.x,0);
     ctx2d.quadraticCurveTo(w.x+sway*0.5,w.len*0.5,w.x+sway,w.len);
-    ctx2d.strokeStyle=`rgba(15,50,18,0.55)`;
-    ctx2d.lineWidth=w.thick; ctx2d.stroke();
-
-    // 垂柳細枝
+    ctx2d.strokeStyle=`rgba(15,50,18,0.55)`; ctx2d.lineWidth=w.thick; ctx2d.stroke();
     for(let j=0;j<5;j++){
-      const ty=w.len*(0.3+j*0.14);
-      const tx=w.x+sway*(ty/w.len);
-      const sway2=Math.sin(time*0.012+w.sway+j)*35;
-      ctx2d.beginPath();
-      ctx2d.moveTo(tx,ty);
+      const ty=w.len*(0.3+j*0.14), tx=w.x+sway*(ty/w.len), sway2=Math.sin(time*0.012+w.sway+j)*35;
+      ctx2d.beginPath(); ctx2d.moveTo(tx,ty);
       ctx2d.quadraticCurveTo(tx+sway2*0.6,ty+60,tx+sway2,ty+110);
-      ctx2d.strokeStyle='rgba(60,140,60,0.22)';
-      ctx2d.lineWidth=0.8; ctx2d.stroke();
+      ctx2d.strokeStyle='rgba(60,140,60,0.22)'; ctx2d.lineWidth=0.8; ctx2d.stroke();
     }
   });
 
-  // 漂浮光塵
   particles.forEach(p=>{
-    p.pulse+=0.018;
-    const a=p.alpha*(0.5+0.5*Math.sin(p.pulse));
-    ctx2d.beginPath();
-    ctx2d.arc(p.x,p.y,p.size*(0.8+0.35*Math.sin(p.pulse)),0,Math.PI*2);
+    p.pulse+=0.018; const a=p.alpha*(0.5+0.5*Math.sin(p.pulse));
+    ctx2d.beginPath(); ctx2d.arc(p.x,p.y,p.size*(0.8+0.35*Math.sin(p.pulse)),0,Math.PI*2);
     ctx2d.fillStyle=`rgba(200,255,180,${a})`;
-    ctx2d.shadowBlur=6; ctx2d.shadowColor='rgba(160,255,120,0.4)';
-    ctx2d.fill(); ctx2d.shadowBlur=0;
-    p.x+=p.vx+Math.sin(time*0.009+p.y*0.007)*0.8;
-    p.y+=p.vy;
-    if(p.y<-10) p.y=H+10;
-    if(p.x<-10) p.x=W+10;
-    if(p.x>W+10) p.x=-10;
+    ctx2d.shadowBlur=6; ctx2d.shadowColor='rgba(160,255,120,0.4)'; ctx2d.fill(); ctx2d.shadowBlur=0;
+    p.x+=p.vx+Math.sin(time*0.009+p.y*0.007)*0.8; p.y+=p.vy;
+    if(p.y<-10) p.y=H+10; if(p.x<-10) p.x=W+10; if(p.x>W+10) p.x=-10;
   });
 
-  // 苔蘚地面反光
   const moss=ctx2d.createLinearGradient(0,H*0.88,0,H);
-  moss.addColorStop(0,'rgba(30,90,30,0)');
-  moss.addColorStop(1,'rgba(20,70,20,0.3)');
+  moss.addColorStop(0,'rgba(30,90,30,0)'); moss.addColorStop(1,'rgba(20,70,20,0.3)');
   ctx2d.fillStyle=moss; ctx2d.fillRect(0,H*0.88,W,H*0.12);
 }
 
-/* ── 火 ── */
 function drawFire(){
   ctx2d.globalCompositeOperation='lighter';
   for(let i=0;i<4;i++) particles.push({
-    x:Math.random()*W, y:H+20,
-    size:Math.random()*45+20,
-    vx:(Math.random()-0.5)*2,
-    vy:-(Math.random()*5+2),
-    life:1
+    x:Math.random()*W, y:H+20, size:Math.random()*45+20, vx:(Math.random()-0.5)*2, vy:-(Math.random()*5+2), life:1
   });
   for(let i=particles.length-1;i>=0;i--){
     const p=particles[i];
-    p.x+=p.vx+Math.sin(time*0.12+p.y)*0.8;
-    p.y+=p.vy; p.size*=0.962; p.life-=0.013;
+    p.x+=p.vx+Math.sin(time*0.12+p.y)*0.8; p.y+=p.vy; p.size*=0.962; p.life-=0.013;
     if(p.life<=0||p.size<1){particles.splice(i,1);continue;}
     const g=ctx2d.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
-    g.addColorStop(0,`rgba(255,255,220,${p.life})`);
-    g.addColorStop(0.2,`rgba(255,200,50,${p.life})`);
-    g.addColorStop(0.5,`rgba(255,60,0,${p.life*0.5})`);
-    g.addColorStop(1,'rgba(255,0,0,0)');
+    g.addColorStop(0,`rgba(255,255,220,${p.life})`); g.addColorStop(0.2,`rgba(255,200,50,${p.life})`);
+    g.addColorStop(0.5,`rgba(255,60,0,${p.life*0.5})`); g.addColorStop(1,'rgba(255,0,0,0)');
     ctx2d.fillStyle=g; ctx2d.beginPath(); ctx2d.arc(p.x,p.y,p.size,0,Math.PI*2); ctx2d.fill();
   }
   ctx2d.globalCompositeOperation='source-over';
 }
 
-/* ── 土 ── */
 function drawEarth(){
   particles.forEach(p=>{
     ctx2d.beginPath(); ctx2d.arc(p.x,p.y,p.size,0,Math.PI*2);
@@ -962,7 +1281,6 @@ function drawEarth(){
     p.x+=p.vx; p.y+=p.vy+Math.sin(p.x*0.012)*0.4;
     if(p.x>W+10){p.x=-10;p.y=Math.random()*H;}
   });
-  // 沙丘輪廓
   [[H-120,'rgba(110,75,25,0.22)'],[H-60,'rgba(80,50,12,0.38)']].forEach(([baseY,col])=>{
     ctx2d.beginPath(); ctx2d.moveTo(0,H);
     for(let x=0;x<=W;x+=25) ctx2d.lineTo(x,baseY+Math.sin(x*0.003+time*0.002)*55+Math.sin(x*0.007)*30);
@@ -970,34 +1288,20 @@ function drawEarth(){
   });
 }
 
-/* ── 金：規整鑽石幾何矩陣，泛著冷芒 ── */
 function drawMetal(){
   const gridSize=60;
   for(let x=20;x<=W;x+=gridSize){
     for(let y=20;y<=H;y+=gridSize){
       const pulse=Math.sin(time*0.03+(x+y)*0.01)*0.5+0.5;
       const size=8+pulse*6;
-      ctx2d.beginPath();
-      ctx2d.moveTo(x,y-size);
-      ctx2d.lineTo(x+size*0.8,y);
-      ctx2d.lineTo(x,y+size);
-      ctx2d.lineTo(x-size*0.8,y);
-      ctx2d.closePath();
-      ctx2d.strokeStyle=`rgba(200,230,255,${0.1+pulse*0.3})`;
-      ctx2d.lineWidth=1;
-      ctx2d.stroke();
-      ctx2d.fillStyle=`rgba(255,255,255,${pulse*0.15})`;
-      ctx2d.fill();
+      ctx2d.beginPath(); ctx2d.moveTo(x,y-size); ctx2d.lineTo(x+size*0.8,y); ctx2d.lineTo(x,y+size); ctx2d.lineTo(x-size*0.8,y); ctx2d.closePath();
+      ctx2d.strokeStyle=`rgba(200,230,255,${0.1+pulse*0.3})`; ctx2d.lineWidth=1; ctx2d.stroke();
+      ctx2d.fillStyle=`rgba(255,255,255,${pulse*0.15})`; ctx2d.fill();
     }
   }
 }
 
-/* ── 水 ── */
-const WAVES=[
-  {y:0.42,amp:38,wl:0.002,sp:0.013,col:'rgba(20,50,90,0.4)'},
-  {y:0.62,amp:55,wl:0.003,sp:0.018,col:'rgba(30,70,130,0.5)'},
-  {y:0.8,amp:75,wl:0.002,sp:0.011,col:'rgba(45,95,170,0.6)'}
-];
+const WAVES=[ {y:0.42,amp:38,wl:0.002,sp:0.013,col:'rgba(20,50,90,0.4)'}, {y:0.62,amp:55,wl:0.003,sp:0.018,col:'rgba(30,70,130,0.5)'}, {y:0.8,amp:75,wl:0.002,sp:0.011,col:'rgba(45,95,170,0.6)'} ];
 function drawWater(){
   WAVES.forEach((w,idx)=>{
     ctx2d.beginPath(); ctx2d.moveTo(0,H);
@@ -1017,13 +1321,8 @@ function drawWater(){
 }
 
 function drawFrame(){
-  time++;
-  ctx2d.clearRect(0,0,W,H);
-  if(currentWx==='木') drawWood();
-  else if(currentWx==='火') drawFire();
-  else if(currentWx==='土') drawEarth();
-  else if(currentWx==='金') drawMetal();
-  else drawWater();
+  time++; ctx2d.clearRect(0,0,W,H);
+  if(currentWx==='木') drawWood(); else if(currentWx==='火') drawFire(); else if(currentWx==='土') drawEarth(); else if(currentWx==='金') drawMetal(); else drawWater();
   requestAnimationFrame(drawFrame);
 }
 
@@ -1033,6 +1332,9 @@ function drawFrame(){
 resize();
 drawFrame();
 applyLang('zh-TW');
+
+// 預設選擇「木」來展示四甲寅報告
+switchWx('木');
 
 // 滾動淡入
 if('IntersectionObserver' in window){
@@ -1046,7 +1348,6 @@ if('IntersectionObserver' in window){
   });
 }
 </script>
-<!-- VIP 聯絡 Footer -->
 <footer style="
   position:relative;z-index:2;
   text-align:center;
@@ -1054,14 +1355,12 @@ if('IntersectionObserver' in window){
   border-top:1px solid rgba(255,255,255,0.06);
   margin-top:0;
 ">
-  <!-- 裝飾分隔線 -->
   <div style="display:flex;align-items:center;gap:20px;justify-content:center;margin-bottom:44px;">
     <div style="flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--pb));opacity:0.3"></div>
     <div style="font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--pb);opacity:0.4;transition:color var(--trans)">✦</div>
     <div style="flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,var(--pb),transparent);opacity:0.3"></div>
   </div>
 
-  <!-- 主標題 -->
   <div id="footer-eyebrow" style="
     font-family:'Noto Sans TC',sans-serif;
     font-size:0.58rem;letter-spacing:0.55em;
@@ -1087,7 +1386,6 @@ if('IntersectionObserver' in window){
     letter-spacing:0.06em;
   " data-i18n="footer.vip.sub">五行動態背景 · 環境音效 · 四語言深度解讀<br>每一份報告皆為獨立手工定制</div>
 
-  <!-- 郵件聯絡框 -->
   <a href="mailto:vip@zencode.codes?subject=VIP沉浸式命盤報告預約" style="
     display:inline-flex;align-items:center;gap:14px;
     padding:16px 32px;
@@ -1117,3 +1415,4 @@ if('IntersectionObserver' in window){
 
 </body>
 </html>
+HTMLEOF
