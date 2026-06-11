@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>六爻排盘 - ZenCode</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- ZenCode 核心视觉体系 --- */
         :root {
@@ -332,7 +333,7 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 3.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <div id="result-action-area" style="text-align: center; margin-top: 3.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                 <a href="mailto:VIP@zencode.codes?subject=【ZenCode 六爻解卦预约】" class="zc-btn" 
                    style="background: linear-gradient(135deg, #5A0A0A 0%, #9C2F18 55%, #C8402A 100%); border: none; color: rgba(255,255,255,0.95); text-decoration: none; display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 25px rgba(180,40,20,0.3); font-weight: normal; letter-spacing: 3px;"
                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(200,64,42,0.4)';"
@@ -343,7 +344,11 @@
                     <div style="color: var(--zc-gold-dark); font-size: 0.85rem; letter-spacing: 2px;" data-t="【预约卦师联系方式】">【预约卦师联系方式】</div>
                     <div style="color: var(--zc-text-muted); font-size: 0.8rem; font-family: monospace; opacity: 0.8;">VIP@zencode.codes</div>
                 </div>
-                <button class="zc-btn-text" onclick="resetFlow()" style="margin-top: 12px;" data-t="← 重新推演">← 重新推演</button>
+
+                <div style="display: flex; gap: 30px; margin-top: 12px; align-items: center;">
+                    <button class="zc-btn-text" onclick="resetFlow()" data-t="← 重新推演">← 重新推演</button>
+                    <button class="zc-btn-text" id="btn-export-img" onclick="exportGuaImage()" style="font-size: 0.8rem; letter-spacing: 1px; color: var(--zc-gold-dark);" data-t="⤓ 保存排盘图片">⤓ 保存排盘图片</button>
+                </div>
             </div>
         </div>
 
