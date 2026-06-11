@@ -17,12 +17,6 @@
       --water: #63A3ED; 
       --sun: #FF9800;   
       --moon: #D8EEFF;  
-      
-      /* 四轴专属颜色 */
-      --axis-asc: #FF4B4B;
-      --axis-dsc: #63A3ED;
-      --axis-mc:  #7DE09A;
-      --axis-ic:  #F0C96A;
 
       --gold: #F0C96A;
       --gold-dim: rgba(240, 201, 106, 0.35);
@@ -57,17 +51,15 @@
     @keyframes flowLight { to { stroke-dashoffset: -40; } }
     .flow-applying { stroke-dasharray: 4 6; animation: flowLight 1s linear infinite; }
     .flow-separating { stroke-dasharray: 2 6; animation: flowLight 2.5s linear infinite reverse; }
-    .flow-axis { stroke-dasharray: 8 16; animation: flowLight 0.8s linear infinite; }
     
     .tooltip { position: absolute; background: rgba(5,5,8,0.96); border: 1px solid var(--gold-dim); padding: 12px; font-size: 11px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 30; border-radius: 4px; box-shadow: 0 0 25px rgba(0,0,0,1); line-height: 1.8; }
     .tooltip strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; display: block; margin-bottom: 4px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 4px; }
     .tooltip .sub { color: var(--text-muted); }
     
     .planet-node { cursor: pointer; }
-    .planet-node circle { transition: stroke-width 0.2s; }
-    .planet-node:hover circle { stroke-width: 2.5; }
-    .planet-node:hover text { animation: pulseText 1.5s infinite; }
-    @keyframes pulseText { 0%, 100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 10px currentColor); } }
+    /* 取消了外圈的 border-width 动画，改为直接对文字做发光互动 */
+    .planet-node:hover text { animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 8px currentColor); font-weight: 700; }
+    @keyframes pulseText { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
   </style>
 </head>
 <body>
@@ -241,16 +233,15 @@ function calcAngles(J, lat, lon) {
   return { asc, mc, dsc: norm(asc + 180), ic: norm(mc + 180) };
 }
 
-// 采用径向层叠算法：保持真实角度，改变半径避让碰撞
+// 径向层叠避让算法
 function resolveCollisionsRadial(plData, asc) {
   let list = Object.keys(plData).map(k => ({
     id: k, data: plData[k], rawAng: l2a(plData[k].lon, asc),
     drawAng: l2a(plData[k].lon, asc), tier: 0
   }));
   
-  if (!STATE.zAxis) return list; // 关闭时全部挤在同一圈
+  if (!STATE.zAxis) return list;
 
-  // 按角度排序，寻找碰撞集群
   list.sort((a, b) => a.rawAng - b.rawAng);
   let clusters = [];
   let currentCluster = [list[0]];
@@ -258,7 +249,7 @@ function resolveCollisionsRadial(plData, asc) {
   for(let i=1; i<list.length; i++) {
     let diff = Math.abs(list[i].rawAng - currentCluster[currentCluster.length-1].rawAng);
     if(diff > 180) diff = 360 - diff;
-    if(diff < 6.5) { // 碰撞阈值：容许度内向内外错开
+    if(diff < 6.5) { 
        currentCluster.push(list[i]);
     } else {
        clusters.push(currentCluster);
@@ -267,7 +258,6 @@ function resolveCollisionsRadial(plData, asc) {
   }
   clusters.push(currentCluster);
   
-  // 给同一个 Cluster 内的星体分配交错的半径 Tier
   const tierPattern = [0, 1, -1, 2, -2, 3, -3];
   clusters.forEach(cluster => {
     cluster.forEach((item, index) => {
@@ -423,10 +413,9 @@ function renderChart() {
     svgBgRings += `<text x="${pNum.x}" y="${pNum.y}" text-anchor="middle" dominant-baseline="central" font-size="12" fill="var(--gold-dim)" font-family="Cinzel">${i+1}</text>`;
   }
 
-  // 5. 行星径向交错绘制计算 (重点)
+  // 5. 纯净剥离版的行星渲染
   let natPosMap = {}; 
   const buildPlanets = (plData, baseRadius, isReturn) => {
-    // 调用更新后的径向算法
     const resolvedList = resolveCollisionsRadial(plData, asc);
     let pStr = '';
     
@@ -435,28 +424,26 @@ function renderChart() {
       const cfg = PLANET_CFG[key];
       const pData = item.data;
       
-      // 半径交错系数 (每个 Tier 错开 18px)
       const radiusStep = 18; 
       const actualRadius = baseRadius + (item.tier * radiusStep);
       
-      // 锚点与实际绘制点
       const pActual = polar(actualRadius, item.rawAng); 
-      const pAnchor = polar(baseRadius - 10, item.rawAng); // 固定钉在基础轨道内侧一点
+      const pAnchor = polar(baseRadius - 10, item.rawAng); 
       
       if(!isReturn) natPosMap[key] = pActual; 
 
       const opac = isReturn ? 0.85 : 1;
-      const size = isReturn ? 14 : 16;
+      const size = isReturn ? 16 : 18; // 去掉外圈后适当增大字号
       
       pStr += `<g class="planet-node" data-id="${key}" data-lon="${pData.lon}" data-lat="${pData.lat}" data-type="${isReturn?'返照':'本命'}">`;
       
-      // 如果行星被推移出了基准层，画一根锚定线连回基准点（指示其真实物理角度）
       if (item.tier !== 0) {
         pStr += `<line x1="${pAnchor.x}" y1="${pAnchor.y}" x2="${pActual.x}" y2="${pActual.y}" stroke="${cfg.col}" stroke-width="1.2" stroke-dasharray="2,2" opacity="0.6"/>`;
         pStr += `<circle cx="${pAnchor.x}" cy="${pAnchor.y}" r="2" fill="${cfg.col}" opacity="0.8"/>`;
       }
       
-      pStr += `<circle cx="${pActual.x}" cy="${pActual.y}" r="${size-2}" fill="rgba(0,0,0,0.95)" stroke="${cfg.col}" stroke-width="1.2" opacity="${opac}" class="${isReturn?'':'glow-strong'}" ${isReturn?'stroke-dasharray="2,2"':''}/>
+      // 去掉 stroke 和外部圆环，只保留单纯的黑色防透底遮罩，完全突出文字本身
+      pStr += `<circle cx="${pActual.x}" cy="${pActual.y}" r="${size-4}" fill="rgba(0,0,0,0.85)" stroke="none"/>
                <text x="${pActual.x}" y="${pActual.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${size}" fill="${cfg.col}" opacity="${opac}" class="glow-element">${cfg.sym}</text>
                </g>`;
     });
@@ -501,43 +488,39 @@ function renderChart() {
     }
   }
 
-  // 7. 顶级四轴重绘 (去除 filter，使用物理实线叠加确保 100% 渲染)
+  // 7. 顶级四轴重绘 (硬编码 Hex 色值 + 多层叠加确保绝对显现)
   const axisLines = [
-    { a: angles.asc, n: 'ASC', c: 'var(--axis-asc)', prominent: true },
-    { a: angles.dsc, n: 'DSC', c: 'var(--axis-dsc)', prominent: true },
-    { a: angles.mc,  n: 'MC',  c: 'var(--axis-mc)', prominent: false },
-    { a: angles.ic,  n: 'IC',  c: 'var(--axis-ic)', prominent: false }
+    { a: angles.asc, n: 'ASC', c: '#FF4B4B', prominent: true }, // 硬编码色值，防止 var() 失效
+    { a: angles.dsc, n: 'DSC', c: '#63A3ED', prominent: true },
+    { a: angles.mc,  n: 'MC',  c: '#7DE09A', prominent: false },
+    { a: angles.ic,  n: 'IC',  c: '#F0C96A', prominent: false }
   ];
   
   axisLines.forEach(axis => {
     const drawAng = l2a(axis.a, asc);
-    // 从极点一直射出到最外侧边界，不留死角
+    // 线段向内延伸至核心圈，向外贯穿整个星盘边界
     const pIn = polar(20, drawAng); 
     const pOut = polar(R_FIR_OUT + 25, drawAng);
     const pText = polar(R_FIR_OUT + 45, drawAng);
     
     if (axis.prominent) {
-      // ASC / DSC 特殊加重：底层光晕线
-      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="6" opacity="0.3"/>`;
-      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="3" opacity="0.6"/>`;
-      // ASC / DSC 顶层核心亮线
-      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="1.5" stroke-dasharray="10, 15" class="flow-axis" opacity="1"/>`;
+      // 物理级发光效果（多层叠加），抛弃易出 Bug 的 CSS 滤镜
+      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="7" opacity="0.25"/>`;
+      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="2.5" opacity="0.95"/>`;
     } else {
-      // MC / IC 正常线
       svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="3" opacity="0.2"/>`;
-      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="1.2" stroke-dasharray="8, 16" class="flow-axis" opacity="0.8"/>`;
+      svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="1.2" stroke-dasharray="6, 6" opacity="0.75"/>`;
     }
     
-    // 文字
     svgAxes += `<text x="${pText.x}" y="${pText.y}" text-anchor="middle" dominant-baseline="central" font-size="22" font-family="Cinzel" fill="${axis.c}" font-weight="700" class="glow-strong">${axis.n}</text>`;
   });
 
-  // 核心圆环
+  // 核心遮罩圆环 (确保轴线不穿过中心点)
   svgAxes += `<circle cx="${CX}" cy="${CY}" r="25" fill="#020204" stroke="var(--gold-dim)" stroke-width="1.5" class="glow-strong"/>`;
   svgAxes += `<circle cx="${CX}" cy="${CY}" r="20" fill="none" stroke="var(--gold-faint)" stroke-width="0.5"/>`;
   svgAxes += `<circle cx="${CX}" cy="${CY}" r="3" fill="var(--gold)" class="glow-element"/>`;
 
-  // 合并 SVG 保证最顶层
+  // 最后拼接，确保 svgAxes 层在最下方最末尾，实现真正的“置顶”
   document.getElementById('main-svg').innerHTML = svgDefs + svgBgRings + svgAspects + svgPlanets + svgAxes;
   bindTooltips();
 }
