@@ -3,56 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZenCode · 七政四余高精星盘</title>
+<title>ZenCode · 物理高精发光星盘</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #050505;
-  --bg-surface: #0a0a0c;
-  --gold: #D4AF37;
-  --gold-dim: rgba(212, 175, 55, 0.35);
-  --gold-faint: rgba(212, 175, 55, 0.08);
+  --bg-deep: #020204;
+  --bg-surface: #08080b;
+  --gold: #F0C96A;
+  --gold-dim: rgba(240, 201, 106, 0.35);
+  --gold-faint: rgba(240, 201, 106, 0.08);
+  --blue: #63A3ED;
+  --red: #FF6B6B;
   --text-main: #EAEAEA;
-  --text-muted: #777777;
-  --line-thin: 0.5px;
+  --text-muted: #666666;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; }
+body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 30px 20px; overflow-x: hidden; }
 
-header { text-align: center; margin-bottom: 30px; width: 100%; max-width: 900px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 20px; }
-.title-main { font-family: 'Cinzel', serif; font-size: 26px; color: var(--gold); letter-spacing: 0.25em; text-shadow: 0 0 20px rgba(212,175,55,0.2); }
-.title-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 0.15em; margin-top: 8px; text-transform: uppercase; }
+header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 900px; }
+.title-main { font-family: 'Cinzel', serif; font-size: 26px; color: var(--gold); letter-spacing: 0.3em; text-shadow: 0 0 15px rgba(240,201,106,0.4); }
+.title-sub { font-size: 10px; color: var(--text-muted); letter-spacing: 0.2em; margin-top: 6px; text-transform: uppercase; }
 
-.control-panel { background: var(--bg-surface); border: 1px solid var(--gold-faint); border-radius: 8px; padding: 24px; width: 100%; max-width: 900px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-.input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; margin-bottom: 20px; }
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
-.field input, .field select { background: rgba(0,0,0,0.5); border: 1px solid var(--gold-faint); color: var(--gold); padding: 8px 10px; border-radius: 4px; font-family: inherit; font-size: 13px; outline: none; transition: 0.3s; }
-.field input:focus { border-color: var(--gold-dim); box-shadow: 0 0 10px rgba(212,175,55,0.1); }
+.control-panel { background: rgba(8,8,11,0.8); border: 1px solid var(--gold-faint); border-radius: 8px; padding: 20px; width: 100%; max-width: 900px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+.input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+.field input { background: rgba(0,0,0,0.6); border: 1px solid var(--gold-faint); color: var(--gold); padding: 7px 10px; border-radius: 4px; font-family: inherit; font-size: 12px; outline: none; transition: 0.3s; }
+.field input:focus { border-color: var(--gold); box-shadow: 0 0 12px rgba(240,201,106,0.15); }
 
-.toolbar { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; border-top: 1px solid var(--gold-faint); padding-top: 20px; }
-.btn-toggle { background: transparent; border: 1px solid var(--gold-dim); color: var(--text-muted); padding: 8px 18px; font-size: 12px; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; border-radius: 4px; }
-.btn-toggle:hover { background: rgba(212, 175, 55, 0.05); color: var(--gold); }
-.btn-toggle.active { border-color: var(--gold); color: var(--bg-deep); background: var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.3); font-weight: 600; }
+.toolbar { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; border-top: 1px solid var(--gold-faint); padding-top: 16px; }
+.btn-toggle { background: transparent; border: 1px solid var(--gold-dim); color: var(--text-muted); padding: 6px 14px; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; border-radius: 3px; }
+.btn-toggle:hover { background: rgba(240, 201, 106, 0.05); color: var(--gold); }
+.btn-toggle.active { border-color: var(--gold); color: #000; background: var(--gold); box-shadow: 0 0 15px rgba(240,201,106,0.4); font-weight: 600; }
 
-.chart-wrapper { position: relative; width: 100%; max-width: 800px; aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; }
-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); }
+.chart-wrapper { position: relative; width: 100%; max-width: 850px; aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; }
+/* SVG 整体容器发光 */
+svg { width: 100%; height: 100%; filter: drop-shadow(0 0 25px rgba(0,0,0,0.9)); }
+.glow-element { filter: url(#neon-glow); }
+.glow-strong { filter: url(#neon-glow-strong); }
 
-.tooltip { position: absolute; background: rgba(8,8,10,0.95); border: 1px solid var(--gold-dim); padding: 12px 16px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10; border-radius: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); line-height: 1.8; backdrop-filter: blur(4px); }
-.tooltip strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 15px; display: block; margin-bottom: 6px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 6px; }
-.tooltip .sub { color: var(--text-muted); font-size: 11px; }
+.tooltip { position: absolute; background: rgba(5,5,8,0.95); border: 1px solid var(--gold-dim); padding: 12px; font-size: 11px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10; border-radius: 4px; box-shadow: 0 0 20px rgba(240,201,106,0.15); line-height: 1.8; }
+.tooltip strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; display: block; margin-bottom: 4px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 4px; }
+.tooltip .sub { color: var(--text-muted); }
 
-/* 纯CSS微光动画 */
-@keyframes pulseGlow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; filter: drop-shadow(0 0 8px currentColor); } }
-.planet-node { cursor: pointer; transition: 0.3s; }
-.planet-node:hover text { animation: pulseGlow 1.5s infinite; }
+.planet-node { cursor: pointer; transition: transform 0.3s; }
+.planet-node:hover { transform: scale(1.1); }
 </style>
 </head>
 <body>
 
 <header>
   <h1 class="title-main">Destiny Archives</h1>
-  <p class="title-sub">Astrolabe · Firdaria · Aspects · Qi Zheng</p>
+  <p class="title-sub">物理高低差系统 · 法达双限 · 矢量星轨</p>
 </header>
 
 <div class="control-panel">
@@ -67,27 +69,44 @@ svg { width: 100%; height: 100%; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); 
     <button class="btn-toggle active" id="btn-natal" onclick="setMode('natal')">本命盘</button>
     <button class="btn-toggle" id="btn-solar" onclick="setMode('solar')">太阳返照 (双盘)</button>
     <button class="btn-toggle" id="btn-lunar" onclick="setMode('lunar')">月亮返照 (双盘)</button>
-    <div style="width: 1px; background: var(--gold-faint); margin: 0 10px;"></div>
-    <button class="btn-toggle active" id="btn-asp" onclick="toggleOption('aspects')">相位交织</button>
-    <button class="btn-toggle active" id="btn-fir" onclick="toggleOption('firdaria')">法达星限</button>
+    <div style="width: 1px; background: var(--gold-faint); margin: 0 5px;"></div>
+    <button class="btn-toggle active" id="btn-asp" onclick="toggleOption('aspects')">交织相位线</button>
+    <button class="btn-toggle active" id="btn-fir" onclick="toggleOption('firdaria')">法达大/小限</button>
+    <button class="btn-toggle active" id="btn-3d" onclick="toggleOption('zAxis')">开启行星高低差</button>
   </div>
 </div>
 
 <div class="chart-wrapper" id="chart-wrap">
-  <svg id="main-svg" viewBox="0 0 800 800"></svg>
+  <svg id="main-svg" viewBox="0 0 900 900"></svg>
   <div class="tooltip" id="tooltip"></div>
 </div>
 
 <script>
 // ==========================================
-// 1. 核心天文与命理数据
+// 1. 矢量星座路径 (极简几何线条)
+// ==========================================
+const ZODIAC_PATHS = [
+  "M-3,3 Q0,-6 3,3 M0,-3 L0,6", // 白羊
+  "M-4,-2 A4,4 0 0,0 4,-2 M-3,-2 A3,3 0 1,1 3,-2", // 金牛
+  "M-3,-4 L3,-4 M-3,4 L3,4 M-1.5,-4 L-1.5,4 M1.5,-4 L1.5,4", // 双子
+  "M-4,-2 A2,2 0 1,1 -2,-4 M4,2 A2,2 0 1,1 2,4", // 巨蟹
+  "M-2,-2 A2,2 0 1,1 -4,0 Q-2,5 4,-2 A2,2 0 1,0 2,-4", // 狮子
+  "M-4,-2 L-4,4 M-1.5,-2 L-1.5,4 M1,-2 L1,4 Q3,4 3,0 Q5,-2 5,4", // 处女
+  "M-4,1 L4,1 M-4,-2 L-2,-2 A2,2 0 0,1 2,-2 L4,-2", // 天秤
+  "M-4,-2 L-4,4 M-1.5,-2 L-1.5,4 M1,-2 L1,4 Q3,4 3,0 L5,4 M3.5,3 L5,4 L4,2.5", // 天蝎
+  "M-3,3 L3,-3 M0,-3 L3,-3 L3,0 M-1,1 L1,-1", // 射手
+  "M-4,0 L0,4 L2,-2 A2,2 0 1,1 2,2", // 摩羯
+  "M-4,-2 L-2,-4 L0,-2 L2,-4 L4,-2 M-4,2 L-2,0 L0,2 L2,0 L4,2", // 水瓶
+  "M-3,-4 A5,5 0 0,0 -3,4 M3,-4 A5,5 0 0,1 3,4 M-4,0 L4,0" // 双鱼
+];
+
+// ==========================================
+// 2. 核心天文与命理数据
 // ==========================================
 const DEG = Math.PI / 180;
 const norm = x => ((x % 360) + 360) % 360;
 
-const ZODIAC = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 const ZODIAC_N = ['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'];
-// 严格七政四余映射：戌=白羊...子=水瓶, 亥=双鱼
 const BRANCHES = ['戌','酉','申','未','午','巳','辰','卯','寅','丑','子','亥'];
 
 const MANSIONS = [
@@ -98,29 +117,29 @@ const MANSIONS = [
 ];
 
 const PLANET_CFG = {
-  sun:    { nm:'太阳', sym:'☉', col:'#E8CC88', speed: 0.9856 },
-  moon:   { nm:'月亮', sym:'☽', col:'#FFFFFF', speed: 13.176 },
-  mercury:{ nm:'水星', sym:'☿', col:'#A8C8A0', speed: 1.38 },
-  venus:  { nm:'金星', sym:'♀', col:'#E8A0B0', speed: 1.20 },
-  mars:   { nm:'火星', sym:'♂', col:'#E08060', speed: 0.524 },
-  jupiter:{ nm:'木星', sym:'♃', col:'#D0A860', speed: 0.083 },
-  saturn: { nm:'土星', sym:'♄', col:'#A8A090', speed: 0.033 },
-  uranus: { nm:'天王', sym:'⛢', col:'#80C8D0', speed: 0.011 },
-  neptune:{ nm:'海王', sym:'♆', col:'#8090D8', speed: 0.006 },
-  pluto:  { nm:'冥王', sym:'♇', col:'#C090A8', speed: 0.004 },
-  luohu:  { nm:'罗睺 (南交)', sym:'☊', col:'#D47E7E', speed: -0.053 },
-  jidu:   { nm:'计都 (北交)', sym:'☋', col:'#88C088', speed: -0.053 },
-  lilith: { nm:'月孛', sym:'☾', col:'#B8A0E0', speed: 0.111 },
-  ziqi:   { nm:'紫炁', sym:'✦', col:'#D0C070', speed: 0.018 }
+  sun:    { nm:'太阳', sym:'☉', col:'#F0C96A', speed: 0.9856 },
+  moon:   { nm:'月亮', sym:'☽', col:'#EAEAEA', speed: 13.176 },
+  mercury:{ nm:'水星', sym:'☿', col:'#63A3ED', speed: 1.38 },
+  venus:  { nm:'金星', sym:'♀', col:'#F0C96A', speed: 1.20 },
+  mars:   { nm:'火星', sym:'♂', col:'#FF6B6B', speed: 0.524 },
+  jupiter:{ nm:'木星', sym:'♃', col:'#D4A843', speed: 0.083 },
+  saturn: { nm:'土星', sym:'♄', col:'#888888', speed: 0.033 },
+  uranus: { nm:'天王', sym:'⛢', col:'#63A3ED', speed: 0.011 },
+  neptune:{ nm:'海王', sym:'♆', col:'#4A6EB0', speed: 0.006 },
+  pluto:  { nm:'冥王', sym:'♇', col:'#A378B5', speed: 0.004 },
+  luohu:  { nm:'罗睺', sym:'☊', col:'#FF6B6B', speed: -0.053 },
+  jidu:   { nm:'计都', sym:'☋', col:'#7DE09A', speed: -0.053 },
+  lilith: { nm:'月孛', sym:'☾', col:'#A378B5', speed: 0.111 },
+  ziqi:   { nm:'紫炁', sym:'✦', col:'#D4A843', speed: 0.018 }
 };
 
 const FIRDARIA_DAY =   [{p:'sun',y:10}, {p:'venus',y:8}, {p:'mercury',y:13}, {p:'moon',y:9}, {p:'saturn',y:11}, {p:'jupiter',y:12}, {p:'mars',y:7}, {p:'jidu',y:3}, {p:'luohu',y:2}];
 const FIRDARIA_NIGHT = [{p:'moon',y:9}, {p:'saturn',y:11}, {p:'mercury',y:13}, {p:'mars',y:7}, {p:'jidu',y:3}, {p:'sun',y:10}, {p:'venus',y:8}, {p:'jupiter',y:12}, {p:'luohu',y:2}];
 
 // ==========================================
-// 2. 状态管理与天文计算
+// 3. 状态管理与计算 (含高低差模拟)
 // ==========================================
-let STATE = { mode: 'natal', aspects: true, firdaria: true, J: 0, returnJ: 0 };
+let STATE = { mode: 'natal', aspects: true, firdaria: true, zAxis: true, J: 0, returnJ: 0 };
 
 function jdn(y, m, d, h) {
   if (m <= 2) { y--; m += 12; }
@@ -128,25 +147,28 @@ function jdn(y, m, d, h) {
   return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + h / 24 + B - 1524.5;
 }
 
-// 模拟天文推算 (提取自高精3D引擎)
 function calcPlanets(J) {
   const d = J - 2451545.0;
   const sun = norm(280.460 + 0.9856474 * d);
   const moon = norm(218.316 + 13.176396 * d);
   const ascNode = norm(125.044 - 0.05295 * d);
+  
+  // 注入伪黄纬(Latitude)模拟3D高低差效应，数值范围控制在 -5 到 +5 之间
   return {
-    sun, moon,
-    mercury: norm(sun + 18 * Math.sin(d * 0.1)), // 简易偏角模拟
-    venus: norm(sun - 30 * Math.sin(d * 0.08)),
-    mars: norm(355.45 + 0.524 * d),
-    jupiter: norm(34.40 + 0.083 * d),
-    saturn: norm(50.07 + 0.033 * d),
-    uranus: norm(313.23 + 0.011 * d),
-    neptune: norm(304.88 + 0.006 * d),
-    pluto: norm(238.92 + 0.004 * d),
-    jidu: ascNode, luohu: norm(ascNode + 180), // 计都北，罗睺南
-    lilith: norm(83.353 + 0.111 * d + 180),
-    ziqi: norm(359.5 + 0.018 * d)
+    sun: { lon: sun, lat: 0 }, // 太阳永远在黄道面上
+    moon: { lon: moon, lat: 5.14 * Math.sin((moon - ascNode)*DEG) },
+    mercury: { lon: norm(sun + 18 * Math.sin(d * 0.1)), lat: 7 * Math.sin(d * 0.11) },
+    venus: { lon: norm(sun - 30 * Math.sin(d * 0.08)), lat: 3.4 * Math.sin(d * 0.09) },
+    mars: { lon: norm(355.45 + 0.524 * d), lat: 1.8 * Math.sin(d * 0.52) },
+    jupiter: { lon: norm(34.40 + 0.083 * d), lat: 1.3 * Math.sin(d * 0.08) },
+    saturn: { lon: norm(50.07 + 0.033 * d), lat: 2.5 * Math.sin(d * 0.03) },
+    uranus: { lon: norm(313.23 + 0.011 * d), lat: 0.8 * Math.sin(d * 0.01) },
+    neptune: { lon: norm(304.88 + 0.006 * d), lat: 1.7 * Math.sin(d * 0.006) },
+    pluto: { lon: norm(238.92 + 0.004 * d), lat: 17 * Math.sin(d * 0.004) }, // 冥王星倾角极大
+    jidu: { lon: ascNode, lat: 0 }, 
+    luohu: { lon: norm(ascNode + 180), lat: 0 },
+    lilith: { lon: norm(83.353 + 0.111 * d + 180), lat: -5.14 * Math.cos((moon - ascNode)*DEG) },
+    ziqi: { lon: norm(359.5 + 0.018 * d), lat: 0 }
   };
 }
 
@@ -159,156 +181,181 @@ function calcAsc(J, lat, lon) {
 }
 
 // ==========================================
-// 3. SVG 极简渲染引擎
+// 4. SVG 发光渲染引擎
 // ==========================================
-const CX = 400, CY = 400;
-// 空间半径定义：由外至内构建信息层级
-const R_FIR_OUT = 375, R_FIR_IN = 355;      // 法达圈
-const R_ZOD_OUT = 330, R_ZOD_IN = 300;      // 黄道宫
-const R_BR_OUT  = 300, R_BR_IN  = 275;      // 地支圈
-const R_MAN_OUT = 275, R_MAN_IN = 250;      // 二十八宿
-const R_RET_PL  = 225, R_NAT_PL = 185;      // 行星圈 (返照/本命)
-const R_HOUSE   = 145;                      // 内侧宫位线起点
+const CX = 450, CY = 450;
+const R_FIR_OUT = 425, R_FIR_MID = 405, R_FIR_IN = 390; // 法达大限与小限
+const R_ZOD_OUT = 360, R_ZOD_IN = 320;                  // 黄道宫
+const R_BR_IN   = 295;                                  // 地支圈
+const R_MAN_OUT = 295, R_MAN_IN = 265;                  // 二十八宿
+const R_RET_PL  = 230, R_NAT_PL = 185;                  // 行星本命/返照轨道基础半径
+const R_HOUSE   = 120;
 
-function polar2Cart(r, angle) {
+function polar(r, angle) {
   const a = (angle - 90) * DEG;
   return { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
 }
 
-// 将绝对经度转换为 SVG 绘制角度 (ASC在左侧 9 o'clock 位置)
 function l2a(lon, asc) { return norm(asc - lon + 270); }
 
-// 绘制高级光影圆环弧线
-function drawArcPath(rIn, rOut, aStart, aEnd, fill, stroke) {
-  const p1 = polar2Cart(rIn, aStart), p2 = polar2Cart(rOut, aStart);
-  const p3 = polar2Cart(rOut, aEnd), p4 = polar2Cart(rIn, aEnd);
+function drawArc(rIn, rOut, aStart, aEnd, fill, stroke, width=0.5) {
+  const p1 = polar(rIn, aStart), p2 = polar(rOut, aStart);
+  const p3 = polar(rOut, aEnd), p4 = polar(rIn, aEnd);
   const large = (aEnd - aStart + 360) % 360 > 180 ? 1 : 0;
-  return `<path d="M${p1.x},${p1.y} L${p2.x},${p2.y} A${rOut},${rOut},0,${large},1,${p3.x},${p3.y} L${p4.x},${p4.y} A${rIn},${rIn},0,${large},0,${p1.x},${p1.y}" fill="${fill}" stroke="${stroke}" stroke-width="0.5"/>`;
+  return `<path d="M${p1.x},${p1.y} L${p2.x},${p2.y} A${rOut},${rOut},0,${large},1,${p3.x},${p3.y} L${p4.x},${p4.y} A${rIn},${rIn},0,${large},0,${p1.x},${p1.y}" fill="${fill}" stroke="${stroke}" stroke-width="${width}"/>`;
 }
 
-// 获取出入相状态
 function getAspectState(p1, p2, l1, l2, targetAngle) {
   const s1 = PLANET_CFG[p1].speed, s2 = PLANET_CFG[p2].speed;
   const isP1Fast = Math.abs(s1) > Math.abs(s2);
-  const fastSpeed = isP1Fast ? s1 : s2, slowSpeed = isP1Fast ? s2 : s1;
-  
   let diff = Math.abs(l1 - l2); if (diff > 180) diff = 360 - diff;
   let nextL1 = norm(l1 + s1), nextL2 = norm(l2 + s2);
   let nextDiff = Math.abs(nextL1 - nextL2); if (nextDiff > 180) nextDiff = 360 - nextDiff;
   
   const currOrb = Math.abs(diff - targetAngle);
   const nextOrb = Math.abs(nextDiff - targetAngle);
-  
   if (currOrb < 0.5) return 'exact';
   return nextOrb < currOrb ? 'applying' : 'separating';
 }
 
 function renderChart() {
-  const dateStr = document.getElementById('inp-date').value;
-  const timeStr = document.getElementById('inp-time').value;
+  const [y, m, d] = document.getElementById('inp-date').value.split('-').map(Number);
+  const [h, mi] = document.getElementById('inp-time').value.split(':').map(Number);
   const lon = +document.getElementById('inp-lon').value;
   const lat = +document.getElementById('inp-lat').value;
-  const returnYr = +document.getElementById('inp-return').value;
   
-  const [y, m, d] = dateStr.split('-').map(Number);
-  const [h, mi] = timeStr.split(':').map(Number);
-  
-  STATE.J = jdn(y, m, d, (h + mi/60) - 8); // UTC+8
+  STATE.J = jdn(y, m, d, (h + mi/60) - 8);
   const plNatal = calcPlanets(STATE.J);
   const asc = calcAsc(STATE.J, lat, lon);
   
-  // 模拟返照时间 (为了演示，直接加上年份差的天数)
   if (STATE.mode !== 'natal') {
-    const yearsDiff = returnYr - y;
-    // 简易推算：真正应用中需用牛顿迭代寻找精确同度数时间
-    STATE.returnJ = STATE.J + yearsDiff * 365.2422; 
+    const returnYr = +document.getElementById('inp-return').value;
+    STATE.returnJ = STATE.J + (returnYr - y) * 365.2422; 
   }
   const plReturn = STATE.mode !== 'natal' ? calcPlanets(STATE.returnJ) : null;
 
-  let svg = `<circle cx="${CX}" cy="${CY}" r="${R_FIR_OUT}" fill="none" stroke="var(--gold-faint)" stroke-width="1"/>`;
+  // 注入发光滤镜
+  let svg = `
+    <defs>
+      <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <filter id="neon-glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.5" result="blur1" />
+        <feGaussianBlur stdDeviation="4" result="blur2" />
+        <feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    <circle cx="${CX}" cy="${CY}" r="${R_FIR_OUT}" fill="none" stroke="var(--gold-faint)" stroke-width="1"/>
+  `;
 
-  // 1. 法达星限圈 (Firdaria)
+  // 1. 法达星限 (大限与小限)
   if (STATE.firdaria) {
     const isDay = (h >= 6 && h < 18);
     const seq = isDay ? FIRDARIA_DAY : FIRDARIA_NIGHT;
     const currentAge = (Date.now() / 86400000 + 2440587.5 - STATE.J) / 365.2422;
     let currAngle = 0;
-    seq.forEach(per => {
+    
+    seq.forEach((per, idx) => {
       const sweep = (per.y / 75) * 360;
       const endAngle = currAngle + sweep;
+      const a1 = norm(270 - endAngle), a2 = norm(270 - currAngle); 
       
-      // 映射到 ASC 坐标系
-      const drawStart = norm(270 - currAngle);
-      const drawEnd = norm(270 - endAngle);
-      // SVG Arc 要求从小角度到大角度，所以互换
-      const a1 = drawEnd, a2 = drawStart; 
+      const isActiveMajor = currentAge >= currAngle*75/360 && currentAge < endAngle*75/360;
+      const fill = isActiveMajor ? 'rgba(240,201,106,0.1)' : 'transparent';
+      const stroke = isActiveMajor ? 'var(--gold)' : 'var(--gold-faint)';
       
-      const isActive = currentAge >= currAngle*75/360 && currentAge < endAngle*75/360;
-      const fill = isActive ? 'rgba(212,175,55,0.15)' : 'transparent';
-      const stroke = isActive ? 'var(--gold)' : 'var(--gold-faint)';
+      // 大限环
+      svg += drawArc(R_FIR_MID, R_FIR_OUT, a1, a2, fill, stroke);
+      const midMaj = polar((R_FIR_MID + R_FIR_OUT)/2, (a1 + a2)/2);
+      svg += `<text x="${midMaj.x}" y="${midMaj.y}" text-anchor="middle" dominant-baseline="central" font-size="14" class="${isActiveMajor?'glow-element':''}" fill="${isActiveMajor ? 'var(--gold)' : 'var(--text-muted)'}">${PLANET_CFG[per.p].sym}</text>`;
       
-      svg += drawArcPath(R_FIR_IN, R_FIR_OUT, a1, a2, fill, stroke);
-      const mid = polar2Cart((R_FIR_IN + R_FIR_OUT)/2, (a1 + a2)/2);
-      svg += `<text x="${mid.x}" y="${mid.y}" text-anchor="middle" dominant-baseline="central" font-size="12" fill="${isActive ? 'var(--gold)' : 'var(--text-muted)'}">${PLANET_CFG[per.p].sym}</text>`;
+      // 小限切分 (7个等分，由大限星主开始按序列轮转)
+      const minorSweep = sweep / 7;
+      for(let i=0; i<7; i++) {
+        const minorPlanet = seq[(idx + i) % seq.length].p;
+        const mStart = currAngle + i * minorSweep;
+        const mEnd = currAngle + (i + 1) * minorSweep;
+        const m_a1 = norm(270 - mEnd), m_a2 = norm(270 - mStart);
+        
+        const isActiveMinor = currentAge >= mStart*75/360 && currentAge < mEnd*75/360;
+        const minorFill = isActiveMinor ? 'var(--gold)' : 'transparent';
+        const minorColor = isActiveMinor ? '#000' : 'var(--text-muted)';
+        
+        svg += drawArc(R_FIR_IN, R_FIR_MID, m_a1, m_a2, minorFill, stroke, 0.3);
+        const midMin = polar((R_FIR_IN + R_FIR_MID)/2, (m_a1 + m_a2)/2);
+        svg += `<text x="${midMin.x}" y="${midMin.y}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="${minorColor}">${PLANET_CFG[minorPlanet].sym}</text>`;
+      }
       currAngle += sweep;
     });
   }
 
-  // 2. 黄道十二宫 & 十二地支
+  // 2. 黄道十二宫 (极简矢量线条) & 地支
   for (let i = 0; i < 12; i++) {
     const a1 = l2a(i * 30, asc), a2 = l2a((i + 1) * 30, asc);
     const mid = l2a(i * 30 + 15, asc);
-    // 黄道
-    svg += drawArcPath(R_ZOD_IN, R_ZOD_OUT, a2, a1, i%2 ? 'rgba(255,255,255,0.01)' : 'transparent', 'var(--gold-dim)');
-    const smZod = polar2Cart((R_ZOD_IN + R_ZOD_OUT)/2, mid);
-    svg += `<text x="${smZod.x}" y="${smZod.y}" text-anchor="middle" dominant-baseline="central" font-size="16" fill="var(--gold)">${ZODIAC[i]}</text>`;
+    svg += drawArc(R_ZOD_IN, R_ZOD_OUT, a2, a1, i%2 ? 'rgba(255,255,255,0.02)' : 'transparent', 'var(--gold-dim)');
+    
+    // 渲染 SVG 路径
+    const smZod = polar((R_ZOD_IN + R_ZOD_OUT)/2, mid);
+    // 根据角度旋转星座图标，保持头部朝外
+    const rot = (mid + 90) % 360; 
+    svg += `<g transform="translate(${smZod.x}, ${smZod.y}) rotate(${rot}) scale(1.6)">
+              <path d="${ZODIAC_PATHS[i]}" fill="none" stroke="var(--gold)" stroke-width="1.2" class="glow-element"/>
+            </g>`;
+            
     // 地支
-    svg += drawArcPath(R_BR_IN, R_BR_OUT, a2, a1, 'transparent', 'var(--gold-faint)');
-    const smBr = polar2Cart((R_BR_IN + R_BR_OUT)/2, mid);
+    svg += drawArc(R_BR_IN, R_ZOD_IN, a2, a1, 'transparent', 'var(--gold-faint)');
+    const smBr = polar((R_BR_IN + R_ZOD_IN)/2, mid);
     svg += `<text x="${smBr.x}" y="${smBr.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--text-muted)">${BRANCHES[i]}</text>`;
   }
 
-  // 3. 二十八星宿
+  // 3. 二十八宿物理分割刻度
   MANSIONS.forEach((m, i) => {
     const nextS = MANSIONS[(i+1)%28].s;
     let span = nextS - m.s; if (span < 0) span += 360;
     const a1 = l2a(m.s, asc), a2 = l2a(m.s + span, asc);
     const mid = l2a(m.s + span/2, asc);
-    svg += drawArcPath(R_MAN_IN, R_MAN_OUT, a2, a1, 'transparent', 'var(--gold-faint)');
-    const sm = polar2Cart((R_MAN_IN + R_MAN_OUT)/2, mid);
-    svg += `<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="var(--gold)" opacity="0.6">${m.n}</text>`;
+    
+    svg += drawArc(R_MAN_IN, R_MAN_OUT, a2, a1, 'transparent', 'var(--gold-faint)');
+    // 绘制穿透星宿环的分割线
+    const pStart1 = polar(R_MAN_IN, a1), pStart2 = polar(R_MAN_OUT, a1);
+    svg += `<line x1="${pStart1.x}" y1="${pStart1.y}" x2="${pStart2.x}" y2="${pStart2.y}" stroke="var(--gold-dim)" stroke-width="1.5" class="glow-element"/>`;
+    
+    const sm = polar((R_MAN_IN + R_MAN_OUT)/2, mid);
+    svg += `<text x="${sm.x}" y="${sm.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--gold)" opacity="0.8">${m.n}</text>`;
   });
 
   // 4. 十二宫位辐条
   for (let i = 0; i < 12; i++) {
-    const p = polar2Cart(R_HOUSE, l2a(asc + i*30, asc));
+    const p = polar(R_HOUSE, l2a(asc + i*30, asc));
     const isAxis = i % 3 === 0;
-    svg += `<line x1="${CX}" y1="${CY}" x2="${p.x}" y2="${p.y}" stroke="${isAxis?'var(--gold-dim)':'var(--gold-faint)'}" stroke-width="${isAxis?1:0.5}"/>`;
+    svg += `<line x1="${CX}" y1="${CY}" x2="${p.x}" y2="${p.y}" stroke="${isAxis?'var(--gold-dim)':'var(--gold-faint)'}" stroke-width="${isAxis?1.5:0.5}"/>`;
   }
 
-  // 5. 相位连线 (出入相)
+  // 5. 发光相位连线 (出入相)
   if (STATE.aspects) {
-    const orbs = { 0: 8, 60: 4, 90: 6, 120: 6, 180: 8 };
+    const orbs = { 60: 4, 90: 6, 120: 6, 180: 8 };
     const pKeys = Object.keys(plNatal);
     for(let i=0; i<pKeys.length; i++) {
       for(let j=i+1; j<pKeys.length; j++) {
         const k1 = pKeys[i], k2 = pKeys[j];
-        let diff = Math.abs(plNatal[k1] - plNatal[k2]); if (diff > 180) diff = 360 - diff;
+        const lon1 = plNatal[k1].lon, lon2 = plNatal[k2].lon;
+        let diff = Math.abs(lon1 - lon2); if (diff > 180) diff = 360 - diff;
         
         for (const [aspStr, orb] of Object.entries(orbs)) {
           const aspAngle = parseInt(aspStr);
-          if (aspAngle === 0) continue; // 合相不连线
           if (Math.abs(diff - aspAngle) <= orb) {
-            const state = getAspectState(k1, k2, plNatal[k1], plNatal[k2], aspAngle);
+            const state = getAspectState(k1, k2, lon1, lon2, aspAngle);
+            const dash = state === 'separating' ? '3, 6' : 'none';
+            const opac = state === 'applying' ? 0.7 : (state === 'exact' ? 1 : 0.25);
+            const w = state === 'exact' ? 1.5 : 0.8;
+            const color = aspAngle === 180 ? 'var(--red)' : (aspAngle === 90 ? '#E08060' : (aspAngle === 120 ? '#7DE09A' : 'var(--blue)'));
             
-            // 入相：实线，高透明度。出相：虚线，低透明度
-            const dash = state === 'separating' ? '3, 4' : 'none';
-            const opac = state === 'applying' ? 0.6 : (state === 'exact' ? 0.9 : 0.25);
-            const color = aspAngle === 180 ? '#D47E7E' : (aspAngle === 90 ? '#E08060' : (aspAngle === 120 ? '#A8C8A0' : '#80C8D0'));
-            
-            const pt1 = polar2Cart(R_HOUSE, l2a(plNatal[k1], asc));
-            const pt2 = polar2Cart(R_HOUSE, l2a(plNatal[k2], asc));
-            svg += `<line x1="${pt1.x}" y1="${pt1.y}" x2="${pt2.x}" y2="${pt2.y}" stroke="${color}" stroke-width="0.8" stroke-dasharray="${dash}" opacity="${opac}"/>`;
+            const pt1 = polar(R_HOUSE, l2a(lon1, asc));
+            const pt2 = polar(R_HOUSE, l2a(lon2, asc));
+            svg += `<line x1="${pt1.x}" y1="${pt1.y}" x2="${pt2.x}" y2="${pt2.y}" stroke="${color}" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${opac}" class="glow-element"/>`;
             break;
           }
         }
@@ -316,43 +363,63 @@ function renderChart() {
     }
   }
 
-  // 6. 渲染行星 (内圈本命，外圈返照)
-  const drawPlanets = (plData, radius, isReturn) => {
+  // 6. 行星与高低差(Z轴)渲染
+  const drawPlanets = (plData, baseRadius, isReturn) => {
     Object.keys(plData).forEach(key => {
       const cfg = PLANET_CFG[key];
-      const lon = plData[key];
-      const a = l2a(lon, asc);
-      const p = polar2Cart(radius, a);
+      const pData = plData[key];
+      const a = l2a(pData.lon, asc);
       
-      const opac = isReturn ? 0.8 : 1;
-      const size = isReturn ? 12 : 14;
+      // 开启伪3D高低差：黄纬拉伸实际绘制半径
+      const latOffset = STATE.zAxis ? (pData.lat * 4) : 0; 
+      const actualRadius = baseRadius + latOffset;
       
-      svg += `<g class="planet-node" data-id="${key}" data-lon="${lon}" data-type="${isReturn?'返照':'本命'}">
-                <circle cx="${p.x}" cy="${p.y}" r="11" fill="var(--bg-surface)" stroke="${cfg.col}" stroke-width="1" opacity="${opac}" ${isReturn?'stroke-dasharray="2,2"':''}/>
-                <text x="${p.x}" y="${p.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${size}" fill="${cfg.col}" opacity="${opac}">${cfg.sym}</text>
-                <line x1="${p.x}" y1="${p.y}" x2="${polar2Cart(R_HOUSE, a).x}" y2="${polar2Cart(R_HOUSE, a).y}" stroke="${cfg.col}" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.3"/>
-              </g>`;
+      const pActual = polar(actualRadius, a);
+      const pBase = polar(baseRadius, a);
+      
+      const opac = isReturn ? 0.85 : 1;
+      const size = isReturn ? 12 : 15;
+      
+      let html = `<g class="planet-node" data-id="${key}" data-lon="${pData.lon}" data-lat="${pData.lat}" data-type="${isReturn?'返照':'本命'}">`;
+      
+      // 如果发生高低差偏移，绘制物理引力线锚定回黄道面
+      if (STATE.zAxis && Math.abs(latOffset) > 1) {
+        html += `<line x1="${pBase.x}" y1="${pBase.y}" x2="${pActual.x}" y2="${pActual.y}" stroke="${cfg.col}" stroke-width="0.8" stroke-dasharray="1,2" opacity="0.5"/>`;
+        html += `<circle cx="${pBase.x}" cy="${pBase.y}" r="2" fill="${cfg.col}" opacity="0.4"/>`;
+      }
+      
+      // 绘制行星光晕与符号
+      html += `<circle cx="${pActual.x}" cy="${pActual.y}" r="${size-2}" fill="rgba(0,0,0,0.8)" stroke="${cfg.col}" stroke-width="1.5" opacity="${opac}" class="${isReturn?'':'glow-strong'}" ${isReturn?'stroke-dasharray="2,2"':''}/>
+               <text x="${pActual.x}" y="${pActual.y+1}" text-anchor="middle" dominant-baseline="central" font-size="${size}" fill="${cfg.col}" opacity="${opac}" class="glow-element">${cfg.sym}</text>`;
+      
+      // 向内指向宫位的指示线
+      html += `<line x1="${pBase.x}" y1="${pBase.y}" x2="${polar(R_HOUSE, a).x}" y2="${polar(R_HOUSE, a).y}" stroke="${cfg.col}" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.25"/>
+               </g>`;
+      svg += html;
     });
   };
 
+  // 渲染基准轨道圈
+  svg += `<circle cx="${CX}" cy="${CY}" r="${R_NAT_PL}" fill="none" stroke="var(--gold-dim)" stroke-width="0.5" opacity="0.5"/>`;
   drawPlanets(plNatal, R_NAT_PL, false);
+  
   if (plReturn) {
-    svg += `<circle cx="${CX}" cy="${CY}" r="${R_RET_PL}" fill="none" stroke="var(--gold-dim)" stroke-width="0.5" stroke-dasharray="4,4"/>`;
+    svg += `<circle cx="${CX}" cy="${CY}" r="${R_RET_PL}" fill="none" stroke="var(--gold-faint)" stroke-width="0.5" stroke-dasharray="4,4"/>`;
     drawPlanets(plReturn, R_RET_PL, true);
   }
 
-  // 7. 中心标识
-  svg += `<circle cx="${CX}" cy="${CY}" r="35" fill="var(--bg-deep)" stroke="var(--gold-dim)" stroke-width="1"/>`;
-  svg += `<text x="${CX}" y="${CY-5}" text-anchor="middle" dominant-baseline="central" font-size="12" fill="var(--gold)" font-family="Cinzel">ASC</text>`;
+  // 7. 发光核心标识
+  svg += `<circle cx="${CX}" cy="${CY}" r="40" fill="var(--bg-deep)" stroke="var(--gold-dim)" stroke-width="1.5" class="glow-element"/>`;
+  svg += `<text x="${CX}" y="${CY-7}" text-anchor="middle" dominant-baseline="central" font-size="14" fill="var(--gold)" font-family="Cinzel" class="glow-strong">ASC</text>`;
   const sgnIdx = Math.floor(asc/30);
-  svg += `<text x="${CX}" y="${CY+10}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="var(--text-muted)">${ZODIAC_N[sgnIdx]} ${(asc%30).toFixed(1)}°</text>`;
+  svg += `<text x="${CX}" y="${CY+12}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--text-main)">${ZODIAC_N[sgnIdx]} ${(asc%30).toFixed(1)}°</text>`;
 
   document.getElementById('main-svg').innerHTML = svg;
   bindTooltips();
 }
 
 // ==========================================
-// 4. UI 交互逻辑
+// 5. 交互控制
 // ==========================================
 function setMode(mode) {
   STATE.mode = mode;
@@ -363,7 +430,10 @@ function setMode(mode) {
 
 function toggleOption(opt) {
   STATE[opt] = !STATE[opt];
-  const btnId = opt === 'aspects' ? 'btn-asp' : 'btn-fir';
+  let btnId;
+  if(opt === 'aspects') btnId = 'btn-asp';
+  else if(opt === 'firdaria') btnId = 'btn-fir';
+  else if(opt === 'zAxis') btnId = 'btn-3d';
   document.getElementById(btnId).classList.toggle('active', STATE[opt]);
   renderChart();
 }
@@ -374,6 +444,7 @@ function bindTooltips() {
     el.addEventListener('mouseenter', e => {
       const id = e.target.getAttribute('data-id');
       const lon = parseFloat(e.target.getAttribute('data-lon'));
+      const lat = parseFloat(e.target.getAttribute('data-lat'));
       const type = e.target.getAttribute('data-type');
       const cfg = PLANET_CFG[id];
       const sgn = ZODIAC_N[Math.floor(lon / 30)];
@@ -386,27 +457,22 @@ function bindTooltips() {
         else { if (lon >= ms || lon < me) manStr = MANSIONS[i].n; }
       }
       
-      tt.innerHTML = `<strong>${cfg.sym} ${cfg.nm} <span style="font-size:10px;color:#aaa">(${type})</span></strong>
-                      <div class="sub">黄道：${lon.toFixed(2)}°</div>
+      tt.innerHTML = `<strong>${cfg.sym} ${cfg.nm} <span style="font-size:10px;color:var(--text-muted)">(${type})</span></strong>
+                      <div class="sub">黄经：${lon.toFixed(2)}° (黄纬: ${lat > 0 ? '+'+lat.toFixed(2) : lat.toFixed(2)}°)</div>
                       <div class="sub">落入：${sgn} ${(lon%30).toFixed(2)}° (地支: ${br})</div>
                       <div class="sub">星宿：${manStr}宿</div>`;
       tt.style.opacity = 1;
     });
     el.addEventListener('mousemove', e => {
       const wrap = document.getElementById('chart-wrap').getBoundingClientRect();
-      tt.style.left = (e.clientX - wrap.left + 15) + 'px';
+      tt.style.left = (e.clientX - wrap.left + 20) + 'px';
       tt.style.top = (e.clientY - wrap.top - 20) + 'px';
     });
     el.addEventListener('mouseleave', () => tt.style.opacity = 0);
   });
 }
 
-// 监听输入自动重新渲染
-document.querySelectorAll('.input-grid input').forEach(inp => {
-  inp.addEventListener('change', renderChart);
-});
-
-// 初始化
+document.querySelectorAll('.input-grid input').forEach(inp => inp.addEventListener('change', renderChart));
 window.onload = renderChart;
 </script>
 </body>
