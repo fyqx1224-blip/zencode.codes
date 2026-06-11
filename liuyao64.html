@@ -156,13 +156,15 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="top-nav">
-        <a href="index.html" class="back-btn">← 返回排盘</a>
+        <a href="liuyao.html" class="back-btn">← 返回排盘</a>
     </div>
 
     <div class="page-header">
         <h1 class="page-title">六十四卦大全</h1>
         <div class="page-subtitle">· 易经义理与排盘字典 ·</div>
     </div>
+
+    <div id="dynamic-info" style="display: none;"></div>
 
     <div class="dict-container" id="dict-root">
         </div>
@@ -374,7 +376,7 @@
         }
 
         // --- 核心：复用 liuyao.js 引擎进行排盘计算 ---
-        if (typeof initDateTime === 'function') initDateTime(); // 确保日干支已初始化
+        if (typeof initDateTime === 'function') initDateTime(); // 确保日干支已初始化，因为有了幽灵div，这里不会报错了
         
         // 将字典中的 [1,0,1...] 转化为引擎需要的阳(7) 阴(8)
         let virtualYaos = data.bin.map(b => b === 1 ? 7 : 8);
