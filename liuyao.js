@@ -10,7 +10,7 @@ const s2t_map = {
     "涣":"渙","渐":"漸","无":"無","讼":"訟","门":"門","档":"檔","历":"歷","时":"時","间":"間",
     "马":"馬","华":"華","盖":"蓋","灾":"災","贵":"貴","禄":"祿","测":"測","选":"選","择":"擇",
     "推":"推","演":"演","盘":"盤","点":"點","击":"擊","铜":"銅","钱":"錢","摇":"搖","会":"會",
-    "联":"聯","系":"繫","们":"們","预":"預","约":"約","师":"師","态":"態","掷":"擲","线":"線",
+    "联":"聯","系":"繫","们":"們","预":"預","约":"約","师":"師","态":"態","掷":"掷","线":"線",
     "冲":"沖","游":"遊","应":"應","当":"當","前":"前","法":"法","旬":"旬","空":"空","日":"日",
     "干":"干","支":"支","驿":"驛","花":"花","将":"將","刃":"刃","文":"文","昌":"昌","旺":"旺",
     "相":"相","休":"休","囚":"囚","死":"死","老":"老","少":"少","分":"分","出":"出","次":"次",
@@ -31,10 +31,8 @@ function t(str) {
 
 // ================= 全局语言嗅探器 (拦截 nav.js 的切换动作) =================
 function checkLangState() {
-    // 自动抓取系统的语言标识（兼容大部分 i18n 插件）
     let lang = document.documentElement.lang || localStorage.getItem('lang') || localStorage.getItem('language') || 'zh-cn';
     lang = lang.toLowerCase();
-    // 只有明确选择了繁体（TW/HK/TC 等），才开启繁体模式。英文韩文等自动维持简体
     return lang.includes('tw') || lang.includes('hk') || lang.includes('hant') || lang === 'tc';
 }
 
@@ -43,15 +41,13 @@ function updateLiuyaoLang() {
     if (isTrad !== newTrad) {
         isTrad = newTrad;
         
-        // 瞬间替换所有 HTML 静态文本
         document.querySelectorAll('[data-t]').forEach(el => {
             el.innerText = t(el.getAttribute('data-t'));
         });
         
-        // 如果当前有排好的盘，瞬间重绘排盘数据
         if(currentYaos.length > 0) renderFinalResult();
         initDateTime();
-        if(document.getElementById('interact-manual').style.display === 'block') renderManualRows();
+        if(document.getElementById('interact-manual') && document.getElementById('interact-manual').style.display === 'block') renderManualRows();
     }
 }
 
@@ -61,14 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-t]').forEach(el => el.innerText = t(el.getAttribute('data-t')));
     initDateTime();
     
-    // 监听：一旦导航栏改变了 <html> 的 lang 属性，立即执行翻译
     const observer = new MutationObserver(updateLiuyaoLang);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'class'] });
     
-    // 兜底监听：如果你点击了导航栏的任何按钮，延时检查一次语言状态
     document.addEventListener('click', () => {
         setTimeout(updateLiuyaoLang, 100);
-        setTimeout(updateLiuyaoLang, 300); // 防抖
+        setTimeout(updateLiuyaoLang, 300);
     });
 });
 
@@ -169,26 +163,29 @@ function initDateTime() {
             ${getShensha(currentDayTgIdx, d.getDayZhiIndex())}
         </div>
     `;
-    document.getElementById('dynamic-info').innerHTML = html;
+    const infoDiv = document.getElementById('dynamic-info');
+    if (infoDiv) {
+        infoDiv.innerHTML = html;
+    }
 }
 
 function showScreen(screenId) {
     const screens = document.querySelectorAll('.flow-screen');
     for(let i=0; i<screens.length; i++) screens[i].style.display = 'none';
-    document.getElementById(screenId).style.display = 'block';
+    const target = document.getElementById(screenId);
+    if(target) target.style.display = 'block';
 }
 
 window.resetFlow = function() {
     currentYaos = [];
     showScreen('screen-choice');
-    document.getElementById('gua-layout').className = 'gua-grid';
+    const layout = document.getElementById('gua-layout');
+    if(layout) layout.className = 'gua-grid';
     initDateTime();
 
-    // === 新增：清空问事输入框的内容 ===
     const questionInputNode = document.getElementById('divination-question');
     if(questionInputNode) questionInputNode.value = '';
     
-    // === 新增：隐藏结果页的问题展示区块 ===
     const questionBoxNode = document.getElementById('result-question-box');
     if(questionBoxNode) questionBoxNode.style.display = 'none';
 }
@@ -380,7 +377,7 @@ function getPalaceAndShi(b, t_val) {
 
 function getKinship(palaceWx, lineWx) { return t(KINSHIPS[(WX_IDX[lineWx] - WX_IDX[palaceWx] + 5) % 5]); }
 
-function calcGua(yaos) {
+window.calcGua = function(yaos) {
     let mY = [], cY = [];
     for (let i=0; i<6; i++) {
         mY.push((yaos[i]===7||yaos[i]===9)?1:0);
@@ -421,7 +418,6 @@ function calcGua(yaos) {
 window.renderFinalResult = function() {
     showScreen('screen-result');
     
-    // === 新增：获取用户输入的问题并在结果页展示 ===
     const questionInput = document.getElementById('divination-question');
     const questionBox = document.getElementById('result-question-box');
     const questionText = document.getElementById('result-question-text');
@@ -430,10 +426,10 @@ window.renderFinalResult = function() {
         const qVal = questionInput.value.trim();
         if (qVal) {
             questionText.innerText = qVal;
-            questionBox.style.display = 'block'; // 有问题则显示模块
+            questionBox.style.display = 'block'; 
         } else {
             questionText.innerText = '';
-            questionBox.style.display = 'none';  // 没问题则隐藏模块
+            questionBox.style.display = 'none';  
         }
     }
 
@@ -443,9 +439,11 @@ window.renderFinalResult = function() {
     const guaLayout = document.getElementById('gua-layout');
     const changeCol = document.getElementById('change-gua-col');
 
+    if (!mainContainer || !changeContainer || !beastContainer) return;
+
     mainContainer.innerHTML = ''; changeContainer.innerHTML = ''; beastContainer.innerHTML = '';
 
-    const gua = calcGua(currentYaos);
+    const gua = window.calcGua(currentYaos);
     const hasChange = currentYaos.some(v => v === 6 || v === 9);
 
     if (!hasChange) {
@@ -468,7 +466,6 @@ window.renderFinalResult = function() {
         let mLine = gua.main.lines[i];
         let mPos = (i === gua.main.shi) ? t('世') : (i === gua.main.ying) ? t('应') : '';
 
-        // 手机端节省空间的超级上标格式
         let stateHtml = `<span style="font-size:0.6rem; opacity:0.7; margin-left:2px; vertical-align: super;">(${mLine.state})</span>`;
 
         mainContainer.insertAdjacentHTML('beforeend', `
@@ -500,4 +497,66 @@ window.renderFinalResult = function() {
                 </div>`);
         }
     }
+}
+
+// ================= 6. 导出图片功能 =================
+window.exportGuaImage = function() {
+    if (typeof html2canvas === 'undefined') {
+        alert(t("截图引擎未加载完成，请稍后重试或检查网络。"));
+        return;
+    }
+
+    const btn = document.getElementById('btn-export-img');
+    const originalText = btn.innerText;
+    btn.innerText = t("正在生成高清图...");
+    btn.disabled = true;
+
+    const panel = document.getElementById('main-panel');
+    const actionArea = document.getElementById('result-action-area');
+    
+    // 缓存原始样式
+    const originalBg = panel.style.background || '';
+    const originalFilter = panel.style.backdropFilter || '';
+    const originalShadow = panel.style.boxShadow || '';
+
+    // 截图前预处理：隐藏交互按钮，取消玻璃态模糊，替换为深邃实色背景
+    if (actionArea) actionArea.style.display = 'none';
+    panel.style.background = '#0d0c11'; 
+    panel.style.backdropFilter = 'none';
+    panel.style.boxShadow = 'none'; // 去掉外阴影防止截图边缘发黑
+
+    // 延迟 100ms 确保 DOM 样式重绘完成
+    setTimeout(() => {
+        html2canvas(panel, {
+            scale: 2, // 开启 2 倍抗锯齿，确保字体和线条锐利
+            backgroundColor: '#050505', // 画布底层颜色
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            // 恢复原有的玻璃态和交互按钮
+            if (actionArea) actionArea.style.display = 'flex';
+            panel.style.background = originalBg;
+            panel.style.backdropFilter = originalFilter;
+            panel.style.boxShadow = originalShadow;
+            btn.innerText = originalText;
+            btn.disabled = false;
+
+            // 触发下载
+            const link = document.createElement('a');
+            const timestamp = new Date().getTime();
+            link.download = `ZenCode_命运档案_${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(err => {
+            console.error("图片生成失败:", err);
+            // 发生异常也要恢复现场
+            if (actionArea) actionArea.style.display = 'flex';
+            panel.style.background = originalBg;
+            panel.style.backdropFilter = originalFilter;
+            panel.style.boxShadow = originalShadow;
+            btn.innerText = originalText;
+            btn.disabled = false;
+            alert(t("图片生成失败，请稍后重试。"));
+        });
+    }, 100);
 }
