@@ -1,82 +1,91 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZenCode · 极简五行高精星盘</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg-deep: #020204;
-  
-  /* 五行高级色盘 */
-  --wood: #7DE09A;  
-  --fire: #FF6B6B;  
-  --earth: #D4A843; 
-  --metal: #EAEAEA; 
-  --water: #63A3ED; 
-  --sun: #FF9800;   
-  --moon: #D8EEFF;  
-  
-  /* 四轴专属高亮色 */
-  --axis-asc: #FF4B4B;
-  --axis-dsc: #63A3ED;
-  --axis-mc:  #7DE09A;
-  --axis-ic:  #F0C96A;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenCode · 极简五行高精星盘</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #020204; /* Deep Base */
+      --cosmic-nebula: #0a1122; /* Subtle blue cloud */
+      
+      /* 五行高级色盘 */
+      --wood: #7DE09A;  
+      --fire: #FF6B6B;  
+      --earth: #D4A843; 
+      --metal: #EAEAEA; 
+      --water: #63A3ED; 
+      --sun: #FF9800;   
+      --moon: #D8EEFF;  
+      
+      /* 四轴专属高亮色 */
+      --axis-asc: #FF4B4B;
+      --axis-dsc: #63A3ED;
+      --axis-mc:  #7DE09A;
+      --axis-ic:  #F0C96A;
 
-  --gold: #F0C96A;
-  --gold-dim: rgba(240, 201, 106, 0.35);
-  --gold-faint: rgba(240, 201, 106, 0.1);
-  --text-main: #EAEAEA;
-  --text-muted: #666666;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; padding: 10px; }
-
-header { text-align: center; margin-bottom: 5px; z-index: 10; }
-.title-main { font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold); letter-spacing: 0.3em; text-shadow: 0 0 15px rgba(240,201,106,0.3); }
-
-/* 控制面板极度压缩，让出全屏空间 */
-.control-panel { background: rgba(10,10,14,0.7); border: 1px solid var(--gold-faint); border-radius: 6px; padding: 10px 15px; width: 100%; max-width: 950px; margin-bottom: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 10px; z-index: 20; }
-.input-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.field { display: flex; align-items: center; gap: 6px; }
-.field label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; white-space: nowrap; }
-.field input { background: rgba(0,0,0,0.5); border: 1px solid var(--gold-faint); color: var(--gold); padding: 5px 8px; border-radius: 4px; font-family: inherit; font-size: 11px; outline: none; transition: 0.3s; width: 100px; }
-.field input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(240,201,106,0.15); }
-
-.toolbar { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-.btn-toggle { background: transparent; border: 1px solid var(--gold-dim); color: var(--text-muted); padding: 5px 12px; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; border-radius: 3px; }
-.btn-toggle:hover { background: rgba(240, 201, 106, 0.08); color: var(--gold); }
-.btn-toggle.active { border-color: var(--gold); color: #000; background: var(--gold); box-shadow: 0 0 12px rgba(240,201,106,0.4); font-weight: 600; }
-
-/* 核心视口 */
-.chart-wrapper { position: relative; width: 100%; height: 100%; max-height: 85vh; display: flex; justify-content: center; align-items: center; flex-grow: 1; }
-svg { width: 100%; height: 100%; max-width: 960px; filter: drop-shadow(0 0 25px rgba(0,0,0,0.95)); }
-
-/* 发光滤镜与流光动画 */
-.glow-element { filter: url(#neon-glow); }
-.glow-strong { filter: url(#neon-glow-strong); }
-
-@keyframes flowLight { to { stroke-dashoffset: -40; } }
-.flow-applying { stroke-dasharray: 4 6; animation: flowLight 1s linear infinite; }
-.flow-separating { stroke-dasharray: 2 6; animation: flowLight 2.5s linear infinite reverse; }
-.flow-axis { stroke-dasharray: 8 16; animation: flowLight 0.8s linear infinite; }
-
-.tooltip { position: absolute; background: rgba(5,5,8,0.96); border: 1px solid var(--gold-dim); padding: 12px; font-size: 11px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 30; border-radius: 4px; box-shadow: 0 0 25px rgba(0,0,0,1); line-height: 1.8; }
-.tooltip strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; display: block; margin-bottom: 4px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 4px; }
-.tooltip .sub { color: var(--text-muted); }
-
-/* 行星交互反馈：仅加粗边框、文字高亮，彻底杜绝闪烁 */
-.planet-node { cursor: pointer; }
-.planet-node circle { transition: stroke-width 0.2s; }
-.planet-node:hover circle { stroke-width: 2.5; }
-.planet-node:hover text { animation: pulseText 1.5s infinite; }
-@keyframes pulseText { 0%, 100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 10px currentColor); } }
-</style>
+      --gold: #F0C96A;
+      --gold-dim: rgba(240, 201, 106, 0.35);
+      --gold-faint: rgba(240, 201, 106, 0.1);
+      --text-main: #EAEAEA;
+      --text-muted: #666666;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background: radial-gradient(circle at center, var(--cosmic-nebula) 0%, var(--bg-deep) 100%), 
+                  url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27400%27 viewBox=%270 0 800 800%27%3E%3Cg fill-opacity=%270.08%27%3E%3Ccircle fill=%27%23ffffff%27 cx=%27100%27 cy=%27100%27 r=%271%27/%3E%3Ccircle fill=%27%23ffffff%27 cx=%27600%27 cy=%27200%27 r=%271%27/%3E%3Ccircle fill=%27%237DE09A%27 cx=%27300%27 cy=%27600%27 r=%271.5%27/%3E%3Ccircle fill=%27%23FF6B6B%27 cx=%27700%27 cy=%27400%27 r=%272%27/%3E%3C/g%3E%3C/svg%3E');
+      color: var(--text-main); 
+      font-family: 'Noto Serif SC', serif; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      height: 100vh; 
+      overflow: hidden; 
+      padding: 10px; 
+    }
+    header { text-align: center; margin-bottom: 5px; z-index: 10; }
+    .title-main { font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold); letter-spacing: 0.3em; text-shadow: 0 0 15px rgba(240,201,106,0.3); }
+    /* 控制面板极度压缩，让出全屏空间 */
+    .control-panel { background: rgba(10,10,14,0.7); border: 1px solid var(--gold-faint); border-radius: 6px; padding: 10px 15px; width: 100%; max-width: 950px; margin-bottom: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 10px; z-index: 20; }
+    .input-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .field { display: flex; align-items: center; gap: 6px; }
+    .field label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; white-space: nowrap; }
+    .field input { background: rgba(0,0,0,0.5); border: 1px solid var(--gold-faint); color: var(--gold); padding: 5px 8px; border-radius: 4px; font-family: inherit; font-size: 11px; outline: none; transition: 0.3s; width: 100px; }
+    .field input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(240,201,106,0.15); }
+    .toolbar { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .btn-toggle { background: transparent; border: 1px solid var(--gold-dim); color: var(--text-muted); padding: 5px 12px; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; border-radius: 3px; }
+    .btn-toggle:hover { background: rgba(240, 201, 106, 0.08); color: var(--gold); }
+    .btn-toggle.active { border-color: var(--gold); color: #000; background: var(--gold); box-shadow: 0 0 12px rgba(240,201,106,0.4); font-weight: 600; }
+    /* 核心视口 */
+    .chart-wrapper { position: relative; width: 100%; height: 100%; max-height: 85vh; display: flex; justify-content: center; align-items: center; flex-grow: 1; }
+    svg { width: 100%; height: 100%; max-width: 960px; filter: drop-shadow(0 0 25px rgba(0,0,0,0.95)); }
+    /* 发光滤镜与流光动画 */
+    .glow-element { filter: url(#neon-glow); }
+    .glow-strong { filter: url(#neon-glow-strong); }
+    /* Special filter to ensure prominence */
+    #axis-heavy-glow { filter: drop-shadow(0 0 5px currentColor); }
+    @keyframes flowLight { to { stroke-dashoffset: -40; } }
+    .flow-applying { stroke-dasharray: 4 6; animation: flowLight 1s linear infinite; }
+    .flow-separating { stroke-dasharray: 2 6; animation: flowLight 2.5s linear infinite reverse; }
+    .flow-axis { stroke-dasharray: 8 16; animation: flowLight 0.8s linear infinite; }
+    .flow-axis-prominent { stroke-dasharray: 10 15; stroke-width: 2.5px; filter: url(#axis-heavy-glow); }
+    .tooltip { position: absolute; background: rgba(5,5,8,0.96); border: 1px solid var(--gold-dim); padding: 12px; font-size: 11px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 30; border-radius: 4px; box-shadow: 0 0 25px rgba(0,0,0,1); line-height: 1.8; }
+    .tooltip strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; display: block; margin-bottom: 4px; border-bottom: 1px solid var(--gold-faint); padding-bottom: 4px; }
+    .tooltip .sub { color: var(--text-muted); }
+    /* 行星交互反馈：仅加粗边框、文字高亮，彻底杜绝闪烁 */
+    .planet-node { cursor: pointer; }
+    .planet-node circle { transition: stroke-width 0.2s; }
+    .planet-node:hover circle { stroke-width: 2.5; }
+    .planet-node:hover text { animation: pulseText 1.5s infinite; }
+    @keyframes pulseText { 0%, 100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 10px currentColor); } }
+  </style>
 </head>
 <body>
 
-<header><h1 class="title-main">Destiny Archives</h1></header>
+<header>
+  <h1 class="title-main">Destiny Archives</h1>
+</header>
 
 <div class="control-panel">
   <div class="input-grid">
@@ -104,21 +113,21 @@ svg { width: 100%; height: 100%; max-width: 960px; filter: drop-shadow(0 0 25px 
 
 <script>
 // ==========================================
-// 1. 标准化十二星座矢量符号 (高辨识度)
+// 1. 标准化十二星座矢量符号 (高辨识度) - 手工校调完全版
 // ==========================================
 const ZODIAC_PATHS = [
-  "M -3.5,-1.5 C -3.5,-4.5 -1,-4.5 0,-1.5 C 1,-4.5 3.5,-4.5 3.5,-1.5 M 0,-1.5 L 0,4", // ♈ 白羊
-  "M -3,-2.5 C -3,-2.5 0,0 3,-2.5 M 0,2 A 2.5,2.5 0 1,0 0,1.99 Z", // ♉ 金牛
-  "M -2.5,-4 L 2.5,-4 M -2.5,4 L 2.5,4 M -1.5,-4 L -1.5,4 M 1.5,-4 L 1.5,4", // ♊ 双子
-  "M -3.5,-1.5 A 2,2 0 1,1 -1.5,0.5 C -1.5,0.5 1,-2.5 3,-2.5 M 3.5,1.5 A 2,2 0 1,1 1.5,-0.5 C 1.5,-0.5 -1,2.5 -3,2.5", // ♋ 巨蟹
-  "M -3,-1 A 1.5,1.5 0 1,1 -1.5,0.5 C -1.5,0.5 -1.5,3.5 1.5,3.5 C 3.5,3.5 3.5,1.5 2,1.5 C 0.5,1.5 0.5,-3.5 3.5,-3.5", // ♌ 狮子
-  "M -4,-2 L -4,3 M -1.5,-2 L -1.5,3 M 1,-2 L 1,3 C 1,3 4,3 4,0 C 4,-2 1,-2 1,-2 M 1,1 C 3,4 5,4 5,4", // ♍ 处女
-  "M -4,-0.5 L 4,-0.5 M -4,1.5 L 4,1.5 M -2,-0.5 A 2.5,2.5 0 0,1 2,-0.5", // ♎ 天秤
-  "M -4,-2 L -4,3 M -1.5,-2 L -1.5,3 M 1,-2 L 1,3 C 1,3 4,3 4,0 C 4,-2 1,-2 1,-2 M 1,1 C 1,1 3,1 3.5,4.5 L 2.5,3.5 M 3.5,4.5 L 4.5,3.5", // ♏ 天蝎
-  "M -3,3 L 3,-3 M 0,-3 L 3,-3 L 3,0 M -1,1 L 1,-1", // ♐ 射手
-  "M -4,-0.5 L -2,-3 L 0,-0.5 C 0,-0.5 1,3 2,3 C 3,3 3,0 1.5,-1.5 C 1.5,-1.5 0.5,-3 3,-3 C 5,-3 4,0 4,0 C 4,1.5 2.5,4 1.5,4", // ♑ 摩羯
-  "M -4,-1.5 L -2,-3 L 0,-1.5 L 2,-3 L 4,-1.5 M -4,1.5 L -2,0 L 0,1.5 L 2,0 L 4,1.5", // ♒ 水瓶
-  "M -2.5,-4 A 6,6 0 0,0 -2.5,4 M 2.5,-4 A 6,6 0 0,1 2.5,4 M -4,0 L 4,0" // ♓ 双鱼
+  "M-4.8,-1.2 C-4.8,-4.2 -1.2,-4.2 0,-1.2 C1.2,-4.2 4.8,-4.2 4.8,-1.2 M0,-1.2 L0,4.8", // ♈ 白羊
+  "M-4.2,-2.4 C-4.2,-2.4 0,1.2 4.2,-2.4 M0,2.4 A 3,3 0 1,0 0,2.39 Z", // ♉ 金牛 - 修复规整
+  "M-3,-4.2 L3,-4.2 M-3,4.2 L3,4.2 M-1.8,-4.2 L-1.8,4.2 M1.8,-4.2 L1.8,4.2", // ♊ 双子
+  "M-4.2,-1.8 A 2.4,2.4 0 1,1 -1.8,0.6 C-1.8,0.6 1.2,-3 3.6,-3 M4.2,1.8 A 2.4,2.4 0 1,1 1.8,-0.6 C1.8,-0.6 -1.2,3 -3.6,3", // ♋ 巨蟹 - 修复规整
+  "M-3.6,-1.2 A 1.8,1.8 0 1,1 -1.8,0.6 C-1.8,0.6 -1.8,4.2 1.8,4.2 C4.2,4.2 4.2,1.8 2.4,1.8 C0.6,1.8 0.6,-4.2 4.2,-4.2", // ♌ 狮子 - 修复规整
+  "M-4.8,-2.4 L-4.8,3.6 M-1.8,-2.4 L-1.8,3.6 M1.2,-2.4 L1.2,3.6 C1.2,3.6 4.8,3.6 4.8,0 C4.8,-2.4 1.2,-2.4 1.2,-2.4 M1.2,1.2 C3.6,4.8 6,4.8 6,4.8", // ♍ 处女 - 修复规整
+  "M-4.8,-0.6 L4.8,-0.6 M-4.8,1.8 L4.8,1.8 M-2.4,-0.6 A 3,3 0 0,1 2.4,-0.6", // ♎ 天秤
+  "M-4.8,-2.4 L-4.8,3.6 M-1.8,-2.4 L-1.8,3.6 M1.2,-2.4 L1.2,3.6 C1.2,3.6 4.8,3.6 4.8,0 C4.8,-2.4 1.2,-2.4 1.2,-2.4 M1.2,1.2 L1.2,1.2 M3.6,1.2 L4.2,4.8 L3,3.6 M4.2,4.8 L5.4,3.6", // ♏ 天蝎 - 修复规整箭头
+  "M-3.6,3.6 L3.6,-3.6 M0,-3.6 L3.6,-3.6 L3.6,0 M-1.2,1.2 L1.2,-1.2", // ♐ 射手
+  "M-4.8,-0.6 L-2.4,-3.6 L0,-0.6 C0,-0.6 1.2,3.6 2.4,3.6 C3.6,3.6 3.6,0 1.8,-1.8 C1.8,-1.8 0.6,-3.6 3.6,-3.6 C6,-3.6 4.8,0 4.8,0 C4.8,1.8 3,4.8 1.8,4.8", // ♑ 摩羯
+  "M-4.8,-1.8 L-2.4,-3.6 L0,-1.8 L2.4,-3.6 L4.8,-1.8 M-4.8,1.8 L-2.4,0 L0,1.8 L2.4,0 L4.8,1.8", // ♒ 水瓶
+  "M-3,-4.8 A 7.2,7.2 0 0,0 -3,4.8 M3,-4.8 A 7.2,7.2 0 0,1 3,4.8 M-4.8,0 L4.8,0" // ♓ 双鱼
 ];
 
 // ==========================================
@@ -334,6 +343,9 @@ function renderChart() {
         <feGaussianBlur stdDeviation="5" result="blur2" />
         <feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
       </filter>
+      <filter id="axis-heavy-glow">
+        <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="currentColor" flood-opacity="1"/>
+      </filter>
     </defs>`;
     
   let svgBgRings = `<circle cx="${CX}" cy="${CY}" r="${R_FIR_OUT}" fill="none" stroke="var(--gold-faint)" stroke-width="1"/>`;
@@ -386,10 +398,10 @@ function renderChart() {
     const mid = l2a(i * 30 + 15, asc);
     svgBgRings += drawArc(R_ZOD_IN, R_ZOD_OUT, a2, a1, i%2 ? 'rgba(255,255,255,0.015)' : 'transparent', 'var(--gold-dim)');
     
-    // 正向统一的矢量符号
+    // 正向统一的矢量符号 - 比例缩放更协调
     const smZod = polar((R_ZOD_IN + R_ZOD_OUT)/2, mid);
-    svgBgRings += `<g transform="translate(${smZod.x}, ${smZod.y}) scale(2.2)">
-              <path d="${ZODIAC_PATHS[i]}" fill="none" stroke="var(--gold)" stroke-width="1" class="glow-element"/>
+    svgBgRings += `<g transform="translate(${smZod.x}, ${smZod.y}) scale(1.6)">
+              <path d="${ZODIAC_PATHS[i]}" fill="none" stroke="var(--gold)" stroke-width="1.2" class="glow-element" stroke-linecap="round" stroke-linejoin="round"/>
             </g>`;
             
     svgBgRings += drawArc(R_BR_IN, R_ZOD_IN, a2, a1, 'transparent', 'var(--gold-faint)');
@@ -469,7 +481,7 @@ function renderChart() {
   
   if (plReturn) {
     svgBgRings += `<circle cx="${CX}" cy="${CY}" r="${R_RET_PL}" fill="none" stroke="var(--gold-faint)" stroke-width="0.5" stroke-dasharray="4,4"/>`;
-    svgPlanets += buildPlanets(plReturn, R_RET_PL, true);
+    svgPlanets += buildPlanets(plReturn, R_RET_PL, true); 
   }
 
   // 6. 流光相位系统 (在确保已拿到 natPosMap 后渲染，图层位于底层)
@@ -489,7 +501,7 @@ function renderChart() {
             const flowClass = state === 'applying' ? 'flow-applying' : (state === 'separating' ? 'flow-separating' : '');
             const opac = state === 'applying' ? 0.6 : (state === 'exact' ? 0.9 : 0.25);
             const w = state === 'exact' ? 1.5 : 1;
-            const color = aspAngle === 180 ? 'var(--red)' : (aspAngle === 90 ? 'var(--sun)' : (aspAngle === 120 ? 'var(--wood)' : 'var(--water)'));
+            const color = aspAngle === 180 ? 'var(--fire)' : (aspAngle === 90 ? 'var(--sun)' : (aspAngle === 120 ? 'var(--wood)' : 'var(--water)'));
             
             // 直接读取行星推移后的绝对坐标
             const pt1 = natPosMap[k1], pt2 = natPosMap[k2];
@@ -503,31 +515,42 @@ function renderChart() {
     }
   }
 
-  // 7. 顶级四轴与核心 (图层最上方)
+  // 7. 顶级四轴与核心 (图层最上方) - **彻底重构以解决丢失问题**
   const axisLines = [
-    { a: angles.asc, n: 'ASC', c: 'var(--axis-asc)' },
-    { a: angles.dsc, n: 'DSC', c: 'var(--axis-dsc)' },
-    { a: angles.mc,  n: 'MC',  c: 'var(--axis-mc)' },
-    { a: angles.ic,  n: 'IC',  c: 'var(--axis-ic)' }
+    { a: angles.asc, n: 'ASC', c: 'var(--axis-asc)', prominent: true },
+    { a: angles.dsc, n: 'DSC', c: 'var(--axis-dsc)', prominent: true },
+    { a: angles.mc,  n: 'MC',  c: 'var(--axis-mc)', prominent: false },
+    { a: angles.ic,  n: 'IC',  c: 'var(--axis-ic)', prominent: false }
   ];
   
   axisLines.forEach(axis => {
     const drawAng = l2a(axis.a, asc);
     const pIn = polar(15, drawAng); // 从极点射出
-    const pOut = polar(R_FIR_OUT + 15, drawAng);
-    const pText = polar(R_FIR_OUT + 35, drawAng);
+    const pOut = polar(R_FIR_OUT + 20, drawAng);
+    const pText = polar(R_FIR_OUT + 45, drawAng);
     
     // 底层实线 + 上层流光线
-    svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="1.2" class="glow-element" opacity="0.6"/>`;
-    svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="2" class="glow-strong flow-axis" opacity="0.9"/>`;
-    svgAxes += `<text x="${pText.x}" y="${pText.y}" text-anchor="middle" dominant-baseline="central" font-size="20" font-family="Cinzel" fill="${axis.c}" font-weight="700" class="glow-strong">${axis.n}</text>`;
+    const lineOpac = axis.prominent ? 0.8 : 0.6;
+    const lineWidth = axis.prominent ? 1.5 : 1.2;
+    const flowClass = axis.prominent ? 'flow-axis-prominent' : 'flow-axis';
+
+    // 实线部分
+    svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" stroke-width="${lineWidth}" class="glow-element" opacity="${lineOpac}"/>`;
+    
+    // 流光高亮部分 (ASC/DSC 加重)
+    svgAxes += `<line x1="${pIn.x}" y1="${pIn.y}" x2="${pOut.x}" y2="${pOut.y}" stroke="${axis.c}" class="glow-strong ${flowClass}" opacity="0.9"/>`;
+    
+    // 文字部分
+    svgAxes += `<text x="${pText.x}" y="${pText.y}" text-anchor="middle" dominant-baseline="central" font-size="22" font-family="Cinzel" fill="${axis.c}" font-weight="700" class="glow-strong">${axis.n}</text>`;
   });
 
-  svgAxes += `<circle cx="${CX}" cy="${CY}" r="25" fill="var(--bg-deep)" stroke="var(--gold-dim)" stroke-width="1.5" class="glow-strong"/>`;
+  // 核心圆环 (位于四轴之下)
+  svgAxes += `<circle cx="${CX}" cy="${CY}" r="25" fill="#020204" stroke="var(--gold-dim)" stroke-width="1.5" class="glow-strong"/>`;
   svgAxes += `<circle cx="${CX}" cy="${CY}" r="20" fill="none" stroke="var(--gold-faint)" stroke-width="0.5"/>`;
   svgAxes += `<circle cx="${CX}" cy="${CY}" r="3" fill="var(--gold)" class="glow-element"/>`;
 
-  // 完美 Z-index 管线合并：背景圈 -> 相位 -> 星座 -> 四轴
+  // 完美 Z-index 管线合并：背景圈 -> 相位 -> 星座 -> **最顶部四轴**
+  // 注意顺序：svgAspects 放在底色圈之后，svgPlanets 放在相位之后，svgAxes 绝对最后。
   document.getElementById('main-svg').innerHTML = svgDefs + svgBgRings + svgAspects + svgPlanets + svgAxes;
   bindTooltips();
 }
@@ -592,5 +615,6 @@ function bindTooltips() {
 document.querySelectorAll('.input-grid input').forEach(inp => inp.addEventListener('change', renderChart));
 window.onload = renderChart;
 </script>
+
 </body>
 </html>
