@@ -183,6 +183,14 @@ window.resetFlow = function() {
     showScreen('screen-choice');
     document.getElementById('gua-layout').className = 'gua-grid';
     initDateTime();
+
+    // === 新增：清空问事输入框的内容 ===
+    const questionInputNode = document.getElementById('divination-question');
+    if(questionInputNode) questionInputNode.value = '';
+    
+    // === 新增：隐藏结果页的问题展示区块 ===
+    const questionBoxNode = document.getElementById('result-question-box');
+    if(questionBoxNode) questionBoxNode.style.display = 'none';
 }
 
 window.startMethod = function(method) {
@@ -412,6 +420,23 @@ function calcGua(yaos) {
 // ================= 5. 最终渲染 =================
 window.renderFinalResult = function() {
     showScreen('screen-result');
+    
+    // === 新增：获取用户输入的问题并在结果页展示 ===
+    const questionInput = document.getElementById('divination-question');
+    const questionBox = document.getElementById('result-question-box');
+    const questionText = document.getElementById('result-question-text');
+
+    if (questionInput && questionBox && questionText) {
+        const qVal = questionInput.value.trim();
+        if (qVal) {
+            questionText.innerText = qVal;
+            questionBox.style.display = 'block'; // 有问题则显示模块
+        } else {
+            questionText.innerText = '';
+            questionBox.style.display = 'none';  // 没问题则隐藏模块
+        }
+    }
+
     const mainContainer = document.getElementById('dynamic-main-gua');
     const changeContainer = document.getElementById('dynamic-change-gua');
     const beastContainer = document.getElementById('dynamic-beasts');
