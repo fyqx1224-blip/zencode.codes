@@ -81,6 +81,70 @@
         .zc-btn-text { background: none; border: none; color: var(--zc-text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
         .zc-btn-text:hover { color: var(--zc-gold-light); text-shadow: 0 0 8px rgba(212, 168, 67, 0.8); }
 
+        /* --- 问事输入框 --- */
+        .question-input-wrapper {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .zc-input {
+            width: 100%;
+            max-width: 280px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(138, 115, 66, 0.3);
+            color: var(--zc-gold-light);
+            padding: 12px 15px;
+            border-radius: 2px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .zc-input::placeholder {
+            color: var(--zc-text-muted);
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+        .zc-input:focus {
+            outline: none;
+            border-color: var(--zc-gold-dark);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 10px rgba(138, 115, 66, 0.2);
+        }
+
+        /* --- 六十四卦大全 侧边悬浮入口 --- */
+        .gua-dict-btn {
+            position: fixed;
+            right: 25px;
+            bottom: 40px;
+            width: 42px;
+            padding: 20px 0;
+            background: rgba(13, 12, 17, 0.6);
+            border: 1px solid var(--zc-gold-dark);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--zc-gold-light);
+            text-decoration: none;
+            writing-mode: vertical-rl;
+            letter-spacing: 6px;
+            font-family: "STZhongsong", serif;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        .gua-dict-btn:hover {
+            background: var(--zc-gold-dark);
+            color: var(--zc-bg-main);
+            box-shadow: 0 0 15px rgba(212, 168, 67, 0.4);
+            transform: translateY(-5px);
+        }
+
         /* 3D 铜钱 */
         .coins-container { display: flex; justify-content: center; gap: 25px; margin: 40px 0 30px; perspective: 1000px; -webkit-perspective: 1000px; }
         .coin { width: 60px; height: 60px; position: relative; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
@@ -183,6 +247,10 @@
             
             .manual-row-interactive { padding: 10px 12px; }
             .yao-interactive { width: 60px; }
+
+            /* 移动端新增元素适配 */
+            .zc-input { max-width: 240px; font-size: 0.85rem; padding: 10px 12px; }
+            .gua-dict-btn { right: 10px; bottom: 20px; width: 34px; padding: 15px 0; font-size: 0.9rem; letter-spacing: 4px; }
         }
     </style>
 </head>
@@ -201,7 +269,12 @@
         <div class="divination-info" id="dynamic-info" data-t="加载中...">加载中...</div>
 
         <div id="screen-choice" class="flow-screen">
-            <h2 style="text-align: center; color: var(--zc-gold-light); margin-bottom: 2rem; font-weight: normal; font-size: 1.4rem;" data-t="选择推演方式">选择推演方式</h2>
+            <h2 style="text-align: center; color: var(--zc-gold-light); margin-bottom: 1.5rem; font-weight: normal; font-size: 1.4rem;" data-t="选择推演方式">选择推演方式</h2>
+            
+            <div class="question-input-wrapper">
+                <input type="text" id="divination-question" class="zc-input" placeholder="输入想询问的问题（选填）" data-t="输入想询问的问题（选填）">
+            </div>
+
             <div style="display: flex; flex-direction: column; align-items: center; gap: 1.2rem;">
                 <button class="zc-btn" onclick="startMethod('time')" data-t="时间起卦 (自动推演)">时间起卦 (自动推演)</button>
                 <button class="zc-btn" onclick="startMethod('shake')" data-t="铜钱摇卦 (互动求测)">铜钱摇卦 (互动求测)</button>
@@ -271,18 +344,19 @@
 
     </div>
 
+    <a href="liuyao64.html" id="gua-dictionary-trigger" class="gua-dict-btn" data-t="六十四卦大全">六十四卦大全</a>
+
     <script>
     (function(){
         const c = document.getElementById('bg-canvas');
         const ctx = c.getContext('2d');
         let W, H;
         const particles = [];
-        const NUM_PARTICLES = 600; // 适当减少粒子，因为粒子变大了
+        const NUM_PARTICLES = 600;
 
         function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
-        // 正态分布算法，用于让粒子聚集成“宽大的光带”而非随意散落
         function gaussianRandom() {
             let u = 0, v = 0;
             while(u === 0) u = Math.random();
@@ -294,14 +368,11 @@
             constructor() { this.isYang = Math.random() > 0.5; this.reset(true); }
             
             reset(randomize = false) {
-                // 进度：0 是轨道起点，1 是轨道终点
                 this.progress = randomize ? Math.random() : 0; 
-                this.speed = Math.random() * 0.0015 + 0.0005; // 更平缓的流动速度
+                this.speed = Math.random() * 0.0015 + 0.0005; 
                 
-                // 粒子变粗、变大气
                 this.size = Math.random() * 3.5 + 1.5; 
                 
-                // 光带的散开度 (厚度)，中心密集，边缘稀疏
                 let spread = (Math.max(W, H) * 0.15); 
                 this.thickness = gaussianRandom() * spread;
             }
@@ -313,26 +384,21 @@
             
             draw() {
                 let cx = W / 2, cy = H / 2;
-                let maxR = Math.max(W, H) * 0.7; // 巨大的轨道半径
+                let maxR = Math.max(W, H) * 0.7; 
                 
-                // 轨道角度：绕中心旋转 1.25 圈形成太极鱼
                 let baseAngle = this.progress * Math.PI * 2.5; 
-                if (!this.isYang) baseAngle += Math.PI; // 阴鱼在对面
+                if (!this.isYang) baseAngle += Math.PI; 
                 
-                // 半径映射：不是落入中心，而是在巨大的环带内向内收束一半，保持平面感
                 let r = maxR * (1 - this.progress * 0.6); 
                 
-                // 将厚度加在轨道的垂直方向上
                 let perpAngle = baseAngle + Math.PI / 2;
                 
-                // 整体缓慢公转
                 let globalRot = Date.now() * 0.00015; 
                 let finalAngle = baseAngle + globalRot;
                 
                 let x = cx + r * Math.cos(finalAngle) + Math.cos(perpAngle + globalRot) * this.thickness;
                 let y = cy + r * Math.sin(finalAngle) + Math.sin(perpAngle + globalRot) * this.thickness;
                 
-                // 丝滑的淡入淡出，掩盖出生和消亡
                 let alpha = 1;
                 if (this.progress < 0.1) alpha = this.progress / 0.1;
                 if (this.progress > 0.9) alpha = (1 - this.progress) / 0.1;
@@ -340,7 +406,6 @@
                 ctx.beginPath(); 
                 ctx.arc(x, y, this.size, 0, Math.PI * 2);
                 
-                // 颜色设定：阳鱼明亮真金，阴鱼深邃暗金
                 if (this.isYang) {
                     ctx.fillStyle = `rgba(245, 215, 150, ${alpha * 0.75})`;
                 } else {
@@ -353,11 +418,9 @@
         for(let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
         
         function loop() {
-            // 稍快的刷新率带来清晰的拖影，不再糊成一团
             ctx.fillStyle = 'rgba(5, 5, 5, 0.25)'; 
             ctx.fillRect(0, 0, W, H);
             
-            // 叠加一层微弱的环境金光
             let glow = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)/2);
             glow.addColorStop(0, 'rgba(138, 115, 66, 0.06)'); 
             glow.addColorStop(1, 'transparent');
