@@ -52,7 +52,7 @@
         /* 面板容器 */
         .zencode-panel {
             max-width: 720px; margin: 0 auto 3rem; 
-            background-color: rgba(13, 12, 17, 0.55); /* 稍微再透一点光 */
+            background-color: rgba(13, 12, 17, 0.55);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(138, 115, 66, 0.4); padding: 2.5rem; position: relative;
             transition: max-width 0.4s ease; box-shadow: 0 10px 50px rgba(0,0,0,0.8);
@@ -72,7 +72,7 @@
         .shensha-label { font-weight: bold; flex-shrink: 0; margin-right: 8px; }
 
         .zc-btn {
-            background: rgba(138, 115, 66, 0.1); border: 1px solid var(--zc-gold-dark); color: var(--zc-gold-light);
+            background: rgba(13, 12, 17, 0.1); border: 1px solid var(--zc-gold-dark); color: var(--zc-gold-light);
             padding: 12px 30px; cursor: pointer; transition: all 0.3s; font-family: inherit; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
             font-size: 1.1rem; border-radius: 2px; width: 280px; letter-spacing: 2px;
         }
@@ -217,7 +217,7 @@
         .is-static-line .yao-shishen { opacity: 0.35; }
         .is-static-line .yao-text { opacity: 0.35; }
 
-        /* ════════ 手机端极限压缩适配 ════════ */
+        /* ════════ 手机端适配 ════════ */
         @media (max-width: 768px) {
             .zencode-panel { padding: 1.2rem 0.6rem; margin: 0 10px 2rem; }
             .page-header { padding: 3rem 0 1rem; }
@@ -248,7 +248,6 @@
             .manual-row-interactive { padding: 10px 12px; }
             .yao-interactive { width: 60px; }
 
-            /* 移动端新增元素适配 */
             .zc-input { max-width: 240px; font-size: 0.85rem; padding: 10px 12px; }
             .gua-dict-btn { right: 10px; bottom: 20px; width: 34px; padding: 15px 0; font-size: 0.9rem; letter-spacing: 4px; }
         }
@@ -313,6 +312,12 @@
         </div>
 
         <div id="screen-result" class="flow-screen" style="display: none;">
+            
+            <div id="result-question-box" style="text-align: center; margin-bottom: 2rem; display: none;">
+                <div style="color: var(--zc-text-muted); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 6px;" data-t="【 所测之事 】">【 所测之事 】</div>
+                <div id="result-question-text" style="color: var(--zc-gold-light); font-size: 1.15rem; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 8px rgba(212, 168, 67, 0.3);"></div>
+            </div>
+
             <div class="gua-grid" id="gua-layout">
                 <div class="beast-column" id="dynamic-beasts"></div>
                 <div id="main-gua-col">
@@ -370,7 +375,6 @@
             reset(randomize = false) {
                 this.progress = randomize ? Math.random() : 0; 
                 this.speed = Math.random() * 0.0015 + 0.0005; 
-                
                 this.size = Math.random() * 3.5 + 1.5; 
                 
                 let spread = (Math.max(W, H) * 0.15); 
