@@ -846,6 +846,51 @@ function lunarToSolar(ly,lm,ld,isLeap){
 }
 
 /* ═══════════════════════════════════════════════════════
+   ★ 公曆轉農曆 (專供袁天罡稱骨查表使用)
+═══════════════════════════════════════════════════════ */
+function solarToLunar(sy, sm, sd) {
+  const target = new Date(sy, sm - 1, sd);
+  for (let ly = sy; ly >= sy - 1; ly--) {
+    const d = LD[ly];
+    if (!d) continue;
+    const [smmd, bits, leapM] = d;
+    const sMonth = Math.floor(smmd / 100);
+    const sDay = smmd % 100;
+    const base = new Date(ly, sMonth - 1, sDay);
+    const diffDays = Math.round((target - base) / 86400000);
+    
+    if (diffDays >= 0) {
+      let offset = diffDays;
+      for (let m = 1; m <= 12; m++) {
+        const daysInMonth = ((bits >> (11 - (m - 1))) & 1) ? 30 : 29;
+        if (offset < daysInMonth) return { year: ly, month: m, day: offset + 1 };
+        offset -= daysInMonth;
+        if (m === leapM && leapM > 0) {
+          if (offset < 29) return { year: ly, month: m, day: offset + 1 };
+          offset -= 29;
+        }
+      }
+    }
+  }
+  return { year: sy, month: sm, day: sd };
+}
+
+/* ═══════════════════════════════════════════════════════
+   ★ 袁天罡稱骨標準權重表 (單位：錢)
+═══════════════════════════════════════════════════════ */
+const YTG_Y = [
+  12,  9,  6,  7, 12,  5,  9,  8,  7,  8, // 甲子~癸酉
+  15,  9, 16,  8,  8, 19, 12,  6,  8,  7, // 甲戌~癸未
+   5, 15,  6, 16, 15,  7,  9, 12, 10,  7, // 甲申~癸巳
+  15,  6,  5, 14, 14,  9,  7,  7,  9, 12, // 甲午~癸卯
+   8,  7, 13,  5, 14,  5,  9, 16,  5,  7, // 甲辰~癸丑
+  12,  8,  8,  6, 19,  6,  8, 16, 10,  7  // 甲寅~癸亥
+];
+const YTG_M = [0, 6, 7, 18, 9, 5, 16, 9, 15, 18, 8, 9, 5]; // 1月~12月
+const YTG_D = [0, 5, 10, 8, 15, 16, 15, 8, 16, 8, 16, 9, 17, 8, 17, 10, 8, 9, 18, 5, 15, 10, 9, 8, 9, 15, 18, 7, 8, 16, 6]; // 初一~三十
+const YTG_H = [16, 6, 7, 10, 9, 16, 10, 8, 8, 9, 6, 6]; // 子時~亥時
+
+/* ═══════════════════════════════════════════════════════
    ★ 精確節氣表（精確到分鐘）
 ═══════════════════════════════════════════════════════ */
 const JQTBL_PRECISE={
@@ -1062,8 +1107,6 @@ const WSN=['絕','胎','養','長生','沐浴','冠帶','臨官','帝旺','衰',
 function getWS(ri,dz){return WSN[WSM[ri][dz]];}
 const NY=['海中金','爐中火','大林木','路旁土','劍鋒金','山头火','澗下水','城頭土','白蠟金','楊柳木','泉中水','屋上土','霹靂火','松柏木','長流水','沙中金','山下火','平地木','壁上土','金箔金','覆燈火','天河水','大驛土','釵釧金','桑柘木','大溪水','沙中土','天上火','石榴木','大海水'];
 function nayin(tg,dz){return NY[Math.floor(((tg*36+dz*25)%60)/2)];}
-const BT=[1.0,0.8,1.0,0.6,0.8,0.6,0.8,0.6,1.0,0.6];
-const BD=[0.8,0.4,0.8,0.6,0.4,0.6,0.8,0.4,0.6,0.6,0.4,0.8];
 
 function getDayun(gender,year,month,day,yrTg){
   const isYang=yrTg%2===0;
@@ -1121,10 +1164,28 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
   const dy2 = getDayun(gender, calcYear, calcMonth, calcDay, yGZ.tg);
   const ny = [nayin(yGZ.tg,yGZ.dz), nayin(mGZ.tg,mGZ.dz), nayin(dGZ.tg,dGZ.dz), nayin(hGZ.tg,hGZ.dz)];
   
-  const bt10 = Math.round((BT[yGZ.tg] + BD[yGZ.dz] + BT[mGZ.tg] + BD[mGZ.dz] + BT[dGZ.tg] + BD[dGZ.dz] + BT[hGZ.tg] + BD[hGZ.dz]) * 10);
-  const bl = Math.floor(bt10/10), bq = bt10 % 10;
+  // 取得農曆日期 (專供稱骨使用)
+  const lunarDate = solarToLunar(calcYear, calcMonth, calcDay);
   
-  return { pillars, dayunData:dy2, nayin:ny, boneWeight:`${bl}兩${bq}錢`, solarTime:st };
+  // 找出農曆年對應的六十甲子索引 (0~59)
+  const lTg = (lunarDate.year - 4 + 10) % 10;
+  const lDz = (lunarDate.year - 4 + 12) % 12;
+  let jiaziIdx = 0;
+  while (jiaziIdx < 60) {
+    if (jiaziIdx % 10 === lTg && jiaziIdx % 12 === lDz) break;
+    jiaziIdx++;
+  }
+
+  // 袁天罡正統算法：農曆年 + 農曆月 + 農曆日 + 地支時
+  const totalQian = YTG_Y[jiaziIdx] + YTG_M[lunarDate.month] + YTG_D[lunarDate.day] + YTG_H[hGZ.dz];
+  const bl = Math.floor(totalQian / 10);
+  const bq = totalQian % 10;
+  
+  // 區分男女輸出
+  const genderLabel = gender ? gender : '女';
+  const boneWeightStr = `${bl}兩${bq}錢 (${genderLabel}命)`;
+  
+  return { pillars, dayunData:dy2, nayin:ny, boneWeight:boneWeightStr, solarTime:st };
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1175,7 +1236,7 @@ function updateGeoHint() {
   const diffMin = Math.round((_geoLng - 120) * 4);
   const sign    = diffMin >= 0 ? '+' : '';
   const src     = _geoLabel ? `📍 ${_geoLabel.slice(0,30)}` : '📍 字典估算';
-  el.textContent = `✦ 經度 ${_geoLng.toFixed(2)}° → 真太陽時偏差 ${sign}${diffMin} 分　${src}`;
+  el.textContent = `✦ 經度 ${_geoLng.toFixed(2)}° → 真太陽時偏差 ${sign}${diffMin} 分 ${src}`;
   el.style.display = 'block';
 }
 
@@ -1373,13 +1434,13 @@ async function genReport(){
         </div>`).join('')}
     </div>
     <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.78rem;color:rgba(240,234,214,0.55);line-height:2.2;letter-spacing:0.08em;">
-      納音：<span style="color:${themeColor}">${nayin.join('·')}</span>　
-      地勢：<span style="color:${themeColor}">${pillars.map(p=>p.ws).join('·')}</span>　
-      骨重：<span style="color:${themeColor}">${boneWeight}</span>　
+      納音：<span style="color:${themeColor}">${nayin.join('·')}</span> 
+      地勢：<span style="color:${themeColor}">${pillars.map(p=>p.ws).join('·')}</span> 
+      骨重：<span style="color:${themeColor}">${boneWeight}</span> 
       大運起：<span style="color:${themeColor}">${dayunData.startAge}歲</span>
     </div>
     <div style="margin-top:16px;font-family:'Noto Sans TC',sans-serif;font-size:0.65rem;color:rgba(240,234,214,0.25);letter-spacing:0.1em;">
-      大運：${dayunData.list.map(d=>`<span style="color:rgba(212,168,67,0.5)">${d.age}歲 ${d.tg}${d.dz}</span>`).join('　')}
+      大運：${dayunData.list.map(d=>`<span style="color:rgba(212,168,67,0.5)">${d.age}歲 ${d.tg}${d.dz}</span>`).join(' ')}
     </div>
   </div>`;
 
