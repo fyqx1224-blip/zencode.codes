@@ -279,6 +279,7 @@
                 <button class="zc-btn" onclick="startMethod('time')" data-t="时间起卦 (自动推演)">时间起卦 (自动推演)</button>
                 <button class="zc-btn" onclick="startMethod('shake')" data-t="铜钱摇卦 (互动求测)">铜钱摇卦 (互动求测)</button>
                 <button class="zc-btn" onclick="startMethod('manual')" data-t="手工排盘 (点击阴阳)">手工排盘 (点击阴阳)</button>
+                <button class="zc-btn" onclick="startMethod('binary')" data-t="极客起卦 (二进制)">极客起卦 (二进制)</button>
             </div>
         </div>
 
@@ -307,6 +308,21 @@
             <div id="interact-manual" style="display: none;">
                 <div id="manual-rows" style="margin-top: 2rem;"></div>
                 <button class="zc-btn" onclick="generateManualGua()" style="margin-top: 2rem; background: var(--zc-gold-dark); color: #050505; font-weight: bold;" data-t="生成卦象">生成卦象</button>
+            </div>
+
+            <div id="interact-binary" style="display: none;">
+                <div style="margin: 2.5rem auto; max-width: 320px; text-align: left; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid rgba(138, 115, 66, 0.2); border-radius: 4px;">
+                    <div style="color: var(--zc-text-muted); font-size: 0.85rem; margin-bottom: 15px; line-height: 1.8;" data-t="二进制输入说明">
+                        <span style="color: var(--zc-gold-light);" data-t="【 编译规则 】">【 编译规则 】</span><br>
+                        <span data-t="请输入6位二进制数（对应初爻至上爻）：">请输入6位二进制数（对应初爻至上爻）：</span><br>
+                        <span style="color: var(--zc-gold-light); font-family: monospace;">0</span> = <span data-t="阴爻">阴爻</span>（⚋）<br>
+                        <span style="color: var(--zc-gold-light); font-family: monospace;">1</span> = <span data-t="阳爻">阳爻</span>（—）<br>
+                        <span style="font-size: 0.75rem; opacity: 0.6;" data-t="(例: 000111 编译为 天地否卦)">(例: 000111 编译为 天地否卦)</span>
+                    </div>
+                    <input type="text" id="input-binary" class="zc-input" maxlength="6" placeholder="010101" autocomplete="off" style="font-size: 1.5rem; letter-spacing: 12px; font-family: 'Courier New', Courier, monospace; text-align: center; padding-left: 20px;">
+                    <div id="binary-error" style="color: #c8402a; font-size: 0.85rem; margin-top: 10px; text-align: center; min-height: 1rem; transition: opacity 0.3s;"></div>
+                </div>
+                <button class="zc-btn" onclick="generateBinaryGua()" style="background: var(--zc-gold-dark); color: #050505; font-weight: bold; margin-top: 1rem;" data-t="编译卦象">编译卦象</button>
             </div>
             
             <div style="margin-top: 2.5rem;"><button class="zc-btn-text" onclick="resetFlow()" data-t="← 返回重选方式">← 返回重选方式</button></div>
