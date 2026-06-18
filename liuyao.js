@@ -17,7 +17,10 @@ const s2t_map = {
     "转":"轉","中":"中","生":"生","成":"成","排":"排","定":"定","初":"初","二":"二","三":"三",
     "四":"四","五":"五","上":"上","合":"合","魂":"魂","本":"本","不":"不","我":"我","方":"方",
     "式":"式","重":"重","新":"新","加":"加","载":"載","宝":"寶","互":"互","求":"求","解":"解",
-    "辞":"辭","万":"萬","岁":"歲","历":"曆","创":"創","业":"業","网":"網","络":"絡","设":"設"
+    "辞":"辭","万":"萬","岁":"歲","历":"曆","创":"創","业":"業","网":"網","络":"絡","设":"設",
+    // ▼ 二进制起卦专用字库补充 ▼
+    "极":"極","客":"客","二":"二","进":"進","制":"制","编":"編","译":"譯","规":"規","则":"則",
+    "输":"輸","入":"入","确":"確","切":"切","仅":"僅","包":"包","含":"含"
 };
 
 let isTrad = false;
@@ -195,6 +198,8 @@ window.startMethod = function(method) {
     if (method === 'time') executeTimeMethod();
     else if (method === 'shake') setupShakeMethod();
     else if (method === 'manual') setupManualMethod();
+    // ▼ 引入二进制起卦入口 ▼
+    else if (method === 'binary') setupBinaryMethod();
 }
 
 function executeTimeMethod() {
@@ -208,6 +213,7 @@ function setupShakeMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = t("心诚则灵 · 掷铜钱排盘");
     document.getElementById('interact-manual').style.display = 'none';
+    document.getElementById('interact-binary').style.display = 'none';
     document.getElementById('interact-shake').style.display = 'block';
     
     const progressDiv = document.getElementById('shake-progress');
@@ -271,11 +277,47 @@ function setupManualMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = t("点按虚线排定阴阳");
     document.getElementById('interact-shake').style.display = 'none';
+    document.getElementById('interact-binary').style.display = 'none';
     document.getElementById('interact-manual').style.display = 'block';
     
     manualYaos = [];
     for(let i=0; i<6; i++) manualYaos.push({ set: false, isYang: true, isChanging: false });
     renderManualRows();
+}
+
+// ▼ 新增：二进制起卦初始化方法 ▼
+function setupBinaryMethod() {
+    showScreen('screen-interact');
+    document.getElementById('interact-title').innerText = t("极客起卦 (二进制)");
+    document.getElementById('interact-shake').style.display = 'none';
+    document.getElementById('interact-manual').style.display = 'none';
+    document.getElementById('interact-binary').style.display = 'block';
+    
+    document.getElementById('input-binary').value = '';
+    document.getElementById('binary-error').innerText = '';
+}
+
+// ▼ 新增：二进制编译执行方法 ▼
+window.generateBinaryGua = function() {
+    const binInput = document.getElementById('input-binary').value.trim();
+    const errorDiv = document.getElementById('binary-error');
+
+    // 正则校验：必须是刚好 6 位的 0 或 1
+    if (!/^[01]{6}$/.test(binInput)) {
+        errorDiv.innerText = t("Error: 请输入确切的6位二进制字符 (仅包含0和1)");
+        return;
+    }
+    
+    errorDiv.innerText = "";
+    currentYaos = [];
+    
+    // 解析：左到右分别对应初爻到上爻
+    for (let i = 0; i < 6; i++) {
+        const bit = binInput.charAt(i);
+        currentYaos.push(bit === '1' ? 7 : 8); 
+    }
+
+    renderFinalResult();
 }
 
 window.toggleManualYao = function(idx) {
