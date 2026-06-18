@@ -122,7 +122,7 @@
         }
         
         .yr-k    { color: var(--zc-gold-dark); width: 32px; font-size: 0.8rem; text-align: right; flex-shrink: 0; }
-        .yr-tg   { color: var(--zc-text-main); width: 85px; flex-shrink: 0; } /* 加大宽度以容纳“甲寅（水）” */
+        .yr-tg   { color: var(--zc-text-main); width: 85px; flex-shrink: 0; }
         .yr-sym  { width: 60px; height: 8px; display: flex; justify-content: space-between; flex-shrink: 0; }
         .yr-pos  { color: var(--zc-gold-dark); width: 22px; text-align: center; font-weight: bold; font-size: 0.8rem; flex-shrink: 0; }
         .yr-sw   { color: var(--zc-gold-light); width: 20px; font-size: 0.8rem; font-weight: bold; text-align: center; flex-shrink: 0; }
@@ -151,7 +151,7 @@
             .detail-title { font-size: 1.6rem; }
             .yao-row { font-size: 0.78rem; gap: 5px; }
             .yr-sym { width: 44px; }
-            .yr-tg { width: 75px; } /* 移动端也相应缩小一点，但保持不换行 */
+            .yr-tg { width: 75px; }
         }
     </style>
 </head>
@@ -175,7 +175,7 @@
         <button class="btn-close" onclick="closeModal()">×</button>
         <div class="detail-header">
             <h2 class="detail-title" id="m-name">乾为天</h2>
-            <div class="detail-subtitle" id="m-palace">乾宫 · 金 · 纯卦</div>
+            <div class="detail-subtitle" id="m-palace">乾宫 · 金 · 本宫卦</div>
         </div>
         <div class="gua-panel" id="m-gua-panel"></div>
         <div class="detail-section">
@@ -288,7 +288,8 @@ const SHI_YING = [
     [5,2],[0,3],[1,4],[2,5],[3,0],[4,1],[3,0],[2,5]
 ];
 
-const SEQ_LABELS = ["纯卦","一世","二世","三世","四世","五世","游魂","归魂"];
+// 【已更新：替换为带“卦”字的标签】
+const SEQ_LABELS = ["本宫卦","一世卦","二世卦","三世卦","四世卦","五世卦","游魂卦","归魂卦"];
 
 // ============================================================
 // 3. 京房八宫 + 64 卦数据
