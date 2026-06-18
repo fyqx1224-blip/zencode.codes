@@ -85,7 +85,8 @@
             border-color: var(--zc-gold-light); background: rgba(138, 115, 66, 0.1);
             box-shadow: 0 5px 15px rgba(212, 168, 67, 0.15); transform: translateY(-3px);
         }
-        .hex-card-name { color: var(--zc-gold-light); font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
+        .hex-card-name { color: var(--zc-gold-light); font-size: 1.05rem; font-weight: bold; margin-bottom: 4px; letter-spacing: 1px; }
+        .hex-card-binary { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: var(--zc-gold-dark); margin-bottom: 10px; letter-spacing: 2px; opacity: 0.8; }
         
         /* 迷你卦象图形 */
         .mini-gua { display: flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -143,7 +144,8 @@
             .hex-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
             .palace-block { padding: 1rem; }
             .hex-card { padding: 10px 2px; }
-            .hex-card-name { font-size: 0.9rem; }
+            .hex-card-name { font-size: 0.9rem; margin-bottom: 2px;}
+            .hex-card-binary { font-size: 0.65rem; margin-bottom: 6px; letter-spacing: 1px;}
             .modal-content { padding: 20px 15px; margin: 20px auto; }
             .detail-title { font-size: 1.6rem; }
             .detail-yao-row { font-size: 0.85rem; gap: 6px; }
@@ -323,7 +325,7 @@
         "兑为泽": { bin:[1,1,0,1,1,0], m:"兑卦：喜悦、言语。交流欢畅，但亦主口舌是非，测事多带有说服交涉之象。", y:["初九：和兑，吉。","九二：孚兑，吉，悔亡。","六三：来兑，凶。","九四：商兑，未宁，介疾有喜。","九五：孚于剥，有厉。","上六：引兑。"] },
         "泽水困": { bin:[0,1,0,1,1,0], m:"困卦：受困、穷途。陷入困境难有作为，唯有坚守正道，苦中作乐待时。", y:["初六：臀困于株木，入于幽谷，三岁不觌。","九二：困于酒食，朱绂方来，利用祭祀，征凶，无咎。","六三：困于石，据于蒺藜，入于其宫，不见其妻，凶。","九四：来徐徐，困于金车，吝，有终。","九五：劓刖，困于赤绂，乃徐有说，利用祭祀。","上六：困于葛藟，于臲卼，曰动悔。有悔，征吉。"] },
         "泽地萃": { bin:[0,0,0,1,1,0], m:"萃卦：聚集、荟萃。人才物力聚集，利于做大事，拜见贵人。", y:["初六：有孚不终，乃乱乃萃，若号一握为笑，勿恤，往无咎。","六二：引吉，无咎，孚乃利用禴。","六三：萃如，嗟如，无攸利，往无咎，小吝。","九四：大吉，无咎。","九五：萃有位，无咎。匪孚，元永贞，悔亡。","上六：赍咨涕洟，无咎。"] },
-        "泽山咸": { bin:[0,0,1,1,1,0], m:"咸卦：感应、交感。心心相印，最利于感情婚姻求测，事多速成。", y:["初六：咸其拇。","六二：咸其腓，凶，居吉。","九三：咸其股，执其随，往吝。","九四：贞吉悔亡，憧憧往来，朋从尔思。","九五：咸其脢，无悔。","上六：咸其辅，颊，舌。"] },
+        "泽山咸": { bin:[0,0,1,1,1,0], m:"咸卦：感应、交感。心心相印，最利于感情婚姻求测，事多速成。", y:["初六：咸其拇。","六二：咸其腓，凶，居吉。","九三：咸其股，执执其随，往吝。","九四：贞吉悔亡，憧憧往来，朋从尔思。","九五：咸其脢，无悔。","上六：咸其辅，颊，舌。"] },
         "水山蹇": { bin:[0,0,1,0,1,0], m:"蹇卦：步履艰难。前有深水后有高山，进退两难，利于西南得遇贵人。", y:["初六：往蹇，来誉。","六二：王臣蹇蹇，匪躬之故。","九三：往蹇，来反。","六四：往蹇，来连。","九五：大蹇，朋来。","上六：往蹇，来硕，吉；利见大人。"] },
         "地山谦": { bin:[0,0,1,0,0,0], m:"谦卦：谦虚、退让。内高外低，六爻皆吉，主谦和得人缘，吉无不利。", y:["初六：谦谦君子，用涉大川，吉。","六二：鸣谦，贞吉。","九三：劳谦君子，有终吉。","六四：无不利，撝谦。","六五：不富以其邻，利用侵伐，无不利。","上六：鸣谦，利用行师，征邑国。"] },
         "雷山小过": { bin:[0,0,1,1,0,0], m:"小过卦：稍有过失。飞鸟遗音，宜下不宜上，宜做小事，不可干大事。", y:["初六：飞鸟以凶。","六二：过其祖，遇其妣；不及其君，遇其臣；无咎。","九三：弗过防之，从或戕之，凶。","九四：无咎，弗过遇之。往厉必戒，勿用亦。","六五：密云不雨，自我西郊，公弋取彼在穴。","上六：弗遇过之，飞鸟离之，凶，是谓灾眚。"] },
@@ -349,10 +351,12 @@
         
         let hexCardsHtml = palace.hexagrams.map(hName => {
             let data = dictData[hName];
+            let binStr = data ? data.bin.join('') : '------';
             let linesHtml = data ? renderMiniLines(data.bin) : '<div style="color:var(--zc-text-muted);font-size:0.7rem;">暂无数据</div>';
             return `
                 <div class="hex-card" onclick="openModal('${hName}', '${palace.name}', '${palace.wx}')">
                     <div class="hex-card-name">${hName}</div>
+                    <div class="hex-card-binary">${binStr}</div>
                     ${linesHtml}
                 </div>
             `;
@@ -376,7 +380,7 @@
         }
 
         // --- 核心：复用 liuyao.js 引擎进行排盘计算 ---
-        if (typeof initDateTime === 'function') initDateTime(); // 确保日干支已初始化，因为有了幽灵div，这里不会报错了
+        if (typeof initDateTime === 'function') initDateTime(); 
         
         // 将字典中的 [1,0,1...] 转化为引擎需要的阳(7) 阴(8)
         let virtualYaos = data.bin.map(b => b === 1 ? 7 : 8);
@@ -392,13 +396,14 @@
 
         // --- 填充基础文本 ---
         document.getElementById('m-name').innerText = hName;
-        document.getElementById('m-palace').innerText = `【${pName}宫】五行属 ${pWx}`;
+        // 增加二进制显示
+        document.getElementById('m-palace').innerHTML = `【${pName}宫】五行属 ${pWx} <span style="margin: 0 10px; opacity: 0.5;">|</span> <span style="font-family: monospace; letter-spacing: 2px;">${data.bin.join('')}</span>`;
         document.getElementById('m-meaning').innerText = data.m;
 
         // --- 渲染六亲干支（引擎计算结果） ---
         let layoutHtml = '';
         for(let i=5; i>=0; i--) {
-            let line = guaResult.main.lines[i]; // 直接拿引擎算好的数据
+            let line = guaResult.main.lines[i]; 
             let isYang = data.bin[i] === 1;
             let mPos = (guaResult.main.shi === i) ? '世' : (guaResult.main.ying === i) ? '应' : '';
             let yaoSym = isYang ? '<div class="line"></div>' : '<div class="line"></div><div class="line"></div>';
@@ -415,8 +420,8 @@
         }
         document.getElementById('m-gua-layout').innerHTML = `<div>${layoutHtml}</div>`;
 
-        // --- 渲染爻辞 ---
-        let yaociHtml = data.y.map(yc => {
+        // --- 渲染爻辞：[...data.y].reverse() 实现倒序（上爻在顶，初爻在底） ---
+        let yaociHtml = [...data.y].reverse().map(yc => {
             let parts = yc.split('：');
             return `<div class="yaoci-item"><span class="yaoci-name">${parts[0]}：</span><span>${parts[1]}</span></div>`;
         }).join('');
