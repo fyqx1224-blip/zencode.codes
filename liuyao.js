@@ -18,9 +18,9 @@ const s2t_map = {
     "四":"四","五":"五","上":"上","合":"合","魂":"魂","本":"本","不":"不","我":"我","方":"方",
     "式":"式","重":"重","新":"新","加":"加","载":"載","宝":"寶","互":"互","求":"求","解":"解",
     "辞":"辭","万":"萬","岁":"歲","历":"曆","创":"創","业":"業","网":"網","络":"絡","设":"設",
-    // ▼ 二进制起卦专用字库补充 ▼
     "极":"極","客":"客","二":"二","进":"進","制":"制","编":"編","译":"譯","规":"規","则":"則",
-    "输":"輸","入":"入","确":"確","切":"切","仅":"僅","包":"包","含":"含"
+    "输":"輸","入":"入","确":"確","切":"切","仅":"僅","包":"包","含":"含","数":"數","据":"據",
+    "段":"段","控":"控","掩":"掩","码":"碼","选":"選","填":"填","必":"必"
 };
 
 let isTrad = false;
@@ -198,7 +198,6 @@ window.startMethod = function(method) {
     if (method === 'time') executeTimeMethod();
     else if (method === 'shake') setupShakeMethod();
     else if (method === 'manual') setupManualMethod();
-    // ▼ 引入二进制起卦入口 ▼
     else if (method === 'binary') setupBinaryMethod();
 }
 
@@ -285,7 +284,7 @@ function setupManualMethod() {
     renderManualRows();
 }
 
-// ▼ 新增：二进制起卦初始化方法 ▼
+// ▼ 二进制起卦初始化方法 ▼
 function setupBinaryMethod() {
     showScreen('screen-interact');
     document.getElementById('interact-title').innerText = t("极客起卦 (二进制)");
@@ -293,28 +292,51 @@ function setupBinaryMethod() {
     document.getElementById('interact-manual').style.display = 'none';
     document.getElementById('interact-binary').style.display = 'block';
     
-    document.getElementById('input-binary').value = '';
+    // 清空两个输入框和错误提示
+    document.getElementById('input-binary-base').value = '';
+    document.getElementById('input-binary-mask').value = '';
     document.getElementById('binary-error').innerText = '';
 }
 
-// ▼ 新增：二进制编译执行方法 ▼
+// ▼ 二进制双轨编译执行方法 ▼
 window.generateBinaryGua = function() {
-    const binInput = document.getElementById('input-binary').value.trim();
+    const baseInput = document.getElementById('input-binary-base').value.trim();
+    const maskInput = document.getElementById('input-binary-mask').value.trim();
     const errorDiv = document.getElementById('binary-error');
 
-    // 正则校验：必须是刚好 6 位的 0 或 1
-    if (!/^[01]{6}$/.test(binInput)) {
-        errorDiv.innerText = t("Error: 请输入确切的6位二进制字符 (仅包含0和1)");
+    // 校验本卦：必须是 6 位
+    if (baseInput.length !== 6) {
+        errorDiv.innerText = t("Error: [数据段] 必须输入确切的 6 位二进制数");
+        return;
+    }
+
+    // 校验掩码：如果有输入，必须是 6 位 (允许为空)
+    if (maskInput.length > 0 && maskInput.length !== 6) {
+        errorDiv.innerText = t("Error: [控制段] 若填写，必须是确切的 6 位二进制数");
         return;
     }
     
     errorDiv.innerText = "";
     currentYaos = [];
     
-    // 解析：左到右分别对应初爻到上爻
+    // 如果掩码没填，默认当做全静卦 (000000) 处理
+    const base = baseInput;
+    const mask = maskInput.length === 6 ? maskInput : '000000';
+
+    // 核心编译逻辑：双轨合并
+    // base: 0=阴, 1=阳
+    // mask: 0=静, 1=动
     for (let i = 0; i < 6; i++) {
-        const bit = binInput.charAt(i);
-        currentYaos.push(bit === '1' ? 7 : 8); 
+        const isYang = base.charAt(i) === '1';
+        const isMoving = mask.charAt(i) === '1';
+
+        let yaoValue;
+        if (isYang && !isMoving) yaoValue = 7;      // 少阳 (静阳)
+        else if (isYang && isMoving) yaoValue = 9;  // 老阳 (动阳)
+        else if (!isYang && !isMoving) yaoValue = 8;// 少阴 (静阴)
+        else if (!isYang && isMoving) yaoValue = 6; // 老阴 (动阴)
+
+        currentYaos.push(yaoValue);
     }
 
     renderFinalResult();
