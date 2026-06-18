@@ -311,18 +311,25 @@
             </div>
 
             <div id="interact-binary" style="display: none;">
-                <div style="margin: 2.5rem auto; max-width: 320px; text-align: left; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid rgba(138, 115, 66, 0.2); border-radius: 4px;">
-                    <div style="color: var(--zc-text-muted); font-size: 0.85rem; margin-bottom: 15px; line-height: 1.8;" data-t="二进制输入说明">
+                <div style="margin: 2.5rem auto; max-width: 340px; text-align: left; background: rgba(0,0,0,0.4); padding: 24px; border: 1px solid rgba(138, 115, 66, 0.2); border-radius: 4px;">
+                    <div style="color: var(--zc-text-muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.8;" data-t="二进制输入说明">
                         <span style="color: var(--zc-gold-light);" data-t="【 编译规则 】">【 编译规则 】</span><br>
-                        <span data-t="请输入6位二进制数（对应初爻至上爻）：">请输入6位二进制数（对应初爻至上爻）：</span><br>
-                        <span style="color: var(--zc-gold-light); font-family: monospace;">0</span> = <span data-t="阴爻">阴爻</span>（⚋）<br>
-                        <span style="color: var(--zc-gold-light); font-family: monospace;">1</span> = <span data-t="阳爻">阳爻</span>（—）<br>
-                        <span style="font-size: 0.75rem; opacity: 0.6;" data-t="(例: 000111 编译为 天地否卦)">(例: 000111 编译为 天地否卦)</span>
+                        <span style="color: var(--zc-gold-light); font-family: monospace;">0</span> = <span data-t="阴 / 静">阴 / 静</span> <span style="opacity:0.3;margin:0 8px;">|</span> <span style="color: var(--zc-gold-light); font-family: monospace;">1</span> = <span data-t="阳 / 动">阳 / 动</span>
                     </div>
-                    <input type="text" id="input-binary" class="zc-input" maxlength="6" placeholder="010101" autocomplete="off" style="font-size: 1.5rem; letter-spacing: 12px; font-family: 'Courier New', Courier, monospace; text-align: center; padding-left: 20px;">
-                    <div id="binary-error" style="color: #c8402a; font-size: 0.85rem; margin-top: 10px; text-align: center; min-height: 1rem; transition: opacity 0.3s;"></div>
+                    
+                    <div style="margin-bottom: 18px;">
+                        <div style="font-size: 0.8rem; color: var(--zc-gold-dark); margin-bottom: 8px; letter-spacing: 2px;" data-t="[ 数据段 ] 本卦阴阳 (必填)">[ 数据段 ] 本卦阴阳 (必填)</div>
+                        <input type="text" id="input-binary-base" class="zc-input" maxlength="6" placeholder="例: 010101" autocomplete="off" style="width: 100%; font-size: 1.5rem; letter-spacing: 12px; font-family: 'Courier New', Courier, monospace; text-align: center; padding-left: 16px;" oninput="this.value=this.value.replace(/[^01]/g,'')">
+                    </div>
+
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--zc-text-muted); margin-bottom: 8px; letter-spacing: 2px;" data-t="[ 控制段 ] 动爻掩码 (选填)">[ 控制段 ] 动爻掩码 (选填)</div>
+                        <input type="text" id="input-binary-mask" class="zc-input" maxlength="6" placeholder="例: 000000" autocomplete="off" style="width: 100%; font-size: 1.5rem; letter-spacing: 12px; font-family: 'Courier New', Courier, monospace; text-align: center; padding-left: 16px; border-color: rgba(138, 115, 66, 0.15);" oninput="this.value=this.value.replace(/[^01]/g,'')">
+                    </div>
+
+                    <div id="binary-error" style="color: #c8402a; font-size: 0.85rem; margin-top: 15px; text-align: center; min-height: 1rem; transition: opacity 0.3s;"></div>
                 </div>
-                <button class="zc-btn" onclick="generateBinaryGua()" style="background: var(--zc-gold-dark); color: #050505; font-weight: bold; margin-top: 1rem;" data-t="编译卦象">编译卦象</button>
+                <button class="zc-btn" onclick="generateBinaryGua()" style="background: var(--zc-gold-dark); color: #050505; font-weight: bold; margin-top: 0.5rem;" data-t="编译卦象">编译卦象</button>
             </div>
             
             <div style="margin-top: 2.5rem;"><button class="zc-btn-text" onclick="resetFlow()" data-t="← 返回重选方式">← 返回重选方式</button></div>
