@@ -711,7 +711,7 @@ select.inp option{background:#0C0B14;color:var(--text);}
           <option value="-1">UTC-1 · 佛得角 / 葡萄牙亞速爾群島</option>
           <option value="-2">UTC-2 · 巴西費爾南多迪諾羅尼亞島</option>
           <option value="-3">UTC-3 · 巴西東部（聖保羅/里約）/ 阿根廷 / 烏拉圭</option>
-          <option value="-4">UTC-4 · 加拿大大西洋省份 / 玻利維亞 / 委內瑞拉 / 智利</option>
+          <option value="-4">UTC-4 · 加拿大大西洋省份 / 玻利維亞 / 委內瑞拉 / 智 ডিগ্রী</option>
           <option value="-5">UTC-5 · 美國東部（EST）/ 加拿大安大略 / 秘魯 / 哥倫比亞</option>
           <option value="-6">UTC-6 · 美國中部（CST）/ 墨西哥城 / 中美洲</option>
           <option value="-7">UTC-7 · 美國山地（MST）/ 亚利桑那 / 墨西哥索諾拉</option>
@@ -849,14 +849,15 @@ function lunarToSolar(ly,lm,ld,isLeap){
    ★ 公曆轉農曆 (專供袁天罡稱骨查表使用)
 ═══════════════════════════════════════════════════════ */
 function solarToLunar(sy, sm, sd) {
-  const target = new Date(sy, sm - 1, sd);
+  // 統一使用 UTC 時間，避免不同國家客戶端的 Date 對象因時區造成農曆 ±1 天的偏差
+  const target = new Date(Date.UTC(sy, sm - 1, sd));
   for (let ly = sy; ly >= sy - 1; ly--) {
     const d = LD[ly];
     if (!d) continue;
     const [smmd, bits, leapM] = d;
     const sMonth = Math.floor(smmd / 100);
     const sDay = smmd % 100;
-    const base = new Date(ly, sMonth - 1, sDay);
+    const base = new Date(Date.UTC(ly, sMonth - 1, sDay));
     const diffDays = Math.round((target - base) / 86400000);
     
     if (diffDays >= 0) {
@@ -1139,6 +1140,8 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
   let ah = st.hour, am = st.minute;
   
   let calcYear = year, calcMonth = month, calcDay = day;
+  
+  // 【八字邏輯】夜子時（23:00 以後）日子向後推一天，僅用於天干地支排盤
   if (ah >= 23) {
     const dateObj = new Date(Date.UTC(year, month - 1, day));
     dateObj.setUTCDate(dateObj.getUTCDate() + 1);
@@ -1164,10 +1167,13 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
   const dy2 = getDayun(gender, calcYear, calcMonth, calcDay, yGZ.tg);
   const ny = [nayin(yGZ.tg,yGZ.dz), nayin(mGZ.tg,mGZ.dz), nayin(dGZ.tg,dGZ.dz), nayin(hGZ.tg,hGZ.dz)];
   
-  // 取得農曆日期 (專供稱骨使用)
-  const lunarDate = solarToLunar(calcYear, calcMonth, calcDay);
+  // ---------------------------------------------------------
+  // 【骨重邏輯】修正點：必須使用原始的 (year, month, day) 
+  // 絕不能使用被夜子時影響的 calcDay，否則 23:00 後的日骨重會取到明天
+  // ---------------------------------------------------------
+  const lunarDate = solarToLunar(year, month, day);
   
-  // 找出農曆年對應的六十甲子索引 (0~59)
+  // 找出對應年骨重的 60 甲子索引
   const lTg = (lunarDate.year - 4 + 10) % 10;
   const lDz = (lunarDate.year - 4 + 12) % 12;
   let jiaziIdx = 0;
@@ -1176,12 +1182,12 @@ function calcBazi(year,month,day,hour,minute,gender,birthplace,tzOffset=8){
     jiaziIdx++;
   }
 
-  // 袁天罡正統算法：農曆年 + 農曆月 + 農曆日 + 地支時
+  // 袁天罡正統算法：年重 + 月重 + 日重 + 時重
+  // hGZ.dz 取的是調整後的時辰地支，不受跨日影響，是正確的
   const totalQian = YTG_Y[jiaziIdx] + YTG_M[lunarDate.month] + YTG_D[lunarDate.day] + YTG_H[hGZ.dz];
   const bl = Math.floor(totalQian / 10);
   const bq = totalQian % 10;
   
-  // 區分男女輸出
   const genderLabel = gender ? gender : '女';
   const boneWeightStr = `${bl}兩${bq}錢 (${genderLabel}命)`;
   
