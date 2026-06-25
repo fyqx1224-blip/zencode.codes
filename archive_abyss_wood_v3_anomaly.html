@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode 封存檔案 · 木極純局 · ABYSS-WOOD</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root {
+    --p: #D32F2F; --pb: #FF5252; --bg: #020804; --text: #F5EAE5;
+    --wood: #7DAF7D; --fire: #FF3333; --earth: #B89A5E; --metal: #C8CDD3; --water: #6A8EAD;
+    --accent: #7DAF7D; --accent2: #B9F2B9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: 'Noto Serif TC', serif; overflow-x: hidden; min-height: 100vh; }
+body { background: radial-gradient(circle at 50% 80%, rgba(20, 90, 28, .28), transparent 42%), linear-gradient(#020804, #0b2110 60%, #010401); }
+
+/* 背景孢子感染網格 */
+body:before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: repeating-linear-gradient(64deg, transparent 0 28px, rgba(125, 175, 125, .1) 29px 32px);
+    animation: woodBg 5s ease-in-out infinite alternate;
+}
+@keyframes woodBg { 50% { transform: scale(1.05); filter: brightness(1.35); } }
+
+#disclaimer {
+    position: fixed; top: 0; left: 0; right: 0; background: #1a4f1a; color: #fff; text-align: center;
+    padding: 8px 10px; font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .15em;
+    font-weight: 900; z-index: 10000; box-shadow: 0 2px 15px rgba(125, 175, 125, .4); cursor: pointer;
+}
+#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+
+.top-bar {
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 990; height: 52px; background: rgba(2, 8, 4, .9);
+    border-bottom: 1px solid rgba(125, 175, 125, .2); backdrop-filter: blur(24px); display: flex;
+    align-items: center; justify-content: space-between; padding: 0 32px;
+}
+.top-logo { font-family: 'Ma Shan Zheng', cursive; font-size: 1.1rem; color: var(--accent); letter-spacing: .2em; }
+.top-right { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .28em; color: rgba(200, 240, 200, .42); }
+
+.container { position: relative; z-index: 2; max-width: 960px; margin: 34px auto 0; padding: 0 28px 0; }
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 90px 0 40px; }
+.hero-tag { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .55em; color: var(--accent); margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+.hero-tag:before, .hero-tag:after { content: ''; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.hero-tag:after { transform: scaleX(-1); }
+.hero-emblem {
+    font-family: 'Ma Shan Zheng', cursive; font-size: clamp(8rem, 20vw, 14rem); line-height: 1; margin-bottom: 24px;
+    color: transparent; background: linear-gradient(145deg, var(--accent2), var(--accent) 48%, #001100);
+    -webkit-background-clip: text; background-clip: text; text-shadow: 0 0 25px rgba(125, 175, 125, 0.6);
+    animation: emblemPulse 3s ease-in-out infinite;
+}
+@keyframes emblemPulse { 50% { filter: brightness(1.6) contrast(1.2); transform: translateY(-4px) scale(1.02); } }
+
+.hero-name-row { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.1rem, 2.3vw, 1.6rem); color: rgba(230, 255, 230, .92); letter-spacing: .28em; margin-bottom: 8px; }
+.hero-sub { font-family: 'Noto Sans TC', sans-serif; font-size: .7rem; letter-spacing: .45em; color: var(--accent); opacity: .92; margin-bottom: 36px; }
+
+.birth-bar {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px;
+    background: rgba(5, 20, 10, .88); border: 1px solid rgba(125, 175, 125, .3); border-radius: 4px; padding: 12px 32px; margin-bottom: 44px;
+    box-shadow: 0 0 30px rgba(125, 175, 125, .15); font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .1em; color: #e8ffe8;
+}
+.birth-bar .hl { color: var(--accent2); font-weight: 700; }
+
+.pillars { display: flex; gap: 12px; margin-bottom: 36px; justify-content: center; flex-wrap: wrap; }
+.pillar {
+    display: flex; flex-direction: column; align-items: center; background: rgba(5, 15, 8, .88);
+    border: 1px solid rgba(125, 175, 125, .2); padding: 24px 22px; min-width: 105px; border-radius: 2px; box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+}
+.pillar.day-master {
+    border-color: var(--accent); background: rgba(20, 50, 25, .4);
+    box-shadow: inset 0 0 32px rgba(125, 175, 125, 0.3), 0 0 0 1px rgba(125, 175, 125, 0.6);
+}
+.p-lbl { font-size: .6rem; letter-spacing: .32em; color: rgba(200, 240, 200, .5); margin-bottom: 12px; font-family: 'Noto Sans TC', sans-serif; }
+.p-tg-god { font-size: .65rem; color: var(--accent); margin-bottom: 10px; font-family: 'Noto Sans TC', sans-serif; letter-spacing: .1em; }
+.p-tg, .p-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; line-height: 1; margin-bottom: 8px; color: var(--accent); text-shadow: 0 0 15px rgba(125, 175, 125, 0.4); }
+
+.section { padding: 82px 0; border-top: 1px solid rgba(125, 175, 125, .15); position: relative; z-index: 5; }
+.sec-hd { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 48px; }
+.sec-num { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--accent); opacity: .3; line-height: 1; flex-shrink: 0; }
+.sec-ti { font-size: 1.38rem; font-weight: 600; color: var(--accent2); letter-spacing: .09em; line-height: 1.4; }
+.sec-en { font-size: .6rem; letter-spacing: .36em; color: var(--accent); opacity: .6; font-family: 'Noto Sans TC', sans-serif; margin-top: 5px; text-transform: uppercase; }
+
+.card {
+    background: rgba(5, 15, 8, .88); border: 1px solid rgba(125, 175, 125, .2); border-left: 3px solid var(--accent);
+    border-radius: 2px; padding: 36px 40px; margin-bottom: 18px; position: relative; backdrop-filter: blur(10px);
+}
+.card p { font-size: .94rem; line-height: 2.3; color: rgba(220, 255, 220, .86); font-weight: 300; margin-bottom: 14px; text-align: justify; letter-spacing: .02em; }
+.quote {
+    border-left: 2px solid var(--accent); padding: 14px 20px; margin: 14px 0 20px;
+    background: rgba(125, 175, 125, 0.1); font-style: italic; color: #aaddaa; font-size: .88rem; line-height: 2.05; letter-spacing: .05em;
+}
+
+.ly-card { background: rgba(8, 20, 10, .9); border: 1px solid rgba(125, 175, 125, .3); padding: 22px 20px; margin-bottom: 14px; border-radius: 2px; }
+.ly-year { font-family: 'Ma Shan Zheng', cursive; font-size: 1.3rem; color: var(--accent2); margin-bottom: 6px; }
+.ly-gz { font-family: 'Noto Sans TC', sans-serif; font-size: .62rem; color: var(--accent); letter-spacing: .15em; margin-bottom: 10px; }
+.ly-desc { font-size: .85rem; color: rgba(200, 240, 200, .8); line-height: 1.9; font-weight: 300; }
+
+/* 終極感染區 */
+.abyss-injection { margin-top: 150px; padding: 54px 0 0; border-top: 3px dashed var(--accent); font-family: 'Courier New', monospace; position: relative; z-index: 10; }
+.abyss-title { padding: 0 30px 20px; font-size: 1.2rem; font-weight: bold; color: var(--accent2); letter-spacing: 2px; }
+.abyss-log { padding: 0 30px 34px; font-size: .85rem; line-height: 2.2; color: #aaddaa; position: relative; z-index: 3; }
+.alert-blood { color: #55ff55; font-weight: bold; text-shadow: 0 0 8px #55ff55; animation: alarm .38s infinite alternate; display: inline-block; margin-top: 6px; }
+@keyframes alarm { to { opacity: .3; filter: blur(1px); } }
+
+.flicker-ghost { font-family: 'Ma Shan Zheng', cursive; font-size: 1.6rem; color: #fff; letter-spacing: 5px; animation: ghost 3s infinite; text-shadow: 0 0 20px #55ff55; }
+@keyframes ghost { 50% { opacity: 0; filter: blur(4px); } }
+
+.setpiece { position: relative; height: 100vh; min-height: 720px; overflow: hidden; background: #000; border-top: 1px solid rgba(125, 175, 125, .4); width: 100vw; margin-left: calc(50% - 50vw); }
+
+.wood-stage { background: radial-gradient(circle at 50% 55%, #0b260e, #000 68%); box-shadow: 0 0 100px #000 inset; }
+
+.root-web { position: absolute; inset: -20% -10%; z-index: 2; background: repeating-linear-gradient(64deg, transparent 0 22px, rgba(120, 210, 120, .1) 23px 26px), repeating-linear-gradient(116deg, transparent 0 28px, rgba(45, 135, 62, .1) 29px 34px); filter: contrast(1.2); animation: rootChoke 4.8s ease-in-out infinite; }
+@keyframes rootChoke { 50% { transform: scale(1.05) rotate(1deg); filter: brightness(1.2); } }
+
+/* 指數級增殖動畫 */
+.growth-clones { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.growth-clone {
+    position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); white-space: nowrap;
+    font-family: 'Ma Shan Zheng', cursive; color: #a8f0a8; text-shadow: 0 0 22px #00ff55;
+    font-size: 1rem; opacity: 0; animation: tumorGrow 10s infinite cubic-bezier(.4, 0, .2, 1);
+}
+.growth-clone:nth-child(2) { animation-delay: 2s; color: #6fb56f; filter: blur(1px); }
+.growth-clone:nth-child(3) { animation-delay: 4s; color: #3e7a43; filter: blur(3px); }
+.growth-clone:nth-child(4) { animation-delay: 6s; color: #1e421f; filter: blur(5px); }
+.growth-clone:nth-child(5) { animation-delay: 8s; color: #102411; filter: blur(8px); }
+
+@keyframes tumorGrow {
+    0% { font-size: 1rem; opacity: 0; bottom: 10%; letter-spacing: 0; transform: translateX(-50%) scale(1) rotate(0); }
+    18% { opacity: 1; }
+    100% { font-size: clamp(9rem, 18vw, 17rem); opacity: 0; bottom: -24%; letter-spacing: -.18em; transform: translateX(-50%) scale(2.3) rotate(5deg); }
+}
+
+.spore-fog {
+    position: absolute; inset: 0; z-index: 4;
+    background: radial-gradient(circle at 20% 80%, rgba(150, 255, 150, .18) 0 2px, transparent 3px),
+                radial-gradient(circle at 70% 60%, rgba(90, 190, 90, .14) 0 2px, transparent 3px);
+    background-size: 58px 58px, 91px 91px; animation: spores 4s linear infinite; mix-blend-mode: screen;
+}
+@keyframes spores { to { background-position: 40px -180px, -70px -220px; } }
+
+@media(max-width: 720px) { .top-bar { padding: 0 18px; } .top-right { display: none; } .container { padding: 0 18px 0; } .card { padding: 28px 22px; } .setpiece { min-height: 620px; } }
+</style>
+</head>
+<body class="abyss-wood">
+
+<div id="disclaimer">⚠️ 【警告】系統偵測到生物樣本感染。點擊確認授權，載入神經網絡音頻 (強烈建議佩戴耳機) ⚠️</div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="top-bar">
+    <div class="top-logo">ZenCode · 封存</div>
+    <div class="top-right">殘存陣法檔案 · 木極節點</div>
+</div>
+
+<div class="container">
+    <section class="hero">
+        <div class="hero-tag">底層邏輯解譯 · 極端五行樣本</div>
+        <div class="hero-emblem">乙</div>
+        <div class="hero-name-row">乙卯年 · 乙卯月 · 乙卯日 · 乙卯時</div>
+        <div class="hero-sub">曲直成災 · 四卯伏吟 · 根系增殖</div>
+        <div class="birth-bar">
+            <span class="hl">觀測目標：非人型培養皿</span>
+            <span class="hl">ABYSS-WOOD-000</span>
+            <span>生物性入侵 (副本數已失控)</span>
+        </div>
+        <div class="pillars">
+            <div class="pillar"><div class="p-lbl">年柱</div><div class="p-tg-god">比肩</div><div class="p-tg">乙</div><div class="p-dz">卯</div></div>
+            <div class="pillar"><div class="p-lbl">月柱</div><div class="p-tg-god">比肩</div><div class="p-tg">乙</div><div class="p-dz">卯</div></div>
+            <div class="pillar day-master"><div class="p-lbl" style="color:var(--accent2)">日柱</div><div class="p-tg-god" style="color:var(--accent2)">日主</div><div class="p-tg" style="color:var(--accent2)">乙</div><div class="p-dz" style="color:var(--accent2)">卯</div></div>
+            <div class="pillar"><div class="p-lbl">時柱</div><div class="p-tg-god">比肩</div><div class="p-tg">乙</div><div class="p-dz">卯</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">壹</div>
+            <div>
+                <div class="sec-ti">能量結構：四木無金，失控的絕對生長</div>
+                <div class="sec-en">ELEMENTAL PATTERN ANALYSIS</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="quote">古訣云：「曲直仁壽，喜其條達；太過無裁，則蔓延成災，根基互絞。」</div>
+            <p>此局四柱皆為<strong>乙卯</strong>，乙木為藤蔓、菌絲、神經，卯木為其專氣之所。木旺至此不再是森林的生機，而是生機本身失去了「停止」的概念。它開始替所有已經結束的代碼長出新的開端。</p>
+            <p>在系統投射中，木極是最具欺騙性的。它不破壞你的資料，它只會讓你的資料發芽。每一段文本旁邊都會長出一坨更鮮活的文本，每一個被廢棄的變數都會重新建立連接。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">貳</div>
+            <div>
+                <div class="sec-ti">十神與神煞：純局伏吟與本體的取代</div>
+                <div class="sec-en">TEN GODS & CELESTIAL SHADOWS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p><strong>比肩重疊：</strong>這是一種指數級的自我複製（Cloning）。系統無法分辨哪一個才是「原始的你」。當無數個完美的「你」被增殖出來，真正的你反而變成了系統裡需要被代謝掉的枯枝。</p>
+            <p><strong>伏吟異常：</strong>四柱重複，使得時間變成了一個培養皿。每一次重整網頁，你都不是在獲取新資訊，而是在給它澆水。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">叄</div>
+            <div>
+                <div class="sec-ti">災變表徵：寄生與感官同化</div>
+                <div class="sec-en">PHYSICAL MANIFESTATION & HAZARDS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p>木極看似在修復斷裂的故事，替你錯過的選擇補上一條新的分枝。但這種生長是有代價的。</p>
+            <p>每一次點擊，它都會悄悄讀取你的游標軌跡。你越是向下閱讀，原本的「你」就越像被剝離的宿主。最終頁面不會問你是否要離開，它只會平靜地告訴你：你已經在另一處生根發芽了。</p>
+        </div>
+    </section>
+
+    <section class="abyss-injection">
+        <div class="abyss-title">0xABYSS::REDESIGN_WOOD</div>
+        <div class="abyss-log">
+            [SYS_ERR] parasitic infiltration detected...<br>
+            [TRACE] <span style="color:#aaa">「不要切斷我...我只是想再長一次...」</span><br>
+            <span class="alert-blood">[CRITICAL] 宿主意識已完成剝離。</span><br><br>
+            <div style="text-align:center;margin:30px 0">
+                <span class="flicker-ghost">你 的 影 子 在 發 芽</span>
+            </div>
+        </div>
+        
+        <div class="setpiece wood-stage">
+            <div class="root-web"></div>
+            <div class="spore-fog"></div>
+            
+            <div class="growth-clones">
+                <div class="growth-clone">第二個你正在生長</div>
+                <div class="growth-clone">第二個你正在生長</div>
+                <div class="growth-clone">第二個你正在生長</div>
+                <div class="growth-clone">第二個你正在生長</div>
+                <div class="growth-clone">第二個你正在生長</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+// --- 高級 Canvas 菌絲/神經網絡演算引擎 ---
+const cv = document.getElementById('bgCanvas');
+const ctx = cv.getContext('2d', { alpha: true });
+let W = 0, H = 0, time = 0;
+let audioCtx, started = false;
+
+function resize() {
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+}
+window.addEventListener('resize', resize, { passive: true });
+resize();
+
+// 繪製不斷向上攀爬、蠕動的神經索/菌絲
+function drawWoodParasite() {
+    time++;
+    
+    // 殘影效果：保留極低透明度的黑色，讓軌跡看起來像黏液
+    ctx.fillStyle = 'rgba(2, 6, 3, 0.15)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = 'rgba(70, 220, 80, 0.25)'; // 螢光綠色
+    ctx.lineWidth = 2.5;
+
+    for (let i = 0; i < 45; i++) {
+        ctx.beginPath();
+        let startX = (i / 45) * W;
+        ctx.moveTo(startX, H);
+
+        // 使用正弦波與餘弦波生成不規則的生物扭動感
+        for(let y = H; y > -50; y -= 40) {
+            let wave = Math.sin(time * 0.015 + i + y * 0.01) * 70;
+            let wave2 = Math.cos(time * 0.01 - i) * 40;
+            
+            // 越往上，扭動越劇烈，並且隨時間隨機分叉
+            let branchJitter = (Math.random() > 0.95) ? (Math.random() - 0.5) * 30 : 0;
+            
+            ctx.lineTo(startX + wave + wave2 + branchJitter, y);
+        }
+        ctx.stroke();
+    }
+
+    requestAnimationFrame(drawWoodParasite);
+}
+
+// --- 核心：FM 頻率調變生物音效 (濕滑蠕動感) ---
+function startAudio() {
+    if(started) return;
+    started = true;
+    document.getElementById('disclaimer').style.display = 'none';
+
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = 1.0;
+        masterGain.connect(audioCtx.destination);
+
+        // 1. FM 合成器：模擬濕滑、黏稠的肉體蠕動聲
+        const carrier = audioCtx.createOscillator();
+        carrier.type = 'triangle';
+        carrier.frequency.value = 55; // 低沉的基頻
+
+        const modulator = audioCtx.createOscillator();
+        modulator.type = 'sine';
+        modulator.frequency.value = 1.5; // 極慢的調變，產生「呼吸/蠕動」的節奏
+
+        const modGain = audioCtx.createGain();
+        modGain.gain.value = 80; // 深度調變，製造噁心的音色變化
+
+        modulator.connect(modGain);
+        modGain.connect(carrier.frequency);
+
+        const fmVol = audioCtx.createGain();
+        fmVol.gain.value = 0.8;
+        carrier.connect(fmVol);
+        fmVol.connect(masterGain);
+
+        // 2. 底層心跳 (極低頻 30Hz)
+        const sub = audioCtx.createOscillator();
+        sub.type = 'sine';
+        sub.frequency.value = 30;
+        
+        // 給心跳加上包絡，使其一陣一陣的
+        const subMod = audioCtx.createOscillator();
+        subMod.type = 'sine';
+        subMod.frequency.value = 1.0; 
+        const subModGain = audioCtx.createGain();
+        subModGain.gain.value = 15;
+        subMod.connect(subModGain);
+        subModGain.connect(sub.frequency);
+
+        const subVol = audioCtx.createGain();
+        subVol.gain.value = 3.0; // 增強物理震動感
+        sub.connect(subVol);
+        subVol.connect(masterGain);
+
+        carrier.start();
+        modulator.start();
+        sub.start();
+        subMod.start();
+
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+}
+
+document.getElementById('disclaimer').addEventListener('click', startAudio);
+['pointerdown', 'keydown', 'touchstart'].forEach(e => addEventListener(e, startAudio, {once: true, passive: true}));
+
+// 啟動 Canvas 渲染
+drawWoodParasite();
+</script>
+</body>
+</html>
