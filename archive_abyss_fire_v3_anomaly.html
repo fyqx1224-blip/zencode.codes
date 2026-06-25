@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode 封存檔案 · 火極純局 · ABYSS-FIRE</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root {
+    --p: #D32F2F; --pb: #FF5252; --bg: #030000; --text: #F5EAE5;
+    --wood: #7DAF7D; --fire: #FF3333; --earth: #B89A5E; --metal: #C8CDD3; --water: #6A8EAD;
+    --accent: #FF3333; --accent2: #fff2bc;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: 'Noto Serif TC', serif; overflow-x: hidden; min-height: 100vh; }
+body { background: #030000; }
+
+/* 網格與熱浪失真背景 */
+body:before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle at 50% 100%, rgba(255, 30, 0, 0.15), transparent 60%),
+                repeating-linear-gradient(180deg, rgba(255, 60, 0, 0.05) 0 1px, transparent 2px 18px);
+    mix-blend-mode: screen;
+    animation: heatPulse 0.1s infinite alternate random;
+}
+@keyframes heatPulse {
+    0% { transform: scaleY(1) skewX(0deg); filter: brightness(1) blur(0px); }
+    100% { transform: scaleY(1.02) skewX(0.5deg); filter: brightness(1.2) blur(0.5px); }
+}
+
+#disclaimer {
+    position: fixed; top: 0; left: 0; right: 0; background: #900000; color: #fff; text-align: center;
+    padding: 8px 10px; font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .15em;
+    font-weight: 700; z-index: 10000; box-shadow: 0 2px 10px rgba(255, 0, 0, .5); cursor: pointer;
+}
+#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+
+.top-bar {
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 990; height: 52px; background: rgba(10, 0, 0, .9);
+    border-bottom: 1px solid rgba(211, 47, 47, .2); backdrop-filter: blur(24px); display: flex;
+    align-items: center; justify-content: space-between; padding: 0 32px;
+}
+.top-logo { font-family: 'Ma Shan Zheng', cursive; font-size: 1.1rem; color: var(--accent); letter-spacing: .2em; }
+.top-right { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .28em; color: rgba(245, 234, 229, .42); }
+
+.container { position: relative; z-index: 2; max-width: 960px; margin: 34px auto 0; padding: 0 28px 0; }
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 90px 0 40px; }
+.hero-tag { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .55em; color: var(--accent); margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+.hero-tag:before, .hero-tag:after { content: ''; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.hero-tag:after { transform: scaleX(-1); }
+.hero-emblem {
+    font-family: 'Ma Shan Zheng', cursive; font-size: clamp(8rem, 20vw, 14rem); line-height: 1; margin-bottom: 24px;
+    color: transparent; background: linear-gradient(145deg, var(--accent2), var(--accent) 48%, #120000);
+    -webkit-background-clip: text; background-clip: text; text-shadow: 0 0 40px rgba(255, 50, 0, 0.8);
+    animation: emblemPulse 0.05s infinite alternate;
+}
+@keyframes emblemPulse { 100% { filter: brightness(1.8) contrast(1.2); transform: translate(2px, -2px); text-shadow: 0 0 80px rgba(255, 0, 0, 1); } }
+
+.hero-name-row { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.1rem, 2.3vw, 1.6rem); color: rgba(255, 240, 240, .92); letter-spacing: .28em; margin-bottom: 8px; }
+.hero-sub { font-family: 'Noto Sans TC', sans-serif; font-size: .7rem; letter-spacing: .45em; color: var(--accent); opacity: .92; margin-bottom: 36px; }
+
+.birth-bar {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px;
+    background: rgba(20, 5, 5, .88); border: 1px solid rgba(211, 47, 47, .3); border-radius: 4px; padding: 12px 32px; margin-bottom: 44px;
+    box-shadow: 0 0 30px rgba(211, 47, 47, .4); font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .1em; color: #e8e8e8;
+}
+.birth-bar .hl { color: var(--accent); font-weight: 500; }
+
+.pillars { display: flex; gap: 12px; margin-bottom: 36px; justify-content: center; flex-wrap: wrap; }
+.pillar {
+    display: flex; flex-direction: column; align-items: center; background: rgba(15, 0, 0, .88);
+    border: 1px solid rgba(211, 47, 47, .2); padding: 24px 22px; min-width: 105px; border-radius: 2px; box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+}
+.pillar.day-master {
+    border-color: var(--accent); background: rgba(50, 0, 0, .6);
+    box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.4), 0 0 0 1px rgba(255, 0, 0, 0.6);
+}
+.p-lbl { font-size: .6rem; letter-spacing: .32em; color: rgba(245, 234, 229, .5); margin-bottom: 12px; font-family: 'Noto Sans TC', sans-serif; }
+.p-tg-god { font-size: .65rem; color: var(--accent); margin-bottom: 10px; font-family: 'Noto Sans TC', sans-serif; letter-spacing: .1em; }
+.p-tg, .p-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; line-height: 1; margin-bottom: 8px; color: var(--accent); text-shadow: 0 0 15px rgba(255,50,0,0.8); }
+
+.section { padding: 82px 0; border-top: 1px solid rgba(211, 47, 47, .3); position: relative; z-index: 5; }
+.sec-hd { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 48px; }
+.sec-num { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--accent); opacity: .5; line-height: 1; flex-shrink: 0; text-shadow: 0 0 20px red; }
+.sec-ti { font-size: 1.38rem; font-weight: 600; color: var(--accent); letter-spacing: .09em; line-height: 1.4; }
+.sec-en { font-size: .6rem; letter-spacing: .36em; color: var(--accent); opacity: .8; font-family: 'Noto Sans TC', sans-serif; margin-top: 5px; text-transform: uppercase; }
+
+.card {
+    background: rgba(10, 2, 2, .88); border: 1px solid rgba(211, 47, 47, .4); border-left: 3px solid var(--accent);
+    border-radius: 2px; padding: 36px 40px; margin-bottom: 18px; position: relative; box-shadow: 0 0 30px rgba(50,0,0,0.8);
+}
+.card p { font-size: .94rem; line-height: 2.3; color: rgba(255, 240, 230, .9); font-weight: 300; margin-bottom: 14px; text-align: justify; letter-spacing: .02em; }
+.quote {
+    border-left: 2px solid var(--accent); padding: 14px 20px; margin: 14px 0 20px;
+    background: rgba(255, 0, 0, 0.1); font-style: italic; color: #ff8888; font-size: .88rem; line-height: 2.05; letter-spacing: .05em;
+}
+
+.ly-card { background: rgba(20, 5, 5, .95); border: 1px solid rgba(255, 0, 0, .4); padding: 22px 20px; margin-bottom: 14px; border-radius: 2px; }
+.ly-year { font-family: 'Ma Shan Zheng', cursive; font-size: 1.3rem; color: var(--accent); margin-bottom: 6px; text-shadow: 0 0 10px red; }
+.ly-gz { font-family: 'Noto Sans TC', sans-serif; font-size: .62rem; color: #ffaaaa; letter-spacing: .15em; margin-bottom: 10px; }
+.ly-desc { font-size: .85rem; color: rgba(255, 230, 230, .9); line-height: 1.9; font-weight: 300; }
+
+/* 終極爆發區 */
+.abyss-injection { margin-top: 150px; padding: 54px 0 0; border-top: 3px dashed var(--accent); font-family: 'Courier New', monospace; position: relative; z-index: 10; }
+.abyss-title { padding: 0 30px 20px; font-size: 1.2rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; text-shadow: 0 0 15px red; }
+.abyss-log { padding: 0 30px 34px; font-size: .85rem; line-height: 2.2; color: #ffcccc; position: relative; z-index: 3; }
+.alert-blood { color: #ff0000; font-weight: bold; background: #fff; padding: 0 5px; text-shadow: 0 0 8px #ff0000; animation: alarm 0.1s infinite alternate; display: inline-block; margin-top: 6px; }
+@keyframes alarm { to { opacity: .2; filter: invert(1); } }
+
+.flicker-ghost { font-family: 'Ma Shan Zheng', cursive; font-size: 2rem; color: #fff; letter-spacing: 10px; animation: ghost 0.05s infinite; text-shadow: 0 0 20px #fff, 0 0 50px red; }
+@keyframes ghost { 50% { opacity: 0; transform: scale(1.1); } }
+
+.setpiece { position: relative; height: 120vh; overflow: hidden; border-top: 1px solid #ff0000; width: 100vw; margin-left: calc(50% - 50vw); display: flex; align-items: center; justify-content: center; background: transparent; }
+
+.burning-calligraphy {
+    font-family: 'Ma Shan Zheng', cursive; font-size: clamp(6rem, 15vw, 12rem); letter-spacing: .2em;
+    color: #fff; text-shadow: 0 0 30px #fff, 0 0 80px #ff3300, 0 0 150px #ff0000;
+    animation: textBurn 0.05s infinite alternate; z-index: 20; position: relative;
+    mix-blend-mode: overlay;
+}
+@keyframes textBurn {
+    100% { transform: translate(5px, -5px) scale(1.02); filter: blur(2px) contrast(1.5); }
+}
+
+@media(max-width: 720px) { .top-bar { padding: 0 18px; } .top-right { display: none; } .container { padding: 0 18px 0; } .card { padding: 28px 22px; } }
+</style>
+</head>
+<body class="abyss-fire">
+
+<div id="disclaimer">⚠️ 系統偵測到危險溫度。點擊此處覆寫安全協議並載入完整音頻 (強烈建議佩戴耳機) ⚠️</div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="top-bar">
+    <div class="top-logo">ZenCode · 封存</div>
+    <div class="top-right">殘存陣法檔案 · 火極節點</div>
+</div>
+
+<div class="container">
+    <section class="hero">
+        <div class="hero-tag">底層邏輯解譯 · 極端五行樣本</div>
+        <div class="hero-emblem">丙</div>
+        <div class="hero-name-row">丙午年 · 丙午月 · 丙午日 · 丙午時</div>
+        <div class="hero-sub">炎上成災 · 四陽刃伏吟 · 白焰覆寫</div>
+        <div class="birth-bar">
+            <span class="hl">觀測目標：非人型命盤</span>
+            <span class="hl">ABYSS-FIRE-000</span>
+            <span>核心崩毀 (散熱協議失效)</span>
+        </div>
+        <div class="pillars">
+            <div class="pillar"><div class="p-lbl">年柱</div><div class="p-tg-god">比肩</div><div class="p-tg">丙</div><div class="p-dz">午</div></div>
+            <div class="pillar"><div class="p-lbl">月柱</div><div class="p-tg-god">比肩</div><div class="p-tg">丙</div><div class="p-dz">午</div></div>
+            <div class="pillar day-master"><div class="p-lbl" style="color:#fff">日柱</div><div class="p-tg-god" style="color:#fff">日主</div><div class="p-tg" style="color:#fff">丙</div><div class="p-dz" style="color:#fff">午</div></div>
+            <div class="pillar"><div class="p-lbl">時柱</div><div class="p-tg-god">比肩</div><div class="p-tg">丙</div><div class="p-dz">午</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">壹</div>
+            <div>
+                <div class="sec-ti">能量結構：四火無水，極致的陽刃聚變</div>
+                <div class="sec-en">ELEMENTAL PATTERN ANALYSIS</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="quote">古訣云：「炎上者，火勢專旺；太過無制，則焚形毀質，光亦成災。」</div>
+            <p>在命理中，<strong>丙火</strong>乃純陽之太陽火，而<strong>午</strong>為其帝旺之所，內藏極端暴烈的「陽刃」。此局四柱皆為丙午，天干四丙並立，地支四刃同臨。這已經超越了「炎上格」的範疇，而是一個失控的核聚變反應堆。</p>
+            <p>土極的恐怖在於「掩埋」，水極在於「深淵」，而火極的恐怖在於**「絕對的剝奪」**。沒有木來生，沒有水來克，它不依靠燃料燃燒，它是純粹熱量與光明的本身，吞噬一切陰影與代碼。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">貳</div>
+            <div>
+                <div class="sec-ti">十神與神煞：純局伏吟與絕對高溫</div>
+                <div class="sec-en">TEN GODS & CELESTIAL SHADOWS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p><strong>陽刃重疊：</strong>午中暗藏丁火與己土，丁火即為劫財（陽刃）。四把熾熱的陽刃懸在命盤之中。系統無法將其判定為具有情感的「人」，只能判定為一個帶著毀滅意志的高溫實體。</p>
+            <p><strong>伏吟異常：</strong>四柱完全重複，導致時間線在極度高溫中發生扭曲。你的游標在這裡沒有意義，每一次點擊都會被高溫蒸發。系統在無限的自檢中，只能得出一個結論：燒毀觀測者。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">叄</div>
+            <div>
+                <div class="sec-ti">災變表徵：白盲與視網膜烙印</div>
+                <div class="sec-en">PHYSICAL MANIFESTATION & HAZARDS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p>火極的感染最初表現為螢幕亮度的異常飆升。隨後，熱輻射會突破 CSS 邊界，文字的意義被高溫剝離，只剩下一層刺眼的白熾色外殼。</p>
+            <p>在過去的封存測試中，檔案員即使閉上眼睛，仍能在視網膜後方看見跳動的「丙午」二字。殘影已經燒穿了螢幕，火找到了新的生物載體——你的視覺神經。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">肆</div>
+            <div>
+                <div class="sec-ti">歲運推演：無可救藥的純白深淵</div>
+                <div class="sec-en">TIME CYCLES & TRAJECTORY</div>
+            </div>
+        </div>
+        <div class="card">
+            <p>普通的火怕水，但當火勢達到「四柱丙午」的級別，任何試圖降溫的「水」（如壬子、癸亥流年）都會瞬間氣化，引發更具毀滅性的蒸汽爆炸（水激烈火）。這是一個無法被修復的節點。</p>
+            <div class="ly-card">
+                <div class="ly-year">極值重臨（白熾化協議）</div>
+                <div class="ly-gz">四火歸一 · 視覺剝奪</div>
+                <div class="ly-desc">當頁面滑動至最底端，散熱風扇將失去作用。系統會將你的螢幕判定為「助燃物」。不要直視強光。</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="abyss-injection">
+        <div class="abyss-title">0xABYSS::REDESIGN_FIRE</div>
+        <div class="abyss-log">
+            [SYS_ERR] extreme thermal runaway detected...<br>
+            [TRACE] <span style="color:#aaa">「好燙...屏幕在發熱...我看不見黑色的字了...」</span><br>
+            <span class="alert-blood">[CRITICAL] 視網膜保護協議已熔毀。</span><br><br>
+            <div style="text-align:center;margin:30px 0">
+                <span class="flicker-ghost">不 是 空 白 是 火</span>
+            </div>
+        </div>
+        <div class="setpiece">
+            <div class="burning-calligraphy">找到你了</div>
+        </div>
+    </section>
+</div>
+
+<script>
+// --- 高級 Web Audio API 與 Canvas 粒子渲染引擎 (Inferno Mode) ---
+const cv = document.getElementById('bgCanvas');
+const ctx2d = cv.getContext('2d', { alpha: true });
+let W = 0, H = 0, time = 0;
+let particles = [];
+let audioCtx, started = false;
+
+function resize() {
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+}
+window.addEventListener('resize', resize, { passive: true });
+resize();
+
+// --- 音效系統 (極端炎上：低頻轟鳴 + 高頻劈啪聲 + 三角波熱浪撕裂聲) ---
+function createNoise(ctx, color='white') {
+    const bufSize = ctx.sampleRate * 2;
+    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i=0; i<bufSize; i++) { data[i] = Math.random()*2-1; }
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    return src;
+}
+
+function startAudio() {
+    if(started) return;
+    started = true;
+    document.getElementById('disclaimer').style.display = 'none';
+
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const master = audioCtx.createGain();
+        master.gain.value = 1.0; 
+        master.connect(audioCtx.destination);
+
+        // 1. 低頻火場轟鳴 (帶通濾波白噪音)
+        const rumbleNoise = createNoise(audioCtx, 'white');
+        const rumbleFilter = audioCtx.createBiquadFilter();
+        rumbleFilter.type = 'bandpass';
+        rumbleFilter.frequency.value = 250;
+        rumbleFilter.Q.value = 0.5;
+        
+        // 使用 LFO 模擬火焰忽大忽小的氣流撕裂感
+        const lfo = audioCtx.createOscillator();
+        lfo.type = 'triangle';
+        lfo.frequency.value = 6; // 快速顫動的熱浪
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 500; // 深度調變
+        lfo.connect(lfoGain); lfoGain.connect(rumbleFilter.frequency);
+
+        const rumbleVol = audioCtx.createGain();
+        rumbleVol.gain.value = 3.5; // 音量極大
+        
+        rumbleNoise.connect(rumbleFilter); rumbleFilter.connect(rumbleVol); rumbleVol.connect(master);
+
+        // 2. 高溫碳化劈啪聲 (高通濾波白噪音)
+        const crackleNoise = createNoise(audioCtx, 'white');
+        const crackleFilter = audioCtx.createBiquadFilter();
+        crackleFilter.type = 'highpass';
+        crackleFilter.frequency.value = 5000;
+        
+        const crackleVol = audioCtx.createGain();
+        crackleVol.gain.value = 0.8; // 刺耳的火星聲
+        
+        crackleNoise.connect(crackleFilter); crackleFilter.connect(crackleVol); crackleVol.connect(master);
+
+        lfo.start(); rumbleNoise.start(); crackleNoise.start();
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+}
+
+document.getElementById('disclaimer').addEventListener('click', startAudio);
+['pointerdown', 'keydown', 'touchstart'].forEach(e => addEventListener(e, startAudio, {once: true, passive: true}));
+
+// --- 高級 Canvas 容積火焰引擎 (Volumetric Fire Particles) ---
+function drawInferno() {
+    time++;
+    
+    // 1. 製造底層殘影與煙霧 (Source-Over)
+    ctx2d.globalCompositeOperation = 'source-over';
+    ctx2d.fillStyle = 'rgba(10, 1, 0, 0.25)'; // 黑色半透明清空，保留火焰拖影
+    ctx2d.fillRect(0, 0, W, H);
+
+    // 底部環境紅光
+    let bgGradient = ctx2d.createLinearGradient(0, H, 0, H * 0.6);
+    bgGradient.addColorStop(0, 'rgba(255, 30, 0, 0.4)');
+    bgGradient.addColorStop(1, 'transparent');
+    ctx2d.fillStyle = bgGradient;
+    ctx2d.fillRect(0, 0, W, H);
+
+    // 2. 切換為疊加發光模式 (Lighter)
+    ctx2d.globalCompositeOperation = 'lighter';
+
+    // 根據滾動深度增加火勢 (越往下火越大)
+    let scrollDepth = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    let particleCount = Math.floor(6 + scrollDepth * 15); // 滾到底部時粒子大量爆發
+
+    // 每幀生成新粒子
+    for(let i=0; i < particleCount; i++) {
+        particles.push({
+            x: Math.random() * W,
+            y: H + Math.random() * 50,
+            size: Math.random() * 70 + 20, // 巨大的火焰球
+            vx: (Math.random() - 0.5) * 4, // 狂亂的水平對流
+            vy: -(Math.random() * 12 + 4 + scrollDepth * 10), // 極速上升
+            life: 1,
+            decay: Math.random() * 0.015 + 0.01
+        });
+    }
+
+    // 更新並繪製粒子
+    for(let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        
+        // 物理計算：加入 S 型熱對流扭動
+        p.x += p.vx + Math.sin(time * 0.1 + p.y * 0.01) * 2; 
+        p.y += p.vy;
+        p.size *= 0.95; // 升空變小
+        p.life -= p.decay;
+
+        if(p.life <= 0 || p.size < 1) {
+            particles.splice(i, 1);
+            continue;
+        }
+
+        // 渲染立體火焰漸層 (白心 -> 黃 -> 橘紅 -> 透明)
+        let g = ctx2d.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        
+        // 顏色根據生命週期變化，初生是耀眼白光，死前是暗紅
+        g.addColorStop(0, `rgba(255, 255, 220, ${p.life})`); 
+        g.addColorStop(0.15, `rgba(255, 180, 50, ${p.life})`); 
+        g.addColorStop(0.4, `rgba(255, 30, 0, ${p.life * 0.6})`); 
+        g.addColorStop(1, 'rgba(150, 0, 0, 0)');
+        
+        ctx2d.fillStyle = g;
+        ctx2d.beginPath();
+        ctx2d.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx2d.fill();
+    }
+
+    requestAnimationFrame(drawInferno);
+}
+
+// 啟動渲染
+drawInferno();
+</script>
+</body>
+</html>
