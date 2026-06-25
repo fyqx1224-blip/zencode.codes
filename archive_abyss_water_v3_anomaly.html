@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode 封存檔案 · 水極純局 · ABYSS-WATER</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root {
+    --p: #6A8EAD; --pb: #8ab6d6; --bg: #010408; --text: #e0f0ff;
+    --wood: #7DAF7D; --fire: #FF3333; --earth: #B89A5E; --metal: #C8CDD3; --water: #6A8EAD;
+    --accent: #6A8EAD; --accent2: #d8f4ff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: 'Noto Serif TC', serif; overflow-x: hidden; min-height: 100vh; }
+body { background: #000; }
+
+/* 深海光暈背景 */
+body:before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle at 50% 0%, rgba(10, 30, 60, 0.4), transparent 70%);
+}
+
+#disclaimer {
+    position: fixed; top: 0; left: 0; right: 0; background: #0a1e3f; color: #fff; text-align: center;
+    padding: 8px 10px; font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .15em;
+    font-weight: 700; z-index: 10000; box-shadow: 0 2px 15px rgba(100, 180, 255, .3); cursor: pointer;
+}
+#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+
+.top-bar {
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 990; height: 52px; background: rgba(1, 4, 8, .9);
+    border-bottom: 1px solid rgba(106, 142, 173, .2); backdrop-filter: blur(24px); display: flex;
+    align-items: center; justify-content: space-between; padding: 0 32px;
+}
+.top-logo { font-family: 'Ma Shan Zheng', cursive; font-size: 1.1rem; color: var(--pb); letter-spacing: .2em; }
+.top-right { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .28em; color: rgba(224, 240, 255, .42); }
+
+.container { position: relative; z-index: 2; max-width: 960px; margin: 34px auto 0; padding: 0 28px 0; }
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 90px 0 40px; }
+.hero-tag { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .55em; color: var(--accent); margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+.hero-tag:before, .hero-tag:after { content: ''; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.hero-tag:after { transform: scaleX(-1); }
+.hero-emblem {
+    font-family: 'Ma Shan Zheng', cursive; font-size: clamp(8rem, 20vw, 14rem); line-height: 1; margin-bottom: 24px;
+    color: transparent; background: linear-gradient(145deg, var(--accent2), var(--accent) 48%, #001122);
+    -webkit-background-clip: text; background-clip: text; text-shadow: 0 0 25px rgba(106, 142, 173, 0.6);
+    animation: emblemPulse 4s ease-in-out infinite;
+}
+@keyframes emblemPulse { 50% { filter: brightness(1.4) blur(1px); transform: translateY(-4px); } }
+
+.hero-name-row { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.1rem, 2.3vw, 1.6rem); color: rgba(230, 245, 255, .92); letter-spacing: .28em; margin-bottom: 8px; }
+.hero-sub { font-family: 'Noto Sans TC', sans-serif; font-size: .7rem; letter-spacing: .45em; color: var(--accent); opacity: .92; margin-bottom: 36px; }
+
+.birth-bar {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px;
+    background: rgba(5, 15, 25, .88); border: 1px solid rgba(106, 142, 173, .3); border-radius: 4px; padding: 12px 32px; margin-bottom: 44px;
+    box-shadow: 0 0 30px rgba(106, 142, 173, .15); font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .1em; color: #e8f4ff;
+}
+.birth-bar .hl { color: var(--pb); font-weight: 700; }
+
+.pillars { display: flex; gap: 12px; margin-bottom: 36px; justify-content: center; flex-wrap: wrap; }
+.pillar {
+    display: flex; flex-direction: column; align-items: center; background: rgba(5, 10, 15, .88);
+    border: 1px solid rgba(106, 142, 173, .2); padding: 24px 22px; min-width: 105px; border-radius: 2px; box-shadow: 0 8px 24px rgba(0, 0, 0, .8);
+}
+.pillar.day-master {
+    border-color: var(--pb); background: rgba(10, 25, 45, .4);
+    box-shadow: inset 0 0 32px rgba(106, 142, 173, 0.3), 0 0 0 1px rgba(138, 182, 214, 0.6);
+}
+.p-lbl { font-size: .6rem; letter-spacing: .32em; color: rgba(220, 235, 255, .5); margin-bottom: 12px; font-family: 'Noto Sans TC', sans-serif; }
+.p-tg-god { font-size: .65rem; color: var(--pb); margin-bottom: 10px; font-family: 'Noto Sans TC', sans-serif; letter-spacing: .1em; }
+.p-tg, .p-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; line-height: 1; margin-bottom: 8px; color: var(--pb); text-shadow: 0 0 15px rgba(138, 182, 214, 0.4); }
+
+.section { padding: 82px 0; border-top: 1px solid rgba(106, 142, 173, .15); position: relative; z-index: 5; }
+.sec-hd { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 48px; }
+.sec-num { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--accent); opacity: .3; line-height: 1; flex-shrink: 0; }
+.sec-ti { font-size: 1.38rem; font-weight: 600; color: var(--pb); letter-spacing: .09em; line-height: 1.4; }
+.sec-en { font-size: .6rem; letter-spacing: .36em; color: var(--accent); opacity: .6; font-family: 'Noto Sans TC', sans-serif; margin-top: 5px; text-transform: uppercase; }
+
+.card {
+    background: rgba(5, 10, 15, .88); border: 1px solid rgba(106, 142, 173, .2); border-left: 3px solid var(--pb);
+    border-radius: 2px; padding: 36px 40px; margin-bottom: 18px; position: relative; backdrop-filter: blur(10px);
+}
+.card p { font-size: .94rem; line-height: 2.3; color: rgba(220, 240, 255, .86); font-weight: 300; margin-bottom: 14px; text-align: justify; letter-spacing: .02em; }
+.quote {
+    border-left: 2px solid var(--pb); padding: 14px 20px; margin: 14px 0 20px;
+    background: rgba(106, 142, 173, 0.1); font-style: italic; color: #aaddff; font-size: .88rem; line-height: 2.05; letter-spacing: .05em;
+}
+
+.ly-card { background: rgba(5, 12, 20, .9); border: 1px solid rgba(106, 142, 173, .3); padding: 22px 20px; margin-bottom: 14px; border-radius: 2px; }
+.ly-year { font-family: 'Ma Shan Zheng', cursive; font-size: 1.3rem; color: var(--pb); margin-bottom: 6px; }
+.ly-gz { font-family: 'Noto Sans TC', sans-serif; font-size: .62rem; color: var(--accent); letter-spacing: .15em; margin-bottom: 10px; }
+.ly-desc { font-size: .85rem; color: rgba(220, 240, 255, .8); line-height: 1.9; font-weight: 300; }
+
+/* 終極深潛區 */
+.abyss-injection { margin-top: 150px; padding: 54px 0 0; border-top: 3px dashed var(--pb); font-family: 'Courier New', monospace; position: relative; z-index: 10; }
+.abyss-title { padding: 0 30px 20px; font-size: 1.2rem; font-weight: bold; color: var(--pb); letter-spacing: 2px; }
+.abyss-log { padding: 0 30px 34px; font-size: .85rem; line-height: 2.2; color: #aaddff; position: relative; z-index: 3; }
+.alert-blood { color: #66ccff; font-weight: bold; text-shadow: 0 0 8px #66ccff; animation: alarm .38s infinite alternate; display: inline-block; margin-top: 6px; }
+@keyframes alarm { to { opacity: .3; filter: blur(1px); } }
+
+.flicker-ghost { font-family: 'Ma Shan Zheng', cursive; font-size: 1.6rem; color: #fff; letter-spacing: 5px; animation: ghost 3s infinite; text-shadow: 0 0 20px #88ccff; }
+@keyframes ghost { 50% { opacity: 0; letter-spacing: 15px; filter: blur(4px); } }
+
+/* 水極無邊界場景 */
+.setpiece { position: relative; height: 120vh; overflow: hidden; background: #000; border-top: 1px solid rgba(106, 142, 173, .4); width: 100vw; margin-left: calc(50% - 50vw); display: flex; align-items: center; justify-content: center; }
+
+/* 焦散與液體畸變層 */
+.caustic-overlay {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background: radial-gradient(circle at center, rgba(10,30,60,0.6), #000 90%);
+    mix-blend-mode: color-dodge; opacity: 0.8;
+    filter: url(#water-caustics);
+}
+
+.drowned-text { 
+    position: absolute; text-align: center; width: 100%;
+    font-family: 'Noto Serif TC', serif; font-size: clamp(4rem, 10vw, 8rem); font-weight: 900; 
+    color: #4a7c9c; letter-spacing: 15px; z-index: 8;
+    filter: url(#water-distortion) blur(2px); 
+    animation: abyssSink 12s infinite ease-in;
+}
+@keyframes abyssSink {
+    0% { transform: translateY(-30%) scale(1); filter: url(#water-distortion) blur(1px); opacity: 0.9; color: #7ab2d6; }
+    70% { transform: translateY(-10%) scale(0.9); filter: url(#water-distortion) blur(8px); opacity: 0.5; color: #1a3c5c; }
+    100% { transform: translateY(10%) scale(0.8); filter: url(#water-distortion) blur(20px); opacity: 0; color: #000; }
+}
+
+@media(max-width: 720px) { .top-bar { padding: 0 18px; } .top-right { display: none; } .container { padding: 0 18px 0; } .card { padding: 28px 22px; } }
+</style>
+</head>
+<body class="abyss-water">
+
+<svg style="position: absolute; width: 0; height: 0;">
+    <filter id="water-distortion">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.08" numOctaves="2" result="noise">
+            <animate attributeName="baseFrequency" values="0.02 0.08; 0.04 0.12; 0.02 0.08" dur="8s" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <filter id="water-caustics">
+        <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise">
+            <animate attributeName="baseFrequency" values="0.01; 0.015; 0.01" dur="10s" repeatCount="indefinite" />
+        </feTurbulence>
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 4 -1.5" result="contrast"/>
+    </filter>
+</svg>
+
+<div id="disclaimer">⚠️ 【警告】系統偵測到深海頻率。點擊確認授權，載入深潛音頻協議 (強烈建議佩戴耳機) ⚠️</div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="top-bar">
+    <div class="top-logo">ZenCode · 封存</div>
+    <div class="top-right">殘存陣法檔案 · 水極節點</div>
+</div>
+
+<div class="container">
+    <section class="hero">
+        <div class="hero-tag">底層邏輯解譯 · 極端五行樣本</div>
+        <div class="hero-emblem">壬</div>
+        <div class="hero-name-row">壬子年 · 壬子月 · 壬子日 · 壬子時</div>
+        <div class="hero-sub">潤下成災 · 四子伏吟 · 邊界溶解</div>
+        <div class="birth-bar">
+            <span class="hl">觀測目標：非人型命盤</span>
+            <span class="hl">ABYSS-WATER-000</span>
+            <span>無岸水域 (座標與自我已丟失)</span>
+        </div>
+        <div class="pillars">
+            <div class="pillar"><div class="p-lbl">年柱</div><div class="p-tg-god">比肩</div><div class="p-tg">壬</div><div class="p-dz">子</div></div>
+            <div class="pillar"><div class="p-lbl">月柱</div><div class="p-tg-god">比肩</div><div class="p-tg">壬</div><div class="p-dz">子</div></div>
+            <div class="pillar day-master"><div class="p-lbl" style="color:#fff">日柱</div><div class="p-tg-god" style="color:#fff">日主</div><div class="p-tg" style="color:#fff">壬</div><div class="p-dz" style="color:#fff">子</div></div>
+            <div class="pillar"><div class="p-lbl">時柱</div><div class="p-tg-god">比肩</div><div class="p-tg">壬</div><div class="p-dz">子</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">壹</div>
+            <div>
+                <div class="sec-ti">能量結構：四水無岸，絕對的下沉指令</div>
+                <div class="sec-en">ELEMENTAL PATTERN ANALYSIS</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="quote">古訣云：「潤下成格，喜其順勢；過則汪洋無制，人物俱沉。」</div>
+            <p>此局四柱皆為<strong>壬子</strong>，天干壬水浩蕩，地支子水伏吟。水勢大到了極點，無土可束，無火可暖，無木可洩。從命理象意而言，這已不再是一名個體的八字，而是一個被重複輸入了四次的「向下滲透」指令。</p>
+            <p>水極代表資料與認知的邊界被持續沖刷。它不暴力，它只是寒冷且無窮無盡。你的姓名、位置與記憶都會逐漸失去輪廓。系統不是在刪除你的資料，而是把每一份資料泡成一灘可以互相替代的死水。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">貳</div>
+            <div>
+                <div class="sec-ti">十神與神煞：純局伏吟與自我溶解</div>
+                <div class="sec-en">TEN GODS & CELESTIAL SHADOWS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p><strong>比肩重疊（汪洋同化）：</strong>同質的陰冷能量在四柱中無限回聲。在深海中，你無法分辨哪滴水是你自己。系統無法再把你理解為「觀測者」，只能將你判定為這片水域的一部分。</p>
+            <p><strong>羊刃潛流：</strong>子水為壬水之羊刃，這意味著看似平靜的深海下，藏著極其危險的暗流。每一次網頁的滾動，都不是你在探索，而是底層的引力正在把你往下拉扯。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">叄</div>
+            <div>
+                <div class="sec-ti">災變表徵：感官剝奪與倒影錯位</div>
+                <div class="sec-en">PHYSICAL MANIFESTATION & HAZARDS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p>水極首先溶解的是「身體的歸屬感」。隨著時間推移，你會覺得螢幕上的文字正在遠離，滑鼠的移動變得沉重黏稠。你甚至會懷疑，自己進入這個頁面前，是否已經無數次看過同樣的畫面。</p>
+            <p>在過去的封存紀錄中，檔案員發現了致命的錯位：螢幕中的水面倒影，竟然比真實的 UI 更加清晰。當他們試圖關閉頁面時，倒影裡的游標先於真實的滑鼠移動了三秒。</p>
+        </div>
+    </section>
+
+    <section class="abyss-injection">
+        <div class="abyss-title">0xABYSS::REDESIGN_WATER</div>
+        <div class="abyss-log">
+            [SYS_ERR] deep pressure threshold exceeded...<br>
+            [TRACE] <span style="color:#aaa">「我沒有沉下去，是上面離我越來越遠了。」</span><br>
+            <span class="alert-blood">[CRITICAL] 肺部氧氣模擬已耗盡。</span><br><br>
+            <div style="text-align:center;margin:30px 0">
+                <span class="flicker-ghost">倒 影 說 你 才 是 倒 影</span>
+            </div>
+        </div>
+        
+        <div class="setpiece">
+            <div class="caustic-overlay"></div>
+            <div class="drowned-text">倒影先醒了</div>
+        </div>
+    </section>
+</div>
+
+<script>
+// --- Canvas 背景與高級音效引擎 (Abyss Water Mode) ---
+const cv = document.getElementById('bgCanvas');
+const ctx = cv.getContext('2d', { alpha: true });
+let W = 0, H = 0, time = 0;
+let audioCtx, started = false;
+let waterAccumulation = 0;
+let bubbles = [];
+
+function resize() {
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+}
+window.addEventListener('resize', resize, { passive: true });
+resize();
+
+// 繪製極限深海漸層與氣泡
+function drawDeepWater() {
+    time++;
+    ctx.clearRect(0, 0, W, H);
+    
+    // 讓深淵漸漸吞沒螢幕
+    waterAccumulation += 0.3;
+    let deepY = Math.max(-H, H - waterAccumulation);
+    
+    let grad = ctx.createLinearGradient(0, deepY, 0, deepY + H * 1.5);
+    grad.addColorStop(0, '#0a1e3f');
+    grad.addColorStop(0.4, '#020a14');
+    grad.addColorStop(1, '#000000');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // 氣泡向上飄 (讓人感覺自己在下沉)
+    ctx.fillStyle = 'rgba(150, 200, 255, 0.15)';
+    if(Math.random() < 0.3) {
+        bubbles.push({ 
+            x: Math.random() * W, 
+            y: H + 10, 
+            radius: Math.random() * 4 + 1, 
+            speed: Math.random() * 2 + 1, 
+            offset: Math.random() * 100 
+        });
+    }
+    for(let i = bubbles.length - 1; i >= 0; i--) {
+        let b = bubbles[i];
+        b.y -= b.speed;
+        b.x += Math.sin(time * 0.02 + b.offset) * 1.5;
+        if(b.y < -10) { bubbles.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI*2);
+        ctx.fill();
+    }
+
+    // 巨大的深海暗流與浮游物 (增加空間深度)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    for(let i=0; i<15; i++) {
+        let x = (Math.sin(time*0.005 + i) * W/2) + W/2;
+        let y = (Math.cos(time*0.008 + i*2) * H/2) + H/2;
+        ctx.beginPath();
+        ctx.arc(x, y, (i%5)*20 + 10, 0, Math.PI*2);
+        ctx.fill();
+    }
+
+    requestAnimationFrame(drawDeepWater);
+}
+
+// 核心：載入極端水壓音效 (25Hz 極低頻 + 暗流噪音)
+function startAudio() {
+    if(started) return;
+    started = true;
+    document.getElementById('disclaimer').style.display = 'none';
+
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = 1.0;
+        masterGain.connect(audioCtx.destination);
+
+        // 1. 25Hz 極低頻正弦波 (模擬深海極端水壓與耳膜的不適感)
+        const subOsc = audioCtx.createOscillator();
+        subOsc.type = 'sine';
+        subOsc.frequency.value = 25; 
+        
+        const subGain = audioCtx.createGain();
+        subGain.gain.value = 5.0; // 放大低頻
+        subOsc.connect(subGain); 
+        subGain.connect(masterGain);
+
+        // 2. 深海暗流轟鳴 (低通濾波白噪音)
+        const bufSize = audioCtx.sampleRate * 2;
+        const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for(let i=0; i<bufSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buf; 
+        noise.loop = true;
+
+        const noiseFilter = audioCtx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.value = 80; // 只保留沉悶的低音
+        
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.value = 8.0;
+
+        // 模擬呼吸/水流起伏的 LFO
+        const lfo = audioCtx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.15; // 極慢的起伏
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 40;
+        lfo.connect(lfoGain);
+        lfoGain.connect(noiseFilter.frequency);
+
+        noise.connect(noiseFilter); 
+        noiseFilter.connect(noiseGain); 
+        noiseGain.connect(masterGain);
+        
+        subOsc.start(); 
+        noise.start();
+        lfo.start();
+
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+}
+
+document.getElementById('disclaimer').addEventListener('click', startAudio);
+['pointerdown', 'keydown', 'touchstart'].forEach(e => addEventListener(e, startAudio, {once: true, passive: true}));
+
+drawDeepWater();
+</script>
+</body>
+</html>
