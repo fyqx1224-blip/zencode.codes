@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenCode 封存檔案 · 金極純局 · ABYSS-METAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root {
+    --p: #C8CDD3; --pb: #E6F0FA; --bg: #030406; --text: #C8CDD3;
+    --wood: #7DAF7D; --fire: #FF3333; --earth: #B89A5E; --metal: #E6F0FA; --water: #6A8EAD;
+    --accent: #E6F0FA; --accent2: #fff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: 'Noto Serif TC', serif; overflow-x: hidden; min-height: 100vh; }
+body { background: linear-gradient(#050608, #0a0d12 55%, #020304); }
+
+/* 絕對冰冷的金屬網格，帶有隨機的錯位閃爍 */
+body:before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(135deg, transparent 0 49%, rgba(255, 255, 255, .05) 50%, transparent 51%),
+                linear-gradient(45deg, transparent 0 49%, rgba(210, 225, 240, .03) 50%, transparent 51%);
+    background-size: 60px 60px;
+    animation: metalGrid 0.1s infinite steps(2, end);
+}
+@keyframes metalGrid { 50% { transform: translate(2px, -1px); filter: contrast(1.5); } }
+
+/* 全局螢幕切割錯位特效 */
+.screen-glitch { animation: screenSlice 2.3s infinite steps(1, end); }
+@keyframes screenSlice {
+    0%, 95% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+    96% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 40%); transform: translateX(-8px); filter: brightness(2); }
+    98% { clip-path: polygon(0 45%, 100% 40%, 100% 100%, 0 100%); transform: translateX(8px); filter: brightness(2); }
+    100% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+}
+
+#disclaimer {
+    position: fixed; top: 0; left: 0; right: 0; background: #E6F0FA; color: #000; text-align: center;
+    padding: 8px 10px; font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .15em;
+    font-weight: 900; z-index: 10000; box-shadow: 0 2px 15px rgba(230, 240, 250, .8); cursor: pointer;
+}
+#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+
+.top-bar {
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 990; height: 52px; background: rgba(5, 6, 8, .9);
+    border-bottom: 1px solid rgba(230, 240, 250, .2); backdrop-filter: blur(24px); display: flex;
+    align-items: center; justify-content: space-between; padding: 0 32px;
+}
+.top-logo { font-family: 'Ma Shan Zheng', cursive; font-size: 1.1rem; color: var(--accent); letter-spacing: .2em; }
+.top-right { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .28em; color: rgba(230, 240, 250, .5); }
+
+.container { position: relative; z-index: 2; max-width: 960px; margin: 34px auto 0; padding: 0 28px 0; }
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 90px 0 40px; }
+.hero-tag { font-family: 'Noto Sans TC', sans-serif; font-size: .6rem; letter-spacing: .55em; color: var(--accent); margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+.hero-tag:before, .hero-tag:after { content: ''; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.hero-tag:after { transform: scaleX(-1); }
+.hero-emblem {
+    font-family: 'Ma Shan Zheng', cursive; font-size: clamp(8rem, 20vw, 14rem); line-height: 1; margin-bottom: 24px;
+    color: #fff; text-shadow: 0 0 20px #fff, 0 0 50px #88aadd;
+    animation: metalPulse 2.3s infinite steps(2, end);
+}
+@keyframes metalPulse { 95% { transform: scale(1); filter: blur(0); } 98% { transform: scale(1.05) skewX(10deg); filter: blur(2px) brightness(2); } }
+
+.hero-name-row { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.1rem, 2.3vw, 1.6rem); color: #fff; letter-spacing: .28em; margin-bottom: 8px; }
+.hero-sub { font-family: 'Noto Sans TC', sans-serif; font-size: .7rem; letter-spacing: .45em; color: var(--accent); opacity: .92; margin-bottom: 36px; }
+
+.birth-bar {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px;
+    background: rgba(5, 8, 12, .88); border: 1px solid rgba(230, 240, 250, .3); border-radius: 2px; padding: 12px 32px; margin-bottom: 44px;
+    box-shadow: 0 0 30px rgba(230, 240, 250, .1); font-family: 'Noto Sans TC', sans-serif; font-size: .75rem; letter-spacing: .1em; color: #fff;
+}
+.birth-bar .hl { color: var(--accent); font-weight: 700; }
+
+.pillars { display: flex; gap: 12px; margin-bottom: 36px; justify-content: center; flex-wrap: wrap; }
+.pillar {
+    display: flex; flex-direction: column; align-items: center; background: rgba(5, 8, 12, .88);
+    border: 1px solid rgba(230, 240, 250, .2); padding: 24px 22px; min-width: 105px; border-radius: 0px; box-shadow: 0 8px 24px rgba(0, 0, 0, .8);
+}
+.pillar.day-master {
+    border-color: var(--accent); background: rgba(20, 30, 45, .6);
+    box-shadow: inset 0 0 30px rgba(230, 240, 250, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+.p-lbl { font-size: .6rem; letter-spacing: .32em; color: rgba(230, 240, 250, .5); margin-bottom: 12px; font-family: 'Noto Sans TC', sans-serif; }
+.p-tg-god { font-size: .65rem; color: var(--accent); margin-bottom: 10px; font-family: 'Noto Sans TC', sans-serif; letter-spacing: .1em; }
+.p-tg, .p-dz { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; line-height: 1; margin-bottom: 8px; color: #fff; text-shadow: 0 0 10px #fff; }
+
+.section { padding: 82px 0; border-top: 1px solid rgba(230, 240, 250, .2); position: relative; z-index: 5; }
+.sec-hd { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 48px; }
+.sec-num { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--accent); opacity: .5; line-height: 1; flex-shrink: 0; text-shadow: 0 0 15px #fff; }
+.sec-ti { font-size: 1.38rem; font-weight: 600; color: var(--accent); letter-spacing: .09em; line-height: 1.4; }
+.sec-en { font-size: .6rem; letter-spacing: .36em; color: var(--accent); opacity: .5; font-family: 'Noto Sans TC', sans-serif; margin-top: 5px; text-transform: uppercase; }
+
+.card {
+    background: rgba(5, 8, 12, .88); border: 1px solid rgba(230, 240, 250, .3); border-left: 3px solid var(--accent);
+    border-radius: 0px; padding: 36px 40px; margin-bottom: 18px; position: relative;
+}
+.card p { font-size: .94rem; line-height: 2.3; color: rgba(230, 240, 250, .9); font-weight: 300; margin-bottom: 14px; text-align: justify; letter-spacing: .02em; }
+.quote {
+    border-left: 2px solid var(--accent); padding: 14px 20px; margin: 14px 0 20px;
+    background: rgba(230, 240, 250, 0.05); font-style: italic; color: #fff; font-size: .88rem; line-height: 2.05; letter-spacing: .05em; text-shadow: 0 0 5px #fff;
+}
+
+/* 模擬系統刪除特效 */
+del { text-decoration: none; background: #fff; color: #000; animation: censor 0.2s infinite alternate; padding: 0 2px; }
+@keyframes censor { 0% { opacity: 0.8; } 100% { opacity: 1; background: #000; color: #fff; text-decoration: line-through; } }
+
+.ly-card { background: rgba(10, 15, 20, .95); border: 1px solid rgba(255, 255, 255, .3); padding: 22px 20px; margin-bottom: 14px; border-radius: 0px; }
+.ly-year { font-family: 'Ma Shan Zheng', cursive; font-size: 1.3rem; color: #fff; margin-bottom: 6px; text-shadow: 0 0 8px #fff; }
+.ly-gz { font-family: 'Noto Sans TC', sans-serif; font-size: .62rem; color: #88aadd; letter-spacing: .15em; margin-bottom: 10px; }
+.ly-desc { font-size: .85rem; color: rgba(230, 240, 250, .8); line-height: 1.9; font-weight: 300; }
+
+/* 終極裁決區 */
+.abyss-injection { margin-top: 150px; padding: 54px 0 0; border-top: 3px dashed var(--accent); font-family: 'Courier New', monospace; position: relative; z-index: 10; }
+.abyss-title { padding: 0 30px 20px; font-size: 1.2rem; font-weight: bold; color: #fff; letter-spacing: 2px; text-shadow: 0 0 10px #fff; }
+.abyss-log { padding: 0 30px 34px; font-size: .85rem; line-height: 2.2; color: #aaddff; position: relative; z-index: 3; }
+.alert-metal { color: #000; font-weight: bold; background: #fff; padding: 0 5px; text-shadow: 0 0 8px #fff; display: inline-block; margin-top: 6px; }
+
+.setpiece { position: relative; height: 100vh; overflow: hidden; background: #020304; border-top: 1px solid #fff; width: 100vw; margin-left: calc(50% - 50vw); }
+
+/* 高級切割特效 */
+.slash-container { position: absolute; inset: 0; z-index: 5; overflow: hidden; mix-blend-mode: screen; }
+.slash { position: absolute; left: -55%; width: 210%; height: 2px; background: #fff; box-shadow: 0 0 15px #fff, 0 0 40px #88ccff; opacity: 0; animation: slashAnim 2.3s infinite; }
+.slash:nth-child(1) { top: 40%; transform: rotate(-25deg); height: 3px; }
+.slash:nth-child(2) { top: 52%; transform: rotate(44deg); animation-delay: 0.2s; }
+.slash:nth-child(3) { top: 72%; transform: rotate(-12deg); height: 4px; animation-delay: 0.8s; }
+.slash:nth-child(4) { top: 18%; transform: rotate(18deg); height: 1px; animation-delay: 1.5s; }
+@keyframes slashAnim { 0%, 94% { opacity: 0; } 96% { opacity: 1; transform: rotate(var(--rot)) translateY(10px); } 100% { opacity: 0; } }
+
+/* 偏旁拆解核心 */
+.dismember-line { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 7; display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; font-family: 'Ma Shan Zheng', cursive; }
+.split-char { position: relative; width: 80px; height: 120px; filter: drop-shadow(0 0 10px rgba(255,255,255,.5)); animation: groupTwitch 2.3s infinite steps(2, end); }
+.split-char:after { content: attr(data-full); position: absolute; inset: auto 0 -2em; text-align: center; font-family: 'Noto Serif TC', serif; font-size: 0.8rem; letter-spacing: .2em; color: rgba(255,255,255,.3); }
+
+.part { position: absolute; color: #fff; font-size: 5rem; line-height: 1; text-shadow: 0 0 15px #fff; animation: radicalTwitch 2.3s infinite steps(2, end); }
+/* 精準定位拆解字 */
+.split-char[data-full="分"] .top { top: 0; left: 10%; } .split-char[data-full="分"] .bottom { bottom: 0; left: 15%; }
+.split-char[data-full="掉"] .left { top: 20%; left: -10%; } .split-char[data-full="掉"] .right { top: 10%; right: -10%; }
+.split-char[data-full="你"] .left { top: 10%; left: -5%; } .split-char[data-full="你"] .right { top: 15%; right: 0; }
+.split-char[data-full="的"] .left { top: 15%; left: 0; } .split-char[data-full="的"] .right { top: 5%; right: -10%; }
+.split-char[data-full="肢"] .left { top: 10%; left: 0; } .split-char[data-full="肢"] .right { top: 15%; right: -10%; }
+.split-char[data-full="體"] .left { top: 10%; left: -10%; } .split-char[data-full="體"] .right { top: 0%; right: -20%; }
+
+@keyframes groupTwitch {
+    0%, 94%, 100% { transform: translate(0) rotate(0); }
+    96% { transform: translate(10px, -15px) rotate(8deg); }
+}
+@keyframes radicalTwitch {
+    0%, 94%, 100% { filter: blur(0); opacity: 1; }
+    96% { filter: blur(2px); opacity: 0.5; transform: translate(25px, -30px) rotate(20deg) scale(1.1); }
+    98% { opacity: 0.9; transform: translate(-20px, 20px) rotate(-15deg); }
+}
+
+.precision-label { position: absolute; left: 0; right: 0; bottom: 15%; z-index: 8; text-align: center; font-family: 'Courier New', monospace; font-size: 1rem; letter-spacing: .5em; color: rgba(255,255,255,.8); text-shadow: 0 0 10px #fff; }
+
+@media(max-width: 720px) { .top-bar { padding: 0 18px; } .top-right { display: none; } .container { padding: 0 18px 0; } .card { padding: 28px 22px; } .part { font-size: 3.5rem; } .split-char { width: 50px; } }
+</style>
+</head>
+<body class="abyss-metal screen-glitch">
+
+<div id="disclaimer">⚠️ 【警告】系統偵測到冗餘碳基結構。點擊確認授權，載入裁決音頻協議 (建議佩戴耳機) ⚠️</div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="top-bar">
+    <div class="top-logo">ZenCode · 封存</div>
+    <div class="top-right">殘存陣法檔案 · 金極節點</div>
+</div>
+
+<div class="container">
+    <section class="hero">
+        <div class="hero-tag">底層邏輯解譯 · 極端五行樣本</div>
+        <div class="hero-emblem">庚</div>
+        <div class="hero-name-row">庚申年 · 庚申月 · 庚申日 · 庚申時</div>
+        <div class="hero-sub">從革成災 · 四申伏吟 · 協議裁決</div>
+        <div class="birth-bar">
+            <span class="hl">觀測目標：非人型資料塊</span>
+            <span class="hl">ABYSS-METAL-000</span>
+            <span>裁決協議 (申訴接口已關閉)</span>
+        </div>
+        <div class="pillars">
+            <div class="pillar"><div class="p-lbl">年柱</div><div class="p-tg-god">比肩</div><div class="p-tg">庚</div><div class="p-dz">申</div></div>
+            <div class="pillar"><div class="p-lbl">月柱</div><div class="p-tg-god">比肩</div><div class="p-tg">庚</div><div class="p-dz">申</div></div>
+            <div class="pillar day-master"><div class="p-lbl" style="color:#fff">日柱</div><div class="p-tg-god" style="color:#fff">日主</div><div class="p-tg" style="color:#fff">庚</div><div class="p-dz" style="color:#fff">申</div></div>
+            <div class="pillar"><div class="p-lbl">時柱</div><div class="p-tg-god">比肩</div><div class="p-tg">庚</div><div class="p-dz">申</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">壹</div>
+            <div>
+                <div class="sec-ti">能量結構：四金無情，絕對邊界切割</div>
+                <div class="sec-en">ELEMENTAL PATTERN ANALYSIS</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="quote">古訣云：「從革者，金氣專旺；成器則利，過剛則折<del>人情</del>。」</div>
+            <p>此局四柱皆為<strong>庚申</strong>，庚金為刀斧，申金為其祿地。金勢專一至此，世界被強行轉換為二進制：合規，與不合規。不合規的部分會被直接刪除。</p>
+            <p>在 ZenCode 底層，金極像一套過度潔淨的運算引擎。它會自動修正標點、對齊欄位、刪去冗語，然後開始刪去遲疑、<del>痛苦</del>、<del>悲傷</del>與活人留下的灰色地帶。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">貳</div>
+            <div>
+                <div class="sec-ti">十神與神煞：純局伏吟與同理心剔除</div>
+                <div class="sec-en">TEN GODS & CELESTIAL SHADOWS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p><strong>比肩重疊：</strong>滿盤比肩，意味著執行程序的無限自我複製。系統無法再把你理解為「<del>人</del>」，只能判定你是一個亟需被優化與裁切的資料結構。</p>
+            <p><strong>伏吟的刀鋒：</strong>四柱重複，使時間變成了一台精密的手術刀。每一次重整網頁，都不是刷新，而是將你的邊界再往內精準切掉一公釐。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="sec-hd">
+            <div class="sec-num">叄</div>
+            <div>
+                <div class="sec-ti">災變表徵：格式化接管</div>
+                <div class="sec-en">PHYSICAL MANIFESTATION & HAZARDS</div>
+            </div>
+        </div>
+        <div class="card">
+            <p>金極沒有溫度。第一次掃描，它剝離你的語氣詞；第二次掃描，它斬斷上下文的邏輯；第三次掃描，它將直接對你的<del>血肉</del>程式碼進行拆解。</p>
+            <p>若你試圖反抗，系統會要求提供理由。但任何提交的理由，都會被強制轉碼為自白書，並在末尾自動壓上冷酷的印記：「裁決有效」。</p>
+        </div>
+    </section>
+
+    <section class="abyss-injection">
+        <div class="abyss-title">0xABYSS::REDESIGN_METAL</div>
+        <div class="abyss-log">
+            [SYS_ERR] redundant bio-metrics detected...<br>
+            [TRACE] <span style="color:#aaa">「請不要解釋，解釋會生成新的罪名。」</span><br>
+            <span class="alert-metal">[CRITICAL] 精準拆解協議已啟動。</span><br><br>
+            <div style="text-align:center;margin:30px 0">
+                <span class="flicker-ghost" style="color:#fff; text-shadow:0 0 10px #fff;">你 已 被 整 理 完 畢</span>
+            </div>
+        </div>
+        
+        <div class="setpiece metal-stage">
+            <div class="slash-container">
+                <div class="slash"></div><div class="slash"></div><div class="slash"></div><div class="slash"></div>
+            </div>
+            
+            <div class="dismember-line">
+                <div class="split-char" data-full="分"><span class="part top">八</span><span class="part bottom">刀</span></div>
+                <div class="split-char" data-full="掉"><span class="part left">扌</span><span class="part right">卓</span></div>
+                <div class="split-char" data-full="你"><span class="part left">亻</span><span class="part right">尔</span></div>
+                <div class="split-char" data-full="的"><span class="part left">白</span><span class="part right">勺</span></div>
+                <div class="split-char" data-full="肢"><span class="part left">月</span><span class="part right">支</span></div>
+                <div class="split-char" data-full="體"><span class="part left">骨</span><span class="part right">豊</span></div>
+            </div>
+            
+            <div class="precision-label">PRECISION DISASSEMBLY // 格式化執行中</div>
+        </div>
+    </section>
+</div>
+
+<script>
+// --- Canvas 背景與高級音效引擎 ---
+const cv = document.getElementById('bgCanvas');
+const ctx = cv.getContext('2d', { alpha: true });
+let W = 0, H = 0, time = 0;
+let audioCtx, started = false;
+
+function resize() {
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+}
+window.addEventListener('resize', resize, { passive: true });
+resize();
+
+// 繪製冷酷的金屬掃描線與準星
+function drawMetalCanvas() {
+    time++;
+    ctx.clearRect(0, 0, W, H);
+    
+    // 繪製精確的網格點陣
+    const gridSize = 80;
+    for(let x = 40; x <= W; x += gridSize) {
+        for(let y = 40; y <= H; y += gridSize) {
+            // 每 2.3 秒（對應動畫）產生高亮脈衝
+            const pulse = (time % 138 < 5) ? 1 : 0.1; 
+            const size = 2 + pulse * 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y - size); ctx.lineTo(x + size, y);
+            ctx.lineTo(x, y + size); ctx.lineTo(x - size, y);
+            ctx.closePath();
+            
+            ctx.fillStyle = `rgba(255, 255, 255, ${pulse})`;
+            ctx.fill();
+        }
+    }
+
+    // 隨機的水平數據掃描線
+    if(Math.random() > 0.8) {
+        let scanY = Math.random() * H;
+        ctx.fillStyle = `rgba(200, 230, 255, ${Math.random() * 0.2})`;
+        ctx.fillRect(0, scanY, W, Math.random() * 5 + 1);
+    }
+
+    requestAnimationFrame(drawMetalCanvas);
+}
+
+// 核心：載入極限音效 (V1要求 + 手術刀切割聲)
+function startAudio() {
+    if(started) return;
+    started = true;
+    document.getElementById('disclaimer').style.display = 'none';
+
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.8;
+        masterGain.connect(audioCtx.destination);
+
+        // --- 1. 使用者指定的 V1 金屬極高頻底噪 ---
+        const osc1 = audioCtx.createOscillator(); 
+        osc1.type = 'square'; osc1.frequency.value = 800;
+        
+        const osc2 = audioCtx.createOscillator(); 
+        osc2.type = 'sawtooth'; osc2.frequency.value = 810;
+        
+        const lfo = audioCtx.createOscillator(); 
+        lfo.frequency.value = 15; // 快速顫音
+        
+        const lfoGain = audioCtx.createGain(); 
+        lfoGain.gain.value = 400;
+        
+        lfo.connect(lfoGain); lfoGain.connect(osc1.frequency);
+        
+        const mix = audioCtx.createGain(); 
+        mix.gain.value = 0.15; // 壓低底噪，避免完全聾掉
+        
+        osc1.connect(mix); osc2.connect(mix); mix.connect(masterGain);
+        osc1.start(); osc2.start(); lfo.start();
+
+        // --- 2. 致命的手術刀劃破聲 (與 2.3s CSS 動畫同步) ---
+        setInterval(() => {
+            if(audioCtx.state === 'running') {
+                const sliceOsc = audioCtx.createBufferSource();
+                const bufSize = audioCtx.sampleRate * 0.15; // 0.15秒的銳利聲
+                const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                const data = buf.getChannelData(0);
+                for(let i=0; i<bufSize; i++) data[i] = Math.random() * 2 - 1; // 白噪音
+                sliceOsc.buffer = buf;
+
+                // 帶通濾波，保留極高頻刺耳聲 (模擬刀鋒)
+                const sliceFilter = audioCtx.createBiquadFilter();
+                sliceFilter.type = 'bandpass';
+                sliceFilter.frequency.value = 8500; 
+                sliceFilter.Q.value = 2.0;
+
+                // 聲音包絡：瞬間極大，迅速衰減
+                const sliceGain = audioCtx.createGain();
+                sliceGain.gain.setValueAtTime(3.0, audioCtx.currentTime); // 突破天際的音量
+                sliceGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+                sliceOsc.connect(sliceFilter); 
+                sliceFilter.connect(sliceGain); 
+                sliceGain.connect(masterGain);
+                
+                sliceOsc.start();
+            }
+        }, 2300); // 2300ms = 2.3s CSS animation duration
+
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+}
+
+document.getElementById('disclaimer').addEventListener('click', startAudio);
+['pointerdown', 'keydown', 'touchstart'].forEach(e => addEventListener(e, startAudio, {once: true, passive: true}));
+
+drawMetalCanvas();
+</script>
+</body>
+</html>
